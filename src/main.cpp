@@ -1,10 +1,6 @@
-#include <iostream>
-#include <vector>
-#include <SDL_gpu.h>
-#include "Shader.h"
 #include "Game.h"
 
-int main() {
+int main(int argc, char *argv[]) {
     SDG::Game game;
     game.Run();
 

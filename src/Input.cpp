@@ -5,6 +5,8 @@
 #include "Input.h"
 #include <SDL_events.h>
 #include <vector>
+#include <cstdlib>
+#include <cstring>
 
 using std::vector;
 

@@ -30,7 +30,8 @@ add_executable(SDG_Engine ${SDG_Engine_SRCS})
 target_include_directories(SDG_Engine PRIVATE
         ${CMAKE_SOURCE_DIR}/lib/spdlog/include
         ${CMAKE_SOURCE_DIR}/lib/SDL/include
-        ${CMAKE_SOURCE_DIR}/lib/sdl-gpu/include)
+        ${CMAKE_SOURCE_DIR}/lib/sdl-gpu/include
+        ${CMAKE_SOURCE_DIR}/lib/tinyxml2)
 
 
 
@@ -49,14 +50,16 @@ if (APPLE)                                                 # Mac
 elseif(WIN32)                                              # Windows
     set(PLATFORM_LIBS opengl32)
 endif()
-set (${PROJ}_LIBS
+
+set (SDG_Engine_LIBS
         SDL2
+        SDL2main
         SDL_gpu
         tinyxml2
         ${CONFIG_LIBS}
         ${PLATFORM_LIBS})
 
-target_link_libraries(SDG_Engine PUBLIC ${${PROJ}_LIBS})
+target_link_libraries(SDG_Engine PUBLIC ${SDG_Engine_LIBS})
 
 
 # ----- Other Build Processes ----------------------------------------

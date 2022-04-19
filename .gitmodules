@@ -1,0 +1,12 @@
+[submodule "lib/sdl-gpu"]
+	path = lib/sdl-gpu
+	url = https://github.com/grimfang4/sdl-gpu
+[submodule "lib/SDL"]
+	path = lib/SDL
+	url = https://github.com/libsdl-org/SDL
+[submodule "lib/tinyxml2"]
+	path = lib/tinyxml2
+	url = https://github.com/leethomason/tinyxml2
+[submodule "lib/spdlog"]
+	path = lib/spdlog
+	url = https://github.com/gabime/spdlog

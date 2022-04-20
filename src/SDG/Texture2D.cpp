@@ -8,11 +8,23 @@
 #include <SDL_gpu.h>
 #include <cassert>
 
+// Prevent Windows API macro clash
+#ifdef LoadImage
+#undef LoadImage
+#endif
+
 namespace SDG
 {
-    Texture2D::Texture2D() : image{}
+    Texture2D::Texture2D() : image{}, mAnchorX{}, mAnchorY{}, mOffsetX{}, 
+        mOffsetY{}, mWidth{}, mHeight{}, mRotated{}
     {
 
+    }
+
+    Texture2D::Texture2D(const std::string &path) : image{}, mAnchorX{}, mAnchorY{},
+        mOffsetX{}, mOffsetY{}, mWidth{}, mHeight{}, mRotated{}
+    {
+        LoadImage(path);
     }
 
     Texture2D::~Texture2D()
@@ -33,6 +45,9 @@ namespace SDG
     bool
     Texture2D::LoadImage(const std::string &path)
     {
+        // Make sure the texture is clean before loading
+        Close();
+
         GPU_Image *tempImage = GPU_LoadImage(FileSys::MakePath(path).c_str());
         if (!tempImage)
         {
@@ -41,15 +56,25 @@ namespace SDG
         }
 
         image = tempImage;
+        this->mPath = path;
+
         return true;
     }
 
     void
-    Texture2D::GetAnchor(float *x, float *y) const
+    Texture2D::GetAnchor(int *x, int *y) const
     {
-        assert(image);
+        assert(WasLoaded());
         *x = image->anchor_x;
         *y = image->anchor_y;
+    }
+
+    void 
+    Texture2D::GetOffset(int *x, int *y) const
+    {
+        assert(WasLoaded());
+        *x = mOffsetX;
+        *y = mOffsetY;
     }
 
     bool

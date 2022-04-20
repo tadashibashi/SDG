@@ -2,21 +2,17 @@ cmake_minimum_required(VERSION 3.16)
 project(SDG_Engine)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_SUPPRESS_DEVELOPER_WARNINGS 1)
+
 # Build all targets into one directory
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
-#include_directories(
-#        lib/SDL/include
-#        lib/sdl-gpu/include)
-
 add_subdirectory(src)
 add_subdirectory(lib/SDL)
 
 # For sdl-gpu's find SDL2
-set(SDL2MAIN_LIBRARY SDL2main)
+#set(SDL2MAIN_LIBRARY SDL2main)
 set(SDL2_LIBRARY SDL2)
 set(SDL2_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/lib/SDL/include)
 

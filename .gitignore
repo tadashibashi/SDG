@@ -1,6 +1,12 @@
+# Build directories
 build*/
 cmake-build*/
+out/
+bin/
+
+# IDE
 .idea/
 .vs/
 .DS_Store
+CMakeSettings.json
 

@@ -13,6 +13,10 @@ namespace SDG
         ~Game();
         void RunOneFrame();
         void Run();
+
+        /// <summary>
+        /// Gets the window's GPU_Target. Please make sure to include the SDL_gpu.h header before using it.
+        /// </summary>
         const GPU_Target *Window() { return window; }
         void Exit();
     private:

@@ -15,9 +15,9 @@
 
 using namespace tinyxml2;
 
-#ifdef SDG_TARGET_HTML5
+#if defined (SDG_TARGET_HTML5) || defined (SDG_TARGET_ANDROID) || defined (SDG_TARGET_IPHONE)
     const GPU_RendererEnum RendererType = GPU_RENDERER_GLES_2;
-#elif defined(SDG_TARGET_MAC) || defined(SDG_TARGET_LINUX) || defined(SDG_TARGET_WINDOWS)
+#elif defined (SDG_TARGET_MAC) || defined (SDG_TARGET_LINUX) || defined (SDG_TARGET_WINDOWS)
     const GPU_RendererEnum RendererType = GPU_RENDERER_OPENGL_3;
 #endif
 
@@ -91,6 +91,7 @@ SDG::Game::Initialize()
 
 
     window = target;
+    isRunning = true;
     return 0;
 }
 

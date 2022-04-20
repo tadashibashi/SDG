@@ -6,6 +6,7 @@
 #include "Logging.h"
 
 #include <SDL_gpu.h>
+#include <cassert>
 
 namespace SDG
 {

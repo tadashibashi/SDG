@@ -15,9 +15,10 @@ namespace SDG
 
 
         /// <summary>
-        /// Cross-platform way to get the executable's root directory
+        /// Gets the path to the program's root directory, including the final slash.
+        /// e.g. "path/to/root/".
+        /// On Mac, this points to the app's Resource folder.
         /// </summary>
-        /// <returns></returns>
         static string GetBasePath();
 
 

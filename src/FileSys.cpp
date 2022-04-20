@@ -5,6 +5,9 @@
 #include "FileSys.h"
 #include <SDL.h>
 
+/// <summary>
+/// Cached base path to the executable.
+/// </summary>
 static const string basePath = SDL_GetBasePath();
 
 string

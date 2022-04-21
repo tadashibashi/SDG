@@ -20,6 +20,7 @@ namespace SDG
         bool Compile(const std::string &vertexPath, const std::string &fragPath);
         void Close();
         void Activate();
+        static void Deactivate();
     private:
         uint32_t program;
         GPU_ShaderBlock block;

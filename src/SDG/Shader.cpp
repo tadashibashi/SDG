@@ -162,6 +162,12 @@ SDG::Shader::Activate()
     GPU_ActivateShaderProgram(program, &block);
 }
 
+void
+SDG::Shader::Deactivate()
+{
+    GPU_DeactivateShaderProgram();
+}
+
 
 
 SDG::Shader &

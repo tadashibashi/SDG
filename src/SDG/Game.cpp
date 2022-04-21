@@ -34,28 +34,6 @@ SDG::Game::Game() : window{}, isRunning{}
 SDG::Shader *shader = nullptr;
 SDG::Texture2D *kirby = nullptr;
 
-// temporary, make content manager to handle this
-bool LoadImage(const char *path, GPU_Image **out)
-{
-    GPU_Image *img = GPU_LoadImage(path);
-
-    if (img)
-    {
-        GPU_SetSnapMode(img, GPU_SNAP_NONE);
-        GPU_SetWrapMode(img, GPU_WRAP_NONE, GPU_WRAP_NONE);
-        *out = img;
-        return true;
-    }
-    else
-    {
-        *out = nullptr;
-        SDG_Err("Failed to load image from path: \"{}\"", path);
-        return false;
-    }
-}
-
-
-
 int
 SDG::Game::Initialize()
 {
@@ -140,6 +118,8 @@ SDG::Game::Update()
     SDG_Assert(Input::KeyRelease(Key::A));
     if (Input::KeyPressed(Key::Escape))
         Exit();
+    // TODO: Test GPU_Camera
+    // TODO: Set Input Key Enum to scancode values
 }
 
 void
@@ -149,15 +129,12 @@ SDG::Game::Render()
     GPU_ClearRGBA(window, 128, 128, 128, 255);
 
     shader->Activate();
-    float time = (float)SDL_GetTicks();
-    shader->SetVariable("time", time);
-
-    //shader->SetVariable("resolution", {100, 100}, 2);
+    shader->SetVariable("time", (float)SDL_GetTicks());
 
     GPU_BlitScale(kirby->GetImage(), nullptr, window, (float)window->base_w/2,
             (window->base_h/2) + kirby->GetImage()->h * 0.1f * .5f, 0.1f, 0.1f);
+    shader->Deactivate();
 
-    GPU_DeactivateShaderProgram();
     GPU_BlitScale(kirby->GetImage(), nullptr, window, (float)window->base_w/2,
             window->base_h/2, 0.1f, 0.1f);
 

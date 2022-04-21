@@ -12,20 +12,18 @@ void ManPrint()
 
 int main(int argc, char *argv[])
 {
+    // Get the arguments
     if (argc < 4)
     {
         ManPrint();
         return 1;
     }
     
-    std::string assetDir = argv[1];
-    std::string outDir = argv[2];
-    std::string encryptionKey = argv[3];
-
+    std::string assetDir = argv[1], outDir = argv[2], encryptionKey = argv[3];
     std::map<std::string, long long> cache;
     std::ifstream cacheFile;
 
-    // Open cache file and fill it
+    // Open cache file and read into cache
     cacheFile.open("SDG_ContentCache.txt");
     if (cacheFile.is_open())
     {
@@ -51,18 +49,19 @@ int main(int argc, char *argv[])
                 
             
             long long lastEdited;
-            
             try {
                 lastEdited = std::stoll(line.substr(commaPos + 1));
             }
             catch (const std::invalid_argument &e)
             {
-                std::cout << "There was a problem converting number on line with text \"" << line << "\"\n";
+                std::cout << "Invalid timestamp on line with text \"" << line << "\"\n";
                 continue;
             }
             
             cache[filename] = lastEdited;
 
+            // getline sets eof bit on reading the last line.
+            // That's why the check for eof occurs after reading.
             if (cacheFile.eof())
                 break;
         }
@@ -107,7 +106,6 @@ int main(int argc, char *argv[])
                 {
                     size_t dotPos = outFilePath.find(item.path().extension().string());
                     outFilePath = outFilePath.substr(0, dotPos) + ".sdgc";
-                    std::cout << "filepath: " << outFilePath << '\n';
                 }
                 else
                 {
@@ -142,11 +140,12 @@ int main(int argc, char *argv[])
                 outFile << c;
             }
 
-            std::cout << "Copying updated asset (" << relativePath << ")\n";
+            std::cout << "Processing content file (" << relativePath.substr(1) << ")\n";
             cache[relativePath] = writeTime;
         }
     }
 
+    // Output changes to cache file
     std::ofstream outFile;
     outFile.open("SDG_ContentCache.txt", std::ios::out | std::ios::trunc);
     if (!outFile.is_open())

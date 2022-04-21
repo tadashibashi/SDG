@@ -13,7 +13,7 @@ namespace SDG
     {
     public:
         Texture2D();
-        Texture2D(const std::string &path);
+        explicit Texture2D(const std::string &path);
         ~Texture2D();
         
         // Prevent copying.

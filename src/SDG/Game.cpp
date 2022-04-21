@@ -10,6 +10,7 @@
 #include "Logging.h"
 #include "Input.h"
 #include "XMLReader.h"
+#include "Texture2D.h"
 
 #include "Shader.h"
 
@@ -23,14 +24,14 @@ using namespace tinyxml2;
 
 const unsigned DefaultInitFlags = SDL_INIT_VIDEO | SDL_INIT_EVENTS;
 
-SDG::Game::Game() : window()
+SDG::Game::Game() : window{}, isRunning{}
 {
     Initialize();
 }
 
 // temporary test
-Shader *shader = nullptr;
-GPU_Image *kirby = nullptr;
+SDG::Shader *shader = nullptr;
+SDG::Texture2D *kirby = nullptr;
 
 // temporary, make content manager to handle this
 bool LoadImage(const char *path, GPU_Image **out)
@@ -85,9 +86,9 @@ SDG::Game::Initialize()
     Input::Initialize();
 
     // Temp content
-    LoadImage("assets/kirby.png", &kirby);
+    kirby = new Texture2D("assets/textures/kirby");
     shader = new Shader;
-    shader->Compile("assets/v1.vert", "assets/f1.frag");
+    shader->Compile("assets/shaders/v1", "assets/shaders/f1");
 
 
     window = target;
@@ -141,10 +142,10 @@ SDG::Game::Render()
 
     //shader->SetVariable("resolution", {100, 100}, 2);
 
-    GPU_BlitScale(kirby, NULL, window, window->base_w/2, (window->base_h/2) + kirby->h * 0.1f * .5f, 0.1f, 0.1f);
+    GPU_BlitScale(kirby->GetImage(), NULL, window, window->base_w/2, (window->base_h/2) + kirby->GetImage()->h * 0.1f * .5f, 0.1f, 0.1f);
 
     GPU_DeactivateShaderProgram();
-    GPU_BlitScale(kirby, NULL, window, window->base_w/2, window->base_h/2, 0.1f, 0.1f);
+    GPU_BlitScale(kirby->GetImage(), NULL, window, window->base_w/2, window->base_h/2, 0.1f, 0.1f);
 
     GPU_Flip(window);
 }
@@ -154,7 +155,7 @@ SDG::Game::Close()
 {
 
     delete shader; // temp test
-    GPU_FreeImage(kirby); // temp test
+    delete kirby;
 
     Input::Close();
     GPU_Quit();

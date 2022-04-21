@@ -4,6 +4,7 @@
 #include <iostream>
 #include <map>
 #include <string>
+
 void ManPrint()
 {
     std::cout << "SDG_ContentPipe <assetDir> <outDir>\n";
@@ -11,7 +12,7 @@ void ManPrint()
 
 int main(int argc, char *argv[])
 {
-    if (argc < 3)
+    if (argc < 4)
     {
         ManPrint();
         return 1;
@@ -19,12 +20,13 @@ int main(int argc, char *argv[])
     
     std::string assetDir = argv[1];
     std::string outDir = argv[2];
+    std::string encryptionKey = argv[3];
 
-    std::map<std::string, uint64_t> cache;
+    std::map<std::string, long long> cache;
     std::ifstream cacheFile;
 
     // Open cache file and fill it
-    cacheFile.open(assetDir + "/.ContentCache.txt");
+    cacheFile.open("SDG_ContentCache.txt");
     if (cacheFile.is_open())
     {
         while (cacheFile)
@@ -34,6 +36,8 @@ int main(int argc, char *argv[])
             
             if (cacheFile.bad())
                 break;
+            if (line.empty())
+                continue;
 
             size_t commaPos = line.find_first_of(',');
             std::string filename;
@@ -46,10 +50,10 @@ int main(int argc, char *argv[])
             filename = line.substr(0, commaPos);
                 
             
-            uint64_t lastEdited;
+            long long lastEdited;
             
             try {
-                lastEdited = std::stoull(line.substr(commaPos + 1));
+                lastEdited = std::stoll(line.substr(commaPos + 1));
             }
             catch (const std::invalid_argument &e)
             {
@@ -63,16 +67,97 @@ int main(int argc, char *argv[])
                 break;
         }
     }
+    cacheFile.close();
 
-    std::cout << "Current Cache: \n";
-    for (auto & [k, v] : cache)
+    // Create the asset folder if it doesn't exist
+    std::filesystem::directory_entry assetFolder(outDir);
+    if (!assetFolder.exists())
     {
-        std::cout << k << ": " << v << '\n';
+        std::filesystem::create_directory(assetFolder.path());
     }
 
-    std::filesystem::recursive_directory_iterator dir(assetDir);
-    
 
+    // For each item in the user's asset directory...
+    std::filesystem::recursive_directory_iterator dir(assetDir);
+    for (auto &item : dir)
+    {
+        long long writeTime      = item.last_write_time().time_since_epoch().count();
+        std::string relativePath = item.path().string().substr(assetDir.length());
+        std::string outFilePath = assetFolder.path().string() + relativePath;
+
+        // Mirror folder structure in target path
+        if (item.is_directory())
+        {
+            if (!std::filesystem::directory_entry(outFilePath).exists())
+                std::filesystem::create_directory(outFilePath);
+            continue;
+        }
+
+
+        auto it = cache.find(relativePath);
+        if (it == cache.end() || writeTime > it->second) // item is new or a newer version exists
+        {
+            std::ifstream inFile;
+            std::ofstream outFile;
+            inFile.open(item.path().string(), std::ios::in | std::ios::binary);
+
+            // append .sdgc to files
+            {
+                if (item.path().has_extension())
+                {
+                    size_t dotPos = outFilePath.find(item.path().extension().string());
+                    outFilePath = outFilePath.substr(0, dotPos) + ".sdgc";
+                    std::cout << "filepath: " << outFilePath << '\n';
+                }
+                else
+                {
+                    outFilePath += ".sdgc";
+                }
+            }
+
+            // Write the new or updated file
+            outFile.open(outFilePath,
+                    std::ios::out | std::ios::trunc | std::ios::binary);
+            if (!inFile.is_open())
+            {
+                std::cout << "There was a problem opening file at path: " << item.path() << '\n';
+                continue;
+            }
+            if (!outFile.is_open())
+            {
+                std::cerr << "There was a problem writing a file at path: " <<
+                    assetFolder.path().string() + item.path().relative_path().string() << '\n';
+                continue;
+            }
+
+            // Encrypt file
+            for(int i = 0; true ; ++i)
+            {
+                unsigned char c = inFile.get();
+                if (inFile.eof() || inFile.bad())
+                    break;
+                unsigned char add = encryptionKey[i % encryptionKey.length()];
+                outFile << (unsigned char)(c + add - i);
+            }
+
+            std::cout << "Copying updated asset (" << relativePath << ")\n";
+            cache[relativePath] = writeTime;
+        }
+    }
+
+    std::ofstream outFile;
+    outFile.open("SDG_ContentCache.txt", std::ios::out | std::ios::trunc);
+    if (!outFile.is_open())
+    {
+        std::cerr << "There was a problem opening the SDG_ContentCache.txt file while caching data.\n";
+        return 1;
+    }
+
+    for (auto & [k, v] : cache)
+    {
+        outFile << k << "," << v << '\n';
+    }
+    outFile.close();
 
     return 0;
 }

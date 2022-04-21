@@ -9,6 +9,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 add_subdirectory(src)
+add_definitions(-w)
 add_subdirectory(lib/SDL)
 
 # For sdl-gpu's find SDL2
@@ -19,3 +20,4 @@ set(SDL2_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/lib/SDL/include)
 add_subdirectory(lib/sdl-gpu)
 add_subdirectory(lib/tinyxml2)
 add_subdirectory(lib/spdlog)
+

@@ -3,82 +3,73 @@
 //
 #include "Shader.h"
 #include "Logging.h"
-
+#include "FileSys.h"
 
 // Prepends shader version data depending on OpenGL or GLES.
 // This is needed to support particular graphics cards that require this heading data.
 // Code mainly from https://github.com/ryancheung/sdl2-gpu-with-imgui/blob/master/Main.cpp
-static uint32_t LoadShader(GPU_ShaderEnum shaderType, const std::string &path)
+static uint32_t
+LoadShader(GPU_ShaderEnum shaderType, const std::string &path)
 {
-    SDL_RWops *rwops;
-    char *shaderSource;
-    const char *versionHeader;
-    int64_t fileSize, versionHeaderSize;
+    SDG::RWopsMem rwops;
+    char *source;
+    const char *header;
+    int64_t fileSize, headerSize;
     GPU_Renderer *renderer = GPU_GetCurrentRenderer();
     uint32_t shader;
 
     // Open the shader file
-    rwops = SDL_RWFromFile(path.c_str(), "rb");
-    if (!rwops)
+    rwops = SDG::FileSys::DecryptFile(path, &fileSize);
+    if (!rwops.IsOpen())
     {
-        SDG_Err("Failed to load shader file \"{}\": {}", path, SDL_GetError());
+        // Open file error messages already handled in DecryptFile.
         return 0;
     }
-
-    // Get source length
-    fileSize = SDL_RWseek(rwops, 0, SEEK_END);
-    if (fileSize < 0)
-    {
-        SDG_Err("File seek failed while getting shader source file size: {}", SDL_GetError());
-        return 0;
-    }
-    SDL_RWseek(rwops, 0, SEEK_SET);
-
 
     // Create the version header to prepend
     switch (renderer->shader_language)
     {
         case GPU_LANGUAGE_GLSL:
-            versionHeader = "#version 100\nprecision highp int;\nprecision highp float;\n";
+            header = "#version 100\nprecision highp int;\nprecision highp float;\n";
             break;
         case GPU_LANGUAGE_GLSLES:
-            versionHeader = "#version 100\nprecision mediump int;\nprecision mediump float;\n";
+            header = "#version 100\nprecision mediump int;\nprecision mediump float;\n";
             break;
         default:
             SDG_Err("Shader language currently not supported.");
             return 0;
     }
 
-    versionHeaderSize = strlen(versionHeader);
+    headerSize = strlen(header);
 
     // Allocate shader source buffer
-    shaderSource = (char *)malloc(versionHeaderSize + fileSize + 1);
+    source = (char *)malloc(headerSize + fileSize + 1);
 
     // Prepend version header
-    strcpy(shaderSource, versionHeader);
+    strcpy_s(source, headerSize + 1, header);
 
     // Read shader file into buffer
-    SDL_RWread(rwops, shaderSource + versionHeaderSize, 1, fileSize);
-    shaderSource[versionHeaderSize + fileSize] = '\0';
+    SDL_RWread(rwops.rwops, source + headerSize, fileSize, 1);
+    source[headerSize + fileSize] = '\0'; // null terminate the str
 
     // Compile shader
-    shader = GPU_CompileShader(shaderType, shaderSource);
+    shader = GPU_CompileShader(shaderType, source);
 
     // Clean up
-    free(shaderSource);
-    SDL_RWclose(rwops);
+    free(source);
+    rwops.Free();
 
     return shader;
 }
 
 
-Shader::Shader() : block{}, program{}
+SDG::Shader::Shader() : block{}, program{}
 {
 
 }
 
 
-Shader::~Shader()
+SDG::Shader::~Shader()
 {
     Close();
 }
@@ -86,28 +77,28 @@ Shader::~Shader()
 
 
 uint32_t
-Shader::GetVarLocation(const std::string &varId) const
+SDG::Shader::GetVarLocation(const std::string &varId) const
 {
     int location = GPU_GetUniformLocation(program, varId.c_str());
-    //SDG_Log("Uniform \"{}\" location: {}", varId, location);
+
     return (uint32_t)location;
 }
 
 
 bool
-Shader::Compile(const std::string &vertexPath, const std::string &fragPath)
+SDG::Shader::Compile(const std::string &vertexPath, const std::string &fragPath)
 {
     uint32_t vertShader = LoadShader(GPU_VERTEX_SHADER, vertexPath.c_str());
     if (!vertShader)
     {
-        SDG_Err("Failed to load vertex shader ({}): {}", vertexPath, GPU_GetShaderMessage());
+        SDG_Err("Failed to load vertex shader ({}) =>\n{}", vertexPath, GPU_GetShaderMessage());
         return false;
     }
 
     uint32_t fragShader = LoadShader(GPU_FRAGMENT_SHADER, fragPath.c_str());
     if (!fragShader)
     {
-        SDG_Err("Failed to load fragment shader: {}", GPU_GetShaderMessage());
+        SDG_Err("Failed to load fragment shader ({})", fragPath);
         GPU_FreeShader(vertShader);
         return false;
     }
@@ -121,10 +112,15 @@ Shader::Compile(const std::string &vertexPath, const std::string &fragPath)
         return false;
     }
 
+    // Now that the shaders have linked, we can free them.
     GPU_FreeShader(vertShader);
     GPU_FreeShader(fragShader);
 
-    auto shaderBlock = GPU_LoadShaderBlock(program, "gpu_Vertex", "gpu_TexCoord", NULL, "gpu_ModelViewProjectionMatrix");
+    auto shaderBlock = GPU_LoadShaderBlock(program,
+            "gpu_Vertex",                // position name
+            "gpu_TexCoord",             // texcoord name
+            "gpu_Color",                   // color name
+            "gpu_ModelViewProjectionMatrix"); // modelViewMatrix name
 
     program = shaderProgram;
     block = shaderBlock;
@@ -132,20 +128,23 @@ Shader::Compile(const std::string &vertexPath, const std::string &fragPath)
 }
 
 // Set Float Uniform
-Shader &Shader::SetVariable(const std::string &varId, float value)
+SDG::Shader &
+SDG::Shader::SetVariable(const std::string &varId, float value)
 {
     GPU_SetUniformf((int) GetVarLocation(varId), value);
     return *this;
 }
 
 // Set Vector of float uniform
-Shader &Shader::SetVariable(const std::string &varId, std::vector<float> values, int elementsPerValue)
+SDG::Shader &
+SDG::Shader::SetVariable(const std::string &varId, std::vector<float> values, int elementsPerValue)
 {
     GPU_SetUniformfv((int) GetVarLocation(varId), elementsPerValue, (int)values.size() / elementsPerValue, values.data());
     return *this;
 }
 
-void Shader::Close()
+void
+SDG::Shader::Close()
 {
     if (program)
     {
@@ -154,14 +153,16 @@ void Shader::Close()
     }
 }
 
-void Shader::Activate()
+void
+SDG::Shader::Activate()
 {
     GPU_ActivateShaderProgram(program, &block);
 }
 
 
 
-Shader &Shader::SetImage(const std::string &varId, GPU_Image *image)
+SDG::Shader &
+SDG::Shader::SetImage(const std::string &varId, GPU_Image *image)
 {
     GPU_SetShaderImage(image, GetVarLocation(varId), 1);
     return *this;

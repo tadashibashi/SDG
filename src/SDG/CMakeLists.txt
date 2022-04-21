@@ -60,9 +60,8 @@ set (SDG_Engine_LIBS
 
 target_link_libraries(SDG_Engine PUBLIC ${SDG_Engine_LIBS})
 
+add_dependencies(SDG_Engine SDG_ContentPipe)
 
 # ----- Other Build Processes ----------------------------------------
-# Copy assets symlink
-if (NOT EXISTS ${CMAKE_BINARY_DIR}/assets)
-    execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_SOURCE_DIR}/assets ${CMAKE_BINARY_DIR}/assets)
-endif()
+
+

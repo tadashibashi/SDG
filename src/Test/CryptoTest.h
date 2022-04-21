@@ -4,7 +4,9 @@
 
 void CryptoTest()
 {
-    auto efile = SDG::encrypt("Yimamalama", { 'a', 'b', 'e', ' ', 'l', 'i', 'n', 'c', 'o', 'l', 'n'});
+    auto efile = SDG::Encrypt("ghipwetvsadhhhhh127aghawy239gfhahj4",
+                              {'a', 'b', 'e', ' ', 'l', 'i', 'n', 'c', 'o', 'l', 'n', ' ', 'w', 'a', 's', ' ', 't', 'h',
+                               'e', ' ', 's', 'i', 'x', 't', 'e', 'e', 'n', 't', 'h', ' ', 'p'});
     std::cout << "Encrypted: \"";
     for (auto e : efile)
     {
@@ -12,7 +14,7 @@ void CryptoTest()
     }
     std::cout << "\"\n";
 
-    auto dfile = SDG::decrypt("Yomamalama", efile);
+    auto dfile = SDG::Decrypt("ghipwetvsadhhhhh127aghawy239gfhahj4", efile);
     std::cout << "Decrypted: \"";
     for (auto d : dfile)
     {

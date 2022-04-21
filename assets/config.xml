@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <config>
     <window width="640" height="480" title="Asteroids" fullscreen="false"/>
+    <content root="assets"/>
+    <scenes>
+        <scene name="Level 1" map="tilemaps/level1.tmx"/>
+        <scene name="Level 2" map="tilemaps/level2.tmx"/>
+    </scenes>
 </config>

@@ -42,6 +42,7 @@ SDG::ContentMgr::LoadTexture(const std::string &path)
         if (tex->LoadImage(path))
         {
             textures[path] = tex;
+            return tex;
         }
         else
         {

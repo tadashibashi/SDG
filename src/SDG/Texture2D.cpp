@@ -1,17 +1,19 @@
-//
-// Created by Aaron Ishibashi on 4/16/22.
-//
 #include "Texture2D.h"
 #include "FileSys.h"
 #include "Logging.h"
 
-#include <SDL_gpu.h>
+#ifdef M_PI
+#undef M_PI
+#endif
+
 #include <cassert>
+#include <SDL_gpu.h>
 
 // Prevent Windows API macro clash
 #ifdef LoadImage
 #undef LoadImage
 #endif
+
 
 namespace SDG
 {
@@ -42,13 +44,46 @@ namespace SDG
         }
     }
 
+
+    // TODO: Move all of this into a file loading class. LoadImage should then call this func.
+    static std::string encryptionKey = "john316";
     bool
     Texture2D::LoadImage(const std::string &path)
     {
         // Make sure the texture is clean before loading
         Close();
 
-        GPU_Image *tempImage = GPU_LoadImage(FileSys::MakePath(path).c_str());
+        SDL_RWops *io = SDL_RWFromFile(FileSys::MakePath(path + ".sdgc").c_str(), "rb");
+        if (!io)
+        {
+            SDG_Err("could not read from file {}: {}", path, SDL_GetError());
+            return false;
+        }
+
+        std::vector<unsigned char> imageData;
+        SDL_RWseek(io, 0, RW_SEEK_END);
+        Sint64 fileSize = SDL_RWtell(io);
+        SDL_RWseek(io, 0, RW_SEEK_SET);
+        imageData.reserve(fileSize);
+
+        for (Sint64 i = 0; i < fileSize; ++i)
+        {
+            unsigned char c;
+            SDL_RWread(io, &c, 1, 1);
+            unsigned char add = encryptionKey[i % encryptionKey.length()];
+
+            imageData.push_back(c - add + i);
+        }
+        SDL_FreeRW(io);
+
+        io = SDL_RWFromMem(imageData.data(), (int)imageData.size());
+        if (!io)
+        {
+            SDG_Err("Failed to create RWops from memory: {}", SDL_GetError());
+            return false;
+        }
+
+        GPU_Image *tempImage = GPU_LoadImage_RW(io, true);
         if (!tempImage)
         {
             SDG_Err("problem loading image file ({}): {}", path, GPU_PopErrorCode().details);

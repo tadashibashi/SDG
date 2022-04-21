@@ -79,7 +79,11 @@ SDG::Game::Initialize()
         return -2;
     }
 
+    SDL_Window *win = SDL_GetWindowFromID(target->context->windowID);
+    SDL_SetWindowTitle(win, title.c_str());
+
     GPU_SetFullscreen(fullscreen, true);
+
 
     Input::Initialize();
 

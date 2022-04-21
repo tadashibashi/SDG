@@ -17,14 +17,14 @@
 
 namespace SDG
 {
-    Texture2D::Texture2D() : image{}, mAnchorX{}, mAnchorY{}, mOffsetX{}, 
-        mOffsetY{}, mWidth{}, mHeight{}, mRotated{}
+    Texture2D::Texture2D() : mImage{}, mAnchorX{}, mAnchorY{}, mOffsetX{},
+                             mOffsetY{}, mWidth{}, mHeight{}, mRotated{}
     {
 
     }
 
-    Texture2D::Texture2D(const std::string &path) : image{}, mAnchorX{}, mAnchorY{},
-        mOffsetX{}, mOffsetY{}, mWidth{}, mHeight{}, mRotated{}
+    Texture2D::Texture2D(const std::string &path) : mImage{}, mAnchorX{}, mAnchorY{},
+                                                    mOffsetX{}, mOffsetY{}, mWidth{}, mHeight{}, mRotated{}
     {
         LoadImage(path);
     }
@@ -37,10 +37,10 @@ namespace SDG
     void
     Texture2D::Close()
     {
-        if (image)
+        if (mImage)
         {
-            GPU_FreeImage(image);
-            image = nullptr;
+            GPU_FreeImage(mImage);
+            mImage = nullptr;
         }
     }
 
@@ -53,45 +53,20 @@ namespace SDG
         // Make sure the texture is clean before loading
         Close();
 
-        SDL_RWops *io = SDL_RWFromFile(FileSys::MakePath(path + ".sdgc").c_str(), "rb");
-        if (!io)
-        {
-            SDG_Err("could not read from file {}: {}", path, SDL_GetError());
-            return false;
-        }
+        int64_t fileSize;
+        SDG::RWopsMem io = SDG::FileSys::DecryptFile(path, &fileSize);
 
-        std::vector<unsigned char> imageData;
-        SDL_RWseek(io, 0, RW_SEEK_END);
-        Sint64 fileSize = SDL_RWtell(io);
-        SDL_RWseek(io, 0, RW_SEEK_SET);
-        imageData.reserve(fileSize);
-
-        for (Sint64 i = 0; i < fileSize; ++i)
-        {
-            unsigned char c;
-            SDL_RWread(io, &c, 1, 1);
-            unsigned char add = encryptionKey[i % encryptionKey.length()];
-
-            imageData.push_back(c - add + i);
-        }
-        SDL_FreeRW(io);
-
-        io = SDL_RWFromMem(imageData.data(), (int)imageData.size());
-        if (!io)
-        {
-            SDG_Err("Failed to create RWops from memory: {}", SDL_GetError());
-            return false;
-        }
-
-        GPU_Image *tempImage = GPU_LoadImage_RW(io, true);
+        GPU_Image *tempImage = GPU_LoadImage_RW(io.rwops, false);
+        io.Free();
         if (!tempImage)
         {
             SDG_Err("problem loading image file ({}): {}", path, GPU_PopErrorCode().details);
             return false;
         }
 
-        image = tempImage;
-        this->mPath = path;
+        // Finished without errors, set internals
+        mImage = tempImage;
+        mPath = path;
 
         return true;
     }
@@ -100,8 +75,8 @@ namespace SDG
     Texture2D::GetAnchor(int *x, int *y) const
     {
         assert(WasLoaded());
-        *x = image->anchor_x;
-        *y = image->anchor_y;
+        *x = mImage->anchor_x;
+        *y = mImage->anchor_y;
     }
 
     void 
@@ -115,6 +90,6 @@ namespace SDG
     bool
     Texture2D::WasLoaded() const
     {
-        return image;
+        return mImage;
     }
 }

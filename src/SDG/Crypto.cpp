@@ -8,8 +8,11 @@ SDG::Encrypt(const std::string &key, const std::vector<uint8_t> &data)
 
     for (size_t i = 0; i < data.size(); ++i)
     {
-        auto c = (uint8_t)key[i % key.size()];
-        ret.push_back(c + data[i] - i);
+        auto add = (uint8_t)key[i % key.size()];
+        uint8_t c = data[i];
+        c ^= ~add;
+        c = add + c - i;
+        ret.push_back(c);
     }
 
     return ret;
@@ -24,8 +27,11 @@ SDG::Decrypt(const std::string &key, const std::vector<uint8_t> &data)
 
     for (size_t i = 0; i < data.size(); ++i)
     {
-        auto c = (uint8_t)key[i % key.size()];
-        ret.push_back(data[i] - c + i);
+        auto add = (uint8_t)key[i % key.size()];
+        uint8_t c = data[i];
+        c = c - add + i;
+        c ^= ~add;
+        ret.push_back(c);
     }
 
     return ret;

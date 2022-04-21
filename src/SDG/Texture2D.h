@@ -24,7 +24,7 @@ namespace SDG
         /// Gets the inner GPU_Image object ptr.
         /// </summary>
         /// <returns></returns>
-        GPU_Image *GetImage() { return image; }
+        GPU_Image *GetImage() { return mImage; }
 
         /// <summary>
         /// Load an image into the Texture2D.
@@ -41,7 +41,7 @@ namespace SDG
         std::string GetPath() const { return mPath; }
         
     private:
-        GPU_Image *image;
+        GPU_Image *mImage;
 
         // Sub-image data, to translate relative to the image
         int mWidth, mHeight, mAnchorX, mAnchorY, mOffsetX, mOffsetY;

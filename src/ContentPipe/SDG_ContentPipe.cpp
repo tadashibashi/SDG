@@ -137,7 +137,9 @@ int main(int argc, char *argv[])
                 if (inFile.eof() || inFile.bad())
                     break;
                 unsigned char add = encryptionKey[i % encryptionKey.length()];
-                outFile << (unsigned char)(c + add - i);
+                c ^= ~add;
+                c = (unsigned char)(c + add - i);
+                outFile << c;
             }
 
             std::cout << "Copying updated asset (" << relativePath << ")\n";

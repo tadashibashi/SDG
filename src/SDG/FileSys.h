@@ -6,15 +6,18 @@
 //
 #pragma once
 #include <string>
-
-#include <SDL_rwops.h>
-
 #include <vector>
+#include <SDL_rwops.h>
 
 using std::string;
 
 namespace SDG
 {
+    /**
+     * An SDL_RWops wrapper with a dynamically allocated buffer to memory.
+     * This is intended to be used for GPU_Load* functions requiring an RWops
+     * object to read from memory.
+     */
     struct RWopsMem
     {
         RWopsMem() : memory{}, rwops{} {}
@@ -23,6 +26,8 @@ namespace SDG
         {
             SDL_FreeRW(rwops);
             free(memory);
+            rwops = nullptr;
+            memory = nullptr;
         }
 
         bool IsOpen() const
@@ -42,7 +47,7 @@ namespace SDG::FileSys
      * e.g. "path/to/root/".
      * On Mac, this points to the app's Resource folder.
      */
-    string GetBasePath();
+    [[nodiscard]] string GetBasePath();
 
 
     /**
@@ -50,7 +55,7 @@ namespace SDG::FileSys
      * @param path The file path to perform this function with
      * @return The filename (including extension)
      */
-    string GetFileName(const string &path);
+    [[nodiscard]] string GetFileName(const string &path);
 
 
     /**
@@ -59,7 +64,7 @@ namespace SDG::FileSys
      * @return The extension, not including the '.', or a blank string if
      * there is none.
      */
-    string GetExtension(const string &path);
+    [[nodiscard]] string GetExtension(const string &path);
 
 
     /**
@@ -67,12 +72,32 @@ namespace SDG::FileSys
      * @param path The path to append to the root directory.
      * @return The full appended path
      */
-    string MakePath(const string &path);
+    [[nodiscard]] string MakePath(const string &path);
 
     /**
-     * Decrypts a file and returns an RWops handle, or nullptr if it failed.
+     * Decrypts a file and returns an RWops wrapper, containing both ptr to data and SDL_RWops.
+     * Please make sure to call Free on RWopsMem object when you are done with the data.
      * @param path The path to the file relative to the executable's root dir.
-     * @return Handle to the file or nullptr if there was an error.
+     * @param oFileSize The length of the file bytes buffer to receive.
+     * @return RWopsMem, which is a container holding the allocated buffer and SDL_RWops *object.
      */
-    RWopsMem DecryptFile(const string &path, int64_t *oFileSize = nullptr);
+    [[nodiscard]] RWopsMem DecryptFile(const string &path, int64_t *oFileSize = nullptr);
+
+    /**
+     * Decrypts a file and returns an RWops wrapper, containing both ptr to data and SDL_RWops.
+     * Additionally, the buffer is appended with a null-terminator, making it a viable c-string.
+     * Please make sure to call Free on RWopsMem object when you are done with the data.
+     * @param path The path to the file relative to the executable's root dir.
+     * @param oStrLen length of the string of data (not counting the null terminator)
+     * @return RWopsMem, which is a container holding the allocated buffer and SDL_RWops *object.
+     */
+    [[nodiscard]] RWopsMem DecryptFileStr(const string &path, int64_t *oStrLen = nullptr);
+
+    /**
+     * Writes an encrypted file.
+     * @param path
+     * @param bytes
+     * @return
+     */
+    bool EncryptFile(const string &path, const string &key, const std::vector<char> &bytes);
 }

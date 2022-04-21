@@ -8,9 +8,9 @@
 
 void CryptoTest()
 {
-    auto efile = SDG::Encrypt("ghipwetvsadhhhhh127aghawy239gfhahj4",
-                              {'a', 'b', 'e', ' ', 'l', 'i', 'n', 'c', 'o', 'l', 'n', ' ', 'w', 'a', 's', ' ', 't', 'h',
-                               'e', ' ', 's', 'i', 'x', 't', 'e', 'e', 'n', 't', 'h', ' ', 'p'});
+    auto efile = SDG::Encrypt("ghipwet",
+                              {'f', 'o', 'r', ' ', 'G', 'o', 'd', ' ', 's', 'o', ' ', 'l', 'o', 'v', 'e', 'd', ' ',
+                               't', 'h', 'e', ' ', 'w', 'o', 'r', 'l', 'd', ' ', 't', 'h', 'a', 't'});
     std::cout << "Encrypted: \"";
     for (auto e : efile)
     {
@@ -18,22 +18,11 @@ void CryptoTest()
     }
     std::cout << "\"\n";
 
-    auto dfile = SDG::Decrypt("ghipwetvsadhhhhh127aghawy239gfhahj4", efile);
+    auto dfile = SDG::Decrypt("ghipwet", efile);
     std::cout << "Decrypted: \"";
     for (auto d : dfile)
     {
         std::cout << d;
     }
     std::cout << "\"\n";
-
-    SDG::RWopsMem io = SDG::FileSys::DecryptFile("assets/config");
-    SDG_Log("memory: {}", io.memory);
-    io.Free();
-
-    std::string title;
-    int width, height;
-    bool fullscreen;
-
-    //SDG::XMLReader::ParseGameConfig("assets/config", &title, &width, &height, &fullscreen);
-    //SDG_Log("results: title {} width {} height {} fullscreen {}", title, width, height, fullscreen);
 }

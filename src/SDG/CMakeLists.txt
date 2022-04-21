@@ -20,13 +20,14 @@ set(SDG_Engine_SRCS
     "Texture2D.h" 
     "Texture2D.cpp" 
     "Crypto.cpp"
-    "Crypto.h")
+    "Crypto.h" Math/Rand.cpp Math/Rand.h Math/Math.h Math.h Math/Vector2.h Exceptions/AssertionException.h Exceptions/XMLReaderException.h Exceptions/XMLReaderException.cpp Exceptions/AssertionException.cpp)
 
 add_library(SDG_Engine STATIC ${SDG_Engine_SRCS})
 
 
 # -----  Includes  ----------------------------------------------------
 target_include_directories(SDG_Engine PRIVATE
+        ${CMAKE_SOURCE_DIR}/src
         ${CMAKE_SOURCE_DIR}/lib/spdlog/include
         ${CMAKE_SOURCE_DIR}/lib/SDL/include
         ${CMAKE_SOURCE_DIR}/lib/sdl-gpu/include

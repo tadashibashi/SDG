@@ -58,21 +58,19 @@ bool LoadImage(const char *path, GPU_Image **out)
 int
 SDG::Game::Initialize()
 {
-    if (!SDL_WasInit(DefaultInitFlags))
-    {
-        if (SDL_Init(DefaultInitFlags) != 0)
-        {
-            SDG_Err("Problem initializing SDL2: {}", SDL_GetError());
-            return -1;
-        }
-    }
-
     int winWidth = 1920, winHeight = 1080;
     bool fullscreen = false;
     std::string title = "";
 
     // Get Window information from config file
-    XMLReader::ParseGameConfig("assets/config.xml", &title, &winWidth, &winHeight, &fullscreen);
+    try {
+        XMLReader::ParseGameConfig("assets/config", &title, &winWidth, &winHeight, &fullscreen);
+    }
+    catch(const std::exception &e)
+    {
+        return -1;
+    }
+
 
     GPU_Target *target = GPU_InitRenderer(RendererType, winWidth, winHeight, 0);
     if (!target)
@@ -142,10 +140,12 @@ SDG::Game::Render()
 
     //shader->SetVariable("resolution", {100, 100}, 2);
 
-    GPU_BlitScale(kirby->GetImage(), NULL, window, window->base_w/2, (window->base_h/2) + kirby->GetImage()->h * 0.1f * .5f, 0.1f, 0.1f);
+    GPU_BlitScale(kirby->GetImage(), nullptr, window, (float)window->base_w/2,
+            (window->base_h/2) + kirby->GetImage()->h * 0.1f * .5f, 0.1f, 0.1f);
 
     GPU_DeactivateShaderProgram();
-    GPU_BlitScale(kirby->GetImage(), NULL, window, window->base_w/2, window->base_h/2, 0.1f, 0.1f);
+    GPU_BlitScale(kirby->GetImage(), nullptr, window, (float)window->base_w/2,
+            window->base_h/2, 0.1f, 0.1f);
 
     GPU_Flip(window);
 }
@@ -153,13 +153,11 @@ SDG::Game::Render()
 void
 SDG::Game::Close()
 {
-
     delete shader; // temp test
     delete kirby;
 
     Input::Close();
     GPU_Quit();
-    SDL_Quit();
 }
 
 void

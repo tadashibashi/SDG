@@ -62,14 +62,14 @@ SDG::FileSys::DecryptFile(const string &path, int64_t *oFileSize)
     SDL_RWseek(io, 0, RW_SEEK_SET);
     fileData = (unsigned char *)malloc(fileSize);
 
-    size_t position = 0;
+    int position = 0;
     for (unsigned char *ptr = fileData, *end = fileData + fileSize; ptr != end; ++ptr)
     {
         unsigned char c;
         SDL_RWread(io, &c, 1, 1);
         unsigned char add = encryptionKey[position % encryptionKey.length()];
 
-        *ptr = (c - add + position);
+        *ptr = (unsigned char)(c - add + position);
 
         ++position;
     }

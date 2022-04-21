@@ -23,7 +23,7 @@ public:
         message += XMLDocument::ErrorIDToName(error);
     }
 
-    virtual const char *what() const noexcept override
+    const char *what() const noexcept override
     {
         return message.c_str();
     }
@@ -47,8 +47,20 @@ CheckResult(int result, const std::string &doing)
 static void
 OpenXML(const std::string &path, XMLDocument *outDoc)
 {
-    std::string fullPath = SDG::FileSys::MakePath(path);
-    CheckResult(outDoc->LoadFile(fullPath.c_str()), "loading file at " + fullPath);
+    int64_t size;
+    SDG::RWopsMem io = SDG::FileSys::DecryptFile(path, &size);
+    try {
+        SDG_Log("memory: {}", io.memory);
+        CheckResult(outDoc->Parse(reinterpret_cast<char *>(io.memory), size), "loading file at " + path);
+    }
+    catch(const std::exception &e)
+    {
+        SDG_Err("Exception while parsing Xml document ({}): {}", path, e.what());
+        io.Free();
+        throw e;
+    }
+
+    io.Free();
 }
 
 
@@ -56,7 +68,7 @@ bool
 SDG::XMLReader::ParseGameConfig(const std::string &path, std::string *title, int *width, int *height, bool *fullscreen)
 {
     // Retrieve the window element
-    XMLDocument doc; XMLElement *win = nullptr;
+    XMLDocument doc; XMLElement *win;
     {
         OpenXML(path, &doc);
 

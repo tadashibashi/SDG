@@ -1,5 +1,9 @@
 #pragma once
 #include <SDG/Crypto.h>
+#include <SDG/XMLReader.h>
+#include <SDG/FileSys.h>
+#include <SDG/Logging.h>
+
 #include <iostream>
 
 void CryptoTest()
@@ -22,4 +26,14 @@ void CryptoTest()
     }
     std::cout << "\"\n";
 
+    SDG::RWopsMem io = SDG::FileSys::DecryptFile("assets/config");
+    SDG_Log("memory: {}", io.memory);
+    io.Free();
+
+    std::string title;
+    int width, height;
+    bool fullscreen;
+
+    //SDG::XMLReader::ParseGameConfig("assets/config", &title, &width, &height, &fullscreen);
+    //SDG_Log("results: title {} width {} height {} fullscreen {}", title, width, height, fullscreen);
 }

@@ -5,6 +5,9 @@
 #include "Logging.h"
 #include "FileSys.h"
 
+#include "Platform.h"
+
+
 // Prepends shader version data depending on OpenGL or GLES.
 // This is needed to support particular graphics cards that require this heading data.
 // Code mainly from https://github.com/ryancheung/sdl2-gpu-with-imgui/blob/master/Main.cpp

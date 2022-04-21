@@ -35,3 +35,8 @@
 #if defined(DEBUG) || defined(_DEBUG)
     #define SDG_DEBUG 1
 #endif
+
+#ifndef SDG_TARGET_WINDOWS
+    // Please don't use the return value of strcpy
+    #define strcpy_s(dest, dsize, src) strcpy(dest, src)
+#endif

@@ -15,7 +15,6 @@ _DecryptFile(const string &path, bool nullTerminated, int64_t *oFileSize);
 
 // Cached base path to the executable.
 static const string basePath = SDL_GetBasePath();
-static string prefPath = basePath;
 static string appName;
 static string orgName;
 static const string encryptionKey = "john316";
@@ -52,6 +51,23 @@ SDG::FileSys::GetExtension(const string &path)
 }
 
 static const int RWopsErrorCode = -1;
+
+static string
+GetPrefPath()
+{
+    static string prefPath;
+    if (prefPath.empty())
+    {
+        char *tPrefPath = SDL_GetPrefPath(orgName.c_str(), appName.c_str());
+        prefPath = tPrefPath;
+        SDL_free(tPrefPath);
+    }
+
+    // There must be a returned path, or else writing is not available on this platform.
+    SDG_Assert(!prefPath.empty());
+
+    return prefPath;
+}
 
 
 SDL_RWops *
@@ -156,7 +172,7 @@ SDG::FileSys::DecryptFileStr(const string &path, int64_t *oFileSize)
 bool
 SDG::FileSys::EncryptFile(const string &path, const std::vector<char> &bytes)
 {
-    SDL_RWops *io = SDL_RWFromFile((prefPath + path).c_str(), "w+b");
+    SDL_RWops *io = SDL_RWFromFile((GetPrefPath() + path).c_str(), "w+b");
     if (!io)
     {
         SDG_Err("Problem opening file at ({}) for writing.", path);
@@ -179,7 +195,7 @@ SDG::FileSys::EncryptFile(const string &path, const std::vector<char> &bytes)
             return false;
         }
     }
-    SDG_Log("Wrote file to path: {}", prefPath + path);
+    SDG_Log("Wrote file to path: {}", GetPrefPath() + path);
     SDL_RWclose(io);
 
     return true;
@@ -188,11 +204,6 @@ SDG::FileSys::EncryptFile(const string &path, const std::vector<char> &bytes)
 void
 SDG::FileSys::SetAppInfo(const string &name, const string &org)
 {
-    char *tPrefPath = SDL_GetPrefPath(org.c_str(), name.c_str());
-    ::prefPath.copy(tPrefPath, strlen(tPrefPath));
-    SDG_Log("name {}, org {} => prefPath received: {} {}", name, org, prefPath, tPrefPath);
-    SDL_free(tPrefPath);
-
     ::appName = name;
     ::orgName = org;
 }

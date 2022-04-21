@@ -3,11 +3,13 @@
 //
 #pragma once
 #include <string>
+using std::string;
 
 namespace SDG
 {
     class XMLReader {
     public:
-        static bool ParseGameConfig(const std::string &path, std::string *title, int *width, int *height, bool *fullscreen);
+        static bool ParseGameConfig(const string &path, string *appName,
+                string *appOrg, string *title, int *width, int *height, bool *fullscreen);
     };
 }

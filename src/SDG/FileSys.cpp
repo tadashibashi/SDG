@@ -15,8 +15,10 @@ _DecryptFile(const string &path, bool nullTerminated, int64_t *oFileSize);
 
 // Cached base path to the executable.
 static const string basePath = SDL_GetBasePath();
+static string prefPath = basePath;
+static string appName;
+static string orgName;
 static const string encryptionKey = "john316";
-
 
 string
 SDG::FileSys::GetBasePath()
@@ -66,7 +68,7 @@ _LoadFile(const string &path, int64_t *oFileSize)
     if (SDL_RWseek(io, 0, RW_SEEK_END) == -1)
     {
         SDG_Err("Failure while seeking file ({}), cancelling file load: {}", path, SDL_GetError());
-        SDL_FreeRW(io);
+        SDL_RWclose(io);
         return nullptr;
     }
 
@@ -79,7 +81,7 @@ _LoadFile(const string &path, int64_t *oFileSize)
     if (SDL_RWseek(io, 0, RW_SEEK_SET) == -1)
     {
         SDG_Err("Failure while seeking file ({}), cancelling file load: {}", path, SDL_GetError());
-        SDL_FreeRW(io);
+        SDL_RWclose(io);
         return nullptr;
     }
 
@@ -116,7 +118,7 @@ _DecryptFile(const string &path, bool nullTerminated, int64_t *oFileSize)
         *ptr ^= ~add;
         ++position;
     }
-    SDL_FreeRW(io);
+    SDL_RWclose(io);
 
     if (nullTerminated)
         fileData[fileSize] = '\0';
@@ -152,7 +154,45 @@ SDG::FileSys::DecryptFileStr(const string &path, int64_t *oFileSize)
 
 // TODO: Implement Encrypt File (saving files)
 bool
-SDG::FileSys::EncryptFile(const string &path, const string &key, const std::vector<char> &bytes)
+SDG::FileSys::EncryptFile(const string &path, const std::vector<char> &bytes)
 {
-    return false;
+    SDL_RWops *io = SDL_RWFromFile((prefPath + path).c_str(), "w+b");
+    if (!io)
+    {
+        SDG_Err("Problem opening file at ({}) for writing.", path);
+        return false;
+    }
+
+    // Encrypt file
+    int bytesRead = 0;
+    for(char byte : bytes)
+    {
+        unsigned char c = byte;
+        unsigned char add = encryptionKey[bytesRead % encryptionKey.length()];
+        c ^= ~add;
+        c = (unsigned char)(c + add - bytesRead);
+        size_t bytesWritten = io->write(io, &c, 1, 1);
+
+        if (bytesWritten == 0)
+        {
+            SDG_Err("Error while writing file ({}): {}", path, SDL_GetError());
+            return false;
+        }
+    }
+    SDG_Log("Wrote file to path: {}", prefPath + path);
+    SDL_RWclose(io);
+
+    return true;
+}
+
+void
+SDG::FileSys::SetAppInfo(const string &name, const string &org)
+{
+    char *tPrefPath = SDL_GetPrefPath(org.c_str(), name.c_str());
+    ::prefPath.copy(tPrefPath, strlen(tPrefPath));
+    SDG_Log("name {}, org {} => prefPath received: {} {}", name, org, prefPath, tPrefPath);
+    SDL_free(tPrefPath);
+
+    ::appName = name;
+    ::orgName = org;
 }

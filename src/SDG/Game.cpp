@@ -12,10 +12,13 @@
 #include "Input.h"
 #include "XMLReader.h"
 #include "Texture2D.h"
+#include <SDG/FileSys.h>
+
 
 #include "Shader.h"
 
 using namespace tinyxml2;
+using std::string;
 
 #if defined (SDG_TARGET_HTML5) || defined (SDG_TARGET_ANDROID) || defined (SDG_TARGET_IPHONE)
     const GPU_RendererEnum RendererType = GPU_RENDERER_GLES_2;
@@ -39,16 +42,20 @@ SDG::Game::Initialize()
 {
     int winWidth = 1920, winHeight = 1080;
     bool fullscreen = false;
-    std::string title = "";
+    string appName;
+    string appOrg;
+    string title = "";
 
     // Get Window information from config file
     try {
-        XMLReader::ParseGameConfig("assets/config", &title, &winWidth, &winHeight, &fullscreen);
+        XMLReader::ParseGameConfig("assets/config", &appName, &appOrg, &title, &winWidth, &winHeight, &fullscreen);
     }
     catch(const std::exception &e)
     {
         return -1;
     }
+
+    FileSys::SetAppInfo(appName, appOrg);
 
 
     GPU_Target *target = GPU_InitRenderer(RendererType, winWidth, winHeight, 0);
@@ -115,11 +122,16 @@ SDG::Game::ProcessInput()
 void
 SDG::Game::Update()
 {
-    SDG_Assert(Input::KeyRelease(Key::A));
     if (Input::KeyPressed(Key::Escape))
         Exit();
     // TODO: Test GPU_Camera
     // TODO: Set Input Key Enum to scancode values
+
+    if (Input::KeyPressed(Key::S) && Input::KeyPress(Key::V))
+    {
+        // Save the game!!
+        FileSys::EncryptFile("game1.sav", {'m', 'y', ' ', 's', 'a', 'v', 'e'});
+    }
 }
 
 void

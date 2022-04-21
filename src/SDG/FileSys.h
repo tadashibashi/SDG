@@ -10,6 +10,7 @@
 #include <SDL_rwops.h>
 
 using std::string;
+using std::vector;
 
 namespace SDG
 {
@@ -24,7 +25,7 @@ namespace SDG
 
         void Free()
         {
-            SDL_FreeRW(rwops);
+            SDL_RWclose(rwops);
             free(memory);
             rwops = nullptr;
             memory = nullptr;
@@ -99,5 +100,7 @@ namespace SDG::FileSys
      * @param bytes The file bytes to write.
      * @return Whether or not the file write succeeded
      */
-    bool EncryptFile(const string &path, const string &key, const std::vector<char> &bytes);
+    bool EncryptFile(const string &path, const vector<char> &bytes);
+
+    void SetAppInfo(const string &appName, const string &org);
 }

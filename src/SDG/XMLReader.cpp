@@ -50,7 +50,6 @@ OpenXML(const std::string &path, XMLDocument *outDoc)
     int64_t size;
     SDG::RWopsMem io = SDG::FileSys::DecryptFileStr(path);
     try {
-        SDG_Log("memory: {}", io.memory);
         CheckResult(outDoc->Parse(reinterpret_cast<char *>(io.memory)), "loading file at " + path);
     }
     catch(const std::exception &e)

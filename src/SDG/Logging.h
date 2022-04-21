@@ -10,16 +10,21 @@
     #undef SPDLOG_HEADER_ONLY
 #endif
 #include <spdlog/spdlog.h>
+#include <string>
 
-spdlog::logger *GetConsole();
-
-#define SDG_Log(...) GetConsole()->info(__VA_ARGS__)
-#define SDG_Err(...) GetConsole()->error(__VA_ARGS__)
-#define SDG_Warn(...) GetConsole()->warn(__VA_ARGS__)
+namespace SDG::Logging
+{
+    spdlog::logger *GetConsole();
+    void AssertImpl(bool statement, const std::string &statementStr, const char *file, int line, const char *func);
+}
+#define SDG_Log(...) SDG::Logging::GetConsole()->info(__VA_ARGS__)
+#define SDG_Err(...) SDG::Logging::GetConsole()->error(__VA_ARGS__)
+#define SDG_Warn(...) SDG::Logging::GetConsole()->warn(__VA_ARGS__)
+#define SDG_Assert(statement) (SDG::Logging::AssertImpl(statement, #statement, __FILE__ , __LINE__, __func__))
 #else
 
 #define SDG_Log(...)
 #define SDG_Err(...)
 #define SDG_Warn(...)
-
+#define SDG_Assert(statement, message)
 #endif

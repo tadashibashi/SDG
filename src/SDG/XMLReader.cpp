@@ -5,7 +5,7 @@
 #include "FileSys.h"
 #include <tinyxml2.h>
 #include "Logging.h"
-#include <exception>
+#include <SDG/Exceptions/XMLReaderException.h>
 
 using namespace tinyxml2;
 
@@ -14,29 +14,6 @@ CheckResult(int result, const std::string &doing);
 
 static void
 OpenXML(const std::string &path, XMLDocument *outDoc);
-
-class XMLReaderException : public std::exception
-{
-
-
-public:
-    XMLReaderException(const std::string &doing, XMLError error)
-    {
-        message = "XMLReaderException occurred while " + doing
-                  + ": ";
-        message += XMLDocument::ErrorIDToName(error);
-    }
-
-    const char *what() const noexcept override
-    {
-        return message.c_str();
-    }
-
-
-private:
-    std::string message;
-
-};
 
 bool
 SDG::XMLReader::ParseGameConfig(const std::string &path, std::string *title, int *width, int *height, bool *fullscreen)
@@ -85,7 +62,7 @@ void
 CheckResult(int result, const std::string &doing)
 {
     if ((XMLError)result != XML_SUCCESS)
-        throw XMLReaderException(doing, (XMLError)result);
+        throw SDG::XMLReaderException(doing, (XMLError)result);
 }
 
 

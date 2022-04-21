@@ -5,6 +5,7 @@
 #include <SDL_gpu.h>
 #include <SDL.h>
 #include <tinyxml2.h>
+#include <SDG/Exceptions/AssertionException.h>
 
 #include "Platform.h"
 #include "Logging.h"
@@ -106,9 +107,17 @@ SDG::Game::~Game()
 void
 SDG::Game::RunOneFrame()
 {
-    ProcessInput();
-    Update();
-    Render();
+    try {
+        ProcessInput();
+        Update();
+        Render();
+    }
+    catch(const AssertionException &e)
+    {
+        SDG_Err("{}", e.what());
+        Exit();
+    }
+
 }
 
 void
@@ -128,7 +137,8 @@ SDG::Game::ProcessInput()
 void
 SDG::Game::Update()
 {
-    if (Input::KeyPressed(SDL_SCANCODE_ESCAPE))
+    SDG_Assert(Input::KeyRelease(Key::A));
+    if (Input::KeyPressed(Key::Escape))
         Exit();
 }
 

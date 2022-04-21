@@ -9,7 +9,11 @@
 
 using namespace tinyxml2;
 
+static void
+CheckResult(int result, const std::string &doing);
 
+static void
+OpenXML(const std::string &path, XMLDocument *outDoc);
 
 class XMLReaderException : public std::exception
 {
@@ -33,35 +37,6 @@ private:
     std::string message;
 
 };
-
-
-// Check XMLError; throw exception if a problem occurred.
-void
-CheckResult(int result, const std::string &doing)
-{
-    if ((XMLError)result != XML_SUCCESS)
-        throw XMLReaderException(doing, (XMLError)result);
-}
-
-
-static void
-OpenXML(const std::string &path, XMLDocument *outDoc)
-{
-    int64_t size;
-    SDG::RWopsMem io = SDG::FileSys::DecryptFileStr(path);
-    try {
-        CheckResult(outDoc->Parse(reinterpret_cast<char *>(io.memory)), "loading file at " + path);
-    }
-    catch(const std::exception &e)
-    {
-        SDG_Err("Exception while parsing Xml document ({}): {}", path, e.what());
-        io.Free();
-        throw e;
-    }
-
-    io.Free();
-}
-
 
 bool
 SDG::XMLReader::ParseGameConfig(const std::string &path, std::string *title, int *width, int *height, bool *fullscreen)
@@ -102,4 +77,32 @@ SDG::XMLReader::ParseGameConfig(const std::string &path, std::string *title, int
     *height = tHeight;
     *fullscreen = tFullscreen;
     return true;
+}
+
+// ======= Static helper function implementation =================================================
+// Check XMLError; throw exception if a problem occurred.
+void
+CheckResult(int result, const std::string &doing)
+{
+    if ((XMLError)result != XML_SUCCESS)
+        throw XMLReaderException(doing, (XMLError)result);
+}
+
+
+void
+OpenXML(const std::string &path, XMLDocument *outDoc)
+{
+    int64_t size;
+    SDG::RWopsMem io = SDG::FileSys::DecryptFileStr(path);
+    try {
+        CheckResult(outDoc->Parse(reinterpret_cast<char *>(io.memory)), "loading file at " + path);
+    }
+    catch(const std::exception &e)
+    {
+        SDG_Err("Exception while parsing Xml document ({}): {}", path, e.what());
+        io.Free();
+        throw e;
+    }
+
+    io.Free();
 }

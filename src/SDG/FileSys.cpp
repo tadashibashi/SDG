@@ -17,11 +17,13 @@ _DecryptFile(const string &path, bool nullTerminated, int64_t *oFileSize);
 static const string basePath = SDL_GetBasePath();
 static const string encryptionKey = "john316";
 
+
 string
 SDG::FileSys::GetBasePath()
 {
     return basePath;
 }
+
 
 string
 SDG::FileSys::MakePath(const string &path)
@@ -29,12 +31,14 @@ SDG::FileSys::MakePath(const string &path)
     return basePath + path;
 }
 
+
 string
 SDG::FileSys::GetFileName(const string &path)
 {
     auto pos = path.find_last_of('/');
     return (pos == string::npos) ? path : path.substr(pos + 1);
 }
+
 
 string
 SDG::FileSys::GetExtension(const string &path)
@@ -85,6 +89,7 @@ _LoadFile(const string &path, int64_t *oFileSize)
     return io;
 }
 
+
 // private helper to load / decrypt a file
 SDG::RWopsMem
 _DecryptFile(const string &path, bool nullTerminated, int64_t *oFileSize)
@@ -131,14 +136,23 @@ _DecryptFile(const string &path, bool nullTerminated, int64_t *oFileSize)
     return returnThis;
 }
 
+
 SDG::RWopsMem
 SDG::FileSys::DecryptFile(const string &path, int64_t *oFileSize)
 {
     return _DecryptFile(path, false, oFileSize);
 }
 
+
 SDG::RWopsMem
 SDG::FileSys::DecryptFileStr(const string &path, int64_t *oFileSize)
 {
     return _DecryptFile(path, true, oFileSize);
+}
+
+// TODO: Implement Encrypt File (saving files)
+bool
+SDG::FileSys::EncryptFile(const string &path, const string &key, const std::vector<char> &bytes)
+{
+    return false;
 }

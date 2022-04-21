@@ -95,9 +95,9 @@ namespace SDG::FileSys
 
     /**
      * Writes an encrypted file.
-     * @param path
-     * @param bytes
-     * @return
+     * @param path Path relative to the executable root directory
+     * @param bytes The file bytes to write.
+     * @return Whether or not the file write succeeded
      */
     bool EncryptFile(const string &path, const string &key, const std::vector<char> &bytes);
 }

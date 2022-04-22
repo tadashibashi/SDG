@@ -1,26 +1,40 @@
 # [ SDG_engine ] ====================================================
 # ----- Sources -----------------------------------------------------
 set(SDG_Engine_SRCS
-    "Shader.cpp"
-    "Shader.h" 
-    "Game.cpp" 
-    "Game.h" 
-    "Platform.h" 
-    "Logging.cpp" 
-    "FileSys.cpp" 
-    "FileSys.h" 
-    "XMLReader.cpp" 
-    "XMLReader.h" 
-    "Scene.cpp" 
-    "Scene.h" 
-    "Input.cpp" 
-    "Input.h" 
-    "ContentMgr.cpp" 
-    "ContentMgr.h"
-    "Texture2D.h" 
-    "Texture2D.cpp" 
-    "Crypto.cpp"
-    "Crypto.h" Math/Rand.cpp Math/Rand.h Math/Math.h Math.h Math/Vector2.h Exceptions/AssertionException.h Exceptions/XMLReaderException.h Exceptions/XMLReaderException.cpp Exceptions/AssertionException.cpp)
+        "Shader.cpp"
+        "Shader.h"
+        "Game.cpp"
+        "Game.h"
+        "Platform.h"
+        "Logging.cpp"
+        "FileSys.cpp"
+        "FileSys.h"
+        "XMLReader.cpp"
+        "XMLReader.h"
+        "Scene.cpp"
+        "Scene.h"
+        "Input.h"
+        "Input/Input.cpp"
+        "Input/Input.h"
+        "Input/Key.h"
+        "Input/Keyboard.h"
+        "Input/Keyboard.cpp"
+        "Input/InputComponent.h"
+        "ContentMgr.cpp"
+        "ContentMgr.h"
+        "Texture2D.h"
+        "Texture2D.cpp"
+        "Crypto.cpp"
+        "Crypto.h"
+        Math/Rand.cpp
+        Math/Rand.h
+        Math/Math.h
+        Math.h
+        Math/Vector2.h
+        Exceptions/AssertionException.h
+        Exceptions/XMLReaderException.h
+        Exceptions/XMLReaderException.cpp
+        Exceptions/AssertionException.cpp)
 
 add_library(SDG_Engine STATIC ${SDG_Engine_SRCS})
 

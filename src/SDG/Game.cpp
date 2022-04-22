@@ -108,6 +108,7 @@ SDG::Game::RunOneFrame()
 void
 SDG::Game::ProcessInput()
 {
+    // Called before events are pumped to update all internal last* variables.
     Input::Update();
 
     // Event polling
@@ -132,6 +133,8 @@ SDG::Game::Update()
         // Save the game!!
         FileSys::EncryptFile("game1.sav", {'m', 'y', ' ', 's', 'a', 'v', 'e'});
     }
+
+
 }
 
 void

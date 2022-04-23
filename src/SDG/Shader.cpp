@@ -22,7 +22,7 @@ LoadShader(GPU_ShaderEnum shaderType, const std::string &path)
     uint32_t shader;
 
     // Open the shader file
-    rwops = SDG::FileSys::DecryptFile(path, SDG::FileSys::DirectoryBase::Root, &fileSize);
+    rwops = SDG::FileSys::DecryptFile(path, SDG::FileSys::BaseDir::Root, &fileSize);
     if (!rwops.IsOpen())
     {
         // Open file error messages already handled in DecryptFile.

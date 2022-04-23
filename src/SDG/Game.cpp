@@ -126,12 +126,19 @@ SDG::Game::Update()
     if (Input::KeyPressed(Key::Escape))
         Exit();
     // TODO: Test GPU_Camera
-    // TODO: Set Input Key Enum to scancode values
 
     if (Input::KeyPressed(Key::S) && Input::KeyPress(Key::V))
     {
         // Save the game!!
         FileSys::EncryptFile("game1.sav", {'m', 'y', ' ', 's', 'a', 'v', 'e'});
+    }
+
+    if (Input::KeyPressed(Key::L) && Input::KeyPress(Key::V))
+    {
+        // Loaded the game!!
+        auto loadedSave = FileSys::DecryptFileStr("game1", FileSys::BaseDir::TitleContainer);
+        SDG_Log("Loaded save: \"{}\"", loadedSave.memory);
+        loadedSave.Free();
     }
 
 

@@ -34,7 +34,10 @@ set(SDG_Engine_SRCS
         Exceptions/AssertionException.h
         Exceptions/XMLReaderException.h
         Exceptions/XMLReaderException.cpp
-        Exceptions/AssertionException.cpp Events/Delegate.h Events.h)
+        Exceptions/AssertionException.cpp
+        Events/Delegate.h
+        Events.h
+        Graphics.h)
 
 add_library(SDG_Engine STATIC ${SDG_Engine_SRCS})
 
@@ -50,7 +53,7 @@ target_include_directories(SDG_Engine PRIVATE
 
 
 # ----- Libraries ---------------------------------------------------
-if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")                  # Debug
+if (DEBUG)                                                 # Debug
     target_compile_definitions(SDG_Engine PUBLIC DEBUG=1)
     set(CONFIG_LIBS spdlog)
 else()                                                     # Release
@@ -65,6 +68,13 @@ elseif(WIN32)                                              # Windows
     set(PLATFORM_LIBS opengl32)
 elseif(LINUX)
     set(PLATFORM_LIBS GL)
+endif()
+
+if (EMSCRIPTEN)
+    # we don't need to add SDL2 because it is set in the em++ linker args
+
+    set(CMAKE_CXX_FLAGS "-Os")
+    set(CMAKE_EXE_LINKER_FLAGS "-sUSE_WEBGL2=1 -sWASM=2")
 endif()
 
 set (SDG_Engine_LIBS

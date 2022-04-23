@@ -9,3 +9,6 @@ target_include_directories(SDG_Tests PRIVATE ${CMAKE_SOURCE_DIR}/src)
 # Set up content pipeline
 include(${CMAKE_SOURCE_DIR}/cmake/SDG_AddContentPipeline.cmake)
 AddContentPipeline(assets john316)
+
+set(CMAKE_CXX_FLAGS "-Os")
+set(CMAKE_EXE_LINKER_FLAGS "-sUSE_WEBGL2=1 -sWASM=2 -sUSE_ZLIB -sMAX_WEBGL_VERSION=2 -sLLD_REPORT_UNDEFINED")

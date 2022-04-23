@@ -2,7 +2,7 @@
 // Created by Aaron Ishibashi on 4/15/22.
 //
 #include "Game.h"
-#include <SDL_gpu.h>
+#include <SDG/Graphics.h>
 #include <SDL.h>
 #include <tinyxml2.h>
 #include <SDG/Exceptions/AssertionException.h>

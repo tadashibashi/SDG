@@ -3,6 +3,7 @@ project(SDG_Engine)
 
 set(CMAKE_CXX_STANDARD 17)
 
+
 # Build all targets into one directory
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
@@ -10,6 +11,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
     set(LINUX 1)
+endif()
+
+if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+    set(DEBUG 1)
 endif()
 
 add_subdirectory(src)

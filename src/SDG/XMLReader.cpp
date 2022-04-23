@@ -13,7 +13,7 @@ static void
 CheckResult(int result, const std::string &doing);
 
 static void
-OpenXML(const std::string &path, XMLDocument *outDoc);
+OpenXML(const std::string &path, SDG::FileSys::DirectoryBase base, XMLDocument *outDoc);
 
 bool
 SDG::XMLReader::ParseGameConfig(const string &path, string *appName, string *appOrg,
@@ -22,7 +22,7 @@ SDG::XMLReader::ParseGameConfig(const string &path, string *appName, string *app
     // Retrieve the window element
     XMLDocument doc; XMLElement *root, *win, *app;
     {
-        OpenXML(path, &doc);
+        OpenXML(path, FileSys::DirectoryBase::Root, &doc);
 
         root = doc.RootElement();
         if (!root)
@@ -87,9 +87,9 @@ CheckResult(int result, const std::string &doing)
 
 
 void
-OpenXML(const std::string &path, XMLDocument *outDoc)
+OpenXML(const std::string &path, SDG::FileSys::DirectoryBase base, XMLDocument *outDoc)
 {
-    SDG::RWopsMem io = SDG::FileSys::DecryptFileStr(path);
+    SDG::RWopsMem io = SDG::FileSys::DecryptFileStr(path, base);
     try {
         CheckResult(outDoc->Parse(reinterpret_cast<char *>(io.memory)), "loading file at " + path);
     }

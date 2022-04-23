@@ -13,8 +13,11 @@ _LoadFile(const string &path, int64_t *oFileSize);
 static SDG::RWopsMem
 _DecryptFile(const string &path, bool nullTerminated, int64_t *oFileSize);
 
+static string
+GetPrefPath();
+
 // Cached base path to the executable.
-static const string basePath = SDL_GetBasePath();
+
 static string appName;
 static string orgName;
 static const string encryptionKey = "john316";
@@ -22,14 +25,32 @@ static const string encryptionKey = "john316";
 string
 SDG::FileSys::GetBasePath()
 {
+    static string basePath;
+    if (basePath.empty())
+    {
+        char *temp = SDL_GetBasePath();
+        basePath = temp;
+        SDL_free(temp);
+    }
+
+    SDG_Assert(!basePath.empty());
+
     return basePath;
 }
 
 
 string
-SDG::FileSys::MakePath(const string &path)
+SDG::FileSys::MakePath(const string &path, DirectoryBase root)
 {
-    return basePath + path;
+    switch(root)
+    {
+        case DirectoryBase::None: return path;
+        case DirectoryBase::Root: return GetBasePath() + path;
+        case DirectoryBase::TitleContainer: return GetPrefPath() + path;
+        default:
+            SDG_Err("SDG::FileSys::MakePath: DirectoryBase was not recognized.");
+            return string();
+    }
 }
 
 
@@ -52,7 +73,7 @@ SDG::FileSys::GetExtension(const string &path)
 
 static const int RWopsErrorCode = -1;
 
-static string
+string
 GetPrefPath()
 {
     static string prefPath;
@@ -110,10 +131,10 @@ _LoadFile(const string &path, int64_t *oFileSize)
 
 // private helper to load / decrypt a file
 SDG::RWopsMem
-_DecryptFile(const string &path, bool nullTerminated, int64_t *oFileSize)
+_DecryptFile(const string &path, SDG::FileSys::DirectoryBase base, bool nullTerminated, int64_t *oFileSize)
 {
     SDG::RWopsMem returnThis;
-    string fullPath = SDG::FileSys::MakePath(path).append(".sdgc");
+    string fullPath = SDG::FileSys::MakePath(path, base).append(".sdgc");
 
     int64_t fileSize;
     SDL_RWops *io = _LoadFile(fullPath, &fileSize);
@@ -121,7 +142,7 @@ _DecryptFile(const string &path, bool nullTerminated, int64_t *oFileSize)
         return returnThis;
 
     // Allocate buffer, and fill it with encrypted data
-    unsigned char *fileData = (unsigned char *)malloc(fileSize + (int)nullTerminated); // +1 for null terminator to make it a valid c-str
+    auto *fileData = (unsigned char *)malloc(fileSize + (int)nullTerminated); // +1 for null terminator to make it a valid c-str
 
     int position = 0;
     for (unsigned char *ptr = fileData, *end = fileData + fileSize; ptr != end; ++ptr)
@@ -156,22 +177,23 @@ _DecryptFile(const string &path, bool nullTerminated, int64_t *oFileSize)
 
 
 SDG::RWopsMem
-SDG::FileSys::DecryptFile(const string &path, int64_t *oFileSize)
+SDG::FileSys::DecryptFile(const string &path, DirectoryBase base, int64_t *oFileSize)
 {
-    return _DecryptFile(path, false, oFileSize);
+    return _DecryptFile(path, base, false, oFileSize);
 }
 
 
 SDG::RWopsMem
-SDG::FileSys::DecryptFileStr(const string &path, int64_t *oFileSize)
+SDG::FileSys::DecryptFileStr(const string &path, DirectoryBase base, int64_t *oFileSize)
 {
-    return _DecryptFile(path, true, oFileSize);
+    return _DecryptFile(path, base, true, oFileSize);
 }
 
-// TODO: Implement Encrypt File (saving files)
 bool
 SDG::FileSys::EncryptFile(const string &path, const std::vector<char> &bytes)
 {
+    // TODO: Implement saving backup of any preexisting file if there is an error during writing.
+
     SDL_RWops *io = SDL_RWFromFile((GetPrefPath() + path).c_str(), "w+b");
     if (!io)
     {

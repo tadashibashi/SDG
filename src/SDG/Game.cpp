@@ -164,6 +164,7 @@ SDG::Game::Close()
 
     Input::Close();
     GPU_Quit();
+    SDL_Quit();
 }
 
 void

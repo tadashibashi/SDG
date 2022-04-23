@@ -46,7 +46,6 @@ namespace SDG
 
 
     // TODO: Move all of this into a file loading class. LoadImage should then call this func.
-    static std::string encryptionKey = "john316";
     bool
     Texture2D::LoadImage(const std::string &path)
     {
@@ -54,7 +53,7 @@ namespace SDG
         Close();
 
         int64_t fileSize;
-        SDG::RWopsMem io = SDG::FileSys::DecryptFile(path, &fileSize);
+        SDG::RWopsMem io = SDG::FileSys::DecryptFile(path, FileSys::DirectoryBase::Root, &fileSize);
 
         GPU_Image *tempImage = GPU_LoadImage_RW(io.rwops, false);
         io.Free();

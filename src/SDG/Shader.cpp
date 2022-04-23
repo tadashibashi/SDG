@@ -22,7 +22,7 @@ LoadShader(GPU_ShaderEnum shaderType, const std::string &path)
     uint32_t shader;
 
     // Open the shader file
-    rwops = SDG::FileSys::DecryptFile(path, &fileSize);
+    rwops = SDG::FileSys::DecryptFile(path, SDG::FileSys::DirectoryBase::Root, &fileSize);
     if (!rwops.IsOpen())
     {
         // Open file error messages already handled in DecryptFile.
@@ -39,7 +39,7 @@ LoadShader(GPU_ShaderEnum shaderType, const std::string &path)
             header = "#version 100\nprecision mediump int;\nprecision mediump float;\n";
             break;
         default:
-            SDG_Err("Shader language currently not supported.");
+            SDG_Err("Shader language currently unsupported.");
             return 0;
     }
 

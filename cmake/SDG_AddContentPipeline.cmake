@@ -1,4 +1,6 @@
 # Sets up content pipeline program to build
+# @param AssetDir the relative path to the asset directory from the current CMakeLists's folder
+# @param Key encryption key
 function(AddContentPipeline AssetDir Key)
     add_custom_target("${PROJECT_NAME}_Content"
             COMMAND "${CMAKE_BINARY_DIR}/SDG_ContentPipe"

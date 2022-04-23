@@ -51,7 +51,7 @@ target_include_directories(SDG_Engine PRIVATE
 
 # ----- Libraries ---------------------------------------------------
 if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")                  # Debug
-    target_compile_definitions(SDG_Engine PRIVATE DEBUG=1)
+    target_compile_definitions(SDG_Engine PUBLIC DEBUG=1)
     set(CONFIG_LIBS spdlog)
 else()                                                     # Release
     set(CONFIG_LIBS)

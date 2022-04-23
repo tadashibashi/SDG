@@ -14,7 +14,7 @@ namespace SDG
         Keyboard();
         ~Keyboard();
 
-
+        static const char *GetKeyName(Key key);
         bool IsKeyUp(Key key) const;
         bool IsKeyDown(Key key) const;
         bool JustPressed(Key key) const;

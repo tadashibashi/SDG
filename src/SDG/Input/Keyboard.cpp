@@ -67,7 +67,7 @@ SDG::Keyboard::InitializeImpl()
         {
             Scancodes[i] = KeyToScanCode((Key)i);
             SDG_Assert(Scancodes[i] < SDL_NUM_SCANCODES);
-            SDG_Log("{}", SDL_GetScancodeName((SDL_Scancode)Scancodes[i]));
+            SDG_Log(GetKeyName((Key)i));
         }
     }
 
@@ -146,6 +146,11 @@ SDG::Keyboard::CloseImpl()
         free(mImpl->lastState);
         mImpl->lastState = nullptr;
     }
+}
+
+const char *SDG::Keyboard::GetKeyName(Key key)
+{
+    return SDL_GetKeyName(SDL_GetKeyFromScancode((SDL_Scancode)Scancodes[(int)key]));
 }
 
 // ====== Static Implementations ======

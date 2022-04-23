@@ -26,5 +26,5 @@ namespace SDG::Logging
 #define SDG_Log(...)
 #define SDG_Err(...)
 #define SDG_Warn(...)
-#define SDG_Assert(statement, message)
+#define SDG_Assert(statement)
 #endif

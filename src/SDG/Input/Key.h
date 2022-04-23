@@ -1,11 +1,10 @@
-//
-// Created by aishi on 4/21/2022.
-//
 #pragma once
 
 namespace SDG
 {
-    // Keyboard Keys.
+    /**
+     * An enumeration representing Keyboard Key values used in Keyboard check functions.
+     */
     enum class Key : unsigned {
         A = 0, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
         Zero, One, Two, Three, Four, Five, Six, Seven, Eight, Nine,
@@ -48,11 +47,12 @@ namespace SDG
         AudioNext, AudioPrev, AudioStop, AudioPlay, AudioMute, MediaSelect, Www, Mail, Calculator, Computer,
         BrowserBack, BrowserBookmarks, BrowserForward, BrowserHome, BrowserRefresh, BrowserSearch, BrowserStop,
 
-        // Keys Christian Walther added for Mac
         BrightnessDown, BrightnessUp, DisplaySwitch, KeyboardIllumToggle, KeyboardIllumDown, KeyboardIllumUp,
         Eject, Sleep,
         App1, App2,
         AudioRewind, AudioFastForward,
-        _MaxCount // used to determine the size of this enum. It must always be the last member.
+
+        // Used to determine the size of this enum. It must always be the last member.
+        _MaxCount
     };
 }

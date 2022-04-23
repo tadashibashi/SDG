@@ -34,7 +34,7 @@ set(SDG_Engine_SRCS
         Exceptions/AssertionException.h
         Exceptions/XMLReaderException.h
         Exceptions/XMLReaderException.cpp
-        Exceptions/AssertionException.cpp)
+        Exceptions/AssertionException.cpp Events/Delegate.h Events.h)
 
 add_library(SDG_Engine STATIC ${SDG_Engine_SRCS})
 

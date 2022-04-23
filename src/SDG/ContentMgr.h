@@ -17,8 +17,19 @@ namespace SDG
          * @return
          */
         const Texture2D *LoadTexture(const std::string &path);
-        
+
+        /**
+         * Unloads the Texture2D from memory. Unloaded texture ptr/references are valid for the
+         * the lifecycle of the app, but only the inner ptr will be freed and null.
+         * @param path
+         */
         void UnloadTexture(const std::string &path);
+
+        /**
+         * Unloads the Texture2D from memory. Unloaded texture ptr/references are valid for the
+         * the lifecycle of the app, but only the inner ptr will be freed and null.
+         * @param path
+         */
         void UnloadTexture(Texture2D *texture);
 
 

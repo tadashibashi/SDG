@@ -1,6 +1,3 @@
-//
-// Created by Aaron Ishibashi on 4/16/22.
-//
 #include "ContentMgr.h"
 #include <SDL_gpu.h>
 #include "FileSys.h"
@@ -18,9 +15,7 @@ SDG::ContentMgr::UnloadTextures()
         for (auto &[k, v] : textures)
         {
              v->Close();
-             delete v;
         }
-        textures.clear();
     }
 }
 
@@ -68,4 +63,3 @@ SDG::ContentMgr::UnloadTexture(Texture2D *texture)
 {
     UnloadTexture(texture->GetPath());
 }
-

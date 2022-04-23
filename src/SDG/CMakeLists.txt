@@ -63,6 +63,8 @@ if (APPLE)                                                 # Mac
     set(PLATFORM_LIBS "-framework OpenGL")
 elseif(WIN32)                                              # Windows
     set(PLATFORM_LIBS opengl32)
+elseif(LINUX)
+    set(PLATFORM_LIBS GL)
 endif()
 
 set (SDG_Engine_LIBS

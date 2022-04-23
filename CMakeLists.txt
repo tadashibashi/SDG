@@ -8,6 +8,10 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
+if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
+    set(LINUX 1)
+endif()
+
 add_subdirectory(src)
 add_definitions(-w)
 add_subdirectory(lib/SDL)

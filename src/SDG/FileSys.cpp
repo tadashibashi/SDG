@@ -134,7 +134,7 @@ SDG::RWopsMem
 _DecryptFile(const string &path, SDG::FileSys::BaseDir base, bool nullTerminated, int64_t *oFileSize)
 {
     SDG::RWopsMem returnThis;
-    string fullPath = SDG::FileSys::MakePath(path, base).append(".sdgc");
+    string fullPath = SDG::FileSys::MakePath(path, base);
 
     int64_t fileSize;
     SDL_RWops *io = _LoadFile(fullPath, &fileSize);
@@ -190,7 +190,7 @@ SDG::FileSys::DecryptFileStr(const string &path, BaseDir base, int64_t *oFileSiz
 }
 
 bool
-SDG::FileSys::EncryptFile(const string &path, const std::vector<char> &bytes)
+SDG::FileSys::EncryptFile(const string &path, const std::vector<unsigned char> &bytes)
 {
     // TODO: Implement saving backup of any preexisting file if there is an error during writing.
 
@@ -203,9 +203,8 @@ SDG::FileSys::EncryptFile(const string &path, const std::vector<char> &bytes)
 
     // Encrypt file
     int bytesRead = 0;
-    for(char byte : bytes)
+    for(unsigned char c : bytes)
     {
-        unsigned char c = byte;
         unsigned char add = encryptionKey[bytesRead % encryptionKey.length()];
         c ^= ~add;
         c = (unsigned char)(c + add - bytesRead);
@@ -216,6 +215,8 @@ SDG::FileSys::EncryptFile(const string &path, const std::vector<char> &bytes)
             SDG_Err("Error while writing file ({}): {}", path, SDL_GetError());
             return false;
         }
+
+        ++bytesRead;
     }
     SDG_Log("Wrote file to path: {}", GetPrefPath() + path);
     SDL_RWclose(io);
@@ -224,8 +225,8 @@ SDG::FileSys::EncryptFile(const string &path, const std::vector<char> &bytes)
 }
 
 void
-SDG::FileSys::SetAppInfo(const string &name, const string &org)
+SDG::FileSys::Initialize(const string &appName, const string &org)
 {
-    ::appName = name;
+    ::appName = appName;
     ::orgName = org;
 }

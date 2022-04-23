@@ -48,14 +48,13 @@ SDG::Game::Initialize()
 
     // Get Window information from config file
     try {
-        XMLReader::ParseGameConfig("assets/config", &appName, &appOrg, &title, &winWidth, &winHeight, &fullscreen);
+        XMLReader::ParseGameConfig("assets/config.sdgc", &appName, &appOrg, &title, &winWidth, &winHeight, &fullscreen);
     }
     catch(const std::exception &e)
     {
         return -1;
     }
-
-    FileSys::SetAppInfo(appName, appOrg);
+    FileSys::Initialize(appName, appOrg);
 
 
     GPU_Target *target = GPU_InitRenderer(RendererType, winWidth, winHeight, 0);
@@ -74,9 +73,9 @@ SDG::Game::Initialize()
     Input::Initialize();
 
     // Temp content
-    kirby = new Texture2D("assets/textures/kirby");
+    kirby = new Texture2D("assets/textures/kirby.sdgc");
     shader = new Shader;
-    shader->Compile("assets/shaders/v1", "assets/shaders/f1");
+    shader->Compile("assets/shaders/v1.sdgc", "assets/shaders/f1.sdgc");
 
 
     window = target;
@@ -136,7 +135,7 @@ SDG::Game::Update()
     if (Input::KeyPressed(Key::L) && Input::KeyPress(Key::V))
     {
         // Loaded the game!!
-        auto loadedSave = FileSys::DecryptFileStr("game1", FileSys::BaseDir::TitleContainer);
+        auto loadedSave = FileSys::DecryptFileStr("game1.sav", FileSys::BaseDir::TitleContainer);
         SDG_Log("Loaded save: \"{}\"", loadedSave.memory);
         loadedSave.Free();
     }

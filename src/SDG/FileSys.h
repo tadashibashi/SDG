@@ -112,7 +112,7 @@ namespace SDG::FileSys
      * @param bytes The file bytes to write.
      * @return Whether or not the file write succeeded
      */
-    bool EncryptFile(const string &path, const vector<char> &bytes);
+    bool EncryptFile(const string &path, const vector<unsigned char> &bytes);
 
-    void SetAppInfo(const string &appName, const string &org);
+    void Initialize(const string &appName, const string &org);
 }

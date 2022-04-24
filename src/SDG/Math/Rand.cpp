@@ -12,14 +12,9 @@ namespace SDG
     static std::mt19937 mt(randDevice());
     static std::uniform_real_distribution<float> distribution(0.0, 1.0);
 
-    float Rand::Next()
-    {
-        return distribution(mt);
-    }
-
     float Rand::Next(float n)
     {
-        return Next() * n;
+        return distribution(mt) * n;
     }
 
     int Rand::INext(int n)

@@ -14,8 +14,7 @@ namespace SDG
     // Static class for randomization functions
     class Rand {
     public:
-        static float Next();
-        static float Next(float n);
+        static float Next(float n = 1.f);
         static int INext(int n);
 
         static float Range(float low, float high);

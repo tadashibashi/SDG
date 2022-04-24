@@ -7,12 +7,15 @@
  * a function pointer to AddListener (and a corresponding object for member functions).
  * Listeners may be removed by a call to RemoveListener and passing the same pointer that was
  * previously added.
+ *
  * ===========================================================================*/
 #pragma once
 #include <any>
 #include <functional>
 #include <typeinfo>
 #include <vector>
+
+using std::any_cast;
 
 namespace SDG {
 
@@ -28,12 +31,20 @@ namespace SDG {
         // Class wrapping a Delegate's callback functions
         class FunctionWrapper {
         public:
+            FunctionWrapper() = delete;
+
+            // Used to wrap member function pointer
             template <typename T>
             FunctionWrapper(T *object, void (T::*func)(Args...)) :
-                    object(object), functionPtr(func), function([func, object](Args... args)->void { (object->*func)(args...); })
+                    object(object), functionPtr(func),
+                    function([func, object](Args... args)->void
+                        {
+                            (object->*func)(args...);
+                        })
             {
             }
 
+            // Used to wrap member function pointer
             explicit FunctionWrapper(void (*func)(Args...)) :
                     object(nullptr), functionPtr(func), function(func)
             {
@@ -45,42 +56,60 @@ namespace SDG {
                     function(args...);
             }
 
-            // ========== Equality Checks ==========
+            // ========== Signature Checks ==========
 
-            // Gets whether this is a Global or Member function.
+            // Returns whether this is a Global or Member function. Intended for debug use.
             FunctionType GetType() const
             {
                 return (object == nullptr) ? FunctionType::Global : FunctionType::Member;
             }
 
-            // Checks equality for a specific object and its member function
+            // Checks signature against an object ptr + member function
             template <typename T>
-            bool CheckID(T *object, std::any functionPtr) const
+            bool SignatureMatches(T *pObject, void (T::*pFunctionPtr)(Args...)) const
             {
-                return ((void *)object == this->object && functionPtr.type() == this->functionPtr.type()
-                        && std::any_cast<void(T::*)(Args...)>(functionPtr) == std::any_cast<void(T::*)(Args...)>(this->functionPtr));
+                return ((void *)pObject == object &&
+                        typeid(pFunctionPtr) == functionPtr.type() &&
+                        pFunctionPtr == any_cast<void(T::*)(Args...)>(functionPtr));
             }
 
             // Checks equality for a specific global function
-            bool CheckID(void(*func)(Args...)) const
+            bool SignatureMatches(void(*pFunctionPtr)(Args...)) const
             {
-                return (this->object == nullptr && this->functionPtr.type() == typeid(func) &&
-                        std::any_cast<void(*)(Args...)>(this->functionPtr) == func);
+                return (object == nullptr &&
+                        //functionPtr.type() == typeid(pFunctionPtr) &&
+                        any_cast<void(*)(Args...)>(functionPtr) == pFunctionPtr);
             }
 
             // Whether or not this FunctionWrapper is to be removed or not.
             bool toRemove{false};
         private:
-            void *object;
-            std::any functionPtr;
-            std::function<void(Args...)> function;
-
+            void *object; // the object to call the function on, if a member func is stored
+            std::any functionPtr; // any enables wrapper to store and compare different types of func ptrs for id
+            std::function<void(Args...)> function; // the function to call
         };
     public:
         // Gets the number of listeners currently attached to this Delegate.
         int Size()
         {
             return (int)functions.size();
+        }
+
+        // Removes all previously added listeners.
+        // Faster than individually removing each listener.
+        void Clear()
+        {
+            if (isCalling)
+            {
+                for (auto &f : functions)
+                    f.toRemove = true;
+
+                removeThisFrame = true;
+            }
+            else
+            {
+                functions.clear();
+            }
         }
 
         // Fires the callback to each subscribed listener
@@ -117,16 +146,18 @@ namespace SDG {
             functions.emplace_back(std::move(FunctionWrapper(func)));
         }
 
-        // Removes a member function listener for a particular object that was previously added.
+        // Removes an object + member function listener.
         template <typename T>
         void RemoveListener(T *object, void (T::*func)(Args...))
         {
+            // Find the listener
             auto it = std::find_if(functions.begin(), functions.end(),
                                    [object, func](auto &f)
                                    {
-                                       return f.CheckID(object, func);
+                                       return f.SignatureMatches(object, func);
                                    });
 
+            // If it exists, remove it
             if (it != functions.end())
             {
                 if (isCalling) // Delegate busy calling, flag for later removal
@@ -141,32 +172,29 @@ namespace SDG {
             }
         }
 
-        // Removes a global function listener that was previously added.
+        // Removes a global function listener.
         void RemoveListener(void (*func)(Args...))
         {
-            if (isCalling)
-            {
-                auto it = std::find_if(functions.begin(), functions.end(),
-                                       [func](auto &f)
-                                       {
-                                           return f.CheckID(func);
-                                       });
-                if (it != functions.end())
-                    it->toRemove = true;
+            auto it = std::find_if(functions.begin(), functions.end(),
+                                   [func](auto &f)
+                                   {
+                                       return f.SignatureMatches(func);
+                                   });
 
-                removeThisFrame = true;
-            }
-            else
+            if (it != functions.end())
             {
-                auto it = std::find_if(functions.begin(), functions.end(),
-                                       [func](auto &f)
-                                       {
-                                           return f.CheckID(func);
-                                       });
-                if (it != functions.end())
+                if (isCalling)
+                {
+                    it->toRemove = true;
+                    removeThisFrame = true;
+                }
+                else
+                {
                     functions.erase(it);
+                }
             }
         }
+
     private:
         // Processes removals after delegate has been fired.
         void ProcessRemovals()

@@ -2,9 +2,10 @@
 // Created by Aaron Ishibashi on 4/15/22.
 //
 #include "Game.h"
-#include <SDG/Graphics.h>
+
+// TODO: abstract SDL_gpu into a GraphicsDevice class
+#include <SDL_gpu.h>
 #include <SDL.h>
-#include <tinyxml2.h>
 #include <SDG/Exceptions/AssertionException.h>
 
 #include "Platform.h"
@@ -17,7 +18,6 @@
 
 #include "Shader.h"
 
-using namespace tinyxml2;
 using std::string;
 
 #if defined (SDG_TARGET_HTML5) || defined (SDG_TARGET_ANDROID) || defined (SDG_TARGET_IPHONE)
@@ -135,7 +135,7 @@ SDG::Game::Update()
     if (Input::KeyPressed(Key::L) && Input::KeyPress(Key::V))
     {
         // Loaded the game!!
-        auto loadedSave = FileSys::DecryptFileStr("game1.sav", FileSys::BaseDir::TitleContainer);
+        auto loadedSave = FileSys::DecryptFileStr("game1.sav", FileSys::Base::Pref);
         SDG_Log("Loaded save: \"{}\"", loadedSave.memory);
         loadedSave.Free();
     }

@@ -53,7 +53,7 @@ namespace SDG
         Close();
 
         int64_t fileSize;
-        SDG::RWopsMem io = SDG::FileSys::DecryptFile(path, FileSys::BaseDir::Root, &fileSize);
+        SDG::RWopsMem io = SDG::FileSys::DecryptFile(path, FileSys::Base::Root, &fileSize);
 
         GPU_Image *tempImage = GPU_LoadImage_RW(io.rwops, false);
         io.Free();

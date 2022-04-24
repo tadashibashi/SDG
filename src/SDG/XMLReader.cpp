@@ -13,7 +13,7 @@ static void
 CheckResult(int result, const std::string &doing);
 
 static void
-OpenXML(const std::string &path, SDG::FileSys::BaseDir base, XMLDocument *outDoc);
+OpenXML(const std::string &path, SDG::FileSys::Base base, XMLDocument *outDoc);
 
 bool
 SDG::XMLReader::ParseGameConfig(const string &path, string *appName, string *appOrg,
@@ -22,7 +22,7 @@ SDG::XMLReader::ParseGameConfig(const string &path, string *appName, string *app
     // Retrieve the window element
     XMLDocument doc; XMLElement *root, *win, *app;
     {
-        OpenXML(path, FileSys::BaseDir::Root, &doc);
+        OpenXML(path, FileSys::Base::Root, &doc);
 
         root = doc.RootElement();
         if (!root)
@@ -87,7 +87,7 @@ CheckResult(int result, const std::string &doing)
 
 
 void
-OpenXML(const std::string &path, SDG::FileSys::BaseDir base, XMLDocument *outDoc)
+OpenXML(const std::string &path, SDG::FileSys::Base base, XMLDocument *outDoc)
 {
     SDG::RWopsMem io = SDG::FileSys::DecryptFileStr(path, base);
     try {

@@ -40,13 +40,13 @@ SDG::FileSys::GetBasePath()
 
 
 string
-SDG::FileSys::MakePath(const string &path, BaseDir root)
+SDG::FileSys::MakePath(const string &path, Base root)
 {
     switch(root)
     {
-        case BaseDir::None: return path;
-        case BaseDir::Root: return GetBasePath() + path;
-        case BaseDir::TitleContainer: return GetPrefPath() + path;
+        case Base::None: return path;
+        case Base::Root: return GetBasePath() + path;
+        case Base::Pref: return GetPrefPath() + path;
         default:
             SDG_Err("SDG::FileSys::MakePath: DirectoryBase was not recognized.");
             return string();
@@ -131,7 +131,7 @@ _LoadFile(const string &path, int64_t *oFileSize)
 
 // private helper to load / decrypt a file
 SDG::RWopsMem
-_DecryptFile(const string &path, SDG::FileSys::BaseDir base, bool nullTerminated, int64_t *oFileSize)
+_DecryptFile(const string &path, SDG::FileSys::Base base, bool nullTerminated, int64_t *oFileSize)
 {
     SDG::RWopsMem returnThis;
     string fullPath = SDG::FileSys::MakePath(path, base);
@@ -177,14 +177,14 @@ _DecryptFile(const string &path, SDG::FileSys::BaseDir base, bool nullTerminated
 
 
 SDG::RWopsMem
-SDG::FileSys::DecryptFile(const string &path, BaseDir base, int64_t *oFileSize)
+SDG::FileSys::DecryptFile(const string &path, Base base, int64_t *oFileSize)
 {
     return _DecryptFile(path, base, false, oFileSize);
 }
 
 
 SDG::RWopsMem
-SDG::FileSys::DecryptFileStr(const string &path, BaseDir base, int64_t *oFileSize)
+SDG::FileSys::DecryptFileStr(const string &path, Base base, int64_t *oFileSize)
 {
     return _DecryptFile(path, base, true, oFileSize);
 }

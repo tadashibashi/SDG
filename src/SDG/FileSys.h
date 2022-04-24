@@ -46,13 +46,14 @@ namespace SDG::FileSys
     /**
      * Enumeration dictating which relative directory for certain functions to base off of.
      */
-    enum class BaseDir {
+    enum class Base {
         // Represents no directory to root from
         None,
         // The directory of the executable, or if Mac, the App's Resources sub-folder. Read-only.
+        // This is where "ROM", such as content is stored.
         Root,
-        // The readable and writable directory to store saves, user-data, etc.
-        TitleContainer
+        // The readable and writable directory to store saves, preferences, user-data, etc.
+        Pref
     };
 
     /**
@@ -85,7 +86,7 @@ namespace SDG::FileSys
      * @param path The path to append to the root directory.
      * @return The full appended path
      */
-    [[nodiscard]] string MakePath(const string &path, BaseDir base);
+    [[nodiscard]] string MakePath(const string &path, Base base);
 
     /**
      * Decrypts a file and returns an RWops wrapper, containing both ptr to data and SDL_RWops.
@@ -94,7 +95,7 @@ namespace SDG::FileSys
      * @param oFileSize The length of the file bytes buffer to receive.
      * @return RWopsMem, which is a container holding the allocated buffer and SDL_RWops *object.
      */
-    [[nodiscard]] RWopsMem DecryptFile(const string &path, BaseDir base, int64_t *oFileSize = nullptr);
+    [[nodiscard]] RWopsMem DecryptFile(const string &path, Base base, int64_t *oFileSize = nullptr);
 
     /**
      * Decrypts a file and returns an RWops wrapper, containing both ptr to data and SDL_RWops.
@@ -104,7 +105,7 @@ namespace SDG::FileSys
      * @param oStrLen length of the string of data (not counting the null terminator)
      * @return RWopsMem, which is a container holding the allocated buffer and SDL_RWops *object.
      */
-    [[nodiscard]] RWopsMem DecryptFileStr(const string &path, BaseDir base, int64_t *oStrLen = nullptr);
+    [[nodiscard]] RWopsMem DecryptFileStr(const string &path, Base base, int64_t *oStrLen = nullptr);
 
     /**
      * Writes an encrypted file.

@@ -4,6 +4,9 @@
 #include "DelegateTests.h"
 
 int main(int argc, char *argv[]) {
+
+
+
     SDG_Assert(SDG::Math::Lerp(0.0, 20.0, .5) == 10.0);
     CryptoTest();
     TestDelegate();

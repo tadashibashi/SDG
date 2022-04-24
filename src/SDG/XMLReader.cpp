@@ -4,7 +4,7 @@
 #include "XMLReader.h"
 #include "FileSys.h"
 #include <tinyxml2.h>
-#include "Logging.h"
+#include "Debug.h"
 #include <SDG/Exceptions/XMLReaderException.h>
 
 using namespace tinyxml2;

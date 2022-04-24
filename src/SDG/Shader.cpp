@@ -2,7 +2,7 @@
 // Created by Aaron Ishibashi on 4/13/22.
 //
 #include "Shader.h"
-#include "Logging.h"
+#include "Debug.h"
 #include "FileSys.h"
 
 #include "Platform.h"

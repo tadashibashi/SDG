@@ -2,7 +2,7 @@
 #include <SDG/Crypto.h>
 #include <SDG/XMLReader.h>
 #include <SDG/FileSys.h>
-#include <SDG/Logging.h>
+#include <SDG/Debug.h>
 
 #include <iostream>
 

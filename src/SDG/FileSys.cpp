@@ -3,7 +3,7 @@
 //
 
 #include "FileSys.h"
-#include "Logging.h"
+#include "Debug.h"
 #include <SDL.h>
 #include <vector>
 

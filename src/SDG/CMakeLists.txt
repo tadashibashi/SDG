@@ -4,7 +4,11 @@ set(SDG_Engine_Sources
         "Shader.cpp" "Shader.h"
         "Game.cpp" "Game.h"
         "Platform.h"
-        "Logging.cpp" "Logging.h"
+        "Debug.h"
+        "Debug/Logging.h"
+        Debug/Logging.cpp
+        Debug/Assert.h
+        Debug/Assert.cpp
         "FileSys.cpp" "FileSys.h"
         "XMLReader.cpp" "XMLReader.h"
         "Scene.cpp" "Scene.h"
@@ -24,7 +28,8 @@ set(SDG_Engine_Sources
         Exceptions/XMLReaderException.h Exceptions/XMLReaderException.cpp
         Exceptions/AssertionException.cpp
         Events/Delegate.h
-        Events.h)
+        Events.h Math/Tween.cpp Math/Tween.h Math/TweenFunctions.cpp Math/TweenFunctions.h
+        )
 
 
 
@@ -43,7 +48,8 @@ set(SDG_Engine_Includes
 if (DEBUG)                                                 # Debug
     set(SDG_Engine_CompileDefs DEBUG=1)
     set(CONFIG_Libraries spdlog)
-else()                                                     # Release
+else()
+    set(SDG_Engine_CompileDefs DEBUG=0)                    # Release
     set(CONFIG_Libraries)
 endif()
 

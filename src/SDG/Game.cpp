@@ -9,7 +9,7 @@
 #include <SDG/Exceptions/AssertionException.h>
 
 #include "Platform.h"
-#include "Logging.h"
+#include "Debug.h"
 #include "Input.h"
 #include "XMLReader.h"
 #include "Texture2D.h"

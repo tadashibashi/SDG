@@ -3,7 +3,7 @@
 //
 #pragma once
 #include <SDG/Events.h>
-#include <SDG/Logging.h>
+#include <SDG/Debug.h>
 
 using namespace SDG;
 

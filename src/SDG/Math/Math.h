@@ -4,9 +4,11 @@
  *
  * ===========================================================================*/
 #pragma once
+#include "Vector2.h"
+
+#include <SDG/Debug.h>
 
 #include <cmath>
-#include "Vector2.h"
 #include <initializer_list>
 #include <algorithm>
 

@@ -1,7 +1,7 @@
 #include "Keyboard.h"
 #include <SDL_events.h>
 #include <cstdlib>
-#include <SDG/Logging.h>
+#include <SDG/Debug.h>
 
 using SDG::Key;
 
@@ -67,7 +67,6 @@ SDG::Keyboard::InitializeImpl()
         {
             Scancodes[i] = KeyToScanCode((Key)i);
             SDG_Assert(Scancodes[i] < SDL_NUM_SCANCODES);
-            SDG_Log(GetKeyName((Key)i));
         }
     }
 

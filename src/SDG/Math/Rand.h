@@ -4,8 +4,6 @@
  *
  * ===========================================================================*/
 #pragma once
-#ifndef SDG_MATH_H
-#define SDG_MATH_H
 
 #include <random>
 #include <memory>
@@ -35,5 +33,3 @@ namespace SDG
     };
 
 }
-
-#endif

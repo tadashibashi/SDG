@@ -8,6 +8,7 @@ class GPU_Target;
 namespace SDG
 {
     class Game {
+        struct Impl;
     public:
         Game();
         ~Game();

@@ -1,6 +1,6 @@
 #include "Texture2D.h"
-#include "FileSys.h"
-#include "Debug.h"
+#include "SDG/FileSys.h"
+#include "SDG/Debug.h"
 
 #ifdef M_PI
 #undef M_PI

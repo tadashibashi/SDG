@@ -2,10 +2,10 @@
 // Created by Aaron Ishibashi on 4/13/22.
 //
 #include "Shader.h"
-#include "Debug.h"
-#include "FileSys.h"
+#include "SDG/Debug.h"
+#include "SDG/FileSys.h"
 
-#include "Platform.h"
+#include "SDG/Platform.h"
 
 
 // Prepends shader version data depending on OpenGL or GLES.

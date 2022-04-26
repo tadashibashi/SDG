@@ -1,7 +1,7 @@
 # [ SDG_Engine ] ====================================================
 # ----- Sources -----------------------------------------------------
 set(SDG_Engine_Sources
-        "Shader.cpp" "Shader.h"
+        "Graphics/Shader.cpp" "Graphics/Shader.h"
         "Game.cpp" "Game.h"
         "Platform.h"
         "Debug.h"
@@ -17,9 +17,8 @@ set(SDG_Engine_Sources
         "Input/Key.h"
         "Input/Keyboard.h" "Input/Keyboard.cpp"
         "Input/InputComponent.h"
-        "ContentMgr.cpp" "ContentMgr.h"
-        "Texture2D.h" "Texture2D.cpp"
-        "Crypto.cpp" "Crypto.h"
+        "AssetMgr.cpp" "AssetMgr.h"
+        "Graphics/Texture2D.h" "Graphics/Texture2D.cpp"
         Math/Rand.cpp Math/Rand.h
         Math/Math.h
         Math.h
@@ -29,7 +28,7 @@ set(SDG_Engine_Sources
         Exceptions/AssertionException.cpp
         Events/Delegate.h
         Events.h Math/Tween.cpp Math/Tween.h Math/TweenFunctions.cpp Math/TweenFunctions.h
-        )
+        Graphics/GraphicsDevice.cpp Graphics/GraphicsDevice.h Graphics/SpriteBatch.cpp Graphics/SpriteBatch.h Math/Rectangle.h Math/Vector3.h)
 
 
 

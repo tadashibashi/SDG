@@ -1,16 +1,16 @@
 #pragma once
 #include <string>
 #include <map>
-#include "Texture2D.h"
+#include "SDG/Graphics/Texture2D.h"
 
 namespace SDG
 {
-    class ContentMgr {
+    class AssetMgr {
     public:
-        ~ContentMgr();
+        ~AssetMgr();
 
         /**
-         * Retrieves a texture already cached in the ContentMgr or loads a new one at the given path.
+         * Retrieves a texture already cached in the AssetMgr or loads a new one at the given path.
          * Nullptr if there was none at the path.
          * Supported file types: png, bmp, tga
          * @param path
@@ -34,7 +34,7 @@ namespace SDG
 
 
         /**
-         * Unloads every Texture2D currently cached in the ContentMgr.
+         * Unloads every Texture2D currently cached in the AssetMgr.
          * All pointers are invalidated, so any object attempting to
          * use them will experience undefined behavior.
          */
@@ -42,7 +42,7 @@ namespace SDG
 
 
         /**
-         * Unloads every piece of content loaded in the ContentMgr.
+         * Unloads every piece of content loaded in the AssetMgr.
          */
         void UnloadAll();
     private:

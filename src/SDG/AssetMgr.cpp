@@ -1,14 +1,14 @@
-#include "ContentMgr.h"
+#include "AssetMgr.h"
 #include <SDL_gpu.h>
 #include "FileSys.h"
 
-SDG::ContentMgr::~ContentMgr()
+SDG::AssetMgr::~AssetMgr()
 {
 
 }
 
 void
-SDG::ContentMgr::UnloadTextures()
+SDG::AssetMgr::UnloadTextures()
 {
     if (!textures.empty())
     {
@@ -20,13 +20,13 @@ SDG::ContentMgr::UnloadTextures()
 }
 
 void
-SDG::ContentMgr::UnloadAll()
+SDG::AssetMgr::UnloadAll()
 {
     UnloadTextures();
 }
 
 const SDG::Texture2D *
-SDG::ContentMgr::LoadTexture(const std::string &path)
+SDG::AssetMgr::LoadTexture(const std::string &path)
 {
     auto it = textures.find(path);
     if (it != textures.end())
@@ -48,7 +48,7 @@ SDG::ContentMgr::LoadTexture(const std::string &path)
 }
 
 void 
-SDG::ContentMgr::UnloadTexture(const std::string &path)
+SDG::AssetMgr::UnloadTexture(const std::string &path)
 {
     auto it = textures.find(path);
     if (it != textures.end())
@@ -59,7 +59,7 @@ SDG::ContentMgr::UnloadTexture(const std::string &path)
 }
 
 void 
-SDG::ContentMgr::UnloadTexture(Texture2D *texture)
+SDG::AssetMgr::UnloadTexture(Texture2D *texture)
 {
     UnloadTexture(texture->GetPath());
 }

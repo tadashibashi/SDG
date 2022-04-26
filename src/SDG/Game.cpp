@@ -12,11 +12,11 @@
 #include "Debug.h"
 #include "Input.h"
 #include "XMLReader.h"
-#include "Texture2D.h"
+#include "SDG/Graphics/Texture2D.h"
 #include <SDG/FileSys.h>
 
 
-#include "Shader.h"
+#include "SDG/Graphics/Shader.h"
 
 using std::string;
 

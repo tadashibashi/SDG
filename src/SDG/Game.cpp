@@ -18,14 +18,13 @@
 #include "SDG/Graphics/Texture2D.h"
 #include <SDG/FileSys.h>
 
-
 #include "SDG/Graphics/Shader.h"
 
 using std::string;
 
 #if defined (SDG_TARGET_HTML5) || defined (SDG_TARGET_ANDROID) || defined (SDG_TARGET_IPHONE)
     const GPU_RendererEnum RendererType = GPU_RENDERER_GLES_3;
-#elif defined (SDG_TARGET_MAC) || defined (SDG_TARGET_LINUX) || defined (SDG_TARGET_WINDOWS)
+#elif defined (SDG_TARGET_DESKTOP)
     const GPU_RendererEnum RendererType = GPU_RENDERER_OPENGL_3;
 #endif
 

@@ -6,6 +6,7 @@
 
 #if   defined(__EMSCRIPTEN__)
     #include <emscripten.h>
+
     #define SDG_TARGET_HTML5 1
 #elif defined(__APPLE__)
     #include <TargetConditionals.h>

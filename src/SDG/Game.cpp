@@ -1,15 +1,18 @@
 //
 // Created by Aaron Ishibashi on 4/15/22.
 //
+#include "Platform.h"
 #include "Game.h"
 
 // TODO: abstract SDL_gpu into a GraphicsDevice class
 #include <SDL_gpu.h>
 #include <SDL.h>
 #include <SDG/Exceptions/AssertionException.h>
+#include <iostream>
 
 #include "Platform.h"
 #include "Debug.h"
+
 #include "Input.h"
 #include "XMLReader.h"
 #include "Texture2D.h"
@@ -21,7 +24,7 @@
 using std::string;
 
 #if defined (SDG_TARGET_HTML5) || defined (SDG_TARGET_ANDROID) || defined (SDG_TARGET_IPHONE)
-    const GPU_RendererEnum RendererType = GPU_RENDERER_GLES_2;
+    const GPU_RendererEnum RendererType = GPU_RENDERER_GLES_3;
 #elif defined (SDG_TARGET_MAC) || defined (SDG_TARGET_LINUX) || defined (SDG_TARGET_WINDOWS)
     const GPU_RendererEnum RendererType = GPU_RENDERER_OPENGL_3;
 #endif
@@ -52,7 +55,9 @@ SDG::Game::Initialize()
     }
     catch(const std::exception &e)
     {
+        std::cout << "Failed to parse config.\n";
         return -1;
+
     }
     FileSys::Initialize(appName, appOrg);
 
@@ -60,6 +65,7 @@ SDG::Game::Initialize()
     GPU_Target *target = GPU_InitRenderer(RendererType, winWidth, winHeight, 0);
     if (!target)
     {
+        std::cout << "Failed to init gpu target/sdl_gpu.\n";
         SDG_Err("Failed to initialize SDL_gpu GPU_Target: {}", GPU_GetErrorString(GPU_PopErrorCode().error));
         return -2;
     }

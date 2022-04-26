@@ -3,7 +3,8 @@
 # @param Key encryption key
 function(AddContentPipeline AssetDir Key)
 if (EMSCRIPTEN)
-    set(CMAKE_CXX_FLAGS "--preload-file ${CMAKE_SOURCE_DIR}/${AssetDir}@${AssetDir} ${CMAKE_CXX_FLAGS}")
+    set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "--preload-file ${CMAKE_BINARY_DIR}/${AssetDir}@${AssetDir}")
+    message("Emscripten asset directory is set to: ${CMAKE_BINARY_DIR}/${AssetDir}@${AssetDir}")
 else()
     add_custom_target("${PROJECT_NAME}_Content"
             COMMAND "${CMAKE_BINARY_DIR}/SDG_ContentPipe"

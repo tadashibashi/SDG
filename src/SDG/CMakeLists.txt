@@ -64,6 +64,7 @@ elseif(EMSCRIPTEN)                                         # HTML5 (Currently un
     message(Emscripten is currently unsupported.)
     set(CMAKE_CXX_FLAGS "-Os")
     set(CMAKE_EXE_LINKER_FLAGS "-sUSE_WEBGL2=1 -sWASM=2")
+
 endif()
 
 set (SDG_Engine_Libraries

@@ -197,5 +197,3 @@ namespace SDG
 
     };
 }
-
-#endif

@@ -7,8 +7,12 @@ if (EMSCRIPTEN)
 endif()
 
 
+<<<<<<< HEAD
 add_executable(SDG_Tests "SDG_Tests.cpp" DelegateTests.h)
 
+=======
+add_executable(SDG_Tests "SDG_Tests.cpp" "CryptoTest.h" DelegateTests.h)
+>>>>>>> 70076c4 (Resolved conflicting changes)
 add_test(EngineTests SDG_Tests)
 target_link_libraries(SDG_Tests PRIVATE SDG_Engine)
 

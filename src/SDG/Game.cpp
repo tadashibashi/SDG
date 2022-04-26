@@ -1,21 +1,20 @@
 //
 // Created by Aaron Ishibashi on 4/15/22.
 //
-#include "Platform.h"
-#include "Game.h"
 
+#include "Game.h"
+#include "Platform.h"
 // TODO: abstract SDL_gpu into a GraphicsDevice class
 #include <SDL_gpu.h>
 #include <SDL.h>
 #include <SDG/Exceptions/AssertionException.h>
 #include <iostream>
 
-#include "Platform.h"
 #include "Debug.h"
 
 #include "Input.h"
 #include "XMLReader.h"
-#include "SDG/Graphics/Texture2D.h"
+#include <SDG/Graphics/Texture2D.h>
 #include <SDG/FileSys.h>
 
 #include "SDG/Graphics/Shader.h"
@@ -46,7 +45,7 @@ SDG::Game::Initialize()
     bool fullscreen = false;
     string appName;
     string appOrg;
-    string title = "";
+    string title;
 
     // Get Window information from config file
     try {

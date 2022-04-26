@@ -41,3 +41,7 @@
     // Please don't use the return value of strcpy
     #define strcpy_s(dest, dsize, src) strcpy(dest, src)
 #endif
+
+#if SDG_TARGET_WINDOWS || SDG_TARGET_LINUX || SDG_TARGET_MAC
+    #define SDG_TARGET_DESKTOP 1
+#endif

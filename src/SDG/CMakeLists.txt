@@ -44,7 +44,7 @@ set(SDG_Engine_Sources
         Graphics/SpriteBatch.cpp
         Graphics/SpriteBatch.h
         Math/Rectangle.h
-        Math/Vector3.h FileSys/FileInfo.h)
+        Math/Vector3.h FileSys/FileInfo.h Math/Endian.h)
 
 
 

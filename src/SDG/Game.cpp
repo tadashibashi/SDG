@@ -170,7 +170,7 @@ void
 SDG::Game::Render()
 {
     // Render
-    window.Clear(Color::DarkKhaki());
+    window.Clear(Color::Cerulean());
 
     shader->Activate();
     shader->SetUniform("time", (float) SDL_GetTicks());

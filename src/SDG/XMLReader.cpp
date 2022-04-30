@@ -92,7 +92,7 @@ void
 OpenXML(const std::string &path, SDG::FileSys::Base base, XMLDocument *outDoc)
 {
     SDG::FileSys::File file;
-    file.OpenEncrypted(SDG::FileSys::MakePath(path, base));
+    file.Open(SDG::FileSys::MakePath(path, base));
     try {
         CheckResult(outDoc->Parse(reinterpret_cast<const char *>(file.Data())), "loading file at " + path);
     }

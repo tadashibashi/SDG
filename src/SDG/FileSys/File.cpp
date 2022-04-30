@@ -33,10 +33,7 @@ SDG::FileSys::File::File() : impl(new Impl)
 
 SDG::FileSys::File::File(const string &path) : impl(new Impl)
 {
-    if (FileSys::GetExtension(path) == "sdgc") // encrypted ext
-        OpenEncrypted(path);
-    else
-        Open(path);
+    Open(path);
 }
 
 SDG::FileSys::File::~File()
@@ -70,8 +67,18 @@ SDG::FileSys::File::GetError() const
     return impl->error.data();
 }
 
+
 bool
-SDG::FileSys::File::Open(const string &filepath)
+SDG::FileSys::File::Open(const string &path)
+{
+    return (FileSys::GetExtension(path) == "sdgc") ?
+           OpenEncryptedImpl(path) :
+           OpenImpl(path);
+}
+
+
+bool
+SDG::FileSys::File::OpenImpl(const string &filepath)
 {
     char *mem;
     size_t size;
@@ -89,6 +96,23 @@ SDG::FileSys::File::Open(const string &filepath)
     impl->isOpen = true;
     impl->path = filepath;
     return true;
+}
+
+bool SDG::FileSys::File::OpenEncryptedImpl(const string &path)
+{
+    bool result = SDG::IO::ReadEncryptedFileStr(path.c_str(), &impl->mem, &impl->size);
+    if (result)
+    {
+        impl->isOpen = true;
+        impl->error = "No errors.";
+        impl->path = path;
+    }
+    else
+    {
+        impl->error = string("File::OpenEncrypted: error: ") + SDL_GetError();
+    }
+
+    return result;
 }
 
 void
@@ -111,20 +135,7 @@ SDG::FileSys::File::IsLoaded() const
     return impl->mem;
 }
 
-bool SDG::FileSys::File::OpenEncrypted(const string &path)
-{
-    bool result = SDG::IO::ReadEncryptedFileStr(path.c_str(), &impl->mem, &impl->size);
-    if (result)
-    {
-        impl->isOpen = true;
-        impl->error = "No errors.";
-        impl->path = path;
-    }
-    else
-    {
-        impl->error = string("File::OpenEncrypted: error: ") + SDL_GetError();
-    }
 
-    return result;
-}
+
+
 

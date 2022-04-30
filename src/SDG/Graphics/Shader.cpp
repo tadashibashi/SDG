@@ -8,6 +8,7 @@
 #include "SDG/Platform.h"
 #include "SDG/FileSys/File.h"
 
+using namespace SDG::FileSys;
 
 // Prepends shader version data depending on OpenGL or GLES.
 // This is needed to support particular graphics cards that require this heading data.
@@ -18,12 +19,13 @@ LoadShader(GPU_ShaderEnum shaderType, const std::string &path)
     char *source;
     const char *header;
     size_t fileSize, headerSize;
-    GPU_Renderer *renderer = GPU_GetCurrentRenderer();
     uint32_t shader;
+    GPU_Renderer *renderer = GPU_GetCurrentRenderer();
+
 
     // Open the shader file
-    SDG::FileSys::File file;
-    if (!file.OpenEncrypted(SDG::FileSys::MakePath(path, SDG::FileSys::Base::Root)))
+    File file;
+    if (!file.Open(MakePath(path, Base::Root)))
     {
         SDG_Err("LoadShader file loading error: {}", file.GetError());
         return 0;

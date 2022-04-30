@@ -72,7 +72,7 @@ namespace SDG
         Free();
 
         FileSys::File file;
-        if ((FileSys::GetExtension(path) == "sdgc") ? !file.OpenEncrypted(path) : !file.Open(path))
+        if (!file.Open(path))
         {
             SDG_Err("problem while loading Texture2D file: {}", file.GetError());
             return false;

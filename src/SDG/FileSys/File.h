@@ -8,8 +8,6 @@
 #define SDG_File_h
 #include <string>
 
-class SDL_RWops;
-
 namespace SDG::FileSys
 {
 
@@ -25,9 +23,6 @@ public:
     /// Loads data found in the file at path into the File class.
     /// @param path path to the file
     bool Open(const std::string &path);
-
-    /// Loads an encrypted file
-    bool OpenEncrypted(const std::string &path);
 
     /// Checks whether file is opened or not.
     /// It may or may not have data loaded into memory. Use IsLoaded() to check for this check.
@@ -59,6 +54,13 @@ public:
     [[nodiscard]] int64_t Size() const;
     
 private:
+    /// Loads data found in the file at path into the File class.
+    /// @param filepath path to the file
+    bool OpenImpl(const std::string &filepath);
+
+    /// Loads an encrypted file
+    bool OpenEncryptedImpl(const std::string &path);
+
     // Private implementation
     Impl *impl;
 };

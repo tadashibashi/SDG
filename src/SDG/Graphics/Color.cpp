@@ -1,4 +1,5 @@
 #include "Color.h"
+#include <SDL.h>
 
 namespace SDG
 {
@@ -10,13 +11,6 @@ namespace SDG
 
     Color::Color(Uint8 grayScale, Uint8 alpha)
         : r(grayScale), g(grayScale), b(grayScale), a(alpha) {}
-
-    SDL_Color Color::ToSDL_Color() const
-    {
-        SDL_Color c;
-        c.r = r; c.g = g; c.b = b; c.a = a;
-        return c;
-    }
 
     void Color::set(Uint8 r, Uint8 g, Uint8 b)
     {

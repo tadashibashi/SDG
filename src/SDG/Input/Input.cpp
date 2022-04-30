@@ -56,3 +56,8 @@ SDG::Input::KeyReleased(Key key)
 {
     return keyboard.JustReleased(key);
 }
+
+void SDG::Input::ProcessInput(void *evt)
+{
+    keyboard.ProcessInput(*static_cast<SDL_Event *>(evt));
+}

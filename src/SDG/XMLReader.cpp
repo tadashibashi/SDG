@@ -2,7 +2,9 @@
 // Created by Aaron Ishibashi on 4/15/22.
 //
 #include "XMLReader.h"
-#include "FileSys.h"
+#include "SDG/FileSys/FileSys.h"
+#include <SDG/FileSys/File.h>
+
 #include <tinyxml2.h>
 #include "Debug.h"
 #include <SDG/Exceptions/XMLReaderException.h>
@@ -89,16 +91,13 @@ CheckResult(int result, const std::string &doing)
 void
 OpenXML(const std::string &path, SDG::FileSys::Base base, XMLDocument *outDoc)
 {
-    SDG::RWopsMem io = SDG::FileSys::DecryptFileStr(path, base);
+    SDG::FileSys::File file;
+    file.OpenEncrypted(SDG::FileSys::MakePath(path, base));
     try {
-        CheckResult(outDoc->Parse(reinterpret_cast<char *>(io.memory)), "loading file at " + path);
+        CheckResult(outDoc->Parse(reinterpret_cast<const char *>(file.Data())), "loading file at " + path);
     }
     catch(const std::exception &e)
     {
-        SDG_Err("Exception while parsing Xml document ({}): {}", path, e.what());
-        io.Free();
-        throw e;
+        SDG_Err("Exception while parsing Xml file ({}): {}", path, e.what());
     }
-
-    io.Free();
 }

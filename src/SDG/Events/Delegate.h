@@ -1,12 +1,5 @@
 /* =============================================================================
  * Delegate
- * An event observer that can make callbacks to subscribed listeners when an event has occured.
- * Listeners are created and stored within the Delegate, so no subclassing of a Listener class
- * is necessary as seen in the common Observer pattern.
- * Both member and global function callback Listeners are supported. To add one, you only need to pass
- * a function pointer to AddListener (and a corresponding object for member functions).
- * Listeners may be removed by a call to RemoveListener and passing the same pointer that was
- * previously added.
  *
  * ===========================================================================*/
 #pragma once
@@ -20,20 +13,40 @@ using std::any_cast;
 namespace SDG {
 
     /**
+     * @abstract
+     * A Delegate is an event observer that can invoke callbacks of subscribed listeners when an event has occured.
+     * "Listeners" are actually function pointers the user passes into the Delegate, which gets wraps and stored inside.
+     * No subclassing of a Listener class is necessary, as seen in the typical Observer pattern.
+     * Both member and global function callbacks are supported.
+     *
+     * @details
+     * In practice, to add a callback, you will pass a global function pointer to AddListener, or another overload
+     * where you can pass an object with a corresponding member function pointer.
+     * Function signature must match that of the Delegate.
+     * Listeners may be removed by a call to RemoveListener and passing the same global function pointer or object +
+     * member function combination.
+     *
+     * When invoking a Delegate, simply call Invoke, or the operator() and pass the arguments.
+     * These arguments are copied for each callback, so it is wise to use small objects like pointers/refs,
+     * primitives or small structs.
+     *
      * @tparam Args Argument types that the Delegate requires for each of its callback listeners.
+     *
      */
     template <typename... Args>
     class Delegate {
     private:
-        // Indicates whether a FunctionWrapper contains a Member of Global function
+        /// Indicates whether a FunctionWrapper contains a Member of Global function
         enum class FunctionType { Member, Global };
 
-        // Class wrapping a Delegate's callback functions
+        /// Helper class that wraps a Delegate's subscribed listener callbacks.
+        /// Enables identification of the wrapped callback via both global function pointer
+        /// or object pointer + its member function pointer.
         class FunctionWrapper {
         public:
             FunctionWrapper() = delete;
 
-            // Used to wrap member function pointer
+            /// Used to wrap member function pointer
             template <typename T>
             FunctionWrapper(T *object, void (T::*func)(Args...)) :
                     object(object), functionPtr(func),
@@ -44,7 +57,7 @@ namespace SDG {
             {
             }
 
-            // Used to wrap member function pointer
+            /// Used to wrap member function pointer
             explicit FunctionWrapper(void (*func)(Args...)) :
                     object(nullptr), functionPtr(func), function(func)
             {
@@ -58,13 +71,13 @@ namespace SDG {
 
             // ========== Signature Checks ==========
 
-            // Returns whether this is a Global or Member function. Intended for debug use.
-            FunctionType GetType() const
+            /// Returns whether this is a Global or Member function. Intended for debug use.
+            FunctionType CallbackType() const
             {
                 return (object == nullptr) ? FunctionType::Global : FunctionType::Member;
             }
 
-            // Checks signature against an object ptr + member function
+            /// Checks signature against an object ptr + member function
             template <typename T>
             bool SignatureMatches(T *pObject, void (T::*pFunctionPtr)(Args...)) const
             {
@@ -73,7 +86,7 @@ namespace SDG {
                         pFunctionPtr == any_cast<void(T::*)(Args...)>(functionPtr));
             }
 
-            // Checks equality for a specific global function
+            /// Checks equality for a specific global function
             bool SignatureMatches(void(*pFunctionPtr)(Args...)) const
             {
                 return (object == nullptr &&
@@ -81,7 +94,7 @@ namespace SDG {
                         any_cast<void(*)(Args...)>(functionPtr) == pFunctionPtr);
             }
 
-            // Whether or not this FunctionWrapper is to be removed or not.
+            /// represents if this FunctionWrapper is flagged to be removed or not.
             bool toRemove{false};
         private:
             void *object; // the object to call the function on, if a member func is stored

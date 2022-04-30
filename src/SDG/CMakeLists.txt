@@ -1,7 +1,18 @@
 # [ SDG_Engine ] ====================================================
 # ----- Sources -----------------------------------------------------
+set(TinyXML2_Sources
+        ${CMAKE_SOURCE_DIR}/lib/tinyxml2/tinyxml2.h
+        ${CMAKE_SOURCE_DIR}/lib/tinyxml2/tinyxml2.cpp)
+
 set(SDG_Engine_Sources
+        ${TinyXML2_Sources}
+        EntryPoint.cpp
+        Graphics/Camera.cpp Graphics/Camera.h
+        Graphics/GraphicsMgr.cpp Graphics/GraphicsMgr.h
+        Graphics/Window.cpp Graphics/Window.h
+        Graphics/RendererType.h
         "Graphics/Shader.cpp" "Graphics/Shader.h"
+        Graphics/Color.h Graphics/Color.cpp
         "Game.cpp" "Game.h"
         "Platform.h"
         "Debug.h"
@@ -9,7 +20,9 @@ set(SDG_Engine_Sources
         Debug/Logging.cpp
         Debug/Assert.h
         Debug/Assert.cpp
-        "FileSys.cpp" "FileSys.h"
+        "FileSys/FileSys.cpp" "FileSys/FileSys.h"
+        FileSys/IO.cpp FileSys/IO.h
+        FileSys/File.cpp Filesys/File.h
         "XMLReader.cpp" "XMLReader.h"
         "Scene.cpp" "Scene.h"
         "Input.h"
@@ -28,7 +41,10 @@ set(SDG_Engine_Sources
         Exceptions/AssertionException.cpp
         Events/Delegate.h
         Events.h Math/Tween.cpp Math/Tween.h Math/TweenFunctions.cpp Math/TweenFunctions.h
-        Graphics/GraphicsDevice.cpp Graphics/GraphicsDevice.h Graphics/SpriteBatch.cpp Graphics/SpriteBatch.h Math/Rectangle.h Math/Vector3.h)
+        Graphics/SpriteBatch.cpp
+        Graphics/SpriteBatch.h
+        Math/Rectangle.h
+        Math/Vector3.h FileSys/FileInfo.h)
 
 
 
@@ -40,7 +56,6 @@ set(SDG_Engine_Includes
         ${CMAKE_SOURCE_DIR}/lib/SDL/include
         ${CMAKE_SOURCE_DIR}/lib/sdl-gpu/include
         ${CMAKE_SOURCE_DIR}/lib/tinyxml2)
-
 
 
 # ----- Libraries ---------------------------------------------------
@@ -60,8 +75,7 @@ elseif(WIN32)                                              # Windows
     set(PLATFORM_Libraries opengl32)
 elseif(LINUX)
     set(PLATFORM_Libraries GL)
-elseif(EMSCRIPTEN)                                         # HTML5 (Currently unsupported)
-    message(Emscripten is currently unsupported.)
+elseif(EMSCRIPTEN)                                         # HTML5
     set(CMAKE_CXX_FLAGS "-Os")
     set(CMAKE_EXE_LINKER_FLAGS "-sUSE_WEBGL2=1 -sWASM=2")
 
@@ -71,7 +85,6 @@ set (SDG_Engine_Libraries
         SDL2
         SDL2main
         SDL_gpu
-        tinyxml2
         ${CONFIG_Libraries}
         ${PLATFORM_Libraries})
 

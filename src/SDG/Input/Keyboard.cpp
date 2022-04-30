@@ -17,7 +17,7 @@ static Uint16 Scancodes[(int)Key::_MaxCount] = {0};
 namespace SDG
 {
     struct Keyboard::Impl {
-        Impl() : state(), lastState(), numKeys()
+        Impl() : state(), lastState(), numKeys(), stateChanged()
         {}
 
         ~Impl()
@@ -31,6 +31,7 @@ namespace SDG
         const Uint8 *state;
         Uint8 *lastState;
         int numKeys;
+        bool stateChanged;
     };
 }
 
@@ -79,7 +80,8 @@ SDG::Keyboard::InitializeImpl()
 void
 SDG::Keyboard::ProcessInputImpl(const SDL_Event &ev)
 {
-
+    if (ev.type == SDL_KEYDOWN || ev.type == SDL_KEYUP)
+        mImpl->stateChanged = true;
 }
 
 
@@ -109,7 +111,8 @@ bool
 SDG::Keyboard::JustPressed(SDG::Key key) const
 {
     SDG_Assert(mImpl->lastState);
-    unsigned scancode = Scancodes[(unsigned)key];
+    auto scancode = Scancodes[(unsigned)key];
+    //SDG_Log("Check: this state {} ... last state {}", mImpl->state[scancode], mImpl->lastState[scancode]);
     return mImpl->state[scancode] &&
         !mImpl->lastState[scancode];
 }
@@ -120,20 +123,22 @@ bool
 SDG::Keyboard::JustReleased(SDG::Key key) const
 {
     SDG_Assert(mImpl->lastState);
-    unsigned scancode = Scancodes[(unsigned)key];
+    auto scancode = Scancodes[(unsigned)key];
     return !mImpl->state[scancode] &&
            mImpl->lastState[scancode];
 }
 
 
 
-
 void
 SDG::Keyboard::UpdateImpl()
 {
-    memcpy(mImpl->lastState, mImpl->state, mImpl->numKeys);
+    if (mImpl->stateChanged)
+    {
+        memcpy(mImpl->lastState, mImpl->state, mImpl->numKeys);
+        mImpl->stateChanged = false;
+    }
 }
-
 
 
 
@@ -433,7 +438,7 @@ Uint16 KeyToScanCode(Key key)
         case Key::AudioFastForward: return SDL_SCANCODE_AUDIOFASTFORWARD;
 
         default:
-            SDG_Warn("Unknown Key value was checked.");
+            SDG_Err("Unknown Key value was checked");
             return SDL_SCANCODE_UNKNOWN;
     }
 }

@@ -1,7 +1,7 @@
-//
-// Created by Aaron Ishibashi on 4/15/22.
-//
+/// Main application object
 #pragma once
+
+#include <SDG/Graphics/Window.h>
 
 class GPU_Target;
 
@@ -12,21 +12,28 @@ namespace SDG
     public:
         Game();
         ~Game();
+
+        /// Executes one game frame. Intended for use by platforms that require the
+        /// use of the main loop, such as Emscripten-WebGL.
         void RunOneFrame();
+
+        /// Triggers the main loop to run until Exit is called.
         void Run();
 
-        /// <summary>
-        /// Gets the window's GPU_Target. Please make sure to include the SDL_gpu.h header before using it.
-        /// </summary>
-        const GPU_Target *Window() { return window; }
+        /// Shuts down the game before the next frame.
         void Exit();
+    protected:
+        /// Gets the SDL_gpu Target object. TODO: Wrap in a GraphicsMgr object.
+        Window &GetWindow() { return window; }
+
+        virtual int Initialize();
+        virtual void ProcessInput();
+        virtual void Update();
+        virtual void Render();
+        virtual void Close();
+
     private:
-        int Initialize();
-        void ProcessInput();
-        void Update();
-        void Render();
-        void Close();
-        GPU_Target *window;
+        Window window;
         bool isRunning;
     };
 }

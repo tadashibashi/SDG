@@ -194,6 +194,5 @@ namespace SDG
         static Color SlateGray(uint8_t alpha = MAX_COLOR_VALUE);
         static Color DarkSlateGray(uint8_t alpha = MAX_COLOR_VALUE);
         static Color Black(uint8_t alpha = MAX_COLOR_VALUE);
-
     };
 }

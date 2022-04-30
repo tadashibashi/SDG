@@ -1,6 +1,6 @@
 #include "AssetMgr.h"
 #include <SDL_gpu.h>
-#include "FileSys.h"
+#include "SDG/FileSys/FileSys.h"
 
 SDG::AssetMgr::~AssetMgr()
 {
@@ -14,7 +14,7 @@ SDG::AssetMgr::UnloadTextures()
     {
         for (auto &[k, v] : textures)
         {
-             v->Close();
+            v->Free();
         }
     }
 }
@@ -29,6 +29,7 @@ const SDG::Texture2D *
 SDG::AssetMgr::LoadTexture(const std::string &path)
 {
     auto it = textures.find(path);
+
     if (it != textures.end())
         return it->second;
     else
@@ -61,5 +62,5 @@ SDG::AssetMgr::UnloadTexture(const std::string &path)
 void 
 SDG::AssetMgr::UnloadTexture(Texture2D *texture)
 {
-    UnloadTexture(texture->GetPath());
+    UnloadTexture(texture->Path());
 }

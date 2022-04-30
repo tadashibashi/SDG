@@ -21,6 +21,8 @@ namespace SDG
         // Call this before the call to SDL_PollEvents
         static void Update();
 
+        static void ProcessInput(void *evt);
+
         // Clean up, called when the app is shut down
         static void Close();
 

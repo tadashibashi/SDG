@@ -4,29 +4,40 @@
 #include "DelegateTests.h"
 #include <SDG/Math.h>
 
-SDG::Game *game;
+using namespace SDG;
 
-void mainLoop()
-{
-    game->RunOneFrame();
-}
-
-int main(int argc, char *argv[])
-{
-    //SDG_Assert(SDG::Math::Lerp(0.0, 20.0, .5) == 10.0);
-    //CryptoTest();
-    //TestDelegate();
-    game = new SDG::Game;
-    if (!game)
+class TestGame : public Game {
+private:
+    int Initialize() override
     {
-        SDG_Log("Error while initializing game!\n");
-        return 1;
+        Game::Initialize();
+        // Initialization logic here
+        return 0;
     }
-#if SDG_TARGET_HTML5
-    emscripten_set_main_loop(mainLoop, -1, true);
-#else
-    game->Run();
-#endif
 
-    return 0;
+    void ProcessInput() override
+    {
+
+    }
+
+    void Update() override
+    {
+
+    }
+
+    void Render() override
+    {
+
+    }
+
+    void Close() override
+    {
+
+    }
+
+};
+
+Game *CreateGame()
+{
+    return new TestGame;
 }

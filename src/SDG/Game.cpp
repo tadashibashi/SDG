@@ -15,15 +15,18 @@
 #include "Input.h"
 #include "XMLReader.h"
 #include <SDG/Graphics/Texture2D.h>
-#include <SDG/FileSys.h>
+#include "SDG/FileSys/FileSys.h"
+#include <SDG/FileSys/IO.h>
+
 
 #include "SDG/Graphics/Shader.h"
+#include "SDG/FileSys/File.h"
 
 using std::string;
 
-#if defined (SDG_TARGET_HTML5) || defined (SDG_TARGET_ANDROID) || defined (SDG_TARGET_IPHONE)
+#if defined (SDG_TARGET_WEBGL) || defined (SDG_TARGET_ANDROID) || defined (SDG_TARGET_IPHONE)
     const GPU_RendererEnum RendererType = GPU_RENDERER_GLES_3;
-#elif defined (SDG_TARGET_DESKTOP)
+#elif SDG_TARGET_DESKTOP
     const GPU_RendererEnum RendererType = GPU_RENDERER_OPENGL_3;
 #endif
 
@@ -31,16 +34,20 @@ const unsigned DefaultInitFlags = SDL_INIT_VIDEO | SDL_INIT_EVENTS;
 
 SDG::Game::Game() : window{}, isRunning{}
 {
-    Initialize();
+
 }
 
-// temporary test
+// TODO: Put these objects into a ContentManager
 SDG::Shader *shader = nullptr;
 SDG::Texture2D *kirby = nullptr;
+
+// TODO: Finish implementing Camera wrapper
+GPU_Camera cam;
 
 int
 SDG::Game::Initialize()
 {
+    SDG_Log("Game initializing.");
     int winWidth = 1920, winHeight = 1080;
     bool fullscreen = false;
     string appName;
@@ -59,30 +66,23 @@ SDG::Game::Initialize()
     }
     FileSys::Initialize(appName, appOrg);
 
+    window.Initialize();
+    window
+        .Fullscreen(fullscreen)
+        .Size(Point{winWidth, winHeight})
+        .Title(title.c_str());
 
-    GPU_Target *target = GPU_InitRenderer(RendererType, winWidth, winHeight, 0);
-    if (!target)
-    {
-        std::cout << "Failed to init gpu target/sdl_gpu.\n";
-        SDG_Err("Failed to initialize SDL_gpu GPU_Target: {}", GPU_GetErrorString(GPU_PopErrorCode().error));
-        return -2;
-    }
 
-    SDL_Window *win = SDL_GetWindowFromID(target->context->windowID);
-    SDL_SetWindowTitle(win, title.c_str());
 
     GPU_SetFullscreen(fullscreen, true);
-
 
     Input::Initialize();
 
     // Temp content
-    kirby = new Texture2D("assets/textures/kirby.sdgc");
+    kirby = new Texture2D(FileSys::MakePath("assets/textures/kirby.sdgc", FileSys::Base::Root));
     shader = new Shader;
     shader->Compile("assets/shaders/v1.sdgc", "assets/shaders/f1.sdgc");
 
-
-    window = target;
     isRunning = true;
     return 0;
 }
@@ -105,13 +105,12 @@ SDG::Game::RunOneFrame()
         SDG_Err("{}", e.what());
         Exit();
     }
-
 }
 
 void
 SDG::Game::ProcessInput()
 {
-    // Called before events are pumped to update all internal last* variables.
+    // Called before events are pumped to update all internal last state variables.
     Input::Update();
 
     // Event polling
@@ -120,6 +119,7 @@ SDG::Game::ProcessInput()
     {
         if (ev.type == SDL_QUIT)
             Exit();
+        Input::ProcessInput(&ev);
     }
 }
 
@@ -130,18 +130,37 @@ SDG::Game::Update()
         Exit();
     // TODO: Test GPU_Camera
 
+    if (Input::KeyPress(Key::Left))
+        cam.x -= 8;
+    if (Input::KeyPress(Key::Right))
+        cam.x += 8;
+    if (Input::KeyPress(Key::Up))
+        cam.y -= 8;
+    if (Input::KeyPress(Key::Down))
+        cam.y += 8;
+    if (Input::KeyPress(Key::Return))
+        //cam.zoom_x += .1, cam.zoom_y += .1;
+        cam.angle -= 8;
+    if (Input::KeyPress(Key::RightShift))
+        //cam.zoom_x -= .1, cam.zoom_y -= .1;
+        cam.angle += 8;
+    if (Input::KeyPressed(Key::C))
+        cam.use_centered_origin = !cam.use_centered_origin, SDG_Log("Pressed C");
+
+
+
     if (Input::KeyPressed(Key::S) && Input::KeyPress(Key::V))
     {
         // Save the game!!
-        FileSys::EncryptFile("game1.sav", {'m', 'y', ' ', 's', 'a', 'v', 'e'});
+        IO::WriteEncryptedFile("game1.sav", {'m', 'y', ' ', 's', 'a', 'v', 'e'});
     }
 
     if (Input::KeyPressed(Key::L) && Input::KeyPress(Key::V))
     {
         // Loaded the game!!
-        auto loadedSave = FileSys::DecryptFileStr("game1.sav", FileSys::Base::Pref);
-        SDG_Log("Loaded save: \"{}\"", loadedSave.memory);
-        loadedSave.Free();
+        FileSys::File sav(FileSys::MakePath("game1.sav", FileSys::Base::Pref));
+
+        SDG_Log("Loaded save: \"{}\"", sav.Data());
     }
 
 
@@ -151,35 +170,37 @@ void
 SDG::Game::Render()
 {
     // Render
-    GPU_ClearRGBA(window, 128, 128, 128, 255);
+    window.Clear(Color::DarkKhaki());
 
     shader->Activate();
-    shader->SetVariable("time", (float)SDL_GetTicks());
+    shader->SetUniform("time", (float) SDL_GetTicks());
 
-    GPU_BlitScale(kirby->GetImage(), nullptr, window, (float)window->base_w/2,
-            (window->base_h/2) + kirby->GetImage()->h * 0.1f * .5f, 0.1f, 0.1f);
+    GPU_BlitScale(kirby->Image(), nullptr, window.InnerWindow(), (float)window.Size().w / 2,
+            (window.Size().h/2) + kirby->Image()->h * 0.1f * .5f, 0.1f, 0.1f);
     shader->Deactivate();
 
-    GPU_BlitScale(kirby->GetImage(), nullptr, window, (float)window->base_w/2,
-            window->base_h/2, 0.1f, 0.1f);
+    GPU_BlitScale(kirby->Image(), nullptr, window.InnerWindow(), (float)window.Size().w / 2,
+            window.Size().h/2, 0.1f, 0.1f);
 
-    GPU_Flip(window);
+    window.SwapBuffers();
 }
 
 void
 SDG::Game::Close()
 {
+    SDG_Log("Closing Game Object");
     delete shader; // temp test
     delete kirby;
 
     Input::Close();
     GPU_Quit();
-    SDL_Quit();
+
 }
 
 void
 SDG::Game::Run()
 {
+    Initialize();
     while (isRunning)
         RunOneFrame();
 }
@@ -188,4 +209,7 @@ void
 SDG::Game::Exit()
 {
     isRunning = false;
+#if SDG_TARGET_WEBGL
+    emscripten_cancel_main_loop();
+#endif
 }

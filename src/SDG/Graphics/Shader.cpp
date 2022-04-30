@@ -3,9 +3,10 @@
 //
 #include "Shader.h"
 #include "SDG/Debug.h"
-#include "SDG/FileSys.h"
+#include "SDG/FileSys/FileSys.h"
 
 #include "SDG/Platform.h"
+#include "SDG/FileSys/File.h"
 
 
 // Prepends shader version data depending on OpenGL or GLES.
@@ -14,28 +15,27 @@
 static uint32_t
 LoadShader(GPU_ShaderEnum shaderType, const std::string &path)
 {
-    SDG::RWopsMem rwops;
     char *source;
     const char *header;
-    int64_t fileSize, headerSize;
+    size_t fileSize, headerSize;
     GPU_Renderer *renderer = GPU_GetCurrentRenderer();
     uint32_t shader;
 
     // Open the shader file
-    rwops = SDG::FileSys::DecryptFile(path, SDG::FileSys::Base::Root, &fileSize);
-    if (!rwops.IsOpen())
+    SDG::FileSys::File file;
+    if (!file.OpenEncrypted(SDG::FileSys::MakePath(path, SDG::FileSys::Base::Root)))
     {
-        // Open file error messages already handled in DecryptFile.
+        SDG_Err("LoadShader file loading error: {}", file.GetError());
         return 0;
     }
 
     // Create the version header to prepend
     switch (renderer->shader_language)
     {
-        case GPU_LANGUAGE_GLSL:
+        case GPU_LANGUAGE_GLSL:    // High precision for OpenGL shaders
             header = "#version 100\nprecision highp int;\nprecision highp float;\n";
             break;
-        case GPU_LANGUAGE_GLSLES:
+        case GPU_LANGUAGE_GLSLES:  // Medium precision for OpenGLES shaders
             header = "#version 100\nprecision mediump int;\nprecision mediump float;\n";
             break;
         default:
@@ -46,21 +46,17 @@ LoadShader(GPU_ShaderEnum shaderType, const std::string &path)
     headerSize = strlen(header);
 
     // Allocate shader source buffer
-    source = (char *)malloc(headerSize + fileSize + 1);
-
-    // Prepend version header
-    strcpy_s(source, headerSize + 1, header);
-
-    // Read shader file into buffer
-    SDL_RWread(rwops.rwops, source + headerSize, fileSize, 1);
-    source[headerSize + fileSize] = '\0'; // null terminate the str
+    source = (char *)malloc(headerSize + file.Size() + 1);
+        // Prepend version header and write in shader file contents
+        strcpy_s(source, headerSize + 1, header);
+        strcpy_s(source + headerSize, file.Size(), file.Data());
+        source[headerSize + file.Size()] = '\0'; // null terminate the str
 
     // Compile shader
     shader = GPU_CompileShader(shaderType, source);
 
     // Clean up
     free(source);
-    rwops.Free();
 
     return shader;
 }
@@ -132,15 +128,17 @@ SDG::Shader::Compile(const std::string &vertexPath, const std::string &fragPath)
 
 // Set Float Uniform
 SDG::Shader &
-SDG::Shader::SetVariable(const std::string &varId, float value)
+SDG::Shader::SetUniform(const std::string &varId, float value)
 {
     GPU_SetUniformf((int) GetVarLocation(varId), value);
     return *this;
 }
 
+
+
 // Set Vector of float uniform
 SDG::Shader &
-SDG::Shader::SetVariable(const std::string &varId, std::vector<float> values, int elementsPerValue)
+SDG::Shader::SetUniform(const std::string &varId, std::vector<float> values, int elementsPerValue)
 {
     GPU_SetUniformfv((int) GetVarLocation(varId), elementsPerValue, (int)values.size() / elementsPerValue, values.data());
     return *this;
@@ -169,12 +167,9 @@ SDG::Shader::Deactivate()
 }
 
 
-
 SDG::Shader &
-SDG::Shader::SetImage(const std::string &varId, GPU_Image *image)
+SDG::Shader::SetImage(const std::string &varId, Texture2D texture)
 {
-    GPU_SetShaderImage(image, GetVarLocation(varId), 1);
+    GPU_SetShaderImage(texture.Image(), GetVarLocation(varId), 1);
     return *this;
 }
-
-

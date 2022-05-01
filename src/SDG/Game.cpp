@@ -18,6 +18,7 @@
 using std::string;
 
 struct SDG::Game::Impl {
+    Impl() : window(), isRunning() {}
     Window window;
     bool isRunning;
 };

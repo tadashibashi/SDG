@@ -1,7 +1,7 @@
 #include "Texture2D.h"
 #include <SDG/FileSys/FileSys.h>
 #include <SDG/FileSys/File.h>
-#include <SDG/Debug.h>
+#include <SDG/Debug.hpp>
 #include <SDL_gpu.h>
 
 #ifdef M_PI

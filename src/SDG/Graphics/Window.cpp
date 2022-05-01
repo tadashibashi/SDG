@@ -5,7 +5,7 @@
 #include "Window.h"
 #include "RendererType.h"
 
-#include <SDG/Debug.h>
+#include <SDG/Debug.hpp>
 #include <SDL_gpu.h>
 
 #ifdef GetWindow

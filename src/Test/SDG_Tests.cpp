@@ -1,5 +1,5 @@
 #include "DelegateTests.h"
-#include <SDG/SDG.h>
+#include <SDG/SDG.hpp>
 #include <SDL_gpu.h>
 
 using namespace SDG;

@@ -1,7 +1,7 @@
 #include "GraphicsMgr.h"
 #include <SDG/Platform.h>
 #include <SDG/Math/Vector2.h>
-#include <SDG/Debug.h>
+#include <SDG/Debug.hpp>
 
 #include <SDL_gpu.h>
 #include <SDL.h>

@@ -5,8 +5,8 @@
 #include "Game.h"
 #include "Platform.h"
 #include <SDG/Exceptions/AssertionException.h>
-#include "Debug.h"
-#include "Input.h"
+#include "Debug.hpp"
+#include "Input.hpp"
 #include <SDG/FileSys/XMLReader.h>
 #include <SDG/FileSys/FileSys.h>
 #include <SDG/FileSys/IO.h>

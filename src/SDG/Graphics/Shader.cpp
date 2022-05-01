@@ -2,7 +2,7 @@
 // Created by Aaron Ishibashi on 4/13/22.
 //
 #include "Shader.h"
-#include "SDG/Debug.h"
+#include "SDG/Debug.hpp"
 #include "SDG/FileSys/FileSys.h"
 
 #include "SDG/Platform.h"

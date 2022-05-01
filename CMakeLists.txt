@@ -24,6 +24,8 @@ endif()
 # WEBGL
 if (EMSCRIPTEN)
     set(WEBGL 1)
+    #set(CMAKE_C_COMPILER ${CMAKE_SOURCE_DIR}/lib/emsdk/upstream/emscripten/emcc)
+    #set(CMAKE_CXX_COMPILER ${CMAKE_SOURCE_DIR}/lib/emsdk/upstream/emscripten/em++)
 endif()
 
 # Build Type

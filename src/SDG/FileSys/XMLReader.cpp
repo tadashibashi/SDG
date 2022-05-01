@@ -6,7 +6,7 @@
 #include "File.h"
 
 #include "tinyxml2.h"
-#include "SDG/Debug.h"
+#include "SDG/Debug.hpp"
 #include "SDG/Exceptions/XMLReaderException.h"
 
 using namespace tinyxml2;

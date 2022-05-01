@@ -1,7 +1,7 @@
 #include "Keyboard.h"
 #include <SDL_events.h>
 #include <cstdlib>
-#include <SDG/Debug.h>
+#include <SDG/Debug.hpp>
 
 using SDG::Key;
 

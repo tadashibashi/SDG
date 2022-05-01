@@ -15,7 +15,7 @@ set(SDG_Engine_Sources
         Graphics/Color.h Graphics/Color.cpp
         "Game.cpp" "Game.h"
         "Platform.h"
-        "Debug.h"
+        "Debug.hpp"
         "Debug/Logging.h"
         Debug/Logging.cpp
         Debug/Assert.h
@@ -25,7 +25,7 @@ set(SDG_Engine_Sources
         FileSys/File.cpp Filesys/File.h
         "FileSys/XMLReader.cpp" "FileSys/XMLReader.h"
         "Scene.cpp" "Scene.h"
-        "Input.h"
+        "Input.hpp"
         "Input/Input.cpp" "Input/Input.h"
         "Input/Key.h"
         "Input/Keyboard.h" "Input/Keyboard.cpp"
@@ -34,17 +34,19 @@ set(SDG_Engine_Sources
         "Graphics/Texture2D.h" "Graphics/Texture2D.cpp"
         Math/Rand.cpp Math/Rand.h
         Math/Math.h
-        Math.h
+        Math.hpp
         Math/Vector2.h
         Exceptions/AssertionException.h
         Exceptions/XMLReaderException.h Exceptions/XMLReaderException.cpp
         Exceptions/AssertionException.cpp
-        Events/Delegate.h
-        Events.h Math/Tween.cpp Math/Tween.h Math/TweenFunctions.cpp Math/TweenFunctions.h
-        Graphics/SpriteBatch.cpp
-        Graphics/SpriteBatch.h
+        Delegate.h
+        Math/Tween.cpp Math/Tween.h Math/TweenFunctions.cpp Math/TweenFunctions.h
+        Graphics/SpriteBatch.cpp Graphics/SpriteBatch.h
         Math/Rectangle.h
-        Math/Vector3.h FileSys/FileInfo.h Math/Endian.h FileSys.h FileSys/Structs/GameConfig.h SDG.h ServiceProvider.h)
+        Math/Vector3.h
+        FileSys/FileInfo.h Math/Endian.h FileSys.hpp FileSys/Structs/GameConfig.h
+        SDG.hpp
+        ServiceProvider.h)
 
 
 

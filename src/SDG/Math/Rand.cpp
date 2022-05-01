@@ -4,7 +4,7 @@
  *
  * ===========================================================================*/
 #include "Rand.h"
-#include <SDG/Debug.h>
+#include <SDG/Debug.hpp>
 
 namespace SDG
 {

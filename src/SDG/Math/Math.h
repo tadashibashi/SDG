@@ -6,7 +6,7 @@
 #pragma once
 #include "Vector2.h"
 
-#include <SDG/Debug.h>
+#include <SDG/Debug.hpp>
 
 #include <cmath>
 #include <initializer_list>

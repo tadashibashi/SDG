@@ -1,5 +1,5 @@
 #include "FileSys.h"
-#include "SDG/Debug.h"
+#include "SDG/Debug.hpp"
 
 #include "SDL.h"
 

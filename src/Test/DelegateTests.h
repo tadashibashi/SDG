@@ -1,9 +1,6 @@
-//
-// Created by aishi on 4/22/2022.
-//
 #pragma once
-#include <SDG/Events.h>
-#include <SDG/Debug.h>
+#include <SDG/Delegate.h>
+#include <SDG/Debug.hpp>
 
 using namespace SDG;
 

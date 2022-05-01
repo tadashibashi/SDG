@@ -1,7 +1,6 @@
 #pragma once
 #include <type_traits>
 #include <cmath>
-#include <sstream>
 #include <string>
 
 namespace SDG
@@ -38,7 +37,7 @@ namespace SDG
         }
 
         // Distance from zero.
-        float Length() const
+        [[nodiscard]] float Length() const
         {
             return std::sqrt((float)(x * x + y * y));
         }
@@ -57,11 +56,9 @@ namespace SDG
         }
 
         // Formats Vec2_ as string: "{x, y}"
-        std::string ToString() const
+        [[nodiscard]] std::string ToString() const
         {
-            std::ostringstream str;
-            str << *this;
-            return str.str();
+            return "{" + std::to_string(x) + ", " + std::to_string(y) + "}";
         }
 
         // Math operators

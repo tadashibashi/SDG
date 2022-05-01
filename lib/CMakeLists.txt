@@ -21,3 +21,7 @@ if (WEBGL)
     set_target_properties(SDL_gpu PROPERTIES
             COMPILE_DEFINITIONS "${GPU_CompileDefs}")
 endif()
+
+if (MSVC)
+    set_property(TARGET SDL2 APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS HAVE_M_PI _CRT_SECURE_NO_WARNINGS)
+endif()

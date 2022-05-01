@@ -33,20 +33,22 @@ namespace SDG
     }
 
     bool
-    Window::Initialize()
+    Window::Initialize(int width, int height, const char *title, unsigned flags)
     {
         Close(); // Make sure to initialize cleanly
 
         GPU_Target *target = GPU_InitRenderer(RendererType,
-                                              DefaultWindowSize.w,
-                                              DefaultWindowSize.h,
-                                              0);
+                                              width,
+                                              height,
+                                              flags);
         if (!target)
         {
             SDG_Err("Failed to initialize SDL_gpu GPU_Target: {}",
                     GPU_GetErrorString(GPU_PopErrorCode().error));
             return false;
         }
+
+        SDL_SetWindowTitle(GetWindow(target), title);
 
         // Will be using the camera feature
         GPU_EnableCamera(target, true);

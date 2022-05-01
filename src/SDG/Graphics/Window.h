@@ -17,7 +17,7 @@ namespace SDG
         Window();
         ~Window();
 
-        bool Initialize();
+        bool Initialize(int width, int height, const char *title, unsigned flags = 0);
         void Close();
 
         void Clear(Color color = Color::CornflowerBlue());

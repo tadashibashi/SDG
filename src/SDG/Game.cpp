@@ -51,11 +51,8 @@ SDG::Game::Initialize_()
 
     FileSys::Initialize(config.appName, config.appOrg);
 
-    impl->window.Initialize();
-    impl->window
-        .Fullscreen(config.fullscreen)
-        .Size(Point{config.width, config.height})
-        .Title(config.title.c_str());
+    impl->window.Initialize(config.width, config.height, config.title.c_str());
+    impl->window.Fullscreen(config.fullscreen);
 
     Input::Initialize();
 

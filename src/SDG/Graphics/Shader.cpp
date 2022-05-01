@@ -19,7 +19,7 @@ LoadShader(GPU_ShaderEnum shaderType, const std::string &path)
 {
     char *source;
     const char *header;
-    size_t fileSize, headerSize;
+    size_t headerSize;
     uint32_t shader;
     GPU_Renderer *renderer = GPU_GetCurrentRenderer();
 
@@ -51,8 +51,8 @@ LoadShader(GPU_ShaderEnum shaderType, const std::string &path)
     // Allocate shader source buffer
     source = (char *)malloc(headerSize + file.Size() + 1);
         // Prepend version header and write in shader file contents
-        strcpy_s(source, headerSize + 1, header);
-        strcpy_s(source + headerSize, file.Size(), file.Data());
+        memcpy(source, header, headerSize);
+        memcpy(source + headerSize, file.Data(), file.Size());
         source[headerSize + file.Size()] = '\0'; // null terminate the str
 
     // Compile shader
@@ -65,6 +65,7 @@ LoadShader(GPU_ShaderEnum shaderType, const std::string &path)
 }
 
 struct SDG::Shader::Impl {
+    Impl() : program(), block() { }
     uint32_t program;
     GPU_ShaderBlock block;
 };

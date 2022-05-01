@@ -17,6 +17,7 @@ static const SDG::Vector2 DefaultWindowSize {1280, 720};
 namespace SDG
 {
     struct Window::Impl {
+        Impl() : target() {}
         GPU_Target *target;
     };
 

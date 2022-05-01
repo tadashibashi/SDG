@@ -5,8 +5,8 @@
 #include <string>
 #include <vector>
 #include <cstdint>
-#include <SDL_gpu.h>
 #include "Texture2D.h"
+
 
 namespace SDG
 {
@@ -26,7 +26,6 @@ namespace SDG
         void Activate();
         static void Deactivate();
     private:
-        uint32_t program;
-        GPU_ShaderBlock block;
+        Impl *impl;
     };
 }

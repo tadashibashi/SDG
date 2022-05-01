@@ -12,7 +12,7 @@ static void mainLoop()
 
 int main(int argc, char *argv[])
 {
-    game = new SDG::Game;
+    game = CreateGame();
 
 #if SDG_TARGET_WEBGL
     emscripten_set_main_loop(mainLoop, 0, true);

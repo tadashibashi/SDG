@@ -1,0 +1,3 @@
+
+Use pImpl idiom to keep the SDL_gpu and SDL headers out of the SDG header files.
+

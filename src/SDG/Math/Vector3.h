@@ -91,7 +91,7 @@ namespace SDG
         template <typename U>
         Vec3_ &operator*=(const U scalar)
         {
-            static_assert(std::is_arithmetic_v<U>, "Scalar type must be arithmetic")
+            static_assert(std::is_arithmetic_v<U>, "Scalar type must be arithmetic");
             x *= scalar;
             y *= scalar;
             z *= scalar;
@@ -101,7 +101,7 @@ namespace SDG
         template <typename U>
         Vec3_ &operator/=(const U scalar)
         {
-            static_assert(std::is_arithmetic_v<U>, "Scalar type must be arithmetic")
+            static_assert(std::is_arithmetic_v<U>, "Scalar type must be arithmetic");
             x /= scalar;
             y /= scalar;
             z /= scalar;
@@ -111,7 +111,7 @@ namespace SDG
         template <typename U>
         explicit operator Vec3_<U>()
         {
-            static_assert(std::is_arithmetic_v<U> && std::is_convertible_v<T, U>, "Vec3_ type mismatch")
+            static_assert(std::is_arithmetic_v<U> && std::is_convertible_v<T, U>, "Vec3_ type mismatch");
             return Vec3_<U>(
                     static_cast<U>(x),
                     static_cast<U>(y),
@@ -146,19 +146,19 @@ namespace SDG
     template <typename T, typename U>
     Vec3_<T> operator/(const Vec3_<T> v, U scalar)
     {
-        static_assert(std::is_arithmetic_v<U>, "Scalar type must be arithmetic")
+        static_assert(std::is_arithmetic_v<U>, "Scalar type must be arithmetic");
         return v /= scalar;
     }
 
     template <typename T, typename U>
     Vec3_<T> operator*(const Vec3_<T> v, U scalar)
     {
-        static_assert(std::is_arithmetic_v<U>, "Scalar type must be arithmetic")
+        static_assert(std::is_arithmetic_v<U>, "Scalar type must be arithmetic");
         return v *= scalar;
     }
 
-    typedef Vec3_<float> Vector2;
-    typedef Vec3_<int>   Point;
+    typedef Vec3_<float> Vector3;
+    typedef Vec3_<int>   Point3;
 
     template class Vec3_<float>;
     template class Vec3_<int>;

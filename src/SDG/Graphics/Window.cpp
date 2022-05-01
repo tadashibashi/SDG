@@ -61,6 +61,8 @@ namespace SDG
         {
             GPU_FreeTarget(impl->target);
             impl->target = nullptr;
+
+            GPU_Quit();
         }
     }
 

@@ -3,3 +3,9 @@
 //
 #pragma once
 #include <SDG/Platform.h>
+#include <SDG/Graphics/Camera.h>
+#include <SDG/Graphics/Color.h>
+#include <SDG/Graphics/Window.h>
+#include <SDG/Graphics/Shader.h>
+#include <SDG/Graphics/SpriteBatch.h>
+#include <SDG/Graphics/Texture2D.h>

@@ -23,7 +23,7 @@ set(SDG_Engine_Sources
         "FileSys/FileSys.cpp" "FileSys/FileSys.h"
         FileSys/IO.cpp FileSys/IO.h
         FileSys/File.cpp Filesys/File.h
-        "XMLReader.cpp" "XMLReader.h"
+        "FileSys/XMLReader.cpp" "FileSys/XMLReader.h"
         "Scene.cpp" "Scene.h"
         "Input.h"
         "Input/Input.cpp" "Input/Input.h"
@@ -44,7 +44,7 @@ set(SDG_Engine_Sources
         Graphics/SpriteBatch.cpp
         Graphics/SpriteBatch.h
         Math/Rectangle.h
-        Math/Vector3.h FileSys/FileInfo.h Math/Endian.h)
+        Math/Vector3.h FileSys/FileInfo.h Math/Endian.h FileSys.h FileSys/Structs/GameConfig.h SDG.h ServiceProvider.h)
 
 
 

@@ -3,7 +3,7 @@
 add_subdirectory(SDL)
 
 # For sdl-gpu's find SDL2
-set(SDL2MAIN_LIBRARY SDL2main)
+set(SDL2MAIN_LIBRARY 1)
 set(SDL2_LIBRARY SDL2)
 set(SDL2_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/lib/SDL/include)
 

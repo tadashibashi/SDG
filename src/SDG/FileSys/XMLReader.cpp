@@ -3,11 +3,11 @@
 //
 #include "XMLReader.h"
 #include "SDG/FileSys/FileSys.h"
-#include <SDG/FileSys/File.h>
+#include "File.h"
 
-#include <tinyxml2.h>
-#include "Debug.h"
-#include <SDG/Exceptions/XMLReaderException.h>
+#include "tinyxml2.h"
+#include "SDG/Debug.h"
+#include "SDG/Exceptions/XMLReaderException.h"
 
 using namespace tinyxml2;
 
@@ -18,9 +18,16 @@ static void
 OpenXML(const std::string &path, SDG::FileSys::Base base, XMLDocument *outDoc);
 
 bool
-SDG::XMLReader::ParseGameConfig(const string &path, string *appName, string *appOrg,
-     string *title, int *width, int *height, bool *fullscreen)
+SDG::XMLReader::ParseGameConfig(const string &path, GameConfig *config)
 {
+    if (!config)
+    {
+        SDG_Err("Error: failed to parse game config file: passed a nullptr GameConfig.");
+        return false;
+    }
+
+
+
     // Retrieve the window element
     XMLDocument doc; XMLElement *root, *win, *app;
     {
@@ -63,18 +70,12 @@ SDG::XMLReader::ParseGameConfig(const string &path, string *appName, string *app
         CheckResult(app->QueryAttribute("org", &tAppOrg), "querying org attribute from app");
     }
 
-    if (appName)
-        *appName = tAppName;
-    if (appOrg)
-        *appOrg = tAppOrg;
-    if (title)
-        *title = tTitle;
-    if (width)
-        *width = tWidth;
-    if (height)
-        *height = tHeight;
-    if (fullscreen)
-        *fullscreen = tFullscreen;
+    config->appName = tAppName;
+    config->appOrg = tAppOrg;
+    config->title = tTitle;
+    config->width = tWidth;
+    config->height = tHeight;
+    config->fullscreen = tFullscreen;
     return true;
 }
 

@@ -7,6 +7,7 @@
 
 #include "SDG/Platform.h"
 #include "SDG/FileSys/File.h"
+#include <SDL_gpu.h>
 
 using namespace SDG::FileSys;
 
@@ -63,8 +64,12 @@ LoadShader(GPU_ShaderEnum shaderType, const std::string &path)
     return shader;
 }
 
+struct SDG::Shader::Impl {
+    uint32_t program;
+    GPU_ShaderBlock block;
+};
 
-SDG::Shader::Shader() : block{}, program{}
+SDG::Shader::Shader() : impl(new Impl)
 {
 
 }
@@ -80,7 +85,7 @@ SDG::Shader::~Shader()
 uint32_t
 SDG::Shader::GetVarLocation(const std::string &varId) const
 {
-    int location = GPU_GetUniformLocation(program, varId.c_str());
+    int location = GPU_GetUniformLocation(impl->program, varId.c_str());
 
     return (uint32_t)location;
 }
@@ -117,14 +122,14 @@ SDG::Shader::Compile(const std::string &vertexPath, const std::string &fragPath)
     GPU_FreeShader(vertShader);
     GPU_FreeShader(fragShader);
 
-    auto shaderBlock = GPU_LoadShaderBlock(program,
+    auto shaderBlock = GPU_LoadShaderBlock(impl->program,
             "gpu_Vertex",                // position name
             "gpu_TexCoord",             // texcoord name
             "gpu_Color",                   // color name
             "gpu_ModelViewProjectionMatrix"); // modelViewMatrix name
 
-    program = shaderProgram;
-    block = shaderBlock;
+    impl->program = shaderProgram;
+    impl->block = shaderBlock;
     return true;
 }
 
@@ -149,17 +154,17 @@ SDG::Shader::SetUniform(const std::string &varId, std::vector<float> values, int
 void
 SDG::Shader::Close()
 {
-    if (program)
+    if (impl->program)
     {
-        GPU_FreeShaderProgram(program);
-        program = 0;
+        GPU_FreeShaderProgram(impl->program);
+        impl->program = 0;
     }
 }
 
 void
 SDG::Shader::Activate()
 {
-    GPU_ActivateShaderProgram(program, &block);
+    GPU_ActivateShaderProgram(impl->program, &impl->block);
 }
 
 void

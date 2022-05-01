@@ -4,108 +4,68 @@
 
 #include "Game.h"
 #include "Platform.h"
-// TODO: abstract SDL_gpu into a GraphicsDevice class
-#include <SDL_gpu.h>
-#include <SDL.h>
 #include <SDG/Exceptions/AssertionException.h>
-#include <iostream>
-
 #include "Debug.h"
-
 #include "Input.h"
-#include "XMLReader.h"
-#include <SDG/Graphics/Texture2D.h>
-#include "SDG/FileSys/FileSys.h"
+#include <SDG/FileSys/XMLReader.h>
+#include <SDG/FileSys/FileSys.h>
 #include <SDG/FileSys/IO.h>
 
+#include <SDG/Graphics/Window.h>
 
-#include "SDG/Graphics/Shader.h"
-#include "SDG/FileSys/File.h"
+#include <SDL.h>
 
 using std::string;
 
-#if defined (SDG_TARGET_WEBGL) || defined (SDG_TARGET_ANDROID) || defined (SDG_TARGET_IPHONE)
-    const GPU_RendererEnum RendererType = GPU_RENDERER_GLES_3;
-#elif SDG_TARGET_DESKTOP
-    const GPU_RendererEnum RendererType = GPU_RENDERER_OPENGL_3;
-#endif
+struct SDG::Game::Impl {
+    Window window;
+    bool isRunning;
+};
 
-const unsigned DefaultInitFlags = SDL_INIT_VIDEO | SDL_INIT_EVENTS;
-
-SDG::Game::Game() : window{}, isRunning{}
+SDG::Game::Game() : impl(new Impl)
 {
 
-}
-
-// TODO: Put these objects into a ContentManager
-SDG::Shader *shader = nullptr;
-SDG::Texture2D *kirby = nullptr;
-
-// TODO: Finish implementing Camera wrapper
-GPU_Camera cam;
-
-int
-SDG::Game::Initialize()
-{
-    SDG_Log("Game initializing.");
-    int winWidth = 1920, winHeight = 1080;
-    bool fullscreen = false;
-    string appName;
-    string appOrg;
-    string title;
-
-    // Get Window information from config file
-    try {
-        XMLReader::ParseGameConfig("assets/config.sdgc", &appName, &appOrg, &title, &winWidth, &winHeight, &fullscreen);
-    }
-    catch(const std::exception &e)
-    {
-        std::cout << "Failed to parse config.\n";
-        return -1;
-
-    }
-    FileSys::Initialize(appName, appOrg);
-
-    window.Initialize();
-    window
-        .Fullscreen(fullscreen)
-        .Size(Point{winWidth, winHeight})
-        .Title(title.c_str());
-
-
-
-    GPU_SetFullscreen(fullscreen, true);
-
-    Input::Initialize();
-
-    // Temp content
-    kirby = new Texture2D(FileSys::MakePath("assets/textures/kirby.sdgc", FileSys::Base::Root));
-    shader = new Shader;
-    shader->Compile("assets/shaders/v1.sdgc", "assets/shaders/f1.sdgc");
-
-    isRunning = true;
-    return 0;
 }
 
 SDG::Game::~Game()
 {
-    Close();
+    Close_();
+    delete impl;
 }
 
-void
-SDG::Game::RunOneFrame()
+int
+SDG::Game::Initialize_()
 {
+    SDG_Log("Game initializing.");
+    GameConfig config;
+
+    // Get Window information from config file
     try {
-        ProcessInput();
-        Update();
-        Render();
+        XMLReader::ParseGameConfig("assets/config.sdgc", &config);
     }
-    catch(const AssertionException &e)
+    catch(const std::exception &e)
     {
-        SDG_Err("{}", e.what());
-        Exit();
+        SDG_Err("Failed to parse game config.");
+        return -1;
     }
+
+    FileSys::Initialize(config.appName, config.appOrg);
+
+    impl->window.Initialize();
+    impl->window
+        .Fullscreen(config.fullscreen)
+        .Size(Point{config.width, config.height})
+        .Title(config.title.c_str());
+
+    Input::Initialize();
+
+    impl->isRunning = true;
+
+    Initialize(); // Child class initialization
+    return 0;
 }
+
+
 
 void
 SDG::Game::ProcessInput()
@@ -124,92 +84,62 @@ SDG::Game::ProcessInput()
 }
 
 void
-SDG::Game::Update()
+SDG::Game::RunOneFrame()
 {
-    if (Input::KeyPressed(Key::Escape))
+    try {
+        ProcessInput();
+        Update_();
+        Render_();
+    }
+    catch(const AssertionException &e)
+    {
+        SDG_Err("{}", e.what());
         Exit();
-    // TODO: Test GPU_Camera
-
-    if (Input::KeyPress(Key::Left))
-        cam.x -= 8;
-    if (Input::KeyPress(Key::Right))
-        cam.x += 8;
-    if (Input::KeyPress(Key::Up))
-        cam.y -= 8;
-    if (Input::KeyPress(Key::Down))
-        cam.y += 8;
-    if (Input::KeyPress(Key::Return))
-        //cam.zoom_x += .1, cam.zoom_y += .1;
-        cam.angle -= 8;
-    if (Input::KeyPress(Key::RightShift))
-        //cam.zoom_x -= .1, cam.zoom_y -= .1;
-        cam.angle += 8;
-    if (Input::KeyPressed(Key::C))
-        cam.use_centered_origin = !cam.use_centered_origin, SDG_Log("Pressed C");
-
-
-
-    if (Input::KeyPressed(Key::S) && Input::KeyPress(Key::V))
-    {
-        // Save the game!!
-        IO::WriteEncryptedFile("game1.sav", {'m', 'y', ' ', 's', 'a', 'v', 'e'});
     }
-
-    if (Input::KeyPressed(Key::L) && Input::KeyPress(Key::V))
-    {
-        // Loaded the game!!
-        FileSys::File sav(FileSys::MakePath("game1.sav", FileSys::Base::Pref));
-
-        SDG_Log("Loaded save: \"{}\"", sav.Data());
-    }
-
-
 }
 
-void
-SDG::Game::Render()
-{
-    // Render
-    window.Clear(Color::Cerulean());
-
-    shader->Activate();
-    shader->SetUniform("time", (float) SDL_GetTicks());
-
-    GPU_BlitScale(kirby->Image(), nullptr, window.InnerWindow(), (float)window.Size().w / 2,
-            (window.Size().h/2) + kirby->Image()->h * 0.1f * .5f, 0.1f, 0.1f);
-    shader->Deactivate();
-
-    GPU_BlitScale(kirby->Image(), nullptr, window.InnerWindow(), (float)window.Size().w / 2,
-            window.Size().h/2, 0.1f, 0.1f);
-
-    window.SwapBuffers();
-}
 
 void
-SDG::Game::Close()
+SDG::Game::Close_()
 {
-    SDG_Log("Closing Game Object");
-    delete shader; // temp test
-    delete kirby;
-
+    Close(); // Child class clean up
     Input::Close();
-    GPU_Quit();
-
+    impl->window.Close();
+    SDG_Log("Game shut down complete.");
 }
 
 void
 SDG::Game::Run()
 {
-    Initialize();
-    while (isRunning)
+    Initialize_();
+    while (impl->isRunning)
         RunOneFrame();
 }
 
 void
 SDG::Game::Exit()
 {
-    isRunning = false;
+    impl->isRunning = false;
 #if SDG_TARGET_WEBGL
+    Close();
     emscripten_cancel_main_loop();
 #endif
+}
+
+SDG::Window &
+SDG::Game::GetWindow()
+{
+    return impl->window;
+}
+
+void
+SDG::Game::Update_()
+{
+    Update();
+}
+
+void SDG::Game::Render_()
+{
+    Render();
+    impl->window.SwapBuffers();
 }

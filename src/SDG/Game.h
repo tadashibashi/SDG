@@ -1,17 +1,15 @@
 /// Main application object
 #pragma once
 
-#include <SDG/Graphics/Window.h>
-
-class GPU_Target;
-
 namespace SDG
 {
+    class Window;
+
     class Game {
         struct Impl;
     public:
         Game();
-        ~Game();
+        virtual ~Game();
 
         /// Executes one game frame. Intended for use by platforms that require the
         /// use of the main loop, such as Emscripten-WebGL.
@@ -23,17 +21,21 @@ namespace SDG
         /// Shuts down the game before the next frame.
         void Exit();
     protected:
-        /// Gets the SDL_gpu Target object. TODO: Wrap in a GraphicsMgr object.
-        Window &GetWindow() { return window; }
-
-        virtual int Initialize();
-        virtual void ProcessInput();
-        virtual void Update();
-        virtual void Render();
-        virtual void Close();
+        // Access for base classes
+        Window &GetWindow();
 
     private:
-        Window window;
-        bool isRunning;
+        int Initialize_();
+        void ProcessInput();
+        void Update_();
+        void Render_();
+        void Close_();
+
+        // ===== Functions to be overriden by sub-classes =====
+        virtual int Initialize() { return 0; }
+        virtual void Update() {}
+        virtual void Render() {}
+        virtual void Close() {}
+        Impl *impl;
     };
 }

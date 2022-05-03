@@ -48,7 +48,7 @@ namespace SDG
 
     }
 
-    Texture2D::Texture2D(const std::string &path) : impl(new Impl)
+    Texture2D::Texture2D(const string &path) : impl(new Impl)
     {
         LoadImage(path);
     }
@@ -132,4 +132,6 @@ namespace SDG
     {
         return impl->path;
     }
+
+
 }

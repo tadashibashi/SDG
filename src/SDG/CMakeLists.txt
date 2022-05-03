@@ -39,14 +39,14 @@ set(SDG_Engine_Sources
         Exceptions/AssertionException.h
         Exceptions/XMLReaderException.h Exceptions/XMLReaderException.cpp
         Exceptions/AssertionException.cpp
-        Delegate.h
+        Templates/Delegate.h
         Math/Tween.cpp Math/Tween.h Math/TweenFunctions.cpp Math/TweenFunctions.h
         Graphics/SpriteBatch.cpp Graphics/SpriteBatch.h
         Math/Rectangle.h
         Math/Vector3.h
         FileSys/FileInfo.h Math/Endian.h FileSys.hpp FileSys/Structs/GameConfig.h
         SDG.hpp
-        ServiceProvider.h)
+        ServiceProvider.h Entities/Entity.cpp Entities/Entity.h)
 
 
 

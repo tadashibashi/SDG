@@ -1,5 +1,5 @@
 #pragma once
-#include <SDG/Delegate.h>
+#include "SDG/Templates/Delegate.h"
 #include <SDG/Debug.hpp>
 
 using namespace SDG;

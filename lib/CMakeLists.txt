@@ -1,4 +1,4 @@
-
+# Add library subdirectories and apply definitions
 
 add_subdirectory(SDL)
 
@@ -23,5 +23,7 @@ if (WEBGL)
 endif()
 
 if (MSVC)
-    set_property(TARGET SDL2 APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS HAVE_M_PI _CRT_SECURE_NO_WARNINGS)
+    # In MSVC, if <cmath> is included after an SDL header, duplicate M_PI defines
+    # occur. HAVE_M_PI set informs SDL2 to not provide an extra M_PI for us.
+    set_property(TARGET SDL2 APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS HAVE_M_PI)
 endif()

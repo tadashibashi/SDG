@@ -19,5 +19,7 @@ namespace SDG
         SpriteBatch(const SpriteBatch &) = delete;
         SpriteBatch &operator=(const SpriteBatch &) = delete;
 
+        void RenderBatches();
+
     };
 }

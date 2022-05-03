@@ -24,11 +24,8 @@ namespace SDG
         /// Gets the inner GPU_Image object ptr.
         GPU_Image *Image();
 
-        /// <summary>
         /// Load an image into the Texture2D.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
+        /// @param path
         bool LoadImage(const std::string &path);
         void Free();
 

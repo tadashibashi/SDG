@@ -10,3 +10,6 @@
 [submodule "lib/SDL"]
 	path = lib/SDL
 	url = https://github.com/libsdl-org/SDL
+[submodule "lib/sdl-gpu"]
+	path = lib/sdl-gpu
+	url = https://github.com/tadashibashi/sdl-gpu

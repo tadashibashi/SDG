@@ -3,7 +3,7 @@
 //
 #pragma once
 #include <SDG/Platform.h>
-#include <SDG/Graphics/Camera.h>
+#include <SDG/Graphics/Camera2D.h>
 #include <SDG/Graphics/Color.h>
 #include <SDG/Graphics/Window.h>
 #include <SDG/Graphics/Shader.h>

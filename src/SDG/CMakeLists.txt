@@ -7,7 +7,7 @@ set(TinyXML2_Sources
 set(SDG_Engine_Sources
         ${TinyXML2_Sources}
         EntryPoint.cpp
-        Graphics/Camera.cpp Graphics/Camera.h
+        Graphics/Camera2D.cpp Graphics/Camera2D.h
         Graphics/GraphicsMgr.cpp Graphics/GraphicsMgr.h
         Graphics/Window.cpp Graphics/Window.h
         Graphics/RendererType.h
@@ -46,7 +46,7 @@ set(SDG_Engine_Sources
         Math/Vector3.h
         FileSys/FileInfo.h Math/Endian.h FileSys.hpp FileSys/Structs/GameConfig.h
         SDG.hpp
-        ServiceProvider.h Entities/Entity.cpp Entities/Entity.h)
+        ServiceProvider.h Entities/Entity.cpp Entities/Entity.h Math/Matrix4x4.cpp Math/Matrix4x4.h)
 
 
 

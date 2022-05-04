@@ -104,9 +104,9 @@ namespace SDG
     }
 
     Window &
-    Window::SetCamera(const Camera &camera)
+    Window::SetCamera(const Camera2D &camera)
     {
-        GPU_SetCamera(impl->target, camera.InnerCamera());
+        // TODO: Implement
         return *this;
     }
 

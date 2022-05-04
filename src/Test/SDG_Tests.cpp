@@ -1,8 +1,12 @@
 #include "DelegateTests.h"
+#include "MatrixTests.h"
 #include <SDG/SDG.hpp>
 #include <SDL_gpu.h>
+#include <SDG/Graphics/SpriteBatch.h>
 
 using namespace SDG;
+
+static SpriteBatch spriteBatch;
 
 class TestGame : public Game {
 private:
@@ -10,7 +14,7 @@ private:
     {
         // Initialization logic here
         TestDelegate();
-
+        TestMatrix();
         // Temp content
         kirby = new Texture2D(FileSys::MakePath("assets/textures/kirby.sdgc", FileSys::Base::Root));
         shader = new Shader;
@@ -57,9 +61,11 @@ private:
             SDG_Log("Loaded save: \"{}\"", sav.Data());
         }
     }
-
+float angle = 0;
     void Render() override
     {
+        angle = fmod(angle + 1, 360.f);
+
         // Render
         Window &window = GetWindow();
         window.Clear(Color::Cerulean());
@@ -73,6 +79,17 @@ private:
 
         GPU_BlitScale(kirby->Image(), nullptr, window.InnerWindow(), (float)window.Size().w / 2,
                       window.Size().h/2, 0.1f, 0.1f);
+        spriteBatch.Begin(window.InnerWindow());
+        spriteBatch.DrawTexture(kirby, {0, 0, kirby->Image()->base_w, kirby->Image()->base_h},
+                                {10, 10, (float) kirby->Image()->base_w / 100, (float) kirby->Image()->base_h / 100},
+                                100, Vector2(.5, .5), Flip::Vertical, Color::White(), 1.f);
+        spriteBatch.DrawTexture(kirby, {0, 0, kirby->Image()->base_w, kirby->Image()->base_h},
+                                {100, 100, (float) kirby->Image()->base_w / 100, (float) kirby->Image()->base_h / 100},
+                                angle, Vector2(kirby->Image()->base_w / 2.f, kirby->Image()->base_h / 2.f),
+                                Flip::None, Color::White(), 1.f);
+        spriteBatch.DrawTexture(kirby, {angle, angle}, {angle/180.f, angle/180.f},
+                                {.5f,.5f}, angle*2, angle, Color{(uint8_t)(angle/360.f * 255.f), 255});
+        spriteBatch.End();
     }
 
     void Close() override

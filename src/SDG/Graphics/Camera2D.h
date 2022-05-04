@@ -7,16 +7,18 @@ class GPU_Camera;
 
 namespace SDG
 {
-    class Camera
+    class Camera2D
     {
         struct Impl;
     public:
-        Camera();
-        ~Camera();
+        Camera2D();
+        ~Camera2D();
         void Update();
         Vector2 WorldToScreen(Vector2 point);
         Vector2 ScreenToWorld(Vector2 point);
-        GPU_Camera *InnerCamera() const;
+
+        Camera2D &Translate(Vector2 position);
+        Camera2D &Rotate(float degrees);
 
     private:
         Impl *mImpl;

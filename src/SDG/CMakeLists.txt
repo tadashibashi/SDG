@@ -46,7 +46,7 @@ set(SDG_Engine_Sources
         Math/Vector3.h
         FileSys/FileInfo.h Math/Endian.h FileSys.hpp FileSys/Structs/GameConfig.h
         SDG.hpp
-        ServiceProvider.h Entities/Entity.cpp Entities/Entity.h Math/Matrix4x4.cpp Math/Matrix4x4.h)
+        ServiceProvider.h Entities/Entity.cpp Entities/Entity.h Math/Matrix4x4.cpp Math/Matrix4x4.h GameTime.cpp GameTime.h Entities/ComponentList.cpp Entities/ComponentList.h Entities/Component.h Input/Mouse.cpp Input/Mouse.h Input/MButton.h Ref.h)
 
 
 
@@ -57,7 +57,8 @@ set(SDG_Engine_Includes
         ${CMAKE_SOURCE_DIR}/lib/spdlog/include
         ${CMAKE_SOURCE_DIR}/lib/SDL/include
         ${CMAKE_SOURCE_DIR}/lib/sdl-gpu/include
-        ${CMAKE_SOURCE_DIR}/lib/tinyxml2)
+        ${CMAKE_SOURCE_DIR}/lib/tinyxml2
+        ${CMAKE_SOURCE_DIR}/lib/glm)
 
 
 # ----- Libraries ---------------------------------------------------

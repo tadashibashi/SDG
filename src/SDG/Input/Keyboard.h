@@ -25,6 +25,6 @@ namespace SDG
         void UpdateImpl() override;
         void CloseImpl() override;
 
-        Impl *mImpl;
+        Impl *impl;
     };
 }

@@ -1,0 +1,18 @@
+TODO:
+- Test Camera2D
+    x screen-to-world
+    - world-to-screen
+    - world-bounds
+- TTF font rendering and caching
+- Entity
+- Entity Pooling
+- Sprite renderer
+- Scene System
+- Make Asteroids Game
+
+Future:
+- Gui app for creating animations from atlas
+
+Done:
+x Create Mouse object to capture mouse clicks and position
+    (use old sdg-engine for ref)

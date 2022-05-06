@@ -21,7 +21,7 @@ namespace SDG
         GPU_Target *target;
     };
 
-    Window::Window() : impl(new Impl)
+    Window::Window() : impl(new Impl), onSizeChange()
     {
 
     }
@@ -49,9 +49,6 @@ namespace SDG
         }
 
         SDL_SetWindowTitle(GetWindow(target), title);
-
-        // Will be using the camera feature
-        GPU_EnableCamera(target, true);
 
         impl->target = target;
         return true;
@@ -93,20 +90,14 @@ namespace SDG
     Window &
     Window::Size(Point size)
     {
-        SDL_SetWindowSize(GetWindow(impl->target), size.w, size.h);
+        SDL_SetWindowSize(GetWindow(impl->target), size.W(), size.H());
+        onSizeChange.Invoke(size.W(), size.H());
         return *this;
     }
 
     Window &Window::Fullscreen(bool fullscreen)
     {
         GPU_SetFullscreen(fullscreen, SDG_TARGET_DESKTOP);
-        return *this;
-    }
-
-    Window &
-    Window::SetCamera(const Camera2D &camera)
-    {
-        // TODO: Implement
         return *this;
     }
 

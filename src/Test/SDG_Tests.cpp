@@ -3,10 +3,13 @@
 #include <SDG/SDG.hpp>
 #include <SDL_gpu.h>
 #include <SDG/Graphics/SpriteBatch.h>
+#include <SDG/Math.hpp>
+#include <SDG/Graphics/Camera2D.h>
 
 using namespace SDG;
 
 static SpriteBatch spriteBatch;
+static Camera2D camera;
 
 class TestGame : public Game {
 private:
@@ -19,7 +22,7 @@ private:
         kirby = new Texture2D(FileSys::MakePath("assets/textures/kirby.sdgc", FileSys::Base::Root));
         shader = new Shader;
         shader->Compile("assets/shaders/v1.sdgc", "assets/shaders/f1.sdgc");
-
+        camera.Initialize(GetWindow());
         return 0;
     }
 
@@ -27,25 +30,14 @@ private:
     {
         if (Input::KeyPressed(Key::Escape))
             Exit();
-        // TODO: Test GPU_Camera
 
-        if (Input::KeyPress(Key::Left))
-            cam.x -= 8;
-        if (Input::KeyPress(Key::Right))
-            cam.x += 8;
-        if (Input::KeyPress(Key::Up))
-            cam.y -= 8;
-        if (Input::KeyPress(Key::Down))
-            cam.y += 8;
-        if (Input::KeyPress(Key::Return))
-            //cam.zoom_x += .1, cam.zoom_y += .1;
-            cam.angle -= 8;
-        if (Input::KeyPress(Key::RightShift))
-            //cam.zoom_x -= .1, cam.zoom_y -= .1;
-            cam.angle += 8;
-        if (Input::KeyPressed(Key::C))
-            cam.use_centered_origin = !cam.use_centered_origin, SDG_Log("Pressed C");
+        GetWindow()->Title(camera.ScreenToWorld((Vector2)Input::MousePosition()).String().c_str());
 
+
+        if (Input::KeyPressed(Key::Space))
+        {
+            SDG_Log("Seconds since game start: {}", Time()->Ticks() * 0.001f);
+        }
 
         if (Input::KeyPressed(Key::S) && Input::KeyPress(Key::V))
         {
@@ -60,34 +52,77 @@ private:
 
             SDG_Log("Loaded save: \"{}\"", sav.Data());
         }
+
+        if (Input::MousePressed(MButton::Left))
+        {
+            SDG_Log("Pressing left mouse button.");
+        }
+        if (Input::MousePressed(MButton::Right))
+        {
+            SDG_Log("Pressing right mouse button.");
+        }
+        if (Input::MouseWheelDidMove())
+        {
+            SDG_Log(Input::MouseWheel().String());
+        }
+
+        if (Input::KeyPress(Key::Right))
+            camera.Translate({10, 0}), pos.X(pos.X() - 100);
+        if (Input::KeyPress(Key::Left))
+            camera.Translate({-10, 0}), pos.X(pos.X() + 100);
+        if (Input::KeyPress(Key::Up))
+            camera.Translate({0, -10});
+        if (Input::KeyPress(Key::Down))
+            camera.Translate({0, 10});
+
+        if (Input::KeyPress(Key::C))
+            camera.Rotate(10, camera.ScreenToWorld(camera.ScreenSize()/2));
+        // Must be called after every alteration of the matrix has occured to update it to the gpu.
+
+        if ((Input::KeyPress(Key::LeftShift) || Input::KeyPress(Key::RightShift)) &&
+            Input::KeyPressed(Key::Equals))
+            camera.Zoom(camera.Zoom() + Vector2(.1, .1));
+        if ((Input::KeyPress(Key::LeftShift) || Input::KeyPress(Key::RightShift)) &&
+            Input::KeyPressed(Key::Minus))
+            camera.Zoom(camera.Zoom() - Vector2(.1, .1));
+
+        camera.MakeCurrent();
     }
-float angle = 0;
+
+    float angle = 0;
+    Matrix4x4 mat = Matrix4x4::Identity();
+    Vector2 pos;
+
     void Render() override
     {
-        angle = fmod(angle + 1, 360.f);
+        if (Input::MouseWheelDidMove())
+        {
+            angle = fmod(angle + Input::MouseWheel().Y(), 360.f);
+        }
+
 
         // Render
-        Window &window = GetWindow();
-        window.Clear(Color::Cerulean());
+        Ref<Window> window = GetWindow();
+        window->Clear(Color::BlueScreenOfDeath());
 
         shader->Activate();
-        shader->SetUniform("time", (float) SDL_GetTicks());
+        shader->SetUniform("time", (float) Time()->Ticks());
 
-        GPU_BlitScale(kirby->Image(), nullptr, window.InnerWindow(), (float)window.Size().w / 2,
-                      (window.Size().h/2) + kirby->Image()->h * 0.1f * .5f, 0.1f, 0.1f);
+        GPU_BlitScale(kirby->Image(), nullptr, window->InnerWindow(), (float)window->Size().W() / 2,
+                      (window->Size().H()/2) + kirby->Image()->h * 0.1f * .5f, 0.1f, 0.1f);
         shader->Deactivate();
 
-        GPU_BlitScale(kirby->Image(), nullptr, window.InnerWindow(), (float)window.Size().w / 2,
-                      window.Size().h/2, 0.1f, 0.1f);
-        spriteBatch.Begin(window.InnerWindow());
+        GPU_BlitScale(kirby->Image(), nullptr, window->InnerWindow(), (float)window->Size().W() / 2,
+                      window->Size().H()/2, 0.1f, 0.1f);
+        spriteBatch.Begin(window->InnerWindow());
         spriteBatch.DrawTexture(kirby, {0, 0, kirby->Image()->base_w, kirby->Image()->base_h},
                                 {10, 10, (float) kirby->Image()->base_w / 100, (float) kirby->Image()->base_h / 100},
-                                100, Vector2(.5, .5), Flip::Vertical, Color::White(), 1.f);
+                                100, Vector2(0, 0), Flip::Both, Color::White(), 1.f);
         spriteBatch.DrawTexture(kirby, {0, 0, kirby->Image()->base_w, kirby->Image()->base_h},
                                 {100, 100, (float) kirby->Image()->base_w / 100, (float) kirby->Image()->base_h / 100},
                                 angle, Vector2(kirby->Image()->base_w / 2.f, kirby->Image()->base_h / 2.f),
                                 Flip::None, Color::White(), 1.f);
-        spriteBatch.DrawTexture(kirby, {angle, angle}, {angle/180.f, angle/180.f},
+        spriteBatch.DrawTexture(kirby,  Math::Transform(pos, mat), Vector2::One(),
                                 {.5f,.5f}, angle*2, angle, Color{(uint8_t)(angle/360.f * 255.f), 255});
         spriteBatch.End();
     }
@@ -101,7 +136,6 @@ float angle = 0;
     // Test Objects
     Shader *shader;
     Texture2D *kirby;
-    GPU_Camera cam;
 };
 
 /// Entry-point

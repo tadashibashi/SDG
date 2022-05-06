@@ -1,9 +1,8 @@
 cmake_minimum_required(VERSION 3.16)
-project(SDG_Engine)
+project(SDG)
 set(CMAKE_CXX_STANDARD 17)
 
 # Platform-specific detection
-
 # WINDOWS
 if (WIN32)
     if (${CMAKE_SIZEOF_VOID_P} EQUAL 4)
@@ -24,8 +23,6 @@ endif()
 # WEBGL
 if (EMSCRIPTEN)
     set(WEBGL 1)
-    #set(CMAKE_C_COMPILER ${CMAKE_SOURCE_DIR}/lib/emsdk/upstream/emscripten/emcc)
-    #set(CMAKE_CXX_COMPILER ${CMAKE_SOURCE_DIR}/lib/emsdk/upstream/emscripten/em++)
 endif()
 
 # Build Type

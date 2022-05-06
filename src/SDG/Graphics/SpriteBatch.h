@@ -8,12 +8,18 @@ class GPU_Target;
 
 namespace SDG
 {
+    /// SpriteBatch depth sort mode.
     enum class SortMode
     {
+        /// Sort by texture ptr
         Texture,
+        /// Uses depth parameter to sort. Lower depth values in front; higher in back.
         FrontToBack,
+        /// Uses depth parameter to sort. Higher depth values in front; lower in back.
         BackToFront
     };
+
+    /// Texture flip direction. Used with SpriteBatch functions.
     enum class Flip
     {
         None = 0,

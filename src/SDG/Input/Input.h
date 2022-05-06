@@ -3,6 +3,9 @@
 //
 #pragma once
 #include "Key.h"
+#include "MButton.h"
+#include <SDG/Math/Vector2.h>
+
 #include <cstdint>
 
 namespace SDG
@@ -30,6 +33,17 @@ namespace SDG
         static bool KeyPress(Key key);
         static bool KeyReleased(Key key);
         static bool KeyRelease(Key key);
+
+        static bool MousePress(MButton button);
+        static bool MousePressed(MButton button);
+        static bool MouseRelease(MButton button);
+        static bool MouseReleased(MButton button);
+        static Point MousePosition();
+        static Point MouseLastPosition();
+        static bool MouseDidMove();
+        static Vector2 MouseWheel();
+        static Vector2 MouseLastWheel();
+        static bool MouseWheelDidMove();
 
     private:
         static uint32_t types;

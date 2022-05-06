@@ -38,7 +38,7 @@ namespace SDG
 
 
 
-SDG::Keyboard::Keyboard() : mImpl(new Impl)
+SDG::Keyboard::Keyboard() : impl(new Impl)
 {
 
 }
@@ -48,7 +48,7 @@ SDG::Keyboard::Keyboard() : mImpl(new Impl)
 
 SDG::Keyboard::~Keyboard()
 {
-    delete mImpl;
+    delete impl;
 }
 
 
@@ -57,9 +57,9 @@ SDG::Keyboard::~Keyboard()
 bool
 SDG::Keyboard::InitializeImpl()
 {
-    mImpl->state = SDL_GetKeyboardState(&mImpl->numKeys);
-    mImpl->lastState = (Uint8 *)malloc(mImpl->numKeys);
-    memcpy(mImpl->lastState, mImpl->state, mImpl->numKeys);
+    impl->state = SDL_GetKeyboardState(&impl->numKeys);
+    impl->lastState = (Uint8 *)malloc(sizeof(Uint8) * impl->numKeys);
+    memcpy(impl->lastState, impl->state, impl->numKeys);
 
     // Populate the scancodes array if it hasn't already been set
     if (Scancodes[(unsigned)Key::D] != KeyToScanCode(Key::D))
@@ -81,7 +81,7 @@ void
 SDG::Keyboard::ProcessInputImpl(const SDL_Event &ev)
 {
     if (ev.type == SDL_KEYDOWN || ev.type == SDL_KEYUP)
-        mImpl->stateChanged = true;
+        impl->stateChanged = true;
 }
 
 
@@ -90,8 +90,8 @@ SDG::Keyboard::ProcessInputImpl(const SDL_Event &ev)
 bool
 SDG::Keyboard::IsKeyUp(SDG::Key key) const
 {
-    SDG_Assert(mImpl->lastState);
-    return !mImpl->state[Scancodes[(unsigned)key]];
+    SDG_Assert(impl->lastState);
+    return !impl->state[Scancodes[(unsigned)key]];
 }
 
 
@@ -100,8 +100,8 @@ SDG::Keyboard::IsKeyUp(SDG::Key key) const
 bool
 SDG::Keyboard::IsKeyDown(SDG::Key key) const
 {
-    SDG_Assert(mImpl->lastState);
-    return mImpl->state[Scancodes[(unsigned)key]];
+    SDG_Assert(impl->lastState);
+    return impl->state[Scancodes[(unsigned)key]];
 }
 
 
@@ -110,11 +110,11 @@ SDG::Keyboard::IsKeyDown(SDG::Key key) const
 bool
 SDG::Keyboard::JustPressed(SDG::Key key) const
 {
-    SDG_Assert(mImpl->lastState);
+    SDG_Assert(impl->lastState);
     auto scancode = Scancodes[(unsigned)key];
     //SDG_Log("Check: this state {} ... last state {}", mImpl->state[scancode], mImpl->lastState[scancode]);
-    return mImpl->state[scancode] &&
-        !mImpl->lastState[scancode];
+    return impl->state[scancode] &&
+           !impl->lastState[scancode];
 }
 
 
@@ -122,10 +122,10 @@ SDG::Keyboard::JustPressed(SDG::Key key) const
 bool
 SDG::Keyboard::JustReleased(SDG::Key key) const
 {
-    SDG_Assert(mImpl->lastState);
+    SDG_Assert(impl->lastState);
     auto scancode = Scancodes[(unsigned)key];
-    return !mImpl->state[scancode] &&
-           mImpl->lastState[scancode];
+    return !impl->state[scancode] &&
+           impl->lastState[scancode];
 }
 
 
@@ -133,10 +133,10 @@ SDG::Keyboard::JustReleased(SDG::Key key) const
 void
 SDG::Keyboard::UpdateImpl()
 {
-    if (mImpl->stateChanged)
+    if (impl->stateChanged)
     {
-        memcpy(mImpl->lastState, mImpl->state, mImpl->numKeys);
-        mImpl->stateChanged = false;
+        memcpy(impl->lastState, impl->state, sizeof(Uint8) * impl->numKeys);
+        impl->stateChanged = false;
     }
 }
 
@@ -145,10 +145,10 @@ SDG::Keyboard::UpdateImpl()
 void
 SDG::Keyboard::CloseImpl()
 {
-    if (mImpl->lastState)
+    if (impl->lastState)
     {
-        free(mImpl->lastState);
-        mImpl->lastState = nullptr;
+        free(impl->lastState);
+        impl->lastState = nullptr;
     }
 }
 

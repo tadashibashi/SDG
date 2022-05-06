@@ -3,24 +3,46 @@
 //
 #pragma once
 #include <SDG/Math/Vector2.h>
-class GPU_Camera;
+#include <SDG/Math/Rectangle.h>
+#include <SDG/Ref.h>
 
 namespace SDG
 {
+    class Window;
+    class Matrix4x4;
+
     class Camera2D
     {
         struct Impl;
     public:
         Camera2D();
         ~Camera2D();
-        void Update();
-        Vector2 WorldToScreen(Vector2 point);
-        Vector2 ScreenToWorld(Vector2 point);
+        void Initialize(Ref<Window> window);
+
+        Vector2 WorldToScreen(Vector2 point) const;
+        Vector2 ScreenToWorld(Vector2 point) const;
+
+
+        Camera2D &Rotate(float degrees, Vector2 anchor = Vector2());
+        Camera2D &Rotation(float degrees);
+        float Rotation() const;
+
+        Camera2D &Zoom(Vector2 zoom);
+        Vector2 Zoom() const;
 
         Camera2D &Translate(Vector2 position);
-        Camera2D &Rotate(float degrees);
+        Vector2 Position() const;
+        Camera2D &Position(Vector2 pos);
+        Camera2D &MakeCurrent();
+        Matrix4x4 Matrix() const;
 
+        Vector2 ScreenSize() const;
+
+        FRectangle WorldBounds() const;
     private:
-        Impl *mImpl;
+        // Only call this when changed
+        void Update() const;
+        void SetDimensions(int width, int height);
+        Impl *impl;
     };
 }

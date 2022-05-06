@@ -1,5 +1,6 @@
 #pragma once
 #include <cmath>
+#include <string>
 
 namespace SDG
 {
@@ -7,15 +8,32 @@ namespace SDG
     class  Vec3_
     {
         static_assert(std::is_arithmetic_v<T>, "Vec3_ template type must be arithmetic");
+        struct { T x, y, z; };
     public:
         Vec3_() : x(0), y(0), z(0) { }
         Vec3_(T x, T y, T z) : x(x), y(y), z(z) { }
 
-        union
+        T X() const { return x; }
+        T Y() const { return y; }
+        T Z() const { return z; }
+        void X(T pX) { x = pX; }
+        void Y(T pY) { x = pY; }
+        void Z(T pZ) { x = pZ; }
+
+        T &operator[](int i)
         {
-            struct { T x, y, z; };
-            struct { T r, g, b; };
-        };
+            return *(&x + i);
+        }
+
+        static Vec3_ One() { return Vec3_(1, 1, 1); }
+        static Vec3_ Zero() { return Vec3_(0, 0, 0); }
+
+        // Formats Vec3_ as string: "{x, y, z}"
+        [[nodiscard]] std::string String() const
+        {
+            return "{" + std::to_string(x) + ", " + std::to_string(y) +
+                ", " + std::to_string(z) + "}";
+        }
 
         static double Distance(const Vec3_ &p1, const Vec3_ &p2)
         {
@@ -44,46 +62,50 @@ namespace SDG
             }
         }
 
-        Vec3_ &operator+=(const Vec3_ &other)
+        template <typename U>
+        Vec3_ &operator+=(const Vec3_<U> &other)
         {
-            x += other.x;
-            y += other.y;
-            z += other.z;
+            x += other.X();
+            y += other.Y();
+            z += other.Z();
             return *this;
         }
 
-        Vec3_ &operator-=(const Vec3_ &other)
+        template <typename U>
+        Vec3_ &operator-=(const Vec3_<U> &other)
         {
-            x -= other.x;
-            y -= other.y;
-            z -= other.z;
+            x -= other.X();
+            y -= other.Y();
+            z -= other.Z();
             return *this;
         }
 
-        Vec3_ &operator*=(const Vec3_ &other)
+        template <typename U>
+        Vec3_ &operator*=(const Vec3_<U> &other)
         {
-            x *= other.x;
-            y *= other.y;
-            z *= other.z;
+            x *= other.X();
+            y *= other.Y();
+            z *= other.Z();
             return *this;
         }
 
-        Vec3_ &operator/=(const Vec3_ &other)
+        template <typename U>
+        Vec3_ &operator/=(const Vec3_<U> &other)
         {
-            x /= other.x;
-            y /= other.y;
-            z /= other.z;
+            x /= other.X();
+            y /= other.Y();
+            z /= other.Z();
             return *this;
         }
 
-        bool operator==(const Vec3_ &other)
+        bool operator==(const Vec3_ &other) const
         {
-            return (x == other.x &&
-                    y == other.y &&
-                    z == other.z);
+            return (x == other.X() &&
+                    y == other.Y() &&
+                    z == other.Z());
         }
 
-        bool operator!=(const Vec3_ &other)
+        bool operator!=(const Vec3_ &other) const
         {
             return !(*this == other);
         }
@@ -119,26 +141,26 @@ namespace SDG
         }
     };
 
-    template <typename T>
-    Vec3_<T> operator+(Vec3_<T> a, Vec3_<T> b)
+    template <typename T, typename U>
+    Vec3_<T> operator+(Vec3_<T> a, Vec3_<U> b)
     {
         return a += b;
     }
 
-    template <typename T>
-    Vec3_<T> operator-(const Vec3_<T> a, const Vec3_<T> b)
+    template <typename T, typename U>
+    Vec3_<T> operator-(const Vec3_<T> a, const Vec3_<U> b)
     {
         return a -= b;
     }
 
-    template <typename T>
-    Vec3_<T> operator*(const Vec3_<T> a, const Vec3_<T> b)
+    template <typename T, typename U>
+    Vec3_<T> operator*(const Vec3_<T> a, const Vec3_<U> b)
     {
         return a *= b;
     }
 
-    template <typename T>
-    Vec3_<T> operator/(const Vec3_<T> a, const Vec3_<T> b)
+    template <typename T, typename U>
+    Vec3_<T> operator/(const Vec3_<T> a, const Vec3_<U> b)
     {
         return a /= b;
     }

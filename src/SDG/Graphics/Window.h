@@ -3,8 +3,10 @@
 //
 #pragma once
 #include <SDG/Math/Vector2.h>
+#include <SDG/Templates/Delegate.h>
 #include "Camera2D.h"
 #include "Color.h"
+
 
 class GPU_Target;
 
@@ -27,7 +29,6 @@ namespace SDG
         Window &Title(const char *title);
         Window &Size(Point size);
         Window &Fullscreen(bool fullscreen);
-        Window &SetCamera(const Camera2D &camera);
 
         // === Getters ===
 
@@ -35,7 +36,7 @@ namespace SDG
         Point Size() const;
         bool Fullscreen() const;
         GPU_Target *InnerWindow();
-
+        Delegate<int, int> onSizeChange;
     private:
         Impl *impl;
     };

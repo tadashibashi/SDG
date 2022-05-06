@@ -18,9 +18,10 @@
 using std::string;
 
 struct SDG::Game::Impl {
-    Impl() : window(), isRunning() {}
+    Impl() : window(), isRunning(), time() {}
     Window window;
     bool isRunning;
+    SDG::GameTime time;
 };
 
 SDG::Game::Game() : impl(new Impl)
@@ -40,7 +41,7 @@ SDG::Game::Initialize_()
     SDG_Log("Game initializing.");
     GameConfig config;
 
-    // Get Window information from config file
+    // Get game settings from config file
     try {
         XMLReader::ParseGameConfig("assets/config.sdgc", &config);
     }
@@ -124,20 +125,28 @@ SDG::Game::Exit()
 #endif
 }
 
-SDG::Window &
+SDG::Ref<SDG::Window>
 SDG::Game::GetWindow()
 {
-    return impl->window;
+    return Ref(impl->window);
 }
 
 void
 SDG::Game::Update_()
 {
+    impl->time.Update();
     Update();
 }
 
-void SDG::Game::Render_()
+void
+SDG::Game::Render_()
 {
     Render();
     impl->window.SwapBuffers();
+}
+
+const SDG::CRef<SDG::GameTime>
+SDG::Game::Time()
+{
+    return CRef(impl->time);
 }

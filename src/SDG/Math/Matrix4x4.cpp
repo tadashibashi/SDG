@@ -3,6 +3,10 @@
 //
 #include "Matrix4x4.h"
 #include "SDG/Debug/Assert.h"
+#include "Math.h"
+#include <glm/glm.hpp>
+#include <glm/ext/matrix_clip_space.hpp>
+#include <glm/gtx/transform.hpp>
 #include <SDL_gpu.h>
 
 namespace SDG
@@ -12,20 +16,25 @@ namespace SDG
 
     }
 
-    Matrix4x4::Matrix4x4(const Matrix4x4 &matrix)
+    Matrix4x4::Matrix4x4(float s) : mat {s}
     {
-        memcpy(mat, matrix.mat, 16);
+
     }
 
-    Matrix4x4::Matrix4x4(float *data) : mat{0}
+    Matrix4x4::Matrix4x4(const Matrix4x4 &matrix)
     {
-        memcpy(mat, data, 16);
+        mat = matrix.mat;
+    }
+
+    Matrix4x4 Matrix4x4::Ortho(FRectangle rect)
+    {
+        return Matrix4x4{glm::ortho(rect.Left(), rect.Right(), rect.Bottom(), rect.Top())};
     }
 
     Matrix4x4 &
     Matrix4x4::operator=(const Matrix4x4 &other)
     {
-        memcpy(mat, other.mat, 16);
+        mat = other.mat;
         return *this;
     }
 
@@ -37,56 +46,57 @@ namespace SDG
     Matrix4x4 &
     Matrix4x4::Translate(Vector3 position)
     {
-        GPU_MatrixTranslate(mat, position.x, position.y, position.z);
+        mat *= glm::translate(glm::vec3{position.X(), position.Y(), position.Z()});
         return *this;
     }
 
     Matrix4x4 &
-    Matrix4x4::Rotate(float degrees, Vector3 anchor)
+    Matrix4x4::Rotate(float degrees, Vector3 axis)
     {
-        GPU_MatrixRotate(mat, degrees, anchor.x, anchor.y, anchor.z);
+        if (degrees != 0)
+            mat *= glm::rotate(Math::DegToRad(degrees), glm::vec3{axis.X(), axis.Y(), axis.Z()});
         return *this;
     }
 
     Matrix4x4
     Matrix4x4::Identity()
     {
-        Matrix4x4 m;
-        GPU_MatrixIdentity(m.mat);
-        return m;
+        return Matrix4x4{1.f};
     }
 
 
     Matrix4x4 &
     Matrix4x4::Scale(Vector3 scalar)
     {
-        GPU_MatrixScale(mat, scalar.x, scalar.y, scalar.z);
+        mat = glm::scale(mat, {scalar.X(), scalar.Y(), scalar.Z()});
         return *this;
     }
 
     Matrix4x4 &
     Matrix4x4::Scale(float scalar)
     {
-        GPU_MatrixScale(mat, scalar, scalar, scalar);
+        mat = glm::scale(mat, {scalar, scalar, scalar});
+        return *this;
+    }
+
+    Matrix4x4 &
+    Matrix4x4::Perspective(float fovy, float aspect, float znear, float zfar)
+    {
+        mat *= glm::perspective(fovy, aspect, znear, zfar);
         return *this;
     }
 
     Matrix4x4 &
     Matrix4x4::operator *= (const Matrix4x4 &other)
     {
-        GPU_MatrixMultiply(mat, mat, other.Data());
+        mat *= other.mat;
         return *this;
     }
 
     Matrix4x4 &
     Matrix4x4::operator *= (float scalar)
     {
-        for (float *n = mat, *end = mat + 16;
-             n != end;
-             ++n)
-        {
-            *n *= scalar;
-        }
+        mat *= scalar;
 
         return *this;
     }
@@ -94,27 +104,14 @@ namespace SDG
     Matrix4x4 &
     Matrix4x4::operator += (const Matrix4x4 &other)
     {
-        const float *i = other.Data();
-        for (float *n = mat, *end = mat + 16;
-             n != end;
-             ++n)
-        {
-            *n += *i;
-        }
-
+        mat += other.mat;
         return *this;
     }
 
     Matrix4x4 &
     Matrix4x4::operator -= (const Matrix4x4 &other)
     {
-        const float *i = other.Data();
-        for (float *n = mat, *end = mat + 16;
-             n != end;
-             ++n)
-        {
-            *n -= *i;
-        }
+        mat -= other.mat;
 
         return *this;
     }
@@ -124,28 +121,49 @@ namespace SDG
         return *this *= other;
     }
 
-    void Matrix4x4::Log()
+    std::string
+    Matrix4x4::ToString() const
     {
-        printf("[%f %f %f %f\n"
-               " %f %f %f %f\n"
-               " %f %f %f %f\n"
-               " %f %f %f %f]\n",
-               mat[0], mat[1], mat[2], mat[3],
-               mat[4], mat[5], mat[6], mat[7],
-               mat[8], mat[9], mat[10], mat[11],
-               mat[12], mat[13], mat[14], mat[15]
-               );
+        char buf[256];
+        sprintf(buf, "[%f %f %f %f\n"
+                " %f %f %f %f\n"
+                " %f %f %f %f\n"
+                " %f %f %f %f]\n",
+                mat[0][0], mat[1][0], mat[2][0], mat[3][0],
+                mat[0][1], mat[1][1], mat[2][1], mat[3][1],
+                mat[0][2], mat[1][2], mat[2][2], mat[3][2],
+                mat[0][3], mat[1][3], mat[2][3], mat[3][3]
+        );
+
+        return buf;
     }
 
-    Vector3 Matrix4x4::Position() const
+    void
+    Matrix4x4::Log() const
     {
-        return {mat[12], mat[13], mat[14]};
+        printf("%s", ToString().c_str());
     }
 
-    float Matrix4x4::GetEntry(int row, int column)
+    float Matrix4x4::Entry(int row, int column)
     {
-        SDG_Assert(row > 0 && row <= 4 && column > 0 && column <= 4);
-        return mat[(row - 1) * 4 + column - 1];
+        SDG_Assert(row >= 0 && row < 4 && column >= 0 && column < 4);
+        return mat[column][row];
+    }
+
+
+    Matrix4x4 &
+    Matrix4x4::LookAt(Vector3 eye, Vector3 center, Vector3 up)
+    {
+        mat = glm::lookAt(glm::vec3{eye.X(), eye.Y(), eye.Z()},
+                           glm::vec3{center.X(), center.Y(), center.Z()},
+                           glm::vec3{up.X(), up.Y(), up.Z()});
+        return *this;
+    }
+
+    Matrix4x4 &Matrix4x4::Invert()
+    {
+        mat = glm::inverse(mat);
+        return *this;
     }
 }
 
@@ -173,20 +191,23 @@ operator - (const SDG::Matrix4x4 &m1, const SDG::Matrix4x4 &m2)
     return SDG::Matrix4x4(m1) -= m2;
 }
 
-bool operator == (const SDG::Matrix4x4 &m1, const SDG::Matrix4x4 &m2)
+bool
+SDG::Matrix4x4::operator == (const SDG::Matrix4x4 &other) const
 {
-    for (const float *v1 = m1.Data(), *v2 = m2.Data(), *end = m1.Data() + 16;
-            v1 != end;
-            ++v1, ++v2)
-    {
-        if (*v1 != *v2) return false;
-    }
-
-    return true;
+    return mat == other.mat;
 }
 
-bool operator != (const SDG::Matrix4x4 &m1, const SDG::Matrix4x4 &m2)
+bool
+SDG::Matrix4x4::operator != (const SDG::Matrix4x4 &other) const
 {
-    return !(m1 == m2);
+    return !(*this == other);
 }
 
+void
+SDG::Matrix4x4::Transform(float *x, float *y) const
+{
+    float resX = (*x * mat[0][0]) + (*y * mat[1][0]) + mat[3][0];
+    float resY = (*x * mat[0][1]) + (*y * mat[1][1]) + mat[3][1];
+    *x = resX;
+    *y = resY;
+}

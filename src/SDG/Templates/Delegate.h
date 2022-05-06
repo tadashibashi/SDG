@@ -102,6 +102,11 @@ namespace SDG {
             std::function<void(Args...)> function; // the function to call
         };
     public:
+        Delegate() = default;
+        // Prevent copying and assignment
+        Delegate(const Delegate &) = delete;
+        Delegate &operator=(const Delegate &) = delete;
+
         // Gets the number of listeners currently attached to this Delegate.
         int Size()
         {

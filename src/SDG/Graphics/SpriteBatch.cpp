@@ -19,7 +19,7 @@ SDG::SpriteBatch::SpriteBatch() :
 
 }
 
-static Uint32 TranslateFlip[4] = {
+static const Uint32 TranslateFlip[4] = {
         GPU_FLIP_NONE, GPU_FLIP_HORIZONTAL, GPU_FLIP_VERTICAL,
         GPU_FLIP_HORIZONTAL | GPU_FLIP_VERTICAL
 };
@@ -29,10 +29,10 @@ SDG::SpriteBatch::RenderBatches()
 {
     for (auto &b : batch)
     {
-        GPU_Rect src {(float)b.src.x, (float)b.src.y, (float)b.src.w, (float)b.src.h};
-        GPU_Rect dest { b.dest.x, b.dest.y, b.dest.w, b.dest.h};
+        GPU_Rect src {(float)b.src.X(), (float)b.src.Y(), (float) b.src.Width(), (float) b.src.Height()};
+        GPU_Rect dest {b.dest.X(), b.dest.Y(), b.dest.Width(), b.dest.Height()};
         GPU_SetColor(b.texture->Image(), {b.color.r, b.color.g, b.color.b, b.color.a});
-        GPU_BlitRectX(b.texture->Image(), &src, target, &dest, b.rotation, b.anchor.x, b.anchor.y,
+        GPU_BlitRectX(b.texture->Image(), &src, target, &dest, b.rotation, b.anchor.X(), b.anchor.Y(),
                       TranslateFlip[(int)b.flip]);
     }
 }
@@ -92,9 +92,9 @@ void SDG::SpriteBatch::DrawTexture(SDG::Texture2D *texture, SDG::Vector2 positio
 {
     batch.emplace_back(texture,
                        Rectangle{0, 0, (int)texture->Image()->base_w, (int)texture->Image()->base_h},
-                       FRectangle{position.x, position.y, texture->Image()->base_w * scale.w, texture->Image()->base_h * scale.h},
+                       FRectangle{position.X(), position.Y(), texture->Image()->base_w * scale.W(), texture->Image()->base_h * scale.H()},
                        rotation,
-                       Vector2{(float)texture->Image()->base_w * normAnchor.w, (float)texture->Image()->base_h * normAnchor.h},
+                       Vector2{(float)texture->Image()->base_w * normAnchor.W(), (float)texture->Image()->base_h * normAnchor.H()},
                        Flip::None, color, depth);
 }
 

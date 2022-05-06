@@ -11,49 +11,63 @@ namespace SDG
         Rect_() : x(0), y(0), w(0), h(0) { }
         Rect_(T x, T y, T w, T h) : x(x), y(y), w(w), h(h) { }
 
-        // data members
-        T x, y, w, h;
+        [[nodiscard]]
+        T X() const { return x; }
 
-        void Set(T x, T y, T w, T h) noexcept
+        [[nodiscard]]
+        T Y() const { return y; }
+
+        [[nodiscard]]
+        T Width() const { return w; }
+
+        [[nodiscard]]
+        T Height() const { return h; }
+
+        Rect_ &X(T pX) { x = pX; return *this; }
+        Rect_ &Y(T pY) { y = pY; return *this; }
+        Rect_ &W(T pW) { y = pW; return *this; }
+        Rect_ &H(T pH) { y = pH; return *this; }
+
+        void Set(T pX, T pY, T pW, T pH) noexcept
         {
-            this->x = x;
-            this->y = y;
-            this->w = w;
-            this->h = h;
+            x = pX;
+            y = pY;
+            w = pW;
+            h = pH;
         }
 
         [[nodiscard]]
-        T GetArea() const noexcept
+        T Area() const noexcept
         {
             return w * h;
         }
 
         [[nodiscard]]
-        T GetLeft() const noexcept
+        T Left() const noexcept
         {
             return x;
         }
 
         [[nodiscard]]
-        T GetRight() const noexcept
+        T Right() const noexcept
         {
             return x + w;
         }
 
         [[nodiscard]]
-        T GetTop() const noexcept
+        T Top() const noexcept
         {
             return y;
         }
 
         [[nodiscard]]
-        T GetBottom() const noexcept
+        T Bottom() const noexcept
         {
             return y + h;
         }
 
         [[nodiscard]]
-        bool IsEmpty() const noexcept
+        bool Empty() const noexcept
         {
             return (w == 0 && h == 0);
         }
@@ -73,10 +87,10 @@ namespace SDG
         bool Intersects(const Rect_<U> &other)
         {
             static_assert(std::is_arithmetic_v<U> && std::is_convertible_v<U, T>, "Rectangle type mismatch.");
-            T topA(GetTop()), bottomA(GetBottom()),
-                    leftA(GetLeft()), rightA(GetRight()),
-                    topB(other.GetTop()), bottomB(other.GetBottom()),
-                    leftB(other.GetLeft()), rightB(other.GetRight());
+            T topA(Top()), bottomA(Bottom()),
+                    leftA(Left()), rightA(Right()),
+                    topB(other.Top()), bottomB(other.Bottom()),
+                    leftB(other.Left()), rightB(other.Right());
             return !(topB > bottomA || bottomB < topA || rightB < leftA || leftB > rightA);
         }
 
@@ -91,6 +105,10 @@ namespace SDG
                     static_cast<U>(w),
                     static_cast<U>(h));
         }
+
+    private:
+        // data members
+        T x, y, w, h;
     };
 
     typedef Rect_<float> FRectangle;

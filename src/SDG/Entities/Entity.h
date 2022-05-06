@@ -12,6 +12,9 @@ namespace SDG
         Entity();
         ~Entity();
 
+        virtual void Initialize();
+        virtual void Update();
+        virtual void Close();
     private:
 
     };

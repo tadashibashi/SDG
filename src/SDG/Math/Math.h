@@ -5,7 +5,7 @@
  * ===========================================================================*/
 #pragma once
 #include "Vector2.h"
-
+#include "Matrix4x4.h"
 #include <SDG/Debug.hpp>
 
 #include <cmath>
@@ -30,7 +30,14 @@ namespace SDG
 
         static Vector2 Lerp(Vector2 val, Vector2 dest, float amt)
         {
-            return Vector2(Lerp(val.x, dest.x, amt), Lerp(val.y, dest.y, amt));
+            return Vector2(Lerp(val.X(), dest.Y(), amt), Lerp(val.Y(), dest.Y(), amt));
+        }
+
+        static Vector2 Transform(Vector2 position, const Matrix4x4 &mat)
+        {
+            float x, y;
+            mat.Transform(&x, &y);
+            return {x, y};
         }
 
         template <typename T>
@@ -163,7 +170,7 @@ namespace SDG
 
         static Vector2 Wrap(Vector2 val, Vector2 low, Vector2 high)
         {
-            return Vector2(Wrap(val.x, low.x, high.x), Wrap(val.y, low.y, high.y));
+            return Vector2(Wrap(val.X(), low.X(), high.X()), Wrap(val.Y(), low.Y(), high.Y()));
         }
 
         static float PointDirection(float x1, float y1, float x2, float y2)

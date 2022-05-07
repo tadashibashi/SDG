@@ -22,7 +22,8 @@ private:
         kirby = new Texture2D(FileSys::MakePath("assets/textures/kirby.sdgc", FileSys::Base::Root));
         shader = new Shader;
         shader->Compile("assets/shaders/v1.sdgc", "assets/shaders/f1.sdgc");
-        camera.Initialize(GetWindow());
+        camera.Initialize(Window());
+        camera.MakeCurrent();
         return 0;
     }
 
@@ -31,8 +32,8 @@ private:
         if (Input::KeyPressed(Key::Escape))
             Exit();
 
-        GetWindow()->Title(camera.ScreenToWorld((Vector2)Input::MousePosition()).String().c_str());
-
+        Vector2 mouseWorld = camera.ScreenToWorld((Vector2)Input::MousePosition());
+        Window()->Title(mouseWorld.String().c_str());
 
         if (Input::KeyPressed(Key::Space))
         {
@@ -51,6 +52,16 @@ private:
             FileSys::File sav(FileSys::MakePath("game1.sav", FileSys::Base::Pref));
 
             SDG_Log("Loaded save: \"{}\"", sav.Data());
+        }
+
+        if (Input::KeyPressed(Key::F))
+        {
+            Window()->Fullscreen(!Window()->Fullscreen());
+        }
+
+        if (Input::KeyPressed(Key::B))
+        {
+            Window()->Bordered(!Window()->Bordered());
         }
 
         if (Input::MousePressed(MButton::Left))
@@ -80,10 +91,10 @@ private:
         // Must be called after every alteration of the matrix has occured to update it to the gpu.
 
         if ((Input::KeyPress(Key::LeftShift) || Input::KeyPress(Key::RightShift)) &&
-            Input::KeyPressed(Key::Equals))
+                Input::KeyPressed(Key::Equals))
             camera.Zoom(camera.Zoom() + Vector2(.1, .1));
         if ((Input::KeyPress(Key::LeftShift) || Input::KeyPress(Key::RightShift)) &&
-            Input::KeyPressed(Key::Minus))
+                Input::KeyPressed(Key::Minus))
             camera.Zoom(camera.Zoom() - Vector2(.1, .1));
 
         camera.MakeCurrent();
@@ -102,19 +113,19 @@ private:
 
 
         // Render
-        Ref<Window> window = GetWindow();
+        auto window = Window();
         window->Clear(Color::BlueScreenOfDeath());
 
         shader->Activate();
         shader->SetUniform("time", (float) Time()->Ticks());
 
-        GPU_BlitScale(kirby->Image(), nullptr, window->InnerWindow(), (float)window->Size().W() / 2,
-                      (window->Size().H()/2) + kirby->Image()->h * 0.1f * .5f, 0.1f, 0.1f);
+        //GPU_BlitScale(kirby->Image(), nullptr, window->InnerWindow().Get(), (float)window->Size().W() / 2,
+        //              (window->Size().H()/2) + kirby->Image()->base_h * 0.1f * .5f, 0.1f, 0.1f);
         shader->Deactivate();
 
-        GPU_BlitScale(kirby->Image(), nullptr, window->InnerWindow(), (float)window->Size().W() / 2,
-                      window->Size().H()/2, 0.1f, 0.1f);
-        spriteBatch.Begin(window->InnerWindow());
+        //GPU_BlitScale(kirby->Image(), nullptr, window->InnerWindow().Get(), (float)window->Size().W() / 2,
+         //             window->Size().H()/2, 0.1f, 0.1f);
+        spriteBatch.Begin(window->Target());
         spriteBatch.DrawTexture(kirby, {0, 0, kirby->Image()->base_w, kirby->Image()->base_h},
                                 {10, 10, (float) kirby->Image()->base_w / 100, (float) kirby->Image()->base_h / 100},
                                 100, Vector2(0, 0), Flip::Both, Color::White(), 1.f);

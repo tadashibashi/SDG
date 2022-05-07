@@ -26,9 +26,9 @@ namespace SDG
         mat = matrix.mat;
     }
 
-    Matrix4x4 Matrix4x4::Ortho(FRectangle rect)
+    Matrix4x4 Matrix4x4::Ortho(float left, float right, float bottom, float top)
     {
-        return Matrix4x4{glm::ortho(rect.Left(), rect.Right(), rect.Bottom(), rect.Top())};
+        return Matrix4x4{glm::ortho(left, right, bottom, top)};
     }
 
     Matrix4x4 &

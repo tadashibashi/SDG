@@ -2,6 +2,7 @@
 // Created by Aaron Ishibashi on 5/5/22.
 //
 #include "Mouse.h"
+#include "SDG/Debug/Logging.h"
 #include <SDL_events.h>
 
 static const uint32_t mouseButtons[5] = {
@@ -16,16 +17,15 @@ namespace SDG
 {
     Mouse::Mouse() : buttonMask(), lastButtonMask(),
         position(), lastPosition(), wheel(), lastWheel()
-    {
-
-    }
+    { }
 
     Mouse::~Mouse()
     {
 
     }
 
-    bool Mouse::InitializeImpl()
+    bool
+    Mouse::InitializeImpl()
     {
         lastButtonMask = 0;
         buttonMask = 0;
@@ -36,28 +36,32 @@ namespace SDG
         return true;
     }
 
-    void Mouse::ProcessInputImpl(const SDL_Event &ev)
+    void
+    Mouse::ProcessInputImpl(const SDL_Event &ev)
     {
         switch(ev.type)
         {
             case SDL_MOUSEWHEEL:
-                wheel = Vector2(ev.wheel.preciseX, ev.wheel.preciseY);
+                wheel += Vector2(ev.wheel.preciseX, ev.wheel.preciseY);
                 break;
         }
     }
 
-    void Mouse::UpdateImpl()
+    void
+    Mouse::UpdateLastStatesImpl()
     {
         lastWheel = wheel;
+        wheel = Vector2::Zero();
         lastButtonMask = buttonMask;
         lastPosition = position;
 
         int x, y;
         buttonMask = SDL_GetMouseState(&x, &y);
-        position.Set(x, y);
+        position = {x, y};
     }
 
-    void Mouse::CloseImpl()
+    void
+    Mouse::CloseImpl()
     {
         lastButtonMask = 0;
         buttonMask = 0;
@@ -67,23 +71,27 @@ namespace SDG
         lastWheel = Vector2();
     }
 
-    bool Mouse::ButtonPress(MButton button) const
+    bool
+    Mouse::Press(MButton button) const
     {
         return buttonMask & mouseButtons[(int)button];
     }
 
-    bool Mouse::ButtonPressed(MButton button) const
+    bool
+    Mouse::Pressed(MButton button) const
     {
         return (buttonMask & mouseButtons[(int)button]) &&
                 !(lastButtonMask & mouseButtons[(int)button]);
     }
 
-    bool Mouse::ButtonRelease(MButton button) const
+    bool
+    Mouse::Release(MButton button) const
     {
         return !(buttonMask & mouseButtons[(int)button]);
     }
 
-    bool Mouse::ButtonReleased(MButton button) const
+    bool
+    Mouse::Released(MButton button) const
     {
         return !(buttonMask & mouseButtons[(int)button]) &&
                (lastButtonMask & mouseButtons[(int)button]);

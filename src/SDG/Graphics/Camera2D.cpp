@@ -1,10 +1,7 @@
-//
-// Created by Aaron Ishibashi on 4/29/22.
-//
 #include "Camera2D.h"
-#include "SDG/Math/Math.h"
-
+#include <SDG/Math/Math.h>
 #include <SDG/Math/Matrix4x4.h>
+
 #include <SDG/Graphics/Window.h>
 #include <SDL_gpu.h>
 
@@ -29,17 +26,19 @@ namespace SDG
     void
     Camera2D::SetDimensions(int width, int height)
     {
-        impl->ortho = Matrix4x4::Ortho({0, 0, (float)width, (float)height});
+        //impl->ortho = Matrix4x4::Ortho(0, (float)width, 0, (float)height);
         impl->size = Vector2(width, height);
         impl->wasChanged = true;
+        SDG_Log("Window dimensions set to {}", impl->size.String());
     }
 
     void
     Camera2D::Initialize(Ref<Window> window)
     {
         impl->window = window;
-        window->onSizeChange.AddListener(this, &Camera2D::SetDimensions);
-        impl->size = (Vector2)window->Size();
+        //window->onSizeChange.AddListener(this, &Camera2D::SetDimensions);
+        Point resolution = window->Resolution();
+        SetDimensions(resolution.X(), resolution.Y());
     }
 
     Camera2D::Camera2D() : impl(new Impl)
@@ -56,7 +55,7 @@ namespace SDG
     {
         if (impl->wasChanged)
         {
-            Matrix4x4 mat (Matrix4x4(impl->ortho));
+            Matrix4x4 mat (impl->ortho);
 
             // Round projected position to the nearest pixel.
             Vector2 pos = impl->position;
@@ -65,8 +64,8 @@ namespace SDG
             pos /= impl->scale;
 
             Vector3 translation(
-                    -pos.X() + impl->window->Size().W()/2.f + impl->anchor.X(),
-                    -pos.Y() + impl->window->Size().H()/2.f + impl->anchor.Y(),
+                    -pos.X() + impl->window->Size().X()/2.f + impl->anchor.X(),
+                    -pos.Y() + impl->window->Size().Y()/2.f + impl->anchor.Y(),
                     0);
             mat.Translate(translation)
                .Rotate(impl->rotation, {0, 0, 1.f})
@@ -76,7 +75,7 @@ namespace SDG
 
             // Commit results
             impl->mat = mat;
-            impl->inverse = std::move(mat.Invert());
+            impl->inverse = mat.Invert();
 
             pos = Math::Transform(pos, impl->mat); // screen-to-world
             Vector2 dimensions = Math::Transform(pos + impl->window->Size(), impl->mat);
@@ -107,13 +106,15 @@ namespace SDG
         return impl->size;
     }
 
-    Vector2 Camera2D::WorldToScreen(Vector2 point) const
+    Vector2
+    Camera2D::WorldToScreen(Vector2 point) const
     {
         Update();
         return Math::Transform(point, impl->mat);
     }
 
-    Vector2 Camera2D::ScreenToWorld(Vector2 point) const
+    Vector2
+    Camera2D::ScreenToWorld(Vector2 point) const
     {
         Update();
         return Math::Transform(point, impl->inverse);
@@ -163,7 +164,7 @@ namespace SDG
         return impl->position;
     }
 
-    /// Set the specific position
+    /// EmplaceTarget the specific position
     Camera2D &
     Camera2D::Position(Vector2 pos)
     {

@@ -1,6 +1,3 @@
-//
-// Created by aishi on 4/21/2022.
-//
 #pragma once
 #include "Key.h"
 #include "InputComponent.h"
@@ -14,17 +11,16 @@ namespace SDG
         Keyboard();
         ~Keyboard();
 
-        static const char *GetKeyName(Key key);
-        bool IsKeyUp(Key key) const;
-        bool IsKeyDown(Key key) const;
-        bool JustPressed(Key key) const;
-        bool JustReleased(Key key) const;
+        static const char *KeyName(Key key);
+        bool Release(Key key) const;
+        bool Press(Key key) const;
+        bool Pressed(Key key) const;
+        bool Released(Key key) const;
     private:
         bool InitializeImpl() override;
         void ProcessInputImpl(const SDL_Event &ev) override;
-        void UpdateImpl() override;
+        void UpdateLastStatesImpl() override;
         void CloseImpl() override;
-
         Impl *impl;
     };
 }

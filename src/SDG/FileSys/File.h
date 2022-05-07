@@ -61,7 +61,7 @@ private:
     /// Loads an encrypted file
     bool OpenEncryptedImpl(const std::string &path);
 
-    // Private implementation
+    /// Private implementation
     Impl *impl;
 };
 

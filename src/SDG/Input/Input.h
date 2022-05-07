@@ -5,6 +5,7 @@
 #include "Key.h"
 #include "MButton.h"
 #include <SDG/Math/Vector2.h>
+#include <SDG/Ref.h>
 
 #include <cstdint>
 
@@ -16,13 +17,16 @@ namespace SDG
         SDG_INPUTTYPE_GAMEPAD  = 1u << 2u
     };
 
+    class Keyboard;
+    class Mouse;
+
     class Input {
     public:
         // Call this before the main loop begins
         static void Initialize(uint32_t types = SDG_INPUTTYPE_KEYBOARD | SDG_INPUTTYPE_MOUSE);
 
         // Call this before the call to SDL_PollEvents
-        static void Update();
+        static void UpdateLastStates();
 
         static void ProcessInput(void *evt);
 
@@ -45,6 +49,8 @@ namespace SDG
         static Vector2 MouseLastWheel();
         static bool MouseWheelDidMove();
 
+        static CRef<Keyboard> Keyboard();
+        static CRef<Mouse> Mouse();
     private:
         static uint32_t types;
     };

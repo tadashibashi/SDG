@@ -37,7 +37,7 @@ namespace SDG
         [[nodiscard]] bool IsYoyo() const {return isYoyo_;}
 
         /**
-         * Set the currentTime to zero, and activate Tween
+         * EmplaceTarget the currentTime to zero, and activate Tween
          */
         void Restart();
         void Restart(float startVal, float endVal, float duration,
@@ -62,7 +62,7 @@ namespace SDG
                    TweenFunction func);
 
         /**
-         * Set the speed multiplier of the Tween (default: 1.f)
+         * EmplaceTarget the speed multiplier of the Tween (default: 1.f)
          * @param speed The value of speed to set
          */
         void SetSpeed(float speed) { speed_ = speed;}
@@ -70,7 +70,7 @@ namespace SDG
         [[nodiscard]] float GetSpeed() const {return speed_;}
 
         /**
-         * Update should be called every frame for accurate timing
+         * UpdateLastStates should be called every frame for accurate timing
          */
         void Update(float deltaTime); // end void evUpdate
 

@@ -80,15 +80,14 @@ SDG::Keyboard::InitializeImpl()
 void
 SDG::Keyboard::ProcessInputImpl(const SDL_Event &ev)
 {
-    if (ev.type == SDL_KEYDOWN || ev.type == SDL_KEYUP)
-        impl->stateChanged = true;
+    impl->stateChanged = true;
 }
 
 
 
 
 bool
-SDG::Keyboard::IsKeyUp(SDG::Key key) const
+SDG::Keyboard::Release(SDG::Key key) const
 {
     SDG_Assert(impl->lastState);
     return !impl->state[Scancodes[(unsigned)key]];
@@ -98,7 +97,7 @@ SDG::Keyboard::IsKeyUp(SDG::Key key) const
 
 
 bool
-SDG::Keyboard::IsKeyDown(SDG::Key key) const
+SDG::Keyboard::Press(SDG::Key key) const
 {
     SDG_Assert(impl->lastState);
     return impl->state[Scancodes[(unsigned)key]];
@@ -108,7 +107,7 @@ SDG::Keyboard::IsKeyDown(SDG::Key key) const
 
 
 bool
-SDG::Keyboard::JustPressed(SDG::Key key) const
+SDG::Keyboard::Pressed(SDG::Key key) const
 {
     SDG_Assert(impl->lastState);
     auto scancode = Scancodes[(unsigned)key];
@@ -120,7 +119,7 @@ SDG::Keyboard::JustPressed(SDG::Key key) const
 
 
 bool
-SDG::Keyboard::JustReleased(SDG::Key key) const
+SDG::Keyboard::Released(SDG::Key key) const
 {
     SDG_Assert(impl->lastState);
     auto scancode = Scancodes[(unsigned)key];
@@ -131,7 +130,7 @@ SDG::Keyboard::JustReleased(SDG::Key key) const
 
 
 void
-SDG::Keyboard::UpdateImpl()
+SDG::Keyboard::UpdateLastStatesImpl()
 {
     if (impl->stateChanged)
     {
@@ -152,7 +151,7 @@ SDG::Keyboard::CloseImpl()
     }
 }
 
-const char *SDG::Keyboard::GetKeyName(Key key)
+const char *SDG::Keyboard::KeyName(Key key)
 {
     return SDL_GetKeyName(SDL_GetKeyFromScancode((SDL_Scancode)Scancodes[(int)key]));
 }

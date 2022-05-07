@@ -28,7 +28,7 @@ namespace SDG
 
     protected:
         // Access for base classes
-        Ref<Window> GetWindow();
+        Ref<Window> Window();
 
     private:
         int Initialize_();

@@ -13,7 +13,7 @@ namespace SDG
     public:
         GameTime();
 
-        /// Should be called at the start of Game::Update()
+        /// Should be called at the start of Game::UpdateLastStates()
         void Update();
 
         /// Returns the number of ticks passed since application start.

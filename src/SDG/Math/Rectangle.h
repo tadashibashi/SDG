@@ -1,5 +1,6 @@
 #pragma once
 #include <type_traits>
+#include <ostream>
 
 namespace SDG
 {
@@ -23,10 +24,10 @@ namespace SDG
         [[nodiscard]]
         T Height() const { return h; }
 
-        Rect_ &X(T pX) { x = pX; return *this; }
-        Rect_ &Y(T pY) { y = pY; return *this; }
-        Rect_ &W(T pW) { y = pW; return *this; }
-        Rect_ &H(T pH) { y = pH; return *this; }
+        void X(T pX) { x = pX; }
+        void Y(T pY) { y = pY; }
+        void Width(T pW) { w = pW; }
+        void Height(T pH) { h = pH; }
 
         void Set(T pX, T pY, T pW, T pH) noexcept
         {
@@ -72,6 +73,13 @@ namespace SDG
             return (w == 0 && h == 0);
         }
 
+        [[nodiscard]]
+        std::string String() const noexcept
+        {
+            return "{" + std::to_string(x) + ", " + std::to_string(y) +
+                ", " + std::to_string(w) + ", " + std::to_string(h) + "}";
+        }
+
         bool operator==(const Rect_ &other)
         {
             return (x == other.x && y == other.y &&
@@ -98,7 +106,7 @@ namespace SDG
         template<typename U>
         explicit operator Rect_<U>()
         {
-            static_assert(std::is_arithmetic_v<U> && std::is_convertible_v<U, T>, "Rectangle type mismatch.");
+            static_assert(std::is_convertible_v<U, T>, "Rectangle type mismatch.");
             return Rect_<U> (
                     static_cast<U>(x),
                     static_cast<U>(y),
@@ -110,6 +118,14 @@ namespace SDG
         // data members
         T x, y, w, h;
     };
+
+    template <typename T>
+    std::ostream &operator<<(std::ostream &out, const Rect_<T> &v)
+    {
+        out << "{" << std::to_string(v.X()) << ", " << std::to_string(v.Y()) <<
+            ", " << std::to_string(v.Width()) << ", " << std::to_string(v.Height()) << "}";
+        return out;
+    }
 
     typedef Rect_<float> FRectangle;
     typedef Rect_<int>   Rectangle;

@@ -27,12 +27,16 @@ static const Uint32 TranslateFlip[4] = {
 void
 SDG::SpriteBatch::RenderBatches()
 {
-    for (auto &b : batch)
+    GPU_Target *gpuTarget = target->Target().Get();
+    for (BatchCall &b : batch)
     {
+        // Create rects
         GPU_Rect src {(float)b.src.X(), (float)b.src.Y(), (float) b.src.Width(), (float) b.src.Height()};
         GPU_Rect dest {b.dest.X(), b.dest.Y(), b.dest.Width(), b.dest.Height()};
+
+        // Blit to the current target
         GPU_SetColor(b.texture->Image(), {b.color.r, b.color.g, b.color.b, b.color.a});
-        GPU_BlitRectX(b.texture->Image(), &src, target, &dest, b.rotation, b.anchor.X(), b.anchor.Y(),
+        GPU_BlitRectX(b.texture->Image(), &src, gpuTarget, &dest, b.rotation, b.anchor.X(), b.anchor.Y(),
                       TranslateFlip[(int)b.flip]);
     }
 }
@@ -73,7 +77,7 @@ void SDG::SpriteBatch::DrawTexture(SDG::Texture2D *texture, SDG::Rectangle src,
                        flip, std::move(color), depth);
 }
 
-void SDG::SpriteBatch::Begin(GPU_Target *target, SortMode sort)
+void SDG::SpriteBatch::Begin(Ref<RenderTarget> target, SortMode sort)
 {
     sortMode = sort;
     batch.clear();

@@ -122,7 +122,7 @@ namespace SDG
     }
 
     GPU_Image *
-    Texture2D::Image()
+    Texture2D::Image() const
     {
         return impl->image;
     }

@@ -1,8 +1,17 @@
 project(SDG_Tests)
 
 if (EMSCRIPTEN)
-    set(CMAKE_CXX_FLAGS "-Os" ${CMAKE_CXX_FLAGS})
-    set(CMAKE_EXE_LINKER_FLAGS "-sASSERTIONS -sASYNCIFY -sINITIAL_MEMORY=268435456 -sALLOW_MEMORY_GROWTH -sUSE_WEBGL2=1 -sWASM=2 -sUSE_ZLIB -sMAX_WEBGL_VERSION=2 -sLLD_REPORT_UNDEFINED" ${CMAKE_EXE_LINKER_FLAGS})
+    set(EmscriptenLinkerFlags "-sASSERTIONS -sASYNCIFY \
+            -sINITIAL_MEMORY=268435456 -sALLOW_MEMORY_GROWTH \
+            -sUSE_WEBGL2=1 -sWASM=2 -sMAX_WEBGL_VERSION=2 \
+            -sLLD_REPORT_UNDEFINED -sNO_DISABLE_EXCEPTION_CATCHING -fexceptions")
+
+    # Emscripten flag feature research:
+    # Exceptions https://emscripten.org/docs/porting/exceptions.html
+    # Asyncify runs Emscripten in a thread separate from browser input
+
+    set(CMAKE_CXX_FLAGS "-Os -fexceptions" ${CMAKE_CXX_FLAGS})
+    set(CMAKE_EXE_LINKER_FLAGS  "${EmscriptenLinkerFlags} ${CMAKE_EXE_LINKER_FLAGS}")
     set(CMAKE_EXECUTABLE_SUFFIX .html)
 endif()
 

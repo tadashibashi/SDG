@@ -7,8 +7,8 @@
 #include "Keyboard.h"
 #include "Mouse.h"
 
-using SDG::Key;
 
+using SDG::Key;
 
 uint32_t SDG::Input::types = 0;
 
@@ -32,58 +32,58 @@ SDG::Input::Close()
 }
 
 void
-SDG::Input::Update()
+SDG::Input::UpdateLastStates()
 {
-    keyboard.Update();
-    mouse.Update();
+    keyboard.UpdateLastStates();
+    mouse.UpdateLastStates();
 }
 
 bool
 SDG::Input::KeyPress(Key key)
 {
-    return keyboard.IsKeyDown(key);
+    return keyboard.Press(key);
 }
 
 bool
 SDG::Input::KeyPressed(Key key)
 {
-    return keyboard.JustPressed(key);
+    return keyboard.Pressed(key);
 }
 
 bool
 SDG::Input::KeyRelease(Key key)
 {
-    return keyboard.IsKeyUp(key);
+    return keyboard.Release(key);
 }
 
 bool
 SDG::Input::KeyReleased(Key key)
 {
-    return keyboard.JustReleased(key);
+    return keyboard.Released(key);
 }
 
 bool
 SDG::Input::MousePress(MButton button)
 {
-    return mouse.ButtonPress(button);
+    return mouse.Press(button);
 }
 
 bool
 SDG::Input::MousePressed(MButton button)
 {
-    return mouse.ButtonPressed(button);
+    return mouse.Pressed(button);
 }
 
 bool
 SDG::Input::MouseRelease(MButton button)
 {
-    return mouse.ButtonRelease(button);
+    return mouse.Release(button);
 }
 
 bool
 SDG::Input::MouseReleased(MButton button)
 {
-    return mouse.ButtonReleased(button);
+    return mouse.Released(button);
 }
 
 SDG::Point
@@ -104,26 +104,49 @@ SDG::Input::MouseDidMove()
     return mouse.DidMove();
 }
 
-void SDG::Input::ProcessInput(void *evt)
+void
+SDG::Input::ProcessInput(void *evt)
 {
     SDL_Event &ev = *static_cast<SDL_Event *>(evt);
-
-    keyboard.ProcessInput(ev);
-    if (ev.type == SDL_MOUSEWHEEL)
-        mouse.ProcessInput(ev);
+    switch (ev.type)
+    {
+        case SDL_KEYDOWN:
+        case SDL_KEYUP:
+        case SDL_KEYMAPCHANGED:
+            keyboard.ProcessInput(ev);
+            break;
+        case SDL_MOUSEWHEEL:
+            mouse.ProcessInput(ev);
+            break;
+    }
 }
 
-SDG::Vector2 SDG::Input::MouseWheel()
+SDG::Vector2
+SDG::Input::MouseWheel()
 {
     return mouse.Wheel();
 }
 
-SDG::Vector2 SDG::Input::MouseLastWheel()
+SDG::Vector2
+SDG::Input::MouseLastWheel()
 {
     return mouse.LastWheel();
 }
 
-bool SDG::Input::MouseWheelDidMove()
+bool
+SDG::Input::MouseWheelDidMove()
 {
     return mouse.WheelDidMove();
+}
+
+SDG::CRef <SDG::Keyboard>
+SDG::Input::Keyboard()
+{
+    return CRef{keyboard};
+}
+
+SDG::CRef <SDG::Mouse>
+SDG::Input::Mouse()
+{
+    return CRef{mouse};
 }

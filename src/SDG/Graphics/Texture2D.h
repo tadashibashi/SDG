@@ -19,10 +19,9 @@ namespace SDG
         Texture2D();
         explicit Texture2D(const std::string &path);
         ~Texture2D();
-        
 
         /// Gets the inner GPU_Image object ptr.
-        GPU_Image *Image();
+        GPU_Image *Image() const;
 
         /// Load an image into the Texture2D.
         /// @param path

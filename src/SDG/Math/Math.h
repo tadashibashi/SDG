@@ -33,12 +33,7 @@ namespace SDG
             return Vector2(Lerp(val.X(), dest.Y(), amt), Lerp(val.Y(), dest.Y(), amt));
         }
 
-        static Vector2 Transform(Vector2 position, const Matrix4x4 &mat)
-        {
-            float x, y;
-            mat.Transform(&x, &y);
-            return {x, y};
-        }
+        static Vector2 Transform(Vector2 position, const Matrix4x4 &mat);
 
         template <typename T>
         static T RadToDeg(T rad)
@@ -173,21 +168,7 @@ namespace SDG
             return Vector2(Wrap(val.X(), low.X(), high.X()), Wrap(val.Y(), low.Y(), high.Y()));
         }
 
-        static float PointDirection(float x1, float y1, float x2, float y2)
-        {
-            float diffX = x2 - x1;
-            float diffY = y2 - y1;
-            int quadrant = GetQuadrant(diffX, diffY);
-
-            if (quadrant % 2 == 0)
-            { // if quadrants 0 or 2
-                return Abs(RadToDeg(std::atan(diffY / diffX))) + (float)(quadrant * 90);
-            }
-            else
-            {   // quadrants 1 or 3
-                return 90-Abs(RadToDeg(std::atan((diffY / diffX)))) + (float)(quadrant * 90);
-            }
-        }
+        static float PointDirection(float x1, float y1, float x2, float y2);
 
     private:
         /**
@@ -195,19 +176,7 @@ namespace SDG
          * on the bottom right, going clockwise until quadrant 3 on the top-right.
          * This function is a helper used by point direction
          */
-        static int GetQuadrant(float x, float y)
-        {
-            if (x > 0 && y >= 0) {
-                return 3;
-            } else if (x <= 0 && y > 0) {
-                return 2;
-            } else if (x < 0 && y <= 0) {
-                return 1;
-            } else if (x >= 0 && y < 0) {
-                return 0;
-            }
-            return -1;
-        }
+        static int GetQuadrant(float x, float y);
 
     };
 }

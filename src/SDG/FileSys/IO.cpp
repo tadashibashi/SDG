@@ -90,7 +90,7 @@ ReadFileStrImpl(const char *path, char **data, size_t *size, bool appendNull)
 SDL_RWops *
 _OpenRW(const char *path, const char *mode, int64_t *oFileSize)
 {
-    SDL_RWops *io = SDL_RWFromFile(path, "rb");
+    SDL_RWops *io = SDL_RWFromFile(path, mode);
     if (!io)
     {
         errorStr = SDL_GetError();

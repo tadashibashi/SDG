@@ -7,6 +7,7 @@
 #include <functional>
 #include <typeinfo>
 #include <vector>
+#include <SDG/Exceptions/InvalidArgumentException.h>
 
 using std::any_cast;
 
@@ -188,6 +189,11 @@ namespace SDG {
                     functions.erase(it);
                 }
             }
+            else
+            {
+                throw InvalidArgumentException(__FUNCTION__, "object or func",
+                                               "There was no matching callback in the Delegate.");
+            }
         }
 
         // Removes a global function listener.
@@ -210,6 +216,11 @@ namespace SDG {
                 {
                     functions.erase(it);
                 }
+            }
+            else
+            {
+                throw InvalidArgumentException(__FUNCTION__, "func",
+                                               "There was no matching callback in the Delegate.");
             }
         }
 
@@ -239,9 +250,8 @@ namespace SDG {
         // Flag indicating if this delegate is currently firing callbacks or not.
         bool isCalling{false};
 
-        // Flag indicated whether or not removals need to be processed.
+        // Flag indicated whether removals need to be processed.
         bool removeThisFrame{false};
     };
-
 
 }

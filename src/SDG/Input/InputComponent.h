@@ -12,22 +12,27 @@ namespace SDG
      */
     class InputComponent {
     public:
-        InputComponent() : mWasInit(false) { }
+        InputComponent() : wasInit(false) { }
         virtual ~InputComponent() {}
 
         bool Initialize();
         void ProcessInput(const SDL_Event &ev);
-        void Update();
+        void UpdateLastStates();
         void Close();
 
         bool WasInit() const;
     private:
+        /// Initialization logic, should return true on successful
+        /// initialization.
         virtual bool InitializeImpl() = 0;
+
+        /// All events are guaranteed to only be related to
+        /// the InputComponent
         virtual void ProcessInputImpl(const SDL_Event &ev) = 0;
-        virtual void UpdateImpl() = 0;
+        virtual void UpdateLastStatesImpl() = 0;
         virtual void CloseImpl() = 0;
 
-        bool mWasInit;
+        bool wasInit;
     };
 
     // ====== Inline Implementation ======
@@ -35,7 +40,7 @@ namespace SDG
     inline bool
     InputComponent::Initialize()
     {
-        return mWasInit = InitializeImpl();
+        return wasInit = InitializeImpl();
     }
 
     inline void
@@ -45,9 +50,9 @@ namespace SDG
     }
 
     inline void
-    InputComponent::Update()
+    InputComponent::UpdateLastStates()
     {
-        UpdateImpl();
+        UpdateLastStatesImpl();
     }
 
     inline void
@@ -59,6 +64,6 @@ namespace SDG
     inline bool
     InputComponent::WasInit() const
     {
-        return mWasInit;
+        return wasInit;
     }
 }

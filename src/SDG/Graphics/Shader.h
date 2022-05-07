@@ -18,7 +18,7 @@ namespace SDG
         Shader &SetUniform(const std::string &varId, float value);
         Shader &SetImage(const std::string &varId, Texture2D texture);
 
-        /// Set a vector of floats to a shader uniform value
+        /// EmplaceTarget a vector of floats to a shader uniform value
         Shader &SetUniform(const std::string &varId, std::vector<float> values, int elementsPerValue);
         uint32_t GetVarLocation(const std::string &varId) const;
         bool Compile(const std::string &vertexPath, const std::string &fragPath);

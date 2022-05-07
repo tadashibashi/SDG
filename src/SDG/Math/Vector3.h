@@ -7,7 +7,7 @@ namespace SDG
     template <typename T>
     class  Vec3_
     {
-        static_assert(std::is_arithmetic_v<T>, "Vec3_ template type must be arithmetic");
+        static_assert(std::is_arithmetic_v<T>, "Vec3_ template type must be an arithmetic type");
         struct { T x, y, z; };
     public:
         Vec3_() : x(0), y(0), z(0) { }

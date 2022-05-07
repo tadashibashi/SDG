@@ -3,8 +3,9 @@
 #include <SDG/Graphics/Texture2D.h>
 #include <SDG/Graphics/Window.h>
 #include <SDG/Math/Rectangle.h>
+#include <SDG/Ref.h>
 
-class GPU_Target;
+#include "RenderTarget.h"
 
 namespace SDG
 {
@@ -54,8 +55,7 @@ namespace SDG
         SpriteBatch(const SpriteBatch &) = delete;
         SpriteBatch &operator=(const SpriteBatch &) = delete;
 
-        // TODO: Wrap gpu target in either a layer, or pass the window into the SpriteBatch to get target
-        void Begin(GPU_Target *target, SortMode sort = SortMode::FrontToBack);
+        void Begin(Ref<RenderTarget> target, SortMode sort = SortMode::FrontToBack);
         void End();
         void DrawTexture(Texture2D *texture, Rectangle src, FRectangle dest, float rotation, Vector2 anchor, Flip flip, Color color, float depth);
 
@@ -69,6 +69,6 @@ namespace SDG
 
         std::vector<BatchCall> batch;
         SortMode sortMode;
-        GPU_Target *target;
+        Ref<RenderTarget> target;
     };
 }

@@ -39,7 +39,7 @@ namespace SDG
         float Entry(int row, int column);
 
         static Matrix4x4 Identity();
-        static Matrix4x4 Ortho(FRectangle rect);
+        static Matrix4x4 Ortho(float left, float right, float bottom, float top);
 
         /// Gets the inner matrix, an array of 16 float values. Read-only.
         [[nodiscard]] const float *Data() const { return &mat[0][0]; }

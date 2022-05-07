@@ -19,7 +19,7 @@ using std::string;
 
 struct SDG::Game::Impl {
     Impl() : window(), isRunning(), time() {}
-    Window window;
+    SDG::Window window;
     bool isRunning;
     SDG::GameTime time;
 };
@@ -69,15 +69,22 @@ SDG::Game::Initialize_()
 void
 SDG::Game::ProcessInput()
 {
-    // Called before events are pumped to update all internal last state variables.
-    Input::Update();
+    Input::UpdateLastStates();
 
     // Event polling
     SDL_Event ev;
     while (SDL_PollEvent(&ev))
     {
-        if (ev.type == SDL_QUIT)
-            Exit();
+        switch(ev.type)
+        {
+            case SDL_QUIT:
+                Exit();
+                break;
+            case SDL_WINDOWEVENT:
+                impl->window.ProcessInput(&ev);
+                break;
+        }
+
         Input::ProcessInput(&ev);
     }
 }
@@ -126,7 +133,7 @@ SDG::Game::Exit()
 }
 
 SDG::Ref<SDG::Window>
-SDG::Game::GetWindow()
+SDG::Game::Window()
 {
     return Ref(impl->window);
 }

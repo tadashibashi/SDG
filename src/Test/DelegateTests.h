@@ -30,6 +30,11 @@ public:
     }
 };
 
+void DummyFunction(int p)
+{
+
+}
+
 void TestDelegate()
 {
     delegate.AddListener(TestDelegateFunc);
@@ -67,4 +72,13 @@ void TestDelegate()
     // Checking it maintains size==1 demonstrates that its handle was not removed until after the call is finished.
     SDG_Assert(obj.val == 1);
     SDG_Assert(delegate.Size() == 0);
+
+    try {
+        delegate.RemoveListener(&DummyFunction);
+    }
+    catch (const InvalidArgumentException &e)
+    {
+        SDG_Log("Successfully threw an invalid argument exception with message: {}",
+                e.what());
+    }
 }

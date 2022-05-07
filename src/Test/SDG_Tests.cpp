@@ -11,7 +11,7 @@ using namespace SDG;
 static SpriteBatch spriteBatch;
 static Camera2D camera;
 
-class TestGame : public Game {
+class TestGame : public App {
 private:
     int Initialize() override
     {
@@ -150,7 +150,7 @@ private:
 };
 
 /// Entry-point
-Game *CreateGame()
+App *CreateApp()
 {
     return new TestGame;
 }

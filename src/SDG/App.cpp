@@ -2,7 +2,7 @@
 // Created by Aaron Ishibashi on 4/15/22.
 //
 
-#include "Game.h"
+#include "App.h"
 #include <SDG/Exceptions/AssertionException.h>
 #include "Debug.hpp"
 #include "Input.hpp"
@@ -22,26 +22,26 @@ static void EmMainLoop(void *arg)
 }
 #endif
 
-struct SDG::Game::Impl {
+struct SDG::App::Impl {
     Impl() : window(), isRunning(), time() {}
     SDG::Window window;
     bool isRunning;
     SDG::GameTime time;
 };
 
-SDG::Game::Game() : impl(new Impl)
+SDG::App::App() : impl(new Impl)
 {
 
 }
 
-SDG::Game::~Game()
+SDG::App::~App()
 {
     Close_();
     delete impl;
 }
 
 int
-SDG::Game::Initialize_()
+SDG::App::Initialize_()
 {
     SDG_Log("Game initializing.");
     GameConfig config;
@@ -71,7 +71,7 @@ SDG::Game::Initialize_()
 
 
 void
-SDG::Game::ProcessInput()
+SDG::App::ProcessInput()
 {
     Input::UpdateLastStates();
 
@@ -94,7 +94,7 @@ SDG::Game::ProcessInput()
 }
 
 void
-SDG::Game::RunOneFrame()
+SDG::App::RunOneFrame()
 {
     try {
         ProcessInput();
@@ -110,7 +110,7 @@ SDG::Game::RunOneFrame()
 
 
 void
-SDG::Game::Close_()
+SDG::App::Close_()
 {
     Close(); // Child class clean up
     Input::Close();
@@ -119,7 +119,7 @@ SDG::Game::Close_()
 }
 
 void
-SDG::Game::Run()
+SDG::App::Run()
 {
     if (int err = Initialize_() != 0)
     {
@@ -135,7 +135,7 @@ SDG::Game::Run()
 }
 
 void
-SDG::Game::Exit()
+SDG::App::Exit()
 {
     impl->isRunning = false;
 #if SDG_TARGET_WEBGL
@@ -145,27 +145,27 @@ SDG::Game::Exit()
 }
 
 SDG::Ref<SDG::Window>
-SDG::Game::Window()
+SDG::App::Window()
 {
     return Ref(impl->window);
 }
 
 void
-SDG::Game::Update_()
+SDG::App::Update_()
 {
     impl->time.Update();
     Update();
 }
 
 void
-SDG::Game::Render_()
+SDG::App::Render_()
 {
     Render();
     impl->window.SwapBuffers();
 }
 
 const SDG::CRef<SDG::GameTime>
-SDG::Game::Time()
+SDG::App::Time()
 {
     return CRef(impl->time);
 }

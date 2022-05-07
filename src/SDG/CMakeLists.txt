@@ -13,7 +13,7 @@ set(SDG_Engine_Sources
         Graphics/RendererType.h
         "Graphics/Shader.cpp" "Graphics/Shader.h"
         Graphics/Color.h Graphics/Color.cpp
-        "Game.cpp" "Game.h"
+        "App.cpp" "App.h"
         "Platform.h"
         "Debug.hpp"
         "Debug/Logging.h"

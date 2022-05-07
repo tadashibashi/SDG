@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Platform.h"
-#include "Game.h"
+#include "App.h"
 #include "FileSys.hpp"
 #include "Graphics.hpp"
 #include "Math.hpp"

@@ -8,11 +8,11 @@ namespace SDG
 {
     class Window;
 
-    class Game {
+    class App {
         struct Impl;
     public:
-        Game();
-        virtual ~Game();
+        App();
+        virtual ~App();
 
         /// Executes one game frame. Intended for use by platforms that require the
         /// use of the main loop, such as Emscripten-WebGL.

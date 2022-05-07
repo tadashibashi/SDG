@@ -1,11 +1,11 @@
-#include <SDG/Game.h>
+#include <SDG/App.h>
 
 /// To be defined by the user in which they must return their own subclass of Game.
-SDG::Game *CreateGame();
+SDG::App *CreateApp();
 
 int main(int argc, char *argv[])
 {
-    SDG::Game *game = CreateGame();
+    SDG::App *game = CreateApp();
     game->Run();
 
     delete game;

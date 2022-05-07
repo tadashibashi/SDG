@@ -8,6 +8,7 @@ TODO:
 - Entity Pooling
 - Sprite renderer
 - Scene System
+- Create App subclass called Game to make use of these systems.
 - Make Asteroids Game
 
 Future:

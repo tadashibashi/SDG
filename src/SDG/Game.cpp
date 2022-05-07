@@ -15,6 +15,13 @@
 
 using std::string;
 
+#if SDG_TARGET_WEBGL
+    static void EmMainLoop(void *arg)
+    {
+        ((SDG::Game *)arg)->RunOneFrame();
+    }
+#endif
+
 struct SDG::Game::Impl {
     Impl() : window(), isRunning(), time() {}
     SDG::Window window;
@@ -116,8 +123,12 @@ void
 SDG::Game::Run()
 {
     Initialize_();
+#if SDG_TARGET_WEBGL
+    emscripten_set_main_loop_arg(EmMainLoop, this, -1, true);
+#else
     while (impl->isRunning)
         RunOneFrame();
+#endif
 }
 
 void

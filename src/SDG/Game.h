@@ -25,9 +25,6 @@ namespace SDG
         void Exit();
 
         const CRef<GameTime> Time();
-#if SDG_TARGET_WEBGL
-        void EmInitialize() { Initialize_(); }
-#endif
     protected:
         // Access for base classes
         Ref<Window> Window();

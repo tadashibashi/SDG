@@ -16,10 +16,10 @@
 using std::string;
 
 #if SDG_TARGET_WEBGL
-    static void EmMainLoop(void *arg)
-    {
-        ((SDG::Game *)arg)->RunOneFrame();
-    }
+static void EmMainLoop(void *arg)
+{
+    ((SDG::Game *)arg)->RunOneFrame();
+}
 #endif
 
 struct SDG::Game::Impl {
@@ -65,8 +65,7 @@ SDG::Game::Initialize_()
 
     impl->isRunning = true;
 
-    Initialize(); // Child class initialization
-    return 0;
+    return Initialize(); // Child class initialization;
 }
 
 
@@ -122,7 +121,11 @@ SDG::Game::Close_()
 void
 SDG::Game::Run()
 {
-    Initialize_();
+    if (int err = Initialize_() != 0)
+    {
+        SDG_Err("Problem occured during initialization: error code: {}", err);
+        return;
+    }
 #if SDG_TARGET_WEBGL
     emscripten_set_main_loop_arg(EmMainLoop, this, -1, true);
 #else

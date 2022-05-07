@@ -1,21 +1,21 @@
 #include <SDG/Game.h>
+#include <SDG/Platform.h>
 
 /// To be defined by the user to return their own subclass.
 SDG::Game *CreateGame();
 
-static SDG::Game *game;
-
-static void mainLoop()
+static void mainLoop(void *arg)
 {
-    game->RunOneFrame();
+    ((SDG::Game *)arg)->RunOneFrame();
 }
 
 int main(int argc, char *argv[])
 {
-    game = CreateGame();
+    SDG::Game *game = CreateGame();
 
 #if SDG_TARGET_WEBGL
-    emscripten_set_main_loop(mainLoop, 0, true);
+    game->EmInitialize();
+    emscripten_set_main_loop_arg(mainLoop, game, -1, true);
 #else
     game->Run();
 #endif

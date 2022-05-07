@@ -67,6 +67,7 @@ namespace SDG
                     -pos.X() + impl->window->Size().X()/2.f + impl->anchor.X(),
                     -pos.Y() + impl->window->Size().Y()/2.f + impl->anchor.Y(),
                     0);
+            
             mat.Translate(translation)
                .Rotate(impl->rotation, {0, 0, 1.f})
                .Translate({-impl->anchor.X(), -impl->anchor.Y(), 0})

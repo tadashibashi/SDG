@@ -53,8 +53,8 @@ namespace SDG
             return false;
         }
 
-        if (!TTF_WasInit())
-        {
+//        if (!TTF_WasInit())
+//        {
             if (TTF_Init() != 0)
             {
                 SDG_Err("Failed to initialize SDL2_ttf: {}", TTF_GetError());
@@ -62,7 +62,7 @@ namespace SDG
                 GPU_Quit();
                 return false;
             }
-        }
+//        }
 
         impl->target.EmplaceTarget(Ref{target});
         if (title)

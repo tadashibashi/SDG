@@ -88,13 +88,14 @@ if (APPLE)                                                 # Mac
     # Universal binary
     set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
     set(PLATFORM_Libraries "-framework OpenGL" "-framework Cocoa")
-    set(CMAKE_BUILD_RPATH)
+
 elseif(WIN32)                                              # Windows
     set(PLATFORM_Libraries opengl32 SDL2main)
-elseif(LINUX)
+
+elseif(LINUX)                                              # Linux
     set(PLATFORM_Libraries GL)
 elseif(EMSCRIPTEN)                                         # HTML5
-    set(CMAKE_CXX_FLAGS "-Os")
+    set(CMAKE_CXX_FLAGS "-Os -sUSE_SDL=2 -sUSE_SDL_TTF=2")
     set(CMAKE_EXE_LINKER_FLAGS "-sUSE_WEBGL2=1 -sWASM=2")
 endif()
 

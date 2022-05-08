@@ -5,15 +5,11 @@ function(AddContentPipeline AssetDir Key)
 
 if (EMSCRIPTEN)
     set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "--preload-file ${CMAKE_CURRENT_BINARY_DIR}/${AssetDir}@${AssetDir}")
-    message("Emscripten asset directory is set to: ${CMAKE_CURRENT_BINARY_DIR}/${AssetDir}@${AssetDir}")
 else()
-    if (WIN32)
-        set(ContentPipe_BinaryDir ${CMAKE_BINARY_DIR})
-        set(ContentPipe_AssetDir ${CMAKE_BINARY_DIR}/${AssetDir})
-    else()
-        get_target_property(ContentPipe_BinaryDir SDG_ContentPipe BINARY_DIR)
-        set(ContentPipe_AssetDir ${CMAKE_CURRENT_BINARY_DIR}/${AssetDir})
-    endif()
+    get_target_property(ContentPipe_BinaryDir SDG_ContentPipe BINARY_DIR)
+    get_target_property(Project_BinaryDir ${PROJECT_NAME} BINARY_DIR)
+    set(ContentPipe_AssetDir ${Project_BinaryDir}/${AssetDir})
+
     add_custom_target("${PROJECT_NAME}_Content"
             COMMAND "${ContentPipe_BinaryDir}/SDG_ContentPipe"
             ${CMAKE_CURRENT_SOURCE_DIR}/${AssetDir} ${ContentPipe_AssetDir} ${Key})

@@ -18,7 +18,7 @@ using std::string;
 #if SDG_TARGET_WEBGL
 static void EmMainLoop(void *arg)
 {
-    ((SDG::Game *)arg)->RunOneFrame();
+    ((SDG::App *)arg)->RunOneFrame();
 }
 #endif
 

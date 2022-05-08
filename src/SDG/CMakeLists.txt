@@ -73,10 +73,10 @@ set(Engine_Includes
 # ----- Libraries ---------------------------------------------------
 if (DEBUG)                                                 # Debug
     set(Engine_CompileDefs DEBUG=1)
-    set(CONFIG_Libraries spdlog)
+    set(CONFIG_Libraries spdlog SDL2d)
 else()
-    set(Engine_CompileDefs DEBUG=0)                    # Release
-    set(CONFIG_Libraries)
+    set(Engine_CompileDefs DEBUG=0)                        # Release
+    set(CONFIG_Libraries SDL2)
 endif()
 
 if (APPLE)                                                 # Mac
@@ -95,24 +95,36 @@ endif()
 
 
 # ----- Bundled Libraries ----------------------------------------
-if (WINDOWS)
-    set(BundledPref "${CMAKE_SOURCE_DIR}/lib/bundled/win")
-    set(Engine_BundledLibs "${BundledPref}/lib/SDL2_ttf.lib")
-elseif(APPLE)
+if (WINDOWS)   # for Windows
+    if (DEBUG) # set the prefix path for bundled libraries
+        set(BundledPref "${CMAKE_SOURCE_DIR}/lib/bundled/win/debug")
+    else()
+        set(BundledPref "${CMAKE_SOURCE_DIR}/lib/bundled/win/release")
+    endif()
+    # Set paths to the bundled libs
+    set(Engine_BundledLibs "${BundledPref}/SDL2_ttf.lib")
+
+    # Copy bundeled dlls to the build directory
+    file(GLOB_RECURSE WindowsDlls ${BundledPref}/*.dll)
+    foreach(dll ${WindowsDlls})
+        get_filename_component(DllName ${dll} NAME)
+        configure_file(${dll} ${CMAKE_BINARY_DIR}/${DllName} COPYONLY)
+    endforeach()
+elseif(APPLE)  # for Mac
     set(BundledPref "${CMAKE_SOURCE_DIR}/lib/bundled/macos")
     set(Engine_BundledLibs "${BundledPref}/libSDL2_ttf.a")
-elseif(LINUX)
+elseif(LINUX)  # for Linux
     set(Engine_BundledLibs "${CMAKE_SOURCE_DIR}/lib/bundled/linux")
 else()
     set(Engine_BundledLibs "")
 endif()
 
 set (Engine_Libraries
-        SDL2
         ${Engine_BundledLibs}
-        SDL_gpu
         ${CONFIG_Libraries}
-        ${PLATFORM_Libraries})
+        ${PLATFORM_Libraries}
+        SDL_gpu)
+
 
 # ----- Commit the Settings ----------------------------------------
 add_library                (SDG_Engine STATIC ${Engine_Sources})

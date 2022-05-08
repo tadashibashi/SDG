@@ -24,8 +24,9 @@ namespace SDG::FileSys
         // While this directory may be writable on some systems, it is not portable to do so.
         // It is preferred to use the Pref directory for writes.
         Root,
-        // The readable and writable directory to store saves, preferences, user-data, etc.
-        Pref
+        // The readable and writable directory for this app title.
+        // Store saves, preferences, user-data, etc. here.
+        Title
     };
 
     /**
@@ -33,17 +34,17 @@ namespace SDG::FileSys
      * e.g. "path/to/root/".
      * On Mac, this points to the app's Resource folder.
      */
-    [[nodiscard]] string GetBasePath();
+    [[nodiscard]] string RootPath();
 
     /// Gets the path to the program's writable file location.
-    [[nodiscard]] string GetPrefPath();
+    [[nodiscard]] string TitleContainer();
 
     /**
      * Gets a file name portion from a full or relative path.
      * @param path The file path to perform this function with
      * @return The filename (including extension)
      */
-    [[nodiscard]] string GetFileName(const string &path);
+    [[nodiscard]] string ExtractFilename(const string &path);
 
 
     /**

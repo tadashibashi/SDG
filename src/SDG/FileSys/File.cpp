@@ -3,12 +3,10 @@
 //  SDG_Engine
 //
 #include "File.h"
-
 #include "IO.h"
 #include "FileSys.h"
-
-#include <SDL_gpu.h>
 #include <SDL_rwops.h>
+
 using std::string;
 
 /// Private implementation class data

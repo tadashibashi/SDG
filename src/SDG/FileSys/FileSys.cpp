@@ -15,7 +15,7 @@ static string orgName;
 
 
 string
-SDG::FileSys::GetBasePath()
+SDG::FileSys::RootPath()
 {
     static string basePath;
     if (basePath.empty())
@@ -37,8 +37,8 @@ SDG::FileSys::MakePath(const string &path, Base root)
     switch(root)
     {
         case Base::None: return path;
-        case Base::Root: return GetBasePath() + path;
-        case Base::Pref: return GetPrefPath() + path;
+        case Base::Root: return RootPath() + path;
+        case Base::Title: return TitleContainer() + path;
         default:
             SDG_Err("SDG::FileSys::MakePath: DirectoryBase was not recognized.");
             return string();
@@ -47,7 +47,7 @@ SDG::FileSys::MakePath(const string &path, Base root)
 
 
 string
-SDG::FileSys::GetFileName(const string &path)
+SDG::FileSys::ExtractFilename(const string &path)
 {
     auto pos = path.find_last_of('/');
     return (pos == string::npos) ? path : path.substr(pos + 1);
@@ -57,7 +57,7 @@ SDG::FileSys::GetFileName(const string &path)
 string
 SDG::FileSys::GetExtension(const string &path)
 {
-    string filename = GetFileName(path);
+    string filename = ExtractFilename(path);
     auto pos = filename.find_last_of('.');
 
     return (pos == string::npos || pos == 0) ? string() : filename.substr(pos + 1);
@@ -87,7 +87,7 @@ SDG::FileSys::Initialize(const string &appName, const string &org)
     ::orgName = org;
 }
 
-string SDG::FileSys::GetPrefPath()
+string SDG::FileSys::TitleContainer()
 {
-    return ::GetPrefPath();
+    return ::TitleContainer();
 }

@@ -49,7 +49,7 @@ private:
         if (Input::KeyPressed(Key::L) && Input::KeyPress(Key::V))
         {
             // Loaded the game!!
-            FileSys::File sav(FileSys::MakePath("game1.sav", FileSys::Base::Pref));
+            FileSys::File sav(FileSys::MakePath("game1.sav", FileSys::Base::Title));
 
             SDG_Log("Loaded save: \"{}\"", sav.Data());
         }

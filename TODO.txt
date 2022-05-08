@@ -3,16 +3,17 @@ TODO:
     x screen-to-world
     - world-to-screen
     - world-bounds
+- Figure out cause of fullscreen/non-fullscreen matrix projection discrepancy.
 - TTF font rendering and caching
-- Entity
-- Entity Pooling
-- Sprite renderer
-- Scene System
-- Create App subclass called Game to make use of these systems.
-- Make Asteroids Game
+- Game system features (subclass of App)
+    - Entity
+    - Entity Pooling
+    - Sprite renderer
+    - Scene System
+    - Make Asteroids Game as you assemble these systems
 
 Future:
-- Gui app for creating animations from atlas
+- Gui app for creating and previewing animations from atlas
 
 Done:
 x Create Mouse object to capture mouse clicks and position

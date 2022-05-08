@@ -6,8 +6,14 @@ function(AddContentPipeline AssetDir Key)
 if (EMSCRIPTEN)
     set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "--preload-file ${CMAKE_CURRENT_BINARY_DIR}/${AssetDir}@${AssetDir}")
 else()
-    get_target_property(ContentPipe_BinaryDir SDG_ContentPipe BINARY_DIR)
-    get_target_property(Project_BinaryDir ${PROJECT_NAME} BINARY_DIR)
+    if (WIN32)
+        set(ContentPipe_BinaryDir ${CMAKE_BINARY_DIR})
+        set(Project_BinaryDir ${CMAKE_BINARY_DIR})
+    else()
+        get_target_property(ContentPipe_BinaryDir SDG_ContentPipe BINARY_DIR)
+        get_target_property(Project_BinaryDir ${PROJECT_NAME} BINARY_DIR)
+    endif()
+
     set(ContentPipe_AssetDir ${Project_BinaryDir}/${AssetDir})
 
     add_custom_target("${PROJECT_NAME}_Content"

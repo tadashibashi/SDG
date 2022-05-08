@@ -74,27 +74,32 @@ set(Engine_Includes
 if (DEBUG)                                                 # Debug
     set(Engine_CompileDefs DEBUG=1)
     set(CONFIG_Libraries spdlog)
-    if (WINDOWS)
-        set(CONFIG_Libraries ${CONFIG_Libraries} SDL2d)
+    if (WIN32)
+        set(CONFIG_Libraries ${CONFIG_Libraries} SDL2d SDL2maind)
     else()
         set(CONFIG_Libraries ${CONFIG_Libraries} SDL2)
     endif()
 else()
     set(Engine_CompileDefs DEBUG=0)                        # Release
-    set(CONFIG_Libraries SDL2)
+    if (WIN32)
+        set(CONFIG_Libraries SDL2 SDL2main)
+    else()
+        set(CONFIG_Libraries SDL2)
+    endif()
 endif()
 
-if (APPLE)                                                 # Mac
+if     (APPLE)                                              # Mac
     # Universal binary
     set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
     set(PLATFORM_Libraries "-framework OpenGL" "-framework Cocoa")
 
-elseif(WIN32)                                              # Windows
-    set(PLATFORM_Libraries opengl32 SDL2main)
+elseif (WIN32)                                              # Windows
+    set(PLATFORM_Libraries opengl32)
 
-elseif(LINUX)                                              # Linux
+elseif (LINUX)                                              # Linux
     set(PLATFORM_Libraries GL)
-elseif(EMSCRIPTEN)                                         # HTML5
+
+elseif (EMSCRIPTEN)                                         # HTML5
     set(CMAKE_CXX_FLAGS "-Os -sUSE_SDL=2 -sUSE_SDL_TTF=2")
     set(CMAKE_EXE_LINKER_FLAGS "-sUSE_WEBGL2=1 -sWASM=2")
 endif()
@@ -136,5 +141,4 @@ set (Engine_Libraries
 add_library                (SDG_Engine STATIC ${Engine_Sources})
 target_include_directories (SDG_Engine PUBLIC ${Engine_Includes})
 target_link_libraries      (SDG_Engine PUBLIC ${Engine_Libraries})
-target_link_directories    (SDG_Engine PUBLIC ${Engine_LinkDirectories})
 target_compile_definitions (SDG_Engine PUBLIC ${Engine_CompileDefs})

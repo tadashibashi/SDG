@@ -1,5 +1,4 @@
 #include "RenderTarget.h"
-#include <SDL_gpu.h>
 
 namespace SDG
 {
@@ -27,6 +26,12 @@ namespace SDG
         return *this;
     }
 
+    Ref<GPU_Target>
+    RenderTarget::Target() const
+    {
+        return Ref{target};
+    }
+
     Rectangle
     RenderTarget::Viewport() const
     {
@@ -52,11 +57,6 @@ namespace SDG
     RenderTarget::operator bool() const
     {
         return static_cast<bool>(target);
-    }
-
-    Ref<GPU_Target> RenderTarget::Target() const
-    {
-        return Ref{target};
     }
 
     void RenderTarget::Close()

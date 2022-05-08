@@ -4,7 +4,7 @@ set(TinyXML2_Sources
         ${CMAKE_SOURCE_DIR}/lib/tinyxml2/tinyxml2.h
         ${CMAKE_SOURCE_DIR}/lib/tinyxml2/tinyxml2.cpp)
 
-set(SDG_Engine_Sources
+set(Engine_Sources
         ${TinyXML2_Sources}
         EntryPoint.cpp
         Graphics/Camera2D.cpp Graphics/Camera2D.h
@@ -46,34 +46,43 @@ set(SDG_Engine_Sources
         Math/Vector3.h
         FileSys/FileInfo.h Math/Endian.h FileSys.hpp FileSys/Structs/GameConfig.h
         SDG.hpp
-        ServiceProvider.h Entities/Entity.cpp Entities/Entity.h Math/Matrix4x4.cpp Math/Matrix4x4.h GameTime.cpp GameTime.h Entities/ComponentList.cpp Entities/ComponentList.h Entities/Component.h Input/Mouse.cpp Input/Mouse.h Input/MButton.h Ref.h Exceptions/NullReferenceException.h Exceptions/NullReferenceException.cpp Graphics/RenderTarget.cpp Graphics/RenderTarget.h Math/Math.cpp ClassAttr.h Exceptions/InvalidArgumentException.cpp Exceptions/InvalidArgumentException.h)
+        ServiceProvider.h Entities/Entity.cpp Entities/Entity.h Math/Matrix4x4.cpp Math/Matrix4x4.h GameTime.cpp GameTime.h Entities/ComponentList.cpp Entities/ComponentList.h Entities/Component.h Input/Mouse.cpp Input/Mouse.h Input/MButton.h Ref.h Exceptions/NullReferenceException.h Exceptions/NullReferenceException.cpp
+        Graphics/RenderTarget.cpp Graphics/RenderTarget.h
+        Math/Math.cpp
+        ClassAttr.h
+        Exceptions/InvalidArgumentException.cpp
+        Exceptions/InvalidArgumentException.h
+        Graphics/Font.cpp Graphics/Font.h
+        )
 
 
 
 
 # -----  Includes  ----------------------------------------------------
-set(SDG_Engine_Includes
+set(Engine_Includes
         ${CMAKE_SOURCE_DIR}/src
         ${CMAKE_SOURCE_DIR}/lib/spdlog/include
         ${CMAKE_SOURCE_DIR}/lib/SDL/include
         ${CMAKE_SOURCE_DIR}/lib/sdl-gpu/include
         ${CMAKE_SOURCE_DIR}/lib/tinyxml2
-        ${CMAKE_SOURCE_DIR}/lib/glm)
+        ${CMAKE_SOURCE_DIR}/lib/glm
+        ${CMAKE_SOURCE_DIR}/lib/bundled/include)
+
 
 
 # ----- Libraries ---------------------------------------------------
 if (DEBUG)                                                 # Debug
-    set(SDG_Engine_CompileDefs DEBUG=1)
+    set(Engine_CompileDefs DEBUG=1)
     set(CONFIG_Libraries spdlog)
 else()
-    set(SDG_Engine_CompileDefs DEBUG=0)                    # Release
+    set(Engine_CompileDefs DEBUG=0)                    # Release
     set(CONFIG_Libraries)
 endif()
 
 if (APPLE)                                                 # Mac
     # Universal binary
     set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
-    set(PLATFORM_Libraries "-framework OpenGL")
+    set(PLATFORM_Libraries "-framework OpenGL" "-framework Cocoa")
 elseif(WIN32)                                              # Windows
     set(PLATFORM_Libraries opengl32)
 elseif(LINUX)
@@ -81,10 +90,11 @@ elseif(LINUX)
 elseif(EMSCRIPTEN)                                         # HTML5
     set(CMAKE_CXX_FLAGS "-Os")
     set(CMAKE_EXE_LINKER_FLAGS "-sUSE_WEBGL2=1 -sWASM=2")
-
 endif()
 
-set (SDG_Engine_Libraries
+
+set (Engine_Libraries
+        SDL2_ttf
         SDL2
         SDL2main
         SDL_gpu
@@ -92,10 +102,21 @@ set (SDG_Engine_Libraries
         ${PLATFORM_Libraries})
 
 
+# ----- Library Directories ----------------------------------------
+if (WINDOWS)
+    set(Engine_LinkDirectories ${CMAKE_SOURCE_DIR}/lib/bundled/win)
+elseif(APPLE)
+    set(Engine_LinkDirectories ${CMAKE_SOURCE_DIR}/lib/bundled/mac)
+elseif(LINUX)
+    set(Engine_LinkDirectories ${CMAKE_SOURCE_DIR}/lib/bundled/linux)
+else()
+    set(Engine_LinkDirectories "")
+endif()
 
 
 # ----- Commit the Settings ----------------------------------------
-add_library                (SDG_Engine STATIC ${SDG_Engine_Sources})
-target_include_directories (SDG_Engine PUBLIC ${SDG_Engine_Includes})
-target_link_libraries      (SDG_Engine PUBLIC ${SDG_Engine_Libraries})
-target_compile_definitions (SDG_Engine PUBLIC ${SDG_Engine_CompileDefs})
+add_library                (SDG_Engine STATIC ${Engine_Sources})
+target_include_directories (SDG_Engine PUBLIC ${Engine_Includes})
+target_link_libraries      (SDG_Engine PUBLIC ${Engine_Libraries})
+target_link_directories    (SDG_Engine PUBLIC ${Engine_LinkDirectories})
+target_compile_definitions (SDG_Engine PUBLIC ${Engine_CompileDefs})

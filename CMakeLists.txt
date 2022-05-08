@@ -8,7 +8,9 @@ if (WIN32)
     if (${CMAKE_SIZEOF_VOID_P} EQUAL 4)
         message(FATAL "Windows 32-bit is not supported!")
     endif()
-    set(WINDOWS 1)
+
+    set(WINDOWS 1) # Cmake Windows detection var
+
     # Set all targets to build into one directory. Paths are otherwise broken.
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
@@ -17,12 +19,12 @@ endif()
 
 # LINUX
 if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux" AND UNIX AND NOT APPLE AND NOT ANDROID)
-    set(LINUX 1)
+    set(LINUX 1) # Cmake Linux detection var
 endif()
 
 # WEBGL
 if (EMSCRIPTEN)
-    set(WEBGL 1)
+    set(WEBGL 1) # Cmake Emscripten detection var
 endif()
 
 # Build Type

@@ -6,6 +6,11 @@
 #include "SDG/Math/Vector2.h"
 #include "SDG/FileSys/FileInfo.h"
 
+// Prevent MSVC macro clash
+#ifdef LoadImage
+#undef LoadImage
+#endif
+
 class GPU_Image;
 class GPU_Target;
 
@@ -18,6 +23,7 @@ namespace SDG
     public:
         Texture2D();
         explicit Texture2D(const std::string &path);
+        Texture2D(GPU_Image *image, const std::string &path);
         ~Texture2D();
 
         /// Gets the inner GPU_Image object ptr.
@@ -28,10 +34,12 @@ namespace SDG
         bool LoadImage(const std::string &path);
         void Free();
 
-        /// @abstract Get the image's anchor points
-        Point Anchor() const;
-        Point Offset() const;
+        Point Size() const;
+
         bool WasLoaded() const;
+
+        /// Gets the filepath this texture was loaded from.
+        /// If this is text rendered from a font, it will contain the font's filepath.
         std::string Path() const;
         
     private:

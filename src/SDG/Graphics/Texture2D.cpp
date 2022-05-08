@@ -4,11 +4,11 @@
 #include <SDG/Debug.hpp>
 #include <SDL_gpu.h>
 
+// Prevent Windows API macro clashes
 #ifdef M_PI
 #undef M_PI
 #endif
 
-// Prevent Windows API macro clash
 #ifdef LoadImage
 #undef LoadImage
 #endif
@@ -18,13 +18,10 @@ namespace SDG
 {
     /// ========= Implementation class for Texture 2D =========================
     struct Texture2D::Impl {
-        Impl() : image(), size(), anchor(), offset(), rotated(), path() {}
+        Impl() : image(), path() {}
         GPU_Image *image;
 
         // Sub-image data, to translate relative to the image
-        Point size, anchor, offset;
-        bool rotated;
-
         std::string path;
 
         void Free()
@@ -34,10 +31,6 @@ namespace SDG
                 GPU_FreeImage(image);
                 image = nullptr;
                 path = "";
-                size = Point();
-                anchor = Point();
-                offset = Point();
-                rotated = false;
             }
         }
     };
@@ -55,6 +48,7 @@ namespace SDG
 
     Texture2D::~Texture2D()
     {
+        impl->Free();
         delete impl;
     }
 
@@ -101,19 +95,6 @@ namespace SDG
     }
 
     // ========= Getters ======================================================
-    Point
-    Texture2D::Anchor() const
-    {
-        SDG_Assert(WasLoaded());
-        return impl->anchor;
-    }
-
-    Point
-    Texture2D::Offset() const
-    {
-        SDG_Assert(WasLoaded());
-        return impl->offset;
-    }
 
     bool
     Texture2D::WasLoaded() const
@@ -124,14 +105,26 @@ namespace SDG
     GPU_Image *
     Texture2D::Image() const
     {
+        SDG_Assert(WasLoaded());
         return impl->image;
     }
 
     std::string
     Texture2D::Path() const
     {
+        SDG_Assert(WasLoaded());
         return impl->path;
     }
 
+    Texture2D::Texture2D(GPU_Image *image, const std::string &path)
+    {
+        impl->image = image;
+        impl->path = path;
+    }
 
+    Point Texture2D::Size() const
+    {
+        SDG_Assert(WasLoaded());
+        return {impl->image->base_w, impl->image->base_h};
+    }
 }

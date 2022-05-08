@@ -6,8 +6,7 @@
 #include <SDG/Math/Rectangle.h>
 #include <SDG/Math/Vector2.h>
 #include "Color.h"
-
-struct GPU_Target;
+#include <SDL_gpu.h>
 
 namespace SDG
 {
@@ -19,7 +18,7 @@ namespace SDG
         /// Receive a render target from another source.
         /// RenderTarget becomes the owner of this target.
         explicit RenderTarget(Ref<GPU_Target> ref);
-        virtual ~RenderTarget();
+        ~RenderTarget();
 
         /*!
          * Sets the internal target. Frees any pre-existing target.
@@ -48,7 +47,7 @@ namespace SDG
          * Gets the true underlying dimensions of the target
          * @return Point containing width and height of the target
          */
-        virtual Point Size() const;
+        Point Size() const;
 
         Color Color() const;
 
@@ -65,7 +64,7 @@ namespace SDG
          * if the target has already been freed, and is automatically called
          * during ~RenderTarget()
          */
-        virtual void Close();
+        void Close();
 
         void Clear(SDG::Color color = Color::CornflowerBlue());
         void SwapBuffers();

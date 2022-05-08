@@ -5,10 +5,10 @@
 #include <SDG/Math/Rectangle.h>
 #include <SDG/Ref.h>
 
-#include "RenderTarget.h"
-
 namespace SDG
 {
+    class RenderTarget;
+
     /// SpriteBatch depth sort mode.
     enum class SortMode
     {

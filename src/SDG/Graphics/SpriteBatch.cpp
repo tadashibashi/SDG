@@ -2,6 +2,7 @@
 // Created by aishi on 4/24/2022.
 //
 #include "SpriteBatch.h"
+#include "RenderTarget.h"
 
 #include <SDL_gpu.h>
 #include <algorithm>

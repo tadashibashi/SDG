@@ -8,6 +8,7 @@
 
 #include <SDG/Debug.hpp>
 #include <SDL_gpu.h>
+#include <SDL_ttf.h>
 
 #ifdef GetWindow // Cancels some conflicts with some MSVC defines
 #undef GetWindow
@@ -44,11 +45,23 @@ namespace SDG
                                               width,
                                               height,
                                               flags);
+
         if (!target)
         {
             SDG_Err("Failed to initialize SDL_gpu GPU_Target: {}",
                     GPU_GetErrorString(GPU_PopErrorCode().error));
             return false;
+        }
+
+        if (!TTF_WasInit())
+        {
+            if (TTF_Init() != 0)
+            {
+                SDG_Err("Failed to initialize SDL2_ttf: {}", TTF_GetError());
+                GPU_FreeTarget(target);
+                GPU_Quit();
+                return false;
+            }
         }
 
         impl->target.EmplaceTarget(Ref{target});
@@ -64,6 +77,7 @@ namespace SDG
         if (impl->target)
         {
             impl->target.Close();
+            TTF_Quit();
             GPU_Quit();
         }
     }

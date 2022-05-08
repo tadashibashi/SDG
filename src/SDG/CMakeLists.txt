@@ -83,8 +83,9 @@ if (APPLE)                                                 # Mac
     # Universal binary
     set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
     set(PLATFORM_Libraries "-framework OpenGL" "-framework Cocoa")
+    set(CMAKE_BUILD_RPATH)
 elseif(WIN32)                                              # Windows
-    set(PLATFORM_Libraries opengl32)
+    set(PLATFORM_Libraries opengl32 SDL2main)
 elseif(LINUX)
     set(PLATFORM_Libraries GL)
 elseif(EMSCRIPTEN)                                         # HTML5
@@ -93,26 +94,25 @@ elseif(EMSCRIPTEN)                                         # HTML5
 endif()
 
 
+# ----- Bundled Libraries ----------------------------------------
+if (WINDOWS)
+    set(BundledPref "${CMAKE_SOURCE_DIR}/lib/bundled/win")
+    set(Engine_BundledLibs "${BundledPref}/lib/SDL2_ttf.lib")
+elseif(APPLE)
+    set(BundledPref "${CMAKE_SOURCE_DIR}/lib/bundled/macos")
+    set(Engine_BundledLibs "${BundledPref}/libSDL2_ttf.a")
+elseif(LINUX)
+    set(Engine_BundledLibs "${CMAKE_SOURCE_DIR}/lib/bundled/linux")
+else()
+    set(Engine_BundledLibs "")
+endif()
+
 set (Engine_Libraries
-        SDL2_ttf
         SDL2
-        SDL2main
+        ${Engine_BundledLibs}
         SDL_gpu
         ${CONFIG_Libraries}
         ${PLATFORM_Libraries})
-
-
-# ----- Library Directories ----------------------------------------
-if (WINDOWS)
-    set(Engine_LinkDirectories ${CMAKE_SOURCE_DIR}/lib/bundled/win)
-elseif(APPLE)
-    set(Engine_LinkDirectories ${CMAKE_SOURCE_DIR}/lib/bundled/mac)
-elseif(LINUX)
-    set(Engine_LinkDirectories ${CMAKE_SOURCE_DIR}/lib/bundled/linux)
-else()
-    set(Engine_LinkDirectories "")
-endif()
-
 
 # ----- Commit the Settings ----------------------------------------
 add_library                (SDG_Engine STATIC ${Engine_Sources})

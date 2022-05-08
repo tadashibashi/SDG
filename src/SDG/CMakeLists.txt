@@ -73,7 +73,12 @@ set(Engine_Includes
 # ----- Libraries ---------------------------------------------------
 if (DEBUG)                                                 # Debug
     set(Engine_CompileDefs DEBUG=1)
-    set(CONFIG_Libraries spdlog SDL2d)
+    set(CONFIG_Libraries spdlog)
+    if (WINDOWS)
+        set(CONFIG_Libraries ${CONFIG_Libraries} SDL2d)
+    else()
+        set(CONFIG_Libraries ${CONFIG_Libraries} SDL2)
+    endif()
 else()
     set(Engine_CompileDefs DEBUG=0)                        # Release
     set(CONFIG_Libraries SDL2)

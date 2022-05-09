@@ -62,13 +62,13 @@ namespace SDG
 }
 
 SDG::Path operator + (const SDG::Path &path, const std::string &str);
-std::ostream &operator <<(std::ostream &os, const SDG::Path &path);
+std::ostream &operator << (std::ostream &os, const SDG::Path &path);
 
-/// Compares full Path with a standard string
-inline bool operator == (const SDG::Path &path, const std::string &other) { return path.String() == other; }
-inline bool operator != (const SDG::Path &path, const std::string &other) { return path.String() != other; }
-inline bool operator == (const std::string &other, const SDG::Path &path) { return path.String() == other; }
-inline bool operator != (const std::string &other, const SDG::Path &path) { return path.String() != other; }
-inline bool operator == (const SDG::Path &path1, const SDG::Path &path2)
-    { return path1.String() == path2.String(); }
-inline bool operator != (const SDG::Path &path1, const SDG::Path &path2) { return !(path1 == path2); }
+/// Path <-> string comparison
+bool operator == (const SDG::Path &path, const std::string &other);
+bool operator != (const SDG::Path &path, const std::string &other);
+bool operator == (const std::string &other, const SDG::Path &path);
+bool operator != (const std::string &other, const SDG::Path &path);
+/// Path <-> Path comparison
+bool operator == (const SDG::Path &path1, const SDG::Path &path2);
+bool operator != (const SDG::Path &path1, const SDG::Path &path2);

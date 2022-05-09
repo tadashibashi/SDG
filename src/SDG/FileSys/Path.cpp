@@ -7,24 +7,23 @@
 namespace SDG
 {
     Path::Path() : subpath(), base(Base::None)
-    {
-
-    }
+    {}
 
     /// Creates a path with the specified base path.
     /// Trims any preceding forward slashes or white-space of subpath
     Path::Path(const string &pSubpath, Base base) : subpath(), base(base)
     {
-        // ignore any white space or '/' in beginning of path
+        // Only operate if there is a subpath to work with
         if (!pSubpath.empty())
         {
+            // Trim any white space or '/' in beginning of path
             size_t pos = 0, size = pSubpath.size();
             std::string temp;
             while(pos < size && (pSubpath[pos] == '/' || isspace(pSubpath[pos])))
                 ++pos;
             temp = pSubpath.substr(pos);
 
-            // trim any tailing '/' or white-space, or '.'
+            // Trim any tailing '/' or white-space, or '.'
             if (!temp.empty())
             {
                 pos = temp.length();
@@ -97,17 +96,53 @@ namespace SDG
     {
         return Path(subpath, Path::Base::Root);
     }
-
-
 }
 
-SDG::Path operator+(const SDG::Path &path, const string &str)
+SDG::Path
+operator+(const SDG::Path &path, const string &str)
 {
     return SDG::Path(path) += str;
 }
 
-std::ostream &operator<<(std::ostream &os, const SDG::Path &path)
+std::ostream &
+operator<<(std::ostream &os, const SDG::Path &path)
 {
     os << path.String();
     return os;
+}
+
+bool
+operator==(const SDG::Path &path, const std::string &other)
+{
+    return path.String() == other;
+}
+
+bool
+operator != (const SDG::Path &path, const std::string &other)
+{
+    return path.String() != other;
+}
+
+bool
+operator == (const std::string &other, const SDG::Path &path)
+{
+    return path.String() == other;
+}
+
+bool
+operator != (const std::string &other, const SDG::Path &path)
+{
+    return path.String() != other;
+}
+
+bool
+operator == (const SDG::Path &path1, const SDG::Path &path2)
+{
+    return path1.String() == path2.String();
+}
+
+bool
+operator != (const SDG::Path &path1, const SDG::Path &path2)
+{
+    return !(path1 == path2);
 }

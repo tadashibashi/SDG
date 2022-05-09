@@ -19,20 +19,24 @@ namespace SDG
         if (!pSubpath.empty())
         {
             size_t pos = 0, size = pSubpath.size();
+            std::string temp;
             while(pos < size && (pSubpath[pos] == '/' || isspace(pSubpath[pos])))
                 ++pos;
-            subpath = pSubpath.substr(pos);
+            temp = pSubpath.substr(pos);
 
             // trim any tailing '/' or white-space, or '.'
-            if (!subpath.empty())
+            if (!temp.empty())
             {
-                pos = subpath.length();
-                while(pos > 0 && (subpath[pos-1] == '/' || isspace(subpath[pos-1]) || subpath[pos-1] == '.'))
+                pos = temp.length();
+                while(pos > 0 && (temp[pos-1] == '/' || isspace(temp[pos-1]) || temp[pos-1] == '.'))
                     --pos;
 
-                if (pos < subpath.length())
-                    subpath = subpath.substr(0, pos);
+                if (pos < temp.length())
+                    temp = temp.substr(0, pos);
             }
+
+            // finished substring ops, commit the result
+            subpath = temp;
         }
     }
 

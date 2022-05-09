@@ -36,7 +36,7 @@ namespace SDG::FileSys
      */
     [[nodiscard]] string RootPath();
 
-    /// Gets the path to the program's writable file location.
+    /// Gets the path to this app title's writable file location.
     [[nodiscard]] string TitleContainer();
 
     /**
@@ -63,5 +63,5 @@ namespace SDG::FileSys
     [[nodiscard]] string MakePath(const string &path, Base base);
 
 
-    void Initialize(const string &appName, const string &org);
+    void Initialize(const string &pAppName, const string &pOrgName);
 }

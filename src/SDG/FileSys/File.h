@@ -7,6 +7,7 @@
 #ifndef SDG_File_h
 #define SDG_File_h
 #include <string>
+#include <SDG/FileSys/Path.h>
 
 namespace SDG::FileSys
 {
@@ -18,7 +19,8 @@ class File {
 public:
     File();
     ~File();
-    File(const std::string &path);
+    explicit File(const std::string &path);
+    explicit File(const Path &path);
 
     /// Loads data found in the file at path into the File class.
     /// @param path path to the file

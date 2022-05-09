@@ -53,7 +53,7 @@ set(Engine_Sources
         Exceptions/InvalidArgumentException.cpp
         Exceptions/InvalidArgumentException.h
         Graphics/Font.cpp Graphics/Font.h
-        )
+        FileSys/Path.cpp FileSys/Path.h)
 
 
 

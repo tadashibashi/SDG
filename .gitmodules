@@ -1,18 +1,21 @@
 [submodule "lib/tinyxml2"]
-	path = lib/tinyxml2
+	subpath = lib/tinyxml2
 	url = https://github.com/leethomason/tinyxml2
 [submodule "lib/spdlog"]
-	path = lib/spdlog
+	subpath = lib/spdlog
 	url = https://github.com/gabime/spdlog
 [submodule "lib/emsdk"]
-	path = lib/emsdk
+	subpath = lib/emsdk
 	url = https://github.com/emscripten-core/emsdk.git
 [submodule "lib/SDL"]
-	path = lib/SDL
+	subpath = lib/SDL
 	url = https://github.com/libsdl-org/SDL
 [submodule "lib/sdl-gpu"]
-	path = lib/sdl-gpu
+	subpath = lib/sdl-gpu
 	url = https://github.com/tadashibashi/sdl-gpu
 [submodule "lib/glm"]
-	path = lib/glm
+	subpath = lib/glm
 	url = https://github.com/g-truc/glm.git
+[submodule "src/Test/lib/Catch2"]
+	path = src/Test/lib/Catch2
+	url = https://github.com/catchorg/Catch2.git

@@ -63,6 +63,18 @@ SDG::FileSys::GetExtension(const string &path)
     return (pos == string::npos || pos == 0) ? string() : filename.substr(pos + 1);
 }
 
+void
+SDG::FileSys::Initialize(const string &pAppName, const string &pOrgName)
+{
+    ::appName = pAppName;
+    ::orgName = pOrgName;
+}
+
+string SDG::FileSys::TitleContainer()
+{
+    return GetPrefPath();
+}
+
 string
 GetPrefPath()
 {
@@ -78,16 +90,4 @@ GetPrefPath()
     SDG_Assert(!prefPath.empty());
 
     return prefPath;
-}
-
-void
-SDG::FileSys::Initialize(const string &appName, const string &org)
-{
-    ::appName = appName;
-    ::orgName = org;
-}
-
-string SDG::FileSys::TitleContainer()
-{
-    return ::TitleContainer();
 }

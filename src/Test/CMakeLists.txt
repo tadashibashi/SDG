@@ -15,10 +15,14 @@ if (EMSCRIPTEN)
     set(CMAKE_EXECUTABLE_SUFFIX .html)
 endif()
 
-add_executable(SDG_Tests "SDG_Tests.cpp" DelegateTests.h MatrixTests.h)
-target_link_libraries(SDG_Tests PRIVATE SDG_Engine)
 
-target_include_directories(SDG_Tests PRIVATE ${CMAKE_SOURCE_DIR}/src)
+add_subdirectory(lib/Catch2)
+
+add_executable(SDG_Tests "SDG_Tests.cpp" DelegateTests.h MatrixTests.h)
+target_link_libraries(SDG_Tests PRIVATE SDG_Engine Catch2)
+
+target_include_directories(SDG_Tests PRIVATE ${CMAKE_SOURCE_DIR}/src
+        lib/Catch2/src)
 
 # Set up content pipeline
 include(${CMAKE_SOURCE_DIR}/cmake/SDG_AddContentPipeline.cmake)

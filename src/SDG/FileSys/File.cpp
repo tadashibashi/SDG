@@ -7,6 +7,7 @@
 #include "FileSys.h"
 #include <SDL_rwops.h>
 
+
 using std::string;
 
 /// Private implementation class data
@@ -32,6 +33,11 @@ SDG::FileSys::File::File() : impl(new Impl)
 SDG::FileSys::File::File(const string &path) : impl(new Impl)
 {
     Open(path);
+}
+
+SDG::FileSys::File::File(const SDG::Path &path) : impl(new Impl)
+{
+    Open(path.String());
 }
 
 SDG::FileSys::File::~File()
@@ -132,6 +138,8 @@ SDG::FileSys::File::IsLoaded() const
 {
     return impl->mem;
 }
+
+
 
 
 

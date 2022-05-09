@@ -21,7 +21,7 @@ set(Engine_Sources
         Debug/Assert.h
         Debug/Assert.cpp
         "FileSys/FileSys.cpp" "FileSys/FileSys.h"
-        FileSys/IO.cpp FileSys/IO.h
+        FileSys/Private/IO.cpp FileSys/Private/IO.h
         FileSys/File.cpp Filesys/File.h
         "FileSys/XMLReader.cpp" "FileSys/XMLReader.h"
         "Scene.cpp" "Scene.h"

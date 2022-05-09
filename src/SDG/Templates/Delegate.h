@@ -64,6 +64,11 @@ namespace SDG {
             {
             }
 
+            explicit FunctionWrapper(std::function<void(Args...)> *func) :
+                object(nullptr), functionPtr(func), function(*func)
+            {
+            }
+
             void operator()(Args ...args)
             {
                 if (function)
@@ -93,6 +98,12 @@ namespace SDG {
                 return (object == nullptr &&
                         //functionPtr.type() == typeid(pFunctionPtr) &&
                         any_cast<void(*)(Args...)>(functionPtr) == pFunctionPtr);
+            }
+
+            bool SignatureMatches(std::function<void(Args...)> *func) const
+            {
+                return object == nullptr &&
+                        any_cast<std::function<void(Args...)> *>(functionPtr) == func;
             }
 
             /// represents if this FunctionWrapper is flagged to be removed or not.
@@ -165,6 +176,11 @@ namespace SDG {
             functions.emplace_back(std::move(FunctionWrapper(func)));
         }
 
+        void AddListener(std::function<void(Args...)> *func)
+        {
+            functions.emplace_back(std::move(FunctionWrapper(func)));
+        }
+
         // Removes an object + member function listener.
         template <typename T>
         void RemoveListener(T *object, void (T::*func)(Args...))
@@ -198,6 +214,34 @@ namespace SDG {
 
         // Removes a global function listener.
         void RemoveListener(void (*func)(Args...))
+        {
+            auto it = std::find_if(functions.begin(), functions.end(),
+                                   [func](auto &f)
+                                   {
+                                       return f.SignatureMatches(func);
+                                   });
+
+            if (it != functions.end())
+            {
+                if (isCalling)
+                {
+                    it->toRemove = true;
+                    removeThisFrame = true;
+                }
+                else
+                {
+                    functions.erase(it);
+                }
+            }
+            else
+            {
+                throw InvalidArgumentException(__FUNCTION__, "func",
+                                               "There was no matching callback in the Delegate.");
+            }
+        }
+
+        // Removes a global function listener.
+        void RemoveListener(std::function<void(Args...)> *func)
         {
             auto it = std::find_if(functions.begin(), functions.end(),
                                    [func](auto &f)

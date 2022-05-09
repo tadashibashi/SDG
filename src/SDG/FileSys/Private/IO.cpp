@@ -6,7 +6,7 @@
 //
 #include "IO.h"
 #include <cassert>
-#include <SDL_rwops.h>
+#include "SDL_rwops.h"
 #include <string>
 #include <vector>
 

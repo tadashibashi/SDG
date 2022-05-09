@@ -11,15 +11,28 @@ namespace SDG
 
     }
 
-    Path::Path(const string &path, Base base) : subpath(), base(base)
+    /// Creates a path with the specified base path.
+    /// Trims any preceding forward slashes or white-space of subpath
+    Path::Path(const string &pSubpath, Base base) : subpath(), base(base)
     {
         // ignore any white space or '/' in beginning of path
-        if (!path.empty())
+        if (!pSubpath.empty())
         {
-            size_t pos = 0, size = path.size();
-            while(pos < size && (path[pos] == '/' || isspace(path[pos])))
+            size_t pos = 0, size = pSubpath.size();
+            while(pos < size && (pSubpath[pos] == '/' || isspace(pSubpath[pos])))
                 ++pos;
-            subpath = path.substr(pos);
+            subpath = pSubpath.substr(pos);
+
+            // trim any tailing '/' or white-space, or '.'
+            if (!subpath.empty())
+            {
+                pos = subpath.length();
+                while(pos > 0 && (subpath[pos-1] == '/' || isspace(subpath[pos-1]) || subpath[pos-1] == '.'))
+                    --pos;
+
+                if (pos < subpath.length())
+                    subpath = subpath.substr(0, pos);
+            }
         }
     }
 
@@ -50,7 +63,12 @@ namespace SDG
 
     Path &Path::operator+=(const string &str)
     {
+        if (str.empty()) return *this;
+
+        if (str[0] != '/')
+            subpath += '/';
         subpath += str;
+
         return *this;
     }
 
@@ -58,7 +76,7 @@ namespace SDG
     {
         switch(base)
         {
-            case Base::None: return subpath;
+            case Base::None: return "/" + subpath;
             case Base::Root: return FileSys::RootPath() + subpath;
             case Base::Title: return FileSys::TitleContainer() + subpath;
         }
@@ -82,11 +100,6 @@ namespace SDG
 SDG::Path operator+(const SDG::Path &path, const string &str)
 {
     return SDG::Path(path) += str;
-}
-
-std::string operator+(const string &str, const SDG::Path &path)
-{
-    return str + path.String();
 }
 
 std::ostream &operator<<(std::ostream &os, const SDG::Path &path)

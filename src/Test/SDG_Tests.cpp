@@ -1,10 +1,11 @@
-#include "DelegateTests.h"
-#include "MatrixTests.h"
 #include <SDG/SDG.hpp>
 #include <SDL_gpu.h>
 #include <SDG/Graphics/SpriteBatch.h>
 #include <SDG/Math.hpp>
 #include <SDG/Graphics/Camera2D.h>
+#include <SDG/FileSys/Private/IO.h>
+
+#include <catch2/catch_session.hpp>
 
 using namespace SDG;
 
@@ -15,9 +16,10 @@ class TestGame : public App {
 private:
     int Initialize() override
     {
-        // Initialization logic here
-        TestDelegate();
-        TestMatrix();
+        // Must run tests during initialization to test Input and FileSys functions,
+        // which are initialized by App prior to this function call.
+        Catch::Session().run();
+
         // Temp content
         kirby = new Texture2D(FileSys::MakePath("assets/textures/kirby.sdgc", FileSys::Base::Root));
         shader = new Shader;

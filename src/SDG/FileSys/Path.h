@@ -28,7 +28,7 @@ namespace SDG
 
         /// Creates an empty path
         Path();
-        Path(const std::string &path, Base base = Base::None);
+        Path(const std::string &pSubpath, Base base = Base::None);
 
         /// Get the subpath portion, not including base path
         std::string SubPath() const { return subpath; }
@@ -38,16 +38,18 @@ namespace SDG
         bool HasExtension(std::string *outExt = nullptr) const;
         std::string Extension() const;
         std::string Filename() const;
+
+        /// Retrieves the Path Base type set in the constructor.
         Base BaseID() const { return base; }
 
         /// Gets the full path, including the base path, as a string
         std::string String() const;
+
         /// Gets the full path, including the base path, as a string
         explicit operator std::string() const { return String(); }
 
+        /// You can add strings to the Path, which is appended to the internal subpath
         Path &operator += (const std::string &str);
-        bool operator == (const Path &other) { return BaseID() == other.BaseID() && subpath == other.subpath; }
-        bool operator != (const Path &other) { return !(*this == other); }
     private:
         std::string subpath;
         Base base;
@@ -60,5 +62,13 @@ namespace SDG
 }
 
 SDG::Path operator + (const SDG::Path &path, const std::string &str);
-std::string operator + (const std::string &str, const SDG::Path &path);
 std::ostream &operator <<(std::ostream &os, const SDG::Path &path);
+
+/// Compares full Path with a standard string
+inline bool operator == (const SDG::Path &path, const std::string &other) { return path.String() == other; }
+inline bool operator != (const SDG::Path &path, const std::string &other) { return path.String() != other; }
+inline bool operator == (const std::string &other, const SDG::Path &path) { return path.String() == other; }
+inline bool operator != (const std::string &other, const SDG::Path &path) { return path.String() != other; }
+inline bool operator == (const SDG::Path &path1, const SDG::Path &path2)
+    { return path1.String() == path2.String(); }
+inline bool operator != (const SDG::Path &path1, const SDG::Path &path2) { return !(path1 == path2); }

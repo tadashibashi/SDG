@@ -3,7 +3,7 @@
 //  SDG_Engine
 //
 #include "File.h"
-#include "IO.h"
+#include "SDG/FileSys/Private/IO.h"
 #include "FileSys.h"
 #include <SDL_rwops.h>
 

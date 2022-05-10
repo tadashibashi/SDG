@@ -7,7 +7,6 @@
 #pragma once
 #include <string>
 #include <vector>
-#include "SDL_rwops.h"
 
 using std::string;
 using std::vector;

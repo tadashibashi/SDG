@@ -3,10 +3,12 @@
 //
 #include "Path.h"
 #include <SDG/FileSys/FileSys.h>
+#include <SDG/Platform.h>
+#include <ostream>
 
 namespace SDG
 {
-    Path::Path() : subpath(), base(BaseDir::Root)
+    Path::Path() : subpath(), base(BaseDir::None)
     {}
 
     /// Creates a path with the specified base path.
@@ -16,26 +18,44 @@ namespace SDG
         // Only operate if there is a subpath to work with
         if (!pSubpath.empty())
         {
-            // Trim any white space or '/' in beginning of path
-            size_t pos = 0, size = pSubpath.size();
-            std::string temp;
-            while(pos < size && (pSubpath[pos] == '/' || isspace(pSubpath[pos])))
-                ++pos;
-            temp = pSubpath.substr(pos);
-
-            // Trim any tailing '/' or white-space, or '.'
-            if (!temp.empty())
+            if (base == BaseDir::None) // keep path unaltered if BaseDir::None
             {
-                pos = temp.length();
-                while(pos > 0 && (temp[pos-1] == '/' || isspace(temp[pos-1]) || temp[pos-1] == '.'))
-                    --pos;
-
-                if (pos < temp.length())
-                    temp = temp.substr(0, pos);
+                subpath = pSubpath;
             }
+            else
+            {
+                // Trim any white space or '/' in beginning of path
+                size_t pos = 0, size = pSubpath.size();
 
-            // finished substring ops, commit the result
-            subpath = temp;
+                if (base == BaseDir::Root && SDG_TARGET_WINDOWS)
+                {
+                    // if Windows, trim letter named drive prefix
+                    if (size > 2 && pSubpath[0] == 'C' && pSubpath[1] == ':' && pSubpath[2] == '\\')
+                    {
+                        pos = 3;
+                    }
+                }
+
+
+                std::string temp;
+                while(pos < size && (pSubpath[pos] == '/' || isspace(pSubpath[pos])))
+                    ++pos;
+                temp = pSubpath.substr(pos);
+
+                // Trim any tailing '/' or white-space, or '.'
+                if (!temp.empty())
+                {
+                    pos = temp.length();
+                    while(pos > 0 && (temp[pos-1] == '/' || isspace(temp[pos-1]) || temp[pos-1] == '.'))
+                        --pos;
+
+                    if (pos < temp.length())
+                        temp = temp.substr(0, pos);
+                }
+
+                // finished substring ops, commit the result
+                subpath = temp;
+            }
         }
     }
 
@@ -79,22 +99,38 @@ namespace SDG
     {
         switch(base)
         {
-            case BaseDir::Root: return "/" + subpath;
+            case BaseDir::None: return subpath;
+            case BaseDir::Root: return
+#if SDG_TARGET_WINDOWS
+            "C:\\" +
+#else
+            "/" +
+#endif
+            subpath;
+
             case BaseDir::Base: return FileSys::RootPath() + subpath;
             case BaseDir::Pref: return FileSys::TitleContainer() + subpath;
         }
+
+        throw std::runtime_error("SDG::Path::base member value not recognized.");
     }
 
     Path
     PrefPath(const std::string &subpath)
     {
-        return Path(subpath, Path::BaseDir::Pref);
+        return {subpath, Path::BaseDir::Pref};
     }
 
     Path
     BasePath(const std::string &subpath)
     {
-        return Path(subpath, Path::BaseDir::Base);
+        return {subpath, Path::BaseDir::Base};
+    }
+
+    Path
+    RootPath(const std::string &subpath)
+    {
+        return {subpath, Path::BaseDir::Root};
     }
 }
 

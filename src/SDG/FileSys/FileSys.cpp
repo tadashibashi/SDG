@@ -1,6 +1,5 @@
 #include "FileSys.h"
 #include "SDG/Debug.hpp"
-
 #include "SDL.h"
 
 #include <vector>

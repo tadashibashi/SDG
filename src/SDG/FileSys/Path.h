@@ -12,7 +12,8 @@ namespace SDG
     public:
         /// An identifier representing the path to base the Path's subpath from.
         enum class BaseDir {
-            /// No base path, stems from OS root. User must specify the full filepath.
+            None,
+            /// Stems from OS root. User must specify the full filepath.
             Root,
             /// User specifies subpath relative from the App executable's base working directory.
             /// This directory is intended as read-only, although some platforms allow writing.
@@ -29,19 +30,19 @@ namespace SDG
         Path(const std::string &pSubpath, BaseDir base = BaseDir::Root);
 
         /// Get the subpath portion, not including base path
-        std::string Subpath() const { return subpath; }
+        [[nodiscard]] std::string Subpath() const { return subpath; }
 
         /// Checks whether the Path has an extension.
         /// Optionally retrieve the extension by passing string ptr.
         bool HasExtension(std::string *outExt = nullptr) const;
-        std::string Extension() const;
-        std::string Filename() const;
+        [[nodiscard]] std::string Extension() const;
+        [[nodiscard]] std::string Filename() const;
 
         /// Retrieves the Path Base type set in the constructor.
-        BaseDir Base() const { return base; }
+        [[nodiscard]] BaseDir Base() const { return base; }
 
         /// Gets the full path, including the base path, as a string
-        std::string String() const;
+        [[nodiscard]] std::string String() const;
 
         /// Gets the full path, including the base path, as a string
         explicit operator std::string() const { return String(); }
@@ -57,6 +58,7 @@ namespace SDG
     Path PrefPath(const std::string &subpath = std::string());
     /// Helper: creates a path stemming from the app's base working directory (read only)
     Path BasePath(const std::string &subpath = std::string());
+    Path RootPath(const std::string &subpath = std::string());
 }
 
 SDG::Path operator + (const SDG::Path &path, const std::string &str);

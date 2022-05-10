@@ -6,11 +6,14 @@ using namespace SDG;
 
 TEST_CASE("Path", "[path]")
 {
+    // Set the root path for testing depending on platform
 #if SDG_TARGET_WINDOWS
     std::string root = "C:\\";
 #else
     std::string root = "/";
 #endif
+
+
     SECTION("Path Constructor Tests")
     {
         SECTION("Default Path constructor creates empty path")
@@ -151,10 +154,10 @@ TEST_CASE("Path", "[path]")
             REQUIRE(pathNoBase.String() != pathRootBase.String());
             REQUIRE(pathTitleBase.String() != pathRootBase.String());
         }
-    }
+    } /* end Constructor Tests */
 
 
-    SECTION("Filename")
+    SECTION("Filename() Tests")
     {
         SECTION("Filename when Path::Base::Root")
         {
@@ -197,9 +200,9 @@ TEST_CASE("Path", "[path]")
             Path path("folder///", Path::BaseDir::Base);
             REQUIRE(path.Filename() == "folder");
         }
-    }
+    } /* End Filename() Tests */
 
-    SECTION("Path::Extension() Tests")
+    SECTION("Extension() Tests")
     {
         SECTION("Extension is correct on an extension regardless of base")
         {
@@ -258,9 +261,9 @@ TEST_CASE("Path", "[path]")
             REQUIRE(path.Extension() == outExt);
             REQUIRE(outExt == "exe");
         }
-    }
+    } /* end Extension() Tests */
 
-    SECTION("Path addition")
+    SECTION("Path addition operators")
     {
         SECTION("Path + string")
         {
@@ -286,7 +289,7 @@ TEST_CASE("Path", "[path]")
             REQUIRE(path.Extension() == "txt");
         }
 
-    }
+    } /* End Path addition operators */
 
 
     SECTION("Path <-> Path comparison")
@@ -339,7 +342,7 @@ TEST_CASE("Path", "[path]")
             REQUIRE(!(path1 != path2));
         }
 
-    }
+    } /* End Path <-> Path comparison */
 
     SECTION("Path <-> string comparison")
     {
@@ -373,5 +376,7 @@ TEST_CASE("Path", "[path]")
 
             REQUIRE((str != path));
         }
-    }
-}
+
+    } /* End Path <-> string comparison */
+
+} /* End TEST_CASE for class Path */

@@ -45,13 +45,13 @@ private:
         if (Input::KeyPressed(Key::S) && Input::KeyPress(Key::V))
         {
             // Save the game!!
-            IO::WriteEncryptedFile(TitlePath("game1.sdgc").String().c_str(), {'m', 'y', ' ', 's', 'a', 'v', 'e'});
+            IO::WriteEncryptedFile(PrefPath("game1.sdgc").String().c_str(), {'m', 'y', ' ', 's', 'a', 'v', 'e'});
         }
 
         if (Input::KeyPressed(Key::L) && Input::KeyPress(Key::V))
         {
             // Loaded the game!!
-            FileSys::File sav(TitlePath("game1.sdgc"));
+            FileSys::File sav(PrefPath("game1.sdgc"));
 
             SDG_Log("Loaded save: \"{}\"", sav.Data());
         }

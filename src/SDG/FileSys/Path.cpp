@@ -6,12 +6,12 @@
 
 namespace SDG
 {
-    Path::Path() : subpath(), base(Base::None)
+    Path::Path() : subpath(), base(BaseDir::Root)
     {}
 
     /// Creates a path with the specified base path.
     /// Trims any preceding forward slashes or white-space of subpath
-    Path::Path(const string &pSubpath, Base base) : subpath(), base(base)
+    Path::Path(const string &pSubpath, BaseDir base) : subpath(), base(base)
     {
         // Only operate if there is a subpath to work with
         if (!pSubpath.empty())
@@ -79,22 +79,22 @@ namespace SDG
     {
         switch(base)
         {
-            case Base::None: return "/" + subpath;
-            case Base::Root: return FileSys::RootPath() + subpath;
-            case Base::Title: return FileSys::TitleContainer() + subpath;
+            case BaseDir::Root: return "/" + subpath;
+            case BaseDir::Base: return FileSys::RootPath() + subpath;
+            case BaseDir::Pref: return FileSys::TitleContainer() + subpath;
         }
     }
 
     Path
-    TitlePath(const std::string &subpath)
+    PrefPath(const std::string &subpath)
     {
-        return Path(subpath, Path::Base::Title);
+        return Path(subpath, Path::BaseDir::Pref);
     }
 
     Path
-    RootPath(const std::string &subpath)
+    BasePath(const std::string &subpath)
     {
-        return Path(subpath, Path::Base::Root);
+        return Path(subpath, Path::BaseDir::Base);
     }
 }
 

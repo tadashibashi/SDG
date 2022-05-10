@@ -1,3 +1,15 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "google-explicit-constructor"
+/*!
+ * @file    Path.h
+ * @project SDG_Engine
+ * @author  Aaron Ishibashi
+ *
+ * @class Path
+ * @description Wrapper around a string, with helper functions to designate filepaths.
+ * User can specify path base to stem from. (More info on base paths in enum class Path::Base).
+ *
+ */
 #pragma once
 #include <string>
 #include <SDG/FileSys/FileSys.h>
@@ -72,3 +84,5 @@ bool operator != (const std::string &other, const SDG::Path &path);
 /// Path <-> Path comparison
 bool operator == (const SDG::Path &path1, const SDG::Path &path2);
 bool operator != (const SDG::Path &path1, const SDG::Path &path2);
+
+#pragma clang diagnostic pop

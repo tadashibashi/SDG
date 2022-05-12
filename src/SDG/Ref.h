@@ -41,6 +41,7 @@ namespace SDG
 
         /// Access ptr members. Throws a NullReference exception if ptr was null.
         T *operator->() const;
+        T &operator *() const;
 
         bool operator==(const Ref &other);
         bool operator !=(const Ref &other);
@@ -63,6 +64,7 @@ namespace SDG
         /// Get internal ptr
         const T *Get() const { return ref; }
         const T *operator->() const;
+        const T &operator *() const;
 
         bool operator==(const CRef &other);
         bool operator !=(const CRef &other);
@@ -96,12 +98,30 @@ SDG::Ref<T>::operator->() const
 }
 
 template<typename T>
+T &
+SDG::Ref<T>::operator *() const
+{
+    if (!ref) /// Prevent access to a nullptr
+        throw NullReferenceException(typeid(T));
+    return *ref;
+}
+
+template<typename T>
 const T *
 SDG::CRef<T>::operator->() const
 {
     if (!ref) /// Prevent access to a nullptr
         throw NullReferenceException(typeid(T));
     return ref;
+}
+
+template<typename T>
+const T &
+SDG::CRef<T>::operator *() const
+{
+    if (!ref) /// Prevent access to a nullptr
+        throw NullReferenceException(typeid(T));
+    return *ref;
 }
 
 template<typename T>

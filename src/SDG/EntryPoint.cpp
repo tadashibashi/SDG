@@ -1,3 +1,4 @@
+#ifndef SDG_NO_ENTRYPOINT
 #include <SDG/App.h>
 
 /// To be defined by the user in which they must return their own subclass of Game.
@@ -11,3 +12,5 @@ int main(int argc, char *argv[])
     delete game;
     return 0;
 }
+
+#endif

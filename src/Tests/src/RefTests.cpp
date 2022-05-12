@@ -74,7 +74,7 @@ TEST_CASE("Ref tests", "[Ref]")
         Ref<std::string> ref;
         bool didThrow = false;
         try {
-            ref->length();
+            ref->assign("");
         }
         catch (const NullReferenceException &e)
         {
@@ -196,9 +196,10 @@ TEST_CASE("CRef tests", "[CRef]")
     {
         CRef<std::string> ref;
         bool didThrow = false;
+        size_t length = SIZE_MAX;
         try
         {
-            ref->length();
+            length = ref->length();
         }
         catch (const NullReferenceException &e)
         {
@@ -206,6 +207,7 @@ TEST_CASE("CRef tests", "[CRef]")
         }
 
         REQUIRE(didThrow);
+        REQUIRE(length == SIZE_MAX);
     }
 
     SECTION("Automatic bool eval works on set reference")

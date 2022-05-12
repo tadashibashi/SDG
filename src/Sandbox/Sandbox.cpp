@@ -1,24 +1,23 @@
-#include <SDG/SDG.hpp>
-#include <SDL_gpu.h>
-#include <SDG/Graphics/SpriteBatch.h>
-#include <SDG/Math.hpp>
-#include <SDG/Graphics/Camera2D.h>
-#include <SDG/FileSys/Private/IO.h>
-
-#include <catch2/catch_session.hpp>
+#include "SDG/SDG.hpp"
+#include "SDL_gpu.h"
+#include "SDG/Graphics/SpriteBatch.h"
+#include "SDG/Math.hpp"
+#include "SDG/Graphics/Camera2D.h"
+#include "SDG/FileSys/Private/IO.h"
 
 using namespace SDG;
 
 static SpriteBatch spriteBatch;
 static Camera2D camera;
 
-class TestGame : public App {
+class Sandbox : public App {
+public:
+    Sandbox() : kirby(), shader() { }
 private:
     int Initialize() override
     {
         // Must run tests during initialization to test Input and FileSys functions,
         // which are initialized by App prior to this function call.
-        Catch::Session().run();
 
         // Temp content
         kirby = new Texture2D(FileSys::MakePath("assets/textures/kirby.sdgc", FileSys::Base::Root));
@@ -154,5 +153,5 @@ private:
 /// Entry-point
 App *CreateApp()
 {
-    return new TestGame;
+    return new Sandbox;
 }

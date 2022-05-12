@@ -1,5 +1,3 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "google-explicit-constructor"
 /*!
  * @file    Path.h – SDG_Engine
  * @author  Aaron Ishibashi
@@ -92,5 +90,3 @@ bool operator != (const std::string &other, const SDG::Path &path);
 /// Path <-> Path comparison
 bool operator == (const SDG::Path &path1, const SDG::Path &path2);
 bool operator != (const SDG::Path &path1, const SDG::Path &path2);
-
-#pragma clang diagnostic pop

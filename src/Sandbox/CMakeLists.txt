@@ -1,4 +1,4 @@
-project(SDG_Tests)
+project(SDG_Sandbox)
 
 if (EMSCRIPTEN)
     set(EmscriptenLinkerFlags "-sASSERTIONS -sASYNCIFY \
@@ -16,18 +16,14 @@ if (EMSCRIPTEN)
 endif()
 
 
-add_subdirectory(lib/Catch2)
 
-add_executable(SDG_Tests
-        src/SDG_Tests.cpp
-        src/DelegateTests.cpp
-        src/PathTests.cpp src/RefTests.cpp src/ServiceContainerTests.cpp)
 
-target_link_libraries(SDG_Tests PRIVATE SDG_Engine Catch2)
+add_executable(SDG_Sandbox
+        Sandbox.cpp)
 
-target_include_directories(SDG_Tests PRIVATE ${CMAKE_SOURCE_DIR}/src
-        lib/Catch2/src)
+target_link_libraries(SDG_Sandbox PRIVATE SDG_Engine)
 
 # Set up content pipeline
 include(${CMAKE_SOURCE_DIR}/cmake/SDG_AddContentPipeline.cmake)
 AddContentPipeline(assets john316)
+

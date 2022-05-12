@@ -18,7 +18,11 @@ endif()
 
 add_subdirectory(lib/Catch2)
 
-add_executable(SDG_Tests "SDG_Tests.cpp" DelegateTests.cpp PathTests.cpp)
+add_executable(SDG_Tests
+        src/SDG_Tests.cpp
+        src/DelegateTests.cpp
+        src/PathTests.cpp)
+
 target_link_libraries(SDG_Tests PRIVATE SDG_Engine Catch2)
 
 target_include_directories(SDG_Tests PRIVATE ${CMAKE_SOURCE_DIR}/src

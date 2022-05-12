@@ -4,6 +4,7 @@
 #include "Path.h"
 #include <SDG/FileSys/FileSys.h>
 #include <SDG/Platform.h>
+#include <SDL_rwops.h>
 #include <ostream>
 
 namespace SDG
@@ -113,6 +114,22 @@ namespace SDG
         }
 
         throw std::runtime_error("SDG::Path::base member value not recognized.");
+    }
+
+    bool
+    Path::FileExists() const
+    {
+        SDL_RWops *file = SDL_RWFromFile(String().c_str(), "r");
+
+        if (file)
+        {
+            SDL_RWclose(file);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     Path

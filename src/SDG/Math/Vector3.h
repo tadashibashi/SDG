@@ -10,8 +10,8 @@ namespace SDG
         static_assert(std::is_arithmetic_v<T>, "Vec3_ template type must be an arithmetic type");
         struct { T x, y, z; };
     public:
-        Vec3_() : x(0), y(0), z(0) { }
-        Vec3_(T x, T y, T z) : x(x), y(y), z(z) { }
+        constexpr Vec3_() : x(0), y(0), z(0) { }
+        constexpr Vec3_(T x, T y, T z) : x(x), y(y), z(z) { }
 
         T X() const { return x; }
         T Y() const { return y; }
@@ -25,8 +25,8 @@ namespace SDG
             return *(&x + i);
         }
 
-        static Vec3_ One() { return Vec3_(1, 1, 1); }
-        static Vec3_ Zero() { return Vec3_(0, 0, 0); }
+        static constexpr Vec3_ One() { return Vec3_(1, 1, 1); }
+        static constexpr Vec3_ Zero() { return Vec3_(0, 0, 0); }
 
         // Formats Vec3_ as string: "{x, y, z}"
         [[nodiscard]] std::string String() const

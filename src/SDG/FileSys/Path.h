@@ -1,11 +1,10 @@
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "google-explicit-constructor"
 /*!
- * @file    Path.h
- * @project SDG_Engine
+ * @file    Path.h – SDG_Engine
  * @author  Aaron Ishibashi
  *
- * @class Path
+ * @class   Path
  * @description Wrapper around a string, with helper functions to designate filepaths.
  * User can specify path base to stem from. (More info on base paths in enum class Path::Base).
  *
@@ -24,8 +23,9 @@ namespace SDG
     public:
         /// An identifier representing the path to base the Path's subpath from.
         enum class BaseDir {
+            /// No base directory to stem from. What you see is what you get.
             None,
-            /// Stems from OS root. User must specify the full filepath.
+            /// Stems from OS root. On Mac/Linux it's "/", while on Windows it's "C:\\"
             Root,
             /// User specifies subpath relative from the App executable's base working directory.
             /// This directory is intended as read-only, although some platforms allow writing.
@@ -47,13 +47,18 @@ namespace SDG
         /// Checks whether the Path has an extension.
         /// Optionally retrieve the extension by passing string ptr.
         bool HasExtension(std::string *outExt = nullptr) const;
+        /// Checks whether a file exists at the path.
+        [[nodiscard]] bool FileExists() const;
+        /// Gets the file extension of this path if there is one.
         [[nodiscard]] std::string Extension() const;
+        /// Gets the file name (or directory name) if there is one, or a blank string
+        /// if not.
         [[nodiscard]] std::string Filename() const;
 
         /// Retrieves the Path Base type set in the constructor.
         [[nodiscard]] BaseDir Base() const { return base; }
 
-        /// Gets the full path, including the base path, as a string
+        /// Gets the full path, subpath appended to the base path, as a string
         [[nodiscard]] std::string String() const;
 
         /// Gets the full path, including the base path, as a string

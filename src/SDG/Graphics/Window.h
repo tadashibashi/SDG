@@ -8,7 +8,7 @@
 #include <SDG/Math/Vector2.h>
 #include <SDG/Templates/Delegate.h>
 #include <SDG/Ref.h>
-#include <SDG/ClassAttr.h>
+#include <SDG/ClassMacros.h>
 #include <string>
 
 namespace SDG

@@ -3,8 +3,7 @@
 //
 #pragma once
 #include <string>
-#include "SDG/Math/Vector2.h"
-#include "SDG/FileSys/FileInfo.h"
+#include <SDG/Math/Vector2.h>
 
 // Prevent MSVC macro clash
 #ifdef LoadImage

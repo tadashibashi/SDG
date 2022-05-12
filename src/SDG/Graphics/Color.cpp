@@ -3,15 +3,6 @@
 
 namespace SDG
 {
-    Color::Color() : r(MAX_COLOR_VALUE), g(MAX_COLOR_VALUE), b(MAX_COLOR_VALUE),
-        a(MAX_COLOR_VALUE) {}
-        
-    Color::Color(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
-        : r(r), g(g), b(b), a(a) {}
-
-    Color::Color(Uint8 grayScale, Uint8 alpha)
-        : r(grayScale), g(grayScale), b(grayScale), a(alpha) {}
-
     void Color::set(Uint8 r, Uint8 g, Uint8 b)
     {
         this->r = r;
@@ -423,7 +414,7 @@ namespace SDG
     Color Color::Teal(Uint8 alpha) {
         return Color(0, 128, 128, alpha);
     }
-    
+
     // ===== Blues / Cyans =======
     Color Color::Aqua(Uint8 alpha) {
         return Color(5, 195, 221, alpha);

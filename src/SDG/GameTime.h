@@ -1,8 +1,13 @@
-/* =============================================================================
- * GameTime
+/*!
+ * @file    GameTime.h
+ * @project SDG_Engine
+ * @author  Aaron Ishibashi
  *
- * Class for tracking total time passed since execution and delta time.
- * ===========================================================================*/
+ * @class GameTime
+ * @description This class tracks the total time passed since execution and
+ * the time that has passed since last frame. It is owned by class Game.
+ *
+ */
 #pragma once
 #include <cstdint>
 

@@ -101,7 +101,7 @@ SurfaceToTexture(SDL_Surface *surf, const std::string &path)
 }
 
 SDG::Texture2D *
-SDG::Font::RenderTextBlended(const string &text, Color color, bool wrapped, uint32_t wrapLength) const
+SDG::Font::RenderTextBlended(const std::string &text, Color color, bool wrapped, uint32_t wrapLength) const
 {
     SDL_Surface *surf = wrapped ?
             TTF_RenderText_Blended_Wrapped(impl->font, text.c_str(), {color.r, color.g, color.b, color.a}, wrapLength) :
@@ -110,7 +110,7 @@ SDG::Font::RenderTextBlended(const string &text, Color color, bool wrapped, uint
 }
 
 SDG::Texture2D *
-SDG::Font::RenderTextShaded(const string &text, Color fgColor, Color bgColor, bool wrapped, uint32_t wrapLength) const
+SDG::Font::RenderTextShaded(const std::string &text, Color fgColor, Color bgColor, bool wrapped, uint32_t wrapLength) const
 {
     SDL_Color fg { fgColor.r, fgColor.g, fgColor.b, fgColor.a };
     SDL_Color bg { bgColor.r, bgColor.g, bgColor.b, bgColor.a };
@@ -121,7 +121,7 @@ SDG::Font::RenderTextShaded(const string &text, Color fgColor, Color bgColor, bo
 }
 
 SDG::Texture2D *
-SDG::Font::RenderTextSolid(const string &text, Color color, bool wrapped, uint32_t wrapLength) const
+SDG::Font::RenderTextSolid(const std::string &text, Color color, bool wrapped, uint32_t wrapLength) const
 {
     SDL_Surface *surf = wrapped ?
                         TTF_RenderText_Solid_Wrapped(impl->font, text.c_str(), {color.r, color.g, color.b, color.a}, wrapLength) :

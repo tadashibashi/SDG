@@ -1,4 +1,7 @@
 /*
+ * ClassMacros.h
+ * SDG_Engine
+ *
  * This file contains macros that change a class or struct's
  * attributes.
  *

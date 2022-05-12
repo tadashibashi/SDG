@@ -1,19 +1,33 @@
-//
-// Ref
-//
+/*!
+ * @file Ref.h – SDG_Engine
+ * @copyright Aaron Ishibashi © 2022
+ *
+ * @class Ref / CRef
+ * @description A capsule wrapping a pointer, to safely reference another object
+ * in a uniform fashion. An object holding a Ref object has a clear
+ * indicator that it is not the owner of the internal pointer.
+ * It also helps prevent accidental copy assignment when retrieving a
+ * reference from a getter function, and provides a common interface (->)
+ * for accessing its members. (It can be a slight hindrance to have to
+ * remember whether to use (.) or (->) if it was a pointer or reference.)
+ * If the internal pointer is absolutely needed for a function parameter,
+ * Get() can be called to retrieve it. While deletion of this pointer is not
+ * prevented, this class at least encourages intentionality about doing so.
+ * CRef is the const version of the Ref object.
+ *
+ * @future Make Ref track pointer validity. This seems like it could result in
+ * wide-scale unfavorable performance loss if we have to dereference an
+ * extra time from a ptr to ptr. Optionally, we could cache an additional ptr
+ * but this would double the size of each reference.
+ * To ID memory, we could store the timestamp of when the memory was allocated
+ * inside of a structure.
+ *
+ */
 #pragma once
 #include <SDG/Exceptions/NullReferenceException.h>
 
 namespace SDG
 {
-    /// Non-smart ptr that serves as a wrapper around a
-    /// pointer to prevent accidental deletion and copying
-    /// when retrieving an object ref from another. Access reference members via -> and
-    /// get the internal ptr with Get(). It's best to not delete the internal ptr via
-    /// "delete Ref::Get()", and while this object does not prevent this possibility,
-    /// it at least requires significant intentionality by the user.
-    /// May resolve to a bool: (true) if the internal ptr is non-null or
-    /// (false) pointing to null.
     template <typename T>
     class Ref {
     public:

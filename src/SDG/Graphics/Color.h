@@ -24,11 +24,15 @@ namespace SDG
         uint8_t r, g, b, a;
         
         // Defaults to White
-        Color();
+        constexpr Color()
+            : r(MAX_COLOR_VALUE), g(MAX_COLOR_VALUE), b(MAX_COLOR_VALUE),
+                   a(MAX_COLOR_VALUE) {}
         // Constructor for making a custom color
-        Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a = MAX_COLOR_VALUE);
+        constexpr Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a = MAX_COLOR_VALUE)
+            : r(r), g(g), b(b), a(a) {}
         // Constructor for making grayscale colors
-        explicit Color(uint8_t grayScale, uint8_t alpha = MAX_COLOR_VALUE);
+        explicit constexpr Color(uint8_t grayScale, uint8_t alpha = MAX_COLOR_VALUE)
+            : r(grayScale), g(grayScale), b(grayScale), a(alpha) {}
 
         void set(uint8_t r, uint8_t g, uint8_t b);
         void set(uint8_t r, uint8_t g, uint8_t b, uint8_t a);

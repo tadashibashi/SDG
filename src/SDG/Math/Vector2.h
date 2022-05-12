@@ -18,8 +18,8 @@ namespace SDG
         };
 
     public:
-        Vec2_() : x(0), y(0) { }
-        Vec2_(T x, T y) : x(x), y(y) { }
+        constexpr Vec2_() : x(0), y(0) { }
+        constexpr Vec2_(T x, T y) : x(x), y(y) { }
 
         T &operator[](int i)
         {
@@ -43,8 +43,8 @@ namespace SDG
             return *this;
         }
 
-        static Vec2_ One() { return Vec2_(1, 1); }
-        static Vec2_ Zero() { return Vec2_(0, 0); }
+        static constexpr Vec2_ One() { return Vec2_(1, 1); }
+        static constexpr Vec2_ Zero() { return Vec2_(0, 0); }
 
         // Gets the distance between two vectors
         static float Distance(const Vec2_ &p1, const Vec2_ &p2)

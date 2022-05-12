@@ -3,6 +3,7 @@
 #include <SDG/FileSys/File.h>
 #include <SDG/Debug.hpp>
 #include <SDL_gpu.h>
+#include <memory>
 
 // Prevent Windows API macro clashes
 #ifdef M_PI

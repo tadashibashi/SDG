@@ -379,4 +379,29 @@ TEST_CASE("Path", "[path]")
 
     } /* End Path <-> string comparison */
 
+    SECTION("Path FileExists tests")
+    {
+#if SDG_TARGET_WINDOWS
+        std::string suffix = ".exe";
+#else
+        std::string suffix = "";
+#endif
+
+        SECTION("Executable file exists at path")
+        {
+            std::string subpath = "SDG_Tests" + suffix;
+            Path path(subpath, Path::BaseDir::Base);
+
+            REQUIRE(path.FileExists());
+        }
+
+        SECTION("Executable file does not exist at path")
+        {
+            std::string subpath = "SDG_Tests" + suffix;
+            Path path(subpath, Path::BaseDir::Pref);
+
+            REQUIRE(!path.FileExists());
+        }
+    }
+
 } /* End TEST_CASE for class Path */

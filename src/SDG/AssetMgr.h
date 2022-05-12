@@ -1,3 +1,7 @@
+/*!
+ * @file AssetMgr.h -- SDG_Engine
+ * @author Aaron Ishibashi
+ */
 #pragma once
 #include <string>
 #include <map>

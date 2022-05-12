@@ -44,16 +44,17 @@ set(Engine_Sources
         Graphics/SpriteBatch.cpp Graphics/SpriteBatch.h
         Math/Rectangle.h
         Math/Vector3.h
-        FileSys/FileInfo.h Math/Endian.h FileSys.hpp FileSys/Structs/GameConfig.h
+        Math/Endian.h
+        FileSys/Structs/GameConfig.h
+        FileSys.hpp
         SDG.hpp
         ServiceProvider.h Entities/Entity.cpp Entities/Entity.h Math/Matrix4x4.cpp Math/Matrix4x4.h GameTime.cpp GameTime.h Entities/ComponentList.cpp Entities/ComponentList.h Entities/Component.h Input/Mouse.cpp Input/Mouse.h Input/MButton.h Ref.h Exceptions/NullReferenceException.h Exceptions/NullReferenceException.cpp
         Graphics/RenderTarget.cpp Graphics/RenderTarget.h
         Math/Math.cpp
-        ClassAttr.h
-        Exceptions/InvalidArgumentException.cpp
-        Exceptions/InvalidArgumentException.h
+        ClassMacros.h
+        Exceptions/InvalidArgumentException.cpp Exceptions/InvalidArgumentException.h
         Graphics/Font.cpp Graphics/Font.h
-        FileSys/Path.cpp FileSys/Path.h)
+        FileSys/Path.cpp FileSys/Path.h Ptr.h)
 
 
 

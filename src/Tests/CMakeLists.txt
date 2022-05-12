@@ -2,7 +2,20 @@ project(SDG_Tests)
 add_subdirectory(lib/Catch2)
 
 add_compile_definitions(SDG_NO_ENTRYPOINT)
+if (EMSCRIPTEN)
+    set(EmscriptenLinkerFlags "-sASSERTIONS -sASYNCIFY \
+            -sINITIAL_MEMORY=268435456 -sALLOW_MEMORY_GROWTH \
+            -sUSE_WEBGL2=1 -sWASM=2 -sMAX_WEBGL_VERSION=2 \
+            -sNO_DISABLE_EXCEPTION_CATCHING -fexceptions")
 
+    # Emscripten flag feature research:
+    # Exceptions https://emscripten.org/docs/porting/exceptions.html
+    # Asyncify runs Emscripten in a thread separate from browser input
+
+    set(CMAKE_CXX_FLAGS "-Os -fexceptions" ${CMAKE_CXX_FLAGS})
+    set(CMAKE_EXE_LINKER_FLAGS  "${EmscriptenLinkerFlags} ${CMAKE_EXE_LINKER_FLAGS}")
+    set(CMAKE_EXECUTABLE_SUFFIX .html)
+endif()
 
 add_executable(SDG_Tests
         src/DelegateTests.cpp

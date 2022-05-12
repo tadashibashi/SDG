@@ -47,10 +47,10 @@ namespace SDG
         [[nodiscard]] std::string Subpath() const { return subpath; }
 
         /// Checks whether the Path has an extension.
-        bool HasExtension() const;
+        [[nodiscard]] bool HasExtension() const;
         /// Checks whether a file exists at the path.
         [[nodiscard]] bool FileExists() const;
-        /// Gets the file extension of this path if there is one.
+        /// Gets the file extension of the Path if there is one.
         [[nodiscard]] std::string Extension() const;
         /// Gets the file name (or directory name) if there is one, or a blank string
         /// if not.

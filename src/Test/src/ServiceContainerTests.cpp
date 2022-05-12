@@ -18,7 +18,7 @@ TEST_CASE("ServiceProvider Tests", "[ServiceProvider]")
         int i = 20;
         services.Emplace(Ref(i));
         REQUIRE(!services.Empty());
-        REQUIRE(services.Size() > 0);
+        REQUIRE(services.Size() == 1);
     }
 
     SECTION("Get tests")
@@ -47,6 +47,7 @@ TEST_CASE("ServiceProvider Tests", "[ServiceProvider]")
             }
 
             REQUIRE(num == item); // check that correct number was retrieved
+            REQUIRE(ref.Get() == &item);
         }
 
         SECTION("Get the last stored object of a certain type")

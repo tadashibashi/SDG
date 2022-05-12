@@ -23,21 +23,21 @@ namespace SDG
             {
                 subpath = pSubpath;
             }
-            else
+            else                       // trim path, since it will be appended to BaseDir
             {
-                // Trim any white space or '/' in beginning of path
-                size_t pos = 0, size = pSubpath.size();
 
-                if (base == BaseDir::Root && SDG_TARGET_WINDOWS)
+                size_t pos = 0, size = pSubpath.size();
+#if SDG_TARGET_WINDOWS
+                // If Windows, trim letter named drive prefix
+                if (base == BaseDir::Root)
                 {
-                    // if Windows, trim letter named drive prefix
                     if (size > 2 && pSubpath[0] == 'C' && pSubpath[1] == ':' && pSubpath[2] == '\\')
                     {
                         pos = 3;
                     }
                 }
-
-
+#endif
+                // Trim any white space or '/' in beginning of path
                 std::string temp;
                 while(pos < size && (pSubpath[pos] == '/' || isspace(pSubpath[pos])))
                     ++pos;
@@ -76,13 +76,9 @@ namespace SDG
     }
 
     bool
-    Path::HasExtension(std::string *outExt) const
+    Path::HasExtension() const
     {
-        std::string ext = Extension();
-        if (outExt)
-            *outExt = ext;
-
-        return !ext.empty();
+        return !Extension().empty();
     }
 
     Path &Path::operator+=(const string &str)

@@ -9,7 +9,7 @@ TEST_CASE("Path", "[path]")
     // Set the root path for testing depending on platform
 #if SDG_TARGET_WINDOWS
     std::string root = "C:\\";
-#else
+#else // unix-based systems. What about WEBGL? Nintendo Switch?
     std::string root = "/";
 #endif
 
@@ -252,15 +252,6 @@ TEST_CASE("Path", "[path]")
             REQUIRE(!pathRootBase.HasExtension());
             REQUIRE(!pathTitleBase.HasExtension());
         }
-
-        SECTION("Extension() return value is the same as value retrieved from HasExtension")
-        {
-            Path path("path/to/folder/program.exe");
-            std::string outExt;
-            REQUIRE(path.HasExtension(&outExt));
-            REQUIRE(path.Extension() == outExt);
-            REQUIRE(outExt == "exe");
-        }
     } /* end Extension() Tests */
 
     SECTION("Path addition operators")
@@ -402,6 +393,31 @@ TEST_CASE("Path", "[path]")
 
             REQUIRE(!path.FileExists());
         }
+    }
+
+    SECTION("RootPath creates a Path with BaseDir::Root")
+    {
+        REQUIRE(RootPath().Base() == Path::BaseDir::Root);
+    }
+
+    SECTION("RootPath default creates the OS root path")
+    {
+        REQUIRE(RootPath().String() == root);
+    }
+
+    SECTION("PrefPath creates a Path with BaseDir::Pref")
+    {
+        REQUIRE(PrefPath().Base() == Path::BaseDir::Pref);
+    }
+
+    SECTION("BasePath creates a Path with BaseDir::Base")
+    {
+        REQUIRE(BasePath().Base() == Path::BaseDir::Base);
+    }
+
+    SECTION("Path default creates a Path with BaseDir::None")
+    {
+        REQUIRE(Path().Base() == Path::BaseDir::None);
     }
 
 } /* End TEST_CASE for class Path */

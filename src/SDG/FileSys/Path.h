@@ -37,16 +37,19 @@ namespace SDG
             Pref
         };
 
-        /// Creates an empty path
+        /// Creates an empty path with no base directory
         Path();
+
+        /// Creates a path with specified base directory and subpath
+        /// @param pSubpath the subpath, which will append to the base directory
+        /// @param base the base directory from which the subpath will root from
         Path(const std::string &pSubpath, BaseDir base = BaseDir::Root);
 
         /// Get the subpath portion, not including base path
         [[nodiscard]] std::string Subpath() const { return subpath; }
 
         /// Checks whether the Path has an extension.
-        /// Optionally retrieve the extension by passing string ptr.
-        bool HasExtension(std::string *outExt = nullptr) const;
+        bool HasExtension() const;
         /// Checks whether a file exists at the path.
         [[nodiscard]] bool FileExists() const;
         /// Gets the file extension of this path if there is one.

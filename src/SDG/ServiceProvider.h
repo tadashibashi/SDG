@@ -1,6 +1,7 @@
 #pragma once
 #include <typeindex>
 #include <map>
+#include <SDG/Ref.h>
 
 namespace SDG
 {
@@ -16,10 +17,10 @@ namespace SDG
         /// one does not exist in the container.
         /// @tparam T the type of object ptr to retrieve.
         template <typename T>
-        T *Get() const
+        Ref<T> Get() const
         {
             auto it = services.find(typeid(T));
-            return (it == services.end()) ? nullptr : (T *)it->second;
+            return (it == services.end()) ? Ref<T>() : Ref<T>((T *)it->second);
         }
 
         /// Gets a pointer to a stored object of type T, or nullptr if
@@ -28,11 +29,11 @@ namespace SDG
         /// @param service [out] service to get
         /// @returns true, if pointer was found; false, if not.
         template <typename T>
-        bool TryGet(T **service) const
+        bool TryGet(Ref<T> &service) const
         {
-            T *s = Get<T>();
-            *service = s;
-            return static_cast<bool>(s);
+            auto ref = Ref<T>(Get<T>());
+            service = ref;
+            return static_cast<bool>(ref);
         }
 
         /// Stores an object ptr of type T that is passed into the function.
@@ -40,9 +41,13 @@ namespace SDG
         /// @param service The object ptr to store
         /// @returns reference to this ServiceContainer for chaining function calls.
         template <typename T>
-        ServiceProvider &Emplace(T *service)
+        ServiceProvider &Emplace(Ref<T> service)
         {
-            services[typeid(T)] = service;
+            static_assert(!std::is_null_pointer_v<T>, "must not pass explicit nullptr to container");
+            if (!service.Get())
+                throw NullReferenceException(typeid(T));
+
+            services[typeid(T)] = (void *)service.Get();
             return *this;
         }
 
@@ -65,6 +70,18 @@ namespace SDG
         {
             services.clear();
             return *this;
+        }
+
+        /// Gets the number of services stored
+        size_t Size() const
+        {
+            return services.size();
+        }
+
+        /// Checks whether the container is empty
+        bool Empty() const
+        {
+            return services.empty();
         }
 
     private:

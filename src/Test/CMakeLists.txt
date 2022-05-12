@@ -21,7 +21,7 @@ add_subdirectory(lib/Catch2)
 add_executable(SDG_Tests
         src/SDG_Tests.cpp
         src/DelegateTests.cpp
-        src/PathTests.cpp src/RefTests.cpp)
+        src/PathTests.cpp src/RefTests.cpp src/ServiceContainerTests.cpp)
 
 target_link_libraries(SDG_Tests PRIVATE SDG_Engine Catch2)
 

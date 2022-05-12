@@ -46,6 +46,13 @@ namespace SDG
         bool operator==(const Ref &other);
         bool operator !=(const Ref &other);
         operator bool() { return static_cast<bool>(ref); }
+
+        template <typename U>
+        operator Ref<U>() {
+            static_assert(std::is_base_of_v<T, U> || std::is_void_v<U>,
+                    "Casted type must derive from type T or void");
+            return Ref<U>(ref);
+        }
     private:
         T *ref;
     };

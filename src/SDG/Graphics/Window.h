@@ -2,13 +2,14 @@
 // Created by Aaron Ishibashi on 4/29/22.
 //
 #pragma once
-#include "Camera2D.h"
+#include "Texture2D.h"
 #include "Color.h"
 
 #include <SDG/Math/Vector2.h>
 #include <SDG/Templates/Delegate.h>
 #include <SDG/Ref.h>
 #include <SDG/ClassMacros.h>
+#include <SDG/Math/Rectangle.h>
 #include <string>
 
 namespace SDG
@@ -23,19 +24,25 @@ namespace SDG
         ~Window();
 
         /// Opens the Window and initializes the internal graphics library.
-        /// Calling this a second time, will close the existing window, and open a new one.
-        /// @param width window width, must be larger than 0. Throws assertion exception if in Debug mode if not.
+        /// If called a second time, it will close the existing window, and re-open a new one.
+        /// @param width  window width, must be larger than 0. Throws assertion exception if in Debug mode if not.
         /// @param height window height, must be larger than 0. Throws assertion exception if in Debug mode if not.
-        /// @param title window title
-        /// @param flags SDL2 Window flags
+        /// @param title  window title
+        /// @param flags  SDL2 Window flags
         bool Initialize(int width, int height, const char *title, unsigned flags = 0);
 
         /// Closes the window and shuts down the graphics library.
         void Close();
 
         void Clear(Color color = Color::CornflowerBlue());
+
+        /// Displays the graphics that were drawn to the Window.
         void SwapBuffers();
 
+        /// Accepts and processes a pointer to an SDL2 event object.
+        /// It must be an SDL_Event with type SDL_WINDOWEVENT.
+        /// Void pointer is used to avoid having to include the SDL header here.
+        /// This function is usually placed inside of an SDL_PollEvents while block.
         void ProcessInput(void *evt);
 
         // === Setters ===
@@ -47,6 +54,7 @@ namespace SDG
         Window &Resizable(bool resizable);
         Window &Position(Point position);
         Window &Minimized(bool minimized);
+        Window &Icon(CRef<Texture2D> texture);
 
         /// Hide or show window
         /// @param hidden true: hide window; false: show window
@@ -75,6 +83,7 @@ namespace SDG
         Point MaximumSize() const;
         bool MouseGrabbed() const;
         bool AlwaysOnTop() const;
+        CRef<Texture2D> Icon() const;
 
         uint32_t Flags() const;
         Rectangle Viewport() const;

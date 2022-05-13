@@ -1,16 +1,11 @@
-//
-// Created by Aaron Ishibashi on 5/6/22.
-//
 #include "NullReferenceException.h"
+#include <ostream>
 
-SDG::NullReferenceException::NullReferenceException(const std::type_index &type)
-        : std::exception(), message()
+void
+SDG::NullReferenceException::What(std::ostream &os) const
 {
-    message = "Null reference of type " + std::string(type.name());
-}
-
-const char *
-SDG::NullReferenceException::what() const noexcept
-{
-    return message.c_str();
+    if (typeName.empty())
+        os << "Null reference error.";
+    else
+        os << "Null reference error of type " << typeName;
 }

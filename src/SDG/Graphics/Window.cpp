@@ -19,9 +19,10 @@
 namespace SDG
 {
     struct Window::Impl {
-        Impl() : target(), title() {}
+        Impl() : target(), title(), icon() {}
         RenderTarget target;
         std::string title;
+        CRef<Texture2D> icon;
     };
 
     Window::Window() : impl(new Impl), On{}
@@ -86,6 +87,9 @@ namespace SDG
     void
     Window::ProcessInput(void *evt)
     {
+        // All SDL_Event that are passed to this function must be of type SDL_WINDOWEVENT
+        SDG_Assert((*static_cast<SDL_Event *>(evt)).type == SDL_WINDOWEVENT);
+
         SDL_WindowEvent &window = (*static_cast<SDL_Event *>(evt)).window;
         if (window.windowID == Id())
         {
@@ -309,6 +313,24 @@ namespace SDG
         return *this;
     }
 
+    Window &Window::Icon(CRef<Texture2D> texture)
+    {
+        if (!texture)
+            throw NullReferenceException("Texture2D");
+
+        SDL_Surface *surf = GPU_CopySurfaceFromImage(texture->Image());
+        if (!surf)
+        {
+            SDG_Err("Failed to copy SDL_Surface from GPU_Image: {}", GPU_GetErrorString(GPU_PopErrorCode().error));
+        }
+
+        SDL_SetWindowIcon(GetWindow(impl->target), surf);
+        SDL_FreeSurface(surf);
+
+        impl->icon = texture;
+        return *this;
+    }
+
     /// ========= GETTERS ========
 
     std::string
@@ -425,6 +447,12 @@ namespace SDG
     Window::AlwaysOnTop() const
     {
         return (Flags() & SDL_WINDOW_ALWAYS_ON_TOP) == SDL_WINDOW_ALWAYS_ON_TOP;
+    }
+
+    CRef<Texture2D>
+    Window::Icon() const
+    {
+        return impl->icon;
     }
 
 }

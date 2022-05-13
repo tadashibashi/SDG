@@ -6,55 +6,79 @@ set(TinyXML2_Sources
 
 set(Engine_Sources
         ${TinyXML2_Sources}
+        SDG.hpp
+
+        App.cpp App.h
+        AssetMgr.cpp AssetMgr.h
+
+        ClassMacros.h
+
+        # Debug
+        Debug.hpp
+        Debug/Logging.h
+        Debug/Logging.cpp
+        Debug/Assert.h
+        Debug/Assert.cpp
+
         EntryPoint.cpp
+
+        # Exceptions
+        Exceptions/AssertionException.h Exceptions/AssertionException.cpp
+        Exceptions/XMLReaderException.h Exceptions/XMLReaderException.cpp
+        Exceptions/NullReferenceException.h Exceptions/NullReferenceException.cpp
+        Exceptions/InvalidArgumentException.cpp Exceptions/InvalidArgumentException.h
+
+        # FileSys
+        FileSys.hpp
+        FileSys/Structs/GameConfig.h
+        FileSys/FileSys.cpp FileSys/FileSys.h
+        FileSys/Private/IO.cpp FileSys/Private/IO.h
+        FileSys/File.cpp Filesys/File.h
+        FileSys/Path.cpp FileSys/Path.h
+        FileSys/XMLReader.cpp FileSys/XMLReader.h
+
+        Game/Entity.cpp Game/Entity.h
+        Time/Time.cpp Time/Time.h
+        Game/ComponentList.cpp Game/ComponentList.h Game/Component.h
+        Game/Scene.cpp Game/Scene.h
+
         Graphics/Camera2D.cpp Graphics/Camera2D.h
         Graphics/GraphicsMgr.cpp Graphics/GraphicsMgr.h
         Graphics/Window.cpp Graphics/Window.h
         Graphics/RendererType.h
-        "Graphics/Shader.cpp" "Graphics/Shader.h"
+        Graphics/Shader.cpp Graphics/Shader.h
         Graphics/Color.h Graphics/Color.cpp
-        "App.cpp" "App.h"
-        "Platform.h"
-        "Debug.hpp"
-        "Debug/Logging.h"
-        Debug/Logging.cpp
-        Debug/Assert.h
-        Debug/Assert.cpp
-        "FileSys/FileSys.cpp" "FileSys/FileSys.h"
-        FileSys/Private/IO.cpp FileSys/Private/IO.h
-        FileSys/File.cpp Filesys/File.h
-        "FileSys/XMLReader.cpp" "FileSys/XMLReader.h"
-        "Scene.cpp" "Scene.h"
-        "Input.hpp"
-        "Input/Input.cpp" "Input/Input.h"
-        "Input/Key.h"
-        "Input/Keyboard.h" "Input/Keyboard.cpp"
-        "Input/InputComponent.h"
-        "AssetMgr.cpp" "AssetMgr.h"
-        "Graphics/Texture2D.h" "Graphics/Texture2D.cpp"
+        Graphics/SpriteBatch.cpp Graphics/SpriteBatch.h
+        Graphics/Texture2D.h Graphics/Texture2D.cpp
+        Graphics/Font.cpp Graphics/Font.h
+        Graphics/RenderTarget.cpp Graphics/RenderTarget.h
+
+        Input.hpp
+        Input/Input.cpp Input/Input.h
+        Input/Key.h
+        Input/Keyboard.h Input/Keyboard.cpp
+        Input/InputComponent.h
+        Input/Mouse.cpp Input/Mouse.h Input/MButton.h
+
         Math/Rand.cpp Math/Rand.h
         Math/Math.h
         Math.hpp
         Math/Vector2.h
-        Exceptions/AssertionException.h
-        Exceptions/XMLReaderException.h Exceptions/XMLReaderException.cpp
-        Exceptions/AssertionException.cpp
-        Templates/Delegate.h
         Math/Tween.cpp Math/Tween.h Math/TweenFunctions.cpp Math/TweenFunctions.h
-        Graphics/SpriteBatch.cpp Graphics/SpriteBatch.h
+        Math/Endian.h
+        Math/Matrix4x4.cpp Math/Matrix4x4.h
         Math/Rectangle.h
         Math/Vector3.h
-        Math/Endian.h
-        FileSys/Structs/GameConfig.h
-        FileSys.hpp
-        SDG.hpp
-        ServiceProvider.h Entities/Entity.cpp Entities/Entity.h Math/Matrix4x4.cpp Math/Matrix4x4.h GameTime.cpp GameTime.h Entities/ComponentList.cpp Entities/ComponentList.h Entities/Component.h Input/Mouse.cpp Input/Mouse.h Input/MButton.h Ref.h Exceptions/NullReferenceException.h Exceptions/NullReferenceException.cpp
-        Graphics/RenderTarget.cpp Graphics/RenderTarget.h
         Math/Math.cpp
-        ClassMacros.h
-        Exceptions/InvalidArgumentException.cpp Exceptions/InvalidArgumentException.h
-        Graphics/Font.cpp Graphics/Font.h
-        FileSys/Path.cpp FileSys/Path.h Ptr.h)
+
+        Platform.h
+
+        Ref.h
+
+        ServiceProvider.h
+
+        Templates/Delegate.h
+        Exceptions.hpp Exceptions/Exception.h Exceptions/Exception.cpp Exceptions/ExceptionExample.h Exceptions/ExceptionExample.cpp)
 
 
 

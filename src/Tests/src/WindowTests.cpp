@@ -45,6 +45,25 @@ TEST_CASE("Window tests", "[Window]")
     {
         bool result = window.Initialize(100, 100, "TestWindow");
         REQUIRE(result);
+
+        SECTION("Position")
+        {
+            REQUIRE(&window == &window.Position({1234, 114}));
+            REQUIRE(window.Position().X() == 1234);
+            REQUIRE(window.Position().Y() == 114);
+
+            REQUIRE(&window == &window.Position({100, 499}));
+            REQUIRE(window.Position().X() == 100);
+            REQUIRE(window.Position().Y() == 499);
+
+            // For some reason, on my Mac, the lowest x position is -60,
+            // and the lowest y position is 28. Anything lower than this gets
+            // clamped out. Windows does not have this
+            REQUIRE(&window == &window.Position({-60, 28}));
+            REQUIRE(window.Position().X() == -60);
+            REQUIRE(window.Position().Y() == 28);
+        }
+
         SECTION("Resizable")
         {
             REQUIRE(!window.Resizable()); // default
@@ -91,21 +110,6 @@ TEST_CASE("Window tests", "[Window]")
                 REQUIRE(&window == &window.Title(""));
                 REQUIRE(window.Title().empty());
             }
-        }
-
-        SECTION("Position")
-        {
-            REQUIRE(&window == &window.Position({10, 10}));
-            REQUIRE(window.Position().X() == 10);
-            REQUIRE(window.Position().Y() == 10);
-
-            REQUIRE(&window == &window.Position({100, 499}));
-            REQUIRE(window.Position().X() == 100);
-            REQUIRE(window.Position().Y() == 499);
-
-            REQUIRE(&window == &window.Position({-100, -499}));
-            REQUIRE(window.Position().X() == -100);
-            REQUIRE(window.Position().Y() == -499);
         }
 
         SECTION("Minimized")

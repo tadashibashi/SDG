@@ -1,19 +1,18 @@
-//
-// Created by Aaron Ishibashi on 5/7/22.
-//
-
 #pragma once
-#include <stdexcept>
-#include <string>
+#include "Exception.h"
+
 namespace SDG
 {
-    class InvalidArgumentException : std::exception
+    class InvalidArgumentException : public Exception
     {
     public:
         InvalidArgumentException(const char *func, const char *arg,
-                                 const char *info = nullptr);
-        const char *what() const noexcept override;
+                                 const char *info = nullptr)  :
+                func(func), arg(arg), info(info)
+        { }
+
     private:
-        std::string message;
+        void What(std::ostream &stream) const override;
+        const char *func, *arg, *info;
     };
 }

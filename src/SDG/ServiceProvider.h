@@ -2,6 +2,7 @@
 #include <typeindex>
 #include <map>
 #include <SDG/Ref.h>
+#include <SDG/Exceptions/InvalidArgumentException.h>
 
 namespace SDG
 {
@@ -45,7 +46,8 @@ namespace SDG
         {
             static_assert(!std::is_null_pointer_v<T>, "must not pass explicit nullptr to container");
             if (!service.Get())
-                throw NullReferenceException(typeid(T));
+                throw InvalidArgumentException("ServiceProvider::Emplace",
+                    "service", "service cannot be a null reference");
 
             services[typeid(T)] = (void *)service.Get();
             return *this;

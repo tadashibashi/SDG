@@ -14,7 +14,7 @@
 
 namespace SDG::IO
 {
-    /// Get the last error that occured in one of the IO functions.
+    /// Get the last error that occured in one of the IO functions. Not thread safe...
     std::string GetError();
 
     /// Reads data from a file into a null-terminated c-string. Same as ReadFile, but with a null terminator.

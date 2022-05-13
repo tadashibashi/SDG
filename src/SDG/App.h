@@ -1,7 +1,7 @@
 /// Main application object
 #pragma once
 #include <SDG/Platform.h>
-#include "GameTime.h"
+#include <SDG/Time/Time.h>
 #include "Ref.h"
 
 namespace SDG
@@ -24,7 +24,7 @@ namespace SDG
         /// Shuts down the game before the next frame.
         void Exit();
 
-        const CRef<GameTime> Time();
+        const CRef<Time> Time();
     protected:
         // Access for base classes
         Ref<Window> Window();

@@ -14,9 +14,9 @@
 namespace SDG
 {
     /// Class for tracking total time passed since execution and delta time.
-    class  GameTime {
+    class  Time {
     public:
-        GameTime();
+        Time();
 
         /// Should be called at the start of Game::UpdateLastStates()
         void Update();

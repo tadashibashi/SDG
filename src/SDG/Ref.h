@@ -100,7 +100,7 @@ T *
 SDG::Ref<T>::operator->() const
 {
     if (!ref) /// Prevent access to a nullptr
-        throw NullReferenceException(typeid(T));
+        throw NullReferenceException();
     return ref;
 }
 
@@ -109,7 +109,7 @@ T &
 SDG::Ref<T>::operator *() const
 {
     if (!ref) /// Prevent access to a nullptr
-        throw NullReferenceException(typeid(T));
+        throw NullReferenceException();
     return *ref;
 }
 
@@ -118,7 +118,7 @@ const T *
 SDG::CRef<T>::operator->() const
 {
     if (!ref) /// Prevent access to a nullptr
-        throw NullReferenceException(typeid(T));
+        throw NullReferenceException();
     return ref;
 }
 
@@ -127,7 +127,7 @@ const T &
 SDG::CRef<T>::operator *() const
 {
     if (!ref) /// Prevent access to a nullptr
-        throw NullReferenceException(typeid(T));
+        throw NullReferenceException();
     return *ref;
 }
 

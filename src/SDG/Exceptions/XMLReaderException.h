@@ -1,26 +1,22 @@
-//
-// Created by Aaron Ishibashi on 4/21/22.
-//
 #pragma once
-#include <stdexcept>
+#include "Exception.h"
 #include <string>
 
 namespace SDG
 {
-    class XMLReaderException : public std::exception
+    /// Exception that throws when an XML reading error has occured
+    class XMLReaderException : public Exception
     {
     public:
-        XMLReaderException(const std::string &doing, int error);
-
-        const char *what() const noexcept override
-        {
-            return message.c_str();
-        }
-
-
+        /// @param doing The task that the program was doing when the error occured
+        /// e.g. "opening file example.xml"
+        /// @param error The tinyxml2 error code that occured.
+        XMLReaderException(const std::string &doing, int error)
+            : doing(doing), error(error) {}
     private:
-        std::string message;
-
+        void What(std::ostream &stream) const override;
+        std::string doing;
+        int error;
     };
 }
 

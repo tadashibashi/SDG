@@ -2,13 +2,14 @@
 // Created by Aaron Ishibashi on 4/21/22.
 //
 #include "XMLReaderException.h"
+#include <ostream>
 #include <tinyxml2.h>
 
 using namespace tinyxml2;
 
-SDG::XMLReaderException::XMLReaderException(const std::string &doing, int error)
+void
+SDG::XMLReaderException::What(std::ostream &stream) const
 {
-    message = "XMLReaderException occurred while " + doing
-              + ": ";
-    message += XMLDocument::ErrorIDToName((XMLError)error);
+    stream << "XMLReaderException occured while " << doing <<
+    ": " << XMLDocument::ErrorIDToName((XMLError)error);
 }

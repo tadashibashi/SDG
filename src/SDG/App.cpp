@@ -26,7 +26,7 @@ struct SDG::App::Impl {
     Impl() : window(), isRunning(), time() {}
     SDG::Window window;
     bool isRunning;
-    SDG::GameTime time;
+    SDG::Time time;
 };
 
 SDG::App::App() : impl(new Impl)
@@ -164,7 +164,7 @@ SDG::App::Render_()
     impl->window.SwapBuffers();
 }
 
-const SDG::CRef<SDG::GameTime>
+const SDG::CRef<SDG::Time>
 SDG::App::Time()
 {
     return CRef(impl->time);

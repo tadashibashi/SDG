@@ -1,11 +1,10 @@
-//
-// Created by Aaron Ishibashi on 4/21/22.
-//
 #include "AssertionException.h"
-#include "SDG/FileSys/FileSys.h"
+#include <ostream>
 
-SDG::AssertionException::AssertionException(const std::string &statement, const char *file, int line, const char *func)
+#include <SDG/FileSys/Path.h>
+
+void SDG::AssertionException::What(std::ostream &stream) const
 {
-    this->message = FileSys::ExtractFilename(file) + ":" + std::to_string(line) + ": " + std::string(func) +
-                    ": \"" + statement + "\" assertion failed!";
+    stream << Path(file).Filename() << ":" << std::to_string(line) << ": "
+        << func << ": \"" << statement << "\" assertion failed!";
 }

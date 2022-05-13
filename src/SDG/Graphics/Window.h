@@ -22,7 +22,15 @@ namespace SDG
         Window();
         ~Window();
 
+        /// Opens the Window and initializes the internal graphics library.
+        /// Calling this a second time, will close the existing window, and open a new one.
+        /// @param width window width, must be larger than 0. Throws assertion exception if in Debug mode if not.
+        /// @param height window height, must be larger than 0. Throws assertion exception if in Debug mode if not.
+        /// @param title window title
+        /// @param flags SDL2 Window flags
         bool Initialize(int width, int height, const char *title, unsigned flags = 0);
+
+        /// Closes the window and shuts down the graphics library.
         void Close();
 
         void Clear(Color color = Color::CornflowerBlue());
@@ -32,20 +40,42 @@ namespace SDG
 
         // === Setters ===
         Window &Title(const char *title);
-        Window &Size(Point size);
+        Window &ClientSize(Point size);
         Window &Resolution(Point size);
         Window &Fullscreen(bool fullscreen);
         Window &Bordered(bool bordered);
         Window &Resizable(bool resizable);
+        Window &Position(Point position);
+        Window &Minimized(bool minimized);
+
+        /// Hide or show window
+        /// @param hidden true: hide window; false: show window
+        Window &Hidden(bool hidden);
+        /// Set the Window's minimum size
+        Window &MinimumSize(Point size);
+        Window &MaximumSize(Point size);
+        Window &MouseGrabbed(bool mouseGrab);
+        Window &AlwaysOnTop(bool alwaysOnTop);
 
         // === Getters ===
 
         std::string Title() const;
         Point Size() const;
+
+        /// Underlying Window size
+        Point ClientSize() const;
         bool Fullscreen() const;
         bool Bordered() const;
         bool Resizable() const;
         Point Resolution() const;
+        Point Position() const;
+        bool Minimized() const;
+        bool Hidden() const;
+        Point MinimumSize() const;
+        Point MaximumSize() const;
+        bool MouseGrabbed() const;
+        bool AlwaysOnTop() const;
+
         uint32_t Flags() const;
         Rectangle Viewport() const;
         Ref<RenderTarget> Target() const;
@@ -64,7 +94,8 @@ namespace SDG
             /// @callback void callback()
             Delegate<>         Hide;
 
-            /// Occurs when the Window is first created.
+            /// Occurs when the Window has been exposed.
+            /// Window will automatically be redrawn right after this callback
             /// @callback void callback()
             Delegate<>         Expose;
 

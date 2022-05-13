@@ -51,6 +51,12 @@ namespace SDG
     Point
     RenderTarget::Size() const
     {
+        return {(int)target->w, (int)target->h};
+    }
+
+    Point
+    RenderTarget::BaseSize() const
+    {
         return {(int)target->base_w, (int)target->base_h};
     }
 

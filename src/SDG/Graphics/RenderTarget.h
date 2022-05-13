@@ -32,7 +32,7 @@ namespace SDG
          * Gets the target's viewport rectangle
          * @return the viewport rectangle
          */
-        Rectangle Viewport() const;
+        [[nodiscard]] Rectangle Viewport() const;
 
 
         /*!
@@ -44,10 +44,16 @@ namespace SDG
 
 
         /*!
+         * Gets the virtual dimensions of the target
+         * @return Point containing width and height of the target
+         */
+        [[nodiscard]] Point Size() const;
+
+        /*!
          * Gets the true underlying dimensions of the target
          * @return Point containing width and height of the target
          */
-        Point Size() const;
+        [[nodiscard]] Point BaseSize() const;
 
         Color Color() const;
 
@@ -56,7 +62,7 @@ namespace SDG
          * order to access the internals and functions.
          * @return the raw SDL_gpu GPU_Target reference
          */
-        Ref<GPU_Target> Target() const;
+        [[nodiscard]] Ref<GPU_Target> Target() const;
 
         /*!
          * Frees the internal GPU_Target.

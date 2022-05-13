@@ -8,9 +8,9 @@
  *
  */
 #pragma once
-#include <string>
 #include <SDG/FileSys/FileSys.h>
 #include <iosfwd>
+#include <string>
 
 namespace SDG
 {
@@ -41,7 +41,7 @@ namespace SDG
         /// Creates a path with specified base directory and subpath
         /// @param pSubpath the subpath, which will append to the base directory
         /// @param base the base directory from which the subpath will root from
-        Path(const std::string &pSubpath, BaseDir base = BaseDir::Root);
+        Path(const std::string &pSubpath, BaseDir base);
 
         /// Get the subpath portion, not including base path
         [[nodiscard]] std::string Subpath() const { return subpath; }

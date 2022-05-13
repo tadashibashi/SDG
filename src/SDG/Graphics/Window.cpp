@@ -53,6 +53,7 @@ namespace SDG
             return false;
         }
 
+
 //        if (!TTF_WasInit())
 //        {
             if (TTF_Init() != 0)
@@ -101,6 +102,7 @@ namespace SDG
                 case SDL_WINDOWEVENT_EXPOSED:
                     SDG_Log("Window was exposed");
                     On.Expose.Invoke();
+                    impl->target.SwapBuffers(); // TODO: test this behavior...
                     break;
                 case SDL_WINDOWEVENT_MOVED:
                     SDG_Log("Window moved: {}, {}",
@@ -171,13 +173,16 @@ namespace SDG
     Window &
     Window::Title(const char *title)
     {
+        if (!title)
+            title = "";
+
         impl->title = title;
         SDL_SetWindowTitle(GetWindow(impl->target), impl->title.c_str());
         return *this;
     }
 
     Window &
-    Window::Size(Point size)
+    Window::ClientSize(Point size)
     {
         SDL_SetWindowSize(GetWindow(impl->target), size.W(), size.H());
         return *this;
@@ -210,10 +215,99 @@ namespace SDG
     Window &
     Window::Resolution(Point size)
     {
+        if (size.X() < 1) size.X(1);
+        if (size.Y() < 1) size.Y(1);
+
         GPU_SetWindowResolution(size.X(), size.Y());
         return *this;
     }
 
+    Window &
+    Window::Position(Point position)
+    {
+        SDL_SetWindowPosition(GetWindow(impl->target), position.X(), position.Y());
+        return *this;
+    }
+
+    Window &Window::Minimized(bool minimized)
+    {
+        if (minimized)
+            SDL_MinimizeWindow(GetWindow(impl->target));
+        else
+            SDL_RestoreWindow(GetWindow(impl->target));
+        return *this;
+    }
+
+    Window &Window::MinimumSize(Point size)
+    {
+        if (size.X() < 1)
+        {
+            SDG_Warn("Window::MinimumSize size.X() must be greater than 0; setting it to 1");
+            size.X(1);
+        }
+        if (size.Y() < 1)
+        {
+            SDG_Warn("Window::MinimumSize size.Y() must be greater than 0; setting it to 1");
+            size.Y(1);
+        }
+
+        SDL_SetWindowMinimumSize(GetWindow(impl->target), size.X(), size.Y());
+        Point clientSize = ClientSize();
+        if (clientSize.X() < size.X() || clientSize.Y() < size.Y())
+        {
+            size.X(size.X() < clientSize.X() ? clientSize.X() : size.X());
+            size.Y(size.Y() < clientSize.Y() ? clientSize.Y() : size.Y());
+            ClientSize(size);
+        }
+
+        return *this;
+    }
+
+    Window &Window::MaximumSize(Point size)
+    {
+        if (size.X() < 1)
+        {
+            SDG_Warn("Window::MaximumSize size.X() must be greater than 0; setting it to 1");
+            size.X(1);
+        }
+        if (size.Y() < 1)
+        {
+            SDG_Warn("Window::MaximumSize size.Y() must be greater than 0; setting it to 1");
+            size.Y(1);
+        }
+
+        SDL_SetWindowMaximumSize(GetWindow(impl->target), size.X(), size.Y());
+        Point clientSize = ClientSize();
+        if (clientSize.X() > size.X() || clientSize.Y() > size.Y())
+        {
+            size.X(size.X() > clientSize.X() ? clientSize.X() : size.X());
+            size.Y(size.Y() > clientSize.Y() ? clientSize.Y() : size.Y());
+            ClientSize(size);
+        }
+        return *this;
+    }
+
+    Window &Window::MouseGrabbed(bool mouseGrabbed)
+    {
+        SDL_SetWindowMouseGrab(GetWindow(impl->target), (SDL_bool)mouseGrabbed);
+        return *this;
+    }
+
+    Window &Window::AlwaysOnTop(bool alwaysOnTop)
+    {
+        SDL_SetWindowAlwaysOnTop(GetWindow(impl->target), (SDL_bool)alwaysOnTop);
+        return *this;
+    }
+
+    Window &Window::Hidden(bool hidden)
+    {
+        if (hidden)
+            SDL_HideWindow(GetWindow(impl->target));
+        else
+            SDL_ShowWindow(GetWindow(impl->target));
+
+        return *this;
+    }
 
     /// ========= GETTERS ========
 
@@ -261,6 +355,27 @@ namespace SDG
         return {x, y};
     }
 
+    Point
+    Window::Position() const
+    {
+        int x, y;
+        SDL_GetWindowPosition(GetWindow(impl->target), &x, &y);
+
+        return {x, y};
+    }
+
+    bool
+    Window::Minimized() const
+    {
+        return (Flags() & SDL_WINDOW_MINIMIZED) == SDL_WINDOW_MINIMIZED;
+    }
+
+    bool
+    Window::Hidden() const
+    {
+        return (Flags() & SDL_WINDOW_HIDDEN) == SDL_WINDOW_HIDDEN;
+    }
+
     uint32_t
     Window::Flags() const
     {
@@ -278,4 +393,38 @@ namespace SDG
     {
         return impl->target.Target()->context->windowID;
     }
+
+    Point Window::ClientSize() const
+    {
+        int w, h;
+        SDL_GL_GetDrawableSize(GetWindow(impl->target), &w, &h);
+        return {w, h};
+    }
+
+    Point Window::MinimumSize() const
+    {
+        int x, y;
+        SDL_GetWindowMinimumSize(GetWindow(impl->target), &x, &y);
+        return {x, y};
+    }
+
+    Point Window::MaximumSize() const
+    {
+        int x, y;
+        SDL_GetWindowMaximumSize(GetWindow(impl->target), &x, &y);
+        return {x, y};
+    }
+
+    bool
+    Window::MouseGrabbed() const
+    {
+        return (Flags() & SDL_WINDOW_MOUSE_GRABBED) == SDL_WINDOW_MOUSE_GRABBED;
+    }
+
+    bool
+    Window::AlwaysOnTop() const
+    {
+        return (Flags() & SDL_WINDOW_ALWAYS_ON_TOP) == SDL_WINDOW_ALWAYS_ON_TOP;
+    }
+
 }

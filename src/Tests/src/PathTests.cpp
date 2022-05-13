@@ -26,14 +26,14 @@ TEST_CASE("Path", "[path]")
 
         SECTION("Path constructor omits preceding white space")
         {
-            Path path("       test.txt");
+            Path path("       test.txt", Path::BaseDir::Root);
             REQUIRE(path.Subpath() == "test.txt");
             REQUIRE(path.String() == root + "test.txt");
         }
 
         SECTION("Path constructor omits preceding '/'")
         {
-            Path path("////////////////////test.txt");
+            Path path("////////////////////test.txt", Path::BaseDir::Root);
             REQUIRE(path.Subpath() == "test.txt");
             REQUIRE(path.String() == root + "test.txt");
         }
@@ -42,35 +42,35 @@ TEST_CASE("Path", "[path]")
             // e.g. "  path/to/folder" is trimmed to -> "path/to/folder"
         SECTION("Path constructor omits combo of preceding whitespace and '/'")
         {
-            Path path("///  /// ////   /// // /// //test.txt");
+            Path path("///  /// ////   /// // /// //test.txt", Path::BaseDir::Root);
             REQUIRE(path.Subpath() == "test.txt");
             REQUIRE(path.String() == root + "test.txt");
         }
 
         SECTION("Path constructor omits a trailing whitespace")
         {
-            Path path("test.txt ");
+            Path path("test.txt ", Path::BaseDir::Root);
             REQUIRE(path.Subpath() == "test.txt");
             REQUIRE(path.String() == root + "test.txt");
         }
 
         SECTION("Path constructor omits trailing whitespace")
         {
-            Path path("test.txt                ");
+            Path path("test.txt                ", Path::BaseDir::Root);
             REQUIRE(path.Subpath() == "test.txt");
             REQUIRE(path.String() == root + "test.txt");
         }
 
         SECTION("Path constructor omits a trailing slash")
         {
-            Path path("test.txt/");
+            Path path("test.txt/", Path::BaseDir::Root);
             REQUIRE(path.Subpath() == "test.txt");
             REQUIRE(path.String() == root + "test.txt");
         }
 
         SECTION("Path constructor omits trailing slashes")
         {
-            Path path("test.txt////////////////////");
+            Path path("test.txt////////////////////", Path::BaseDir::Root);
             REQUIRE(path.Subpath() == "test.txt");
             REQUIRE(path.String() == root + "test.txt");
         }
@@ -78,69 +78,71 @@ TEST_CASE("Path", "[path]")
 
         SECTION("Path constructor omits trailing slashes and whitespaces")
         {
-            Path path1("test.txt//   ///////   // /// ////// ");
+            Path path1("test.txt//   ///////   // /// ////// ", Path::BaseDir::Root);
             REQUIRE(path1.Subpath() == "test.txt");
             REQUIRE(path1.String() == root + "test.txt");
 
-            Path path2("test.txt/ ");
+            Path path2("test.txt/ ", Path::BaseDir::Root);
             REQUIRE(path2.Subpath() == "test.txt");
             REQUIRE(path2.String() == root + "test.txt");
 
-            Path path3("test.txt /");
+            Path path3("test.txt /", Path::BaseDir::Root);
             REQUIRE(path3.Subpath() == "test.txt");
             REQUIRE(path3.String() == root + "test.txt");
         }
 
         SECTION("Path constructor omits trailing and preceding slashes and whitespaces")
         {
-            Path path1(" //////////// // // //  /// / //test.txt//   ///////   // /// ////// ");
+            Path path1(" //////////// // // //  /// / //test.txt//   ///////   // /// ////// ", Path::BaseDir::Root);
             REQUIRE(path1.Subpath() == "test.txt");
             REQUIRE(path1.String() == root + "test.txt");
 
-            Path path2(" /test.txt/ ");
+            Path path2(" /test.txt/ ", Path::BaseDir::Root);
             REQUIRE(path2.Subpath() == "test.txt");
             REQUIRE(path2.String() == root + "test.txt");
 
-            Path path3("/ test.txt /");
+            Path path3("/ test.txt /", Path::BaseDir::Root);
             REQUIRE(path3.Subpath() == "test.txt");
             REQUIRE(path3.String() == root + "test.txt");
         }
 
         SECTION("Path constructor omits one-space path")
         {
-            Path path(" ");
+            Path path(" ", Path::BaseDir::Root);
             REQUIRE(path.Subpath().empty());
             REQUIRE(path.String() == root);
         }
 
         SECTION("Path constructor omits one-slash path")
         {
-            Path path("/");
+            Path path("/", Path::BaseDir::Root);
             REQUIRE(path.Subpath().empty());
             REQUIRE(path.String() == root);
         }
 
         SECTION("Path constructor omits all white spaced path")
         {
-            Path path("                     ");
+            Path path("                     ", Path::BaseDir::Root);
             REQUIRE(path.Subpath().empty());
             REQUIRE(path.String() == root);
         }
 
         SECTION("Path constructor omits all-slash path")
         {
-            Path path("/////////////////////////");
+            Path path("/////////////////////////", Path::BaseDir::Root);
             REQUIRE(path.Subpath().empty());
             REQUIRE(path.String() == root);
         }
 
         SECTION("Path base is set correctly in constructor")
         {
-            Path pathNoBase("myfile.exe", Path::BaseDir::Root);
-            Path pathRootBase("myfile.exe", Path::BaseDir::Base);
+            Path pathNoBase("myfile.exe", Path::BaseDir::None);
+            Path pathRootBase("myfile.exe", Path::BaseDir::Root);
+            Path pathBaseBase("myfile.exe", Path::BaseDir::Base);
             Path pathTitleBase("myfile.exe", Path::BaseDir::Pref);
-            REQUIRE(pathNoBase.Base() == Path::BaseDir::Root);
-            REQUIRE(pathRootBase.Base() == Path::BaseDir::Base);
+            REQUIRE(pathNoBase.Base() == Path::BaseDir::None);
+            REQUIRE(pathRootBase.Base() == Path::BaseDir::Root);
+            REQUIRE(pathBaseBase.Base() == Path::BaseDir::Base);
             REQUIRE(pathTitleBase.Base() == Path::BaseDir::Pref);
         }
 
@@ -296,7 +298,7 @@ TEST_CASE("Path", "[path]")
         SECTION("Path is comparable to a path, base path differ but strings are same")
         {
             Path path1("path/to/folder/program.exe", Path::BaseDir::Pref);
-            Path path2(PrefPath().String() + "path/to/folder/program.exe");
+            Path path2(PrefPath().String() + "path/to/folder/program.exe", Path::BaseDir::Root);
             REQUIRE(path1.String() == path2.String());
             REQUIRE((path1 == path2));
         }
@@ -328,7 +330,7 @@ TEST_CASE("Path", "[path]")
         SECTION("Paths are not unequal: differing base path, same full string")
         {
             Path path1("path/to/folder/program.exe", Path::BaseDir::Base);
-            Path path2(BasePath().String() + "path/to/folder/program.exe");
+            Path path2(BasePath().String() + "path/to/folder/program.exe", Path::BaseDir::Root);
 
             REQUIRE(!(path1 != path2));
         }

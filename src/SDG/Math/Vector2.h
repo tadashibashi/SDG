@@ -43,11 +43,11 @@ namespace SDG
             return *this;
         }
 
-        static constexpr Vec2_ One() { return Vec2_(1, 1); }
-        static constexpr Vec2_ Zero() { return Vec2_(0, 0); }
+        [[nodiscard]] static constexpr Vec2_ One() { return Vec2_(1, 1); }
+        [[nodiscard]] static constexpr Vec2_ Zero() { return Vec2_(0, 0); }
 
         // Gets the distance between two vectors
-        static float Distance(const Vec2_ &p1, const Vec2_ &p2)
+        [[nodiscard]] static float Distance(const Vec2_ &p1, const Vec2_ &p2)
         {
             float a = static_cast<float>(p1.x) - static_cast<float>(p2.x);
             float b = static_cast<float>(p1.y) - static_cast<float>(p2.y);

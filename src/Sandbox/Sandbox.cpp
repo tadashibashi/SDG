@@ -38,7 +38,7 @@ private:
 
         if (Input::KeyPressed(Key::Space))
         {
-            SDG_Log("Seconds since game start: {}", Time()->Ticks() * 0.001f);
+            SDG_Log("Seconds since game start: {}", Time()->Time() * 0.001f);
         }
 
         if (Input::KeyPressed(Key::S) && Input::KeyPress(Key::V))
@@ -118,7 +118,7 @@ private:
         window->Clear(Color::BlueScreenOfDeath());
 
         shader->Activate();
-        shader->SetUniform("time", (float) Time()->Ticks());
+        shader->SetUniform("time", (float) Time()->Time());
 
         //GPU_BlitScale(kirby->Image(), nullptr, window->InnerWindow().Get(), (float)window->Size().W() / 2,
         //              (window->Size().H()/2) + kirby->Image()->base_h * 0.1f * .5f, 0.1f, 0.1f);

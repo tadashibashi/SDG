@@ -3,7 +3,6 @@ Tests todo:
 - Tweens
 - Vector2/3
 - FRectangle
-- Time
 - Graphics
     - RenderTarget
     - Camera2D
@@ -29,3 +28,4 @@ x Exceptions (more to come)
 x Path
 x Ref
 x ServiceProvider
+x Time

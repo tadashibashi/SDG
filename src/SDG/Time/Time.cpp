@@ -2,8 +2,6 @@
 #include "SDL.h"
 #include <SDG/Exceptions/InvalidArgumentException.h>
 
-static const int8_t MAX_DELTA_TICKS = 64;
-
 namespace SDG
 {
     Time::Time():
@@ -12,7 +10,7 @@ namespace SDG
     void Time::Update()
     {
         Uint64 currentTicks = SDL_GetTicks64();
-        deltaTicks_ = SDL_min(currentTicks - ticks_, MAX_DELTA_TICKS);
+        deltaTicks_ = currentTicks - ticks_;
         ticks_ = currentTicks;
     }
 
@@ -38,5 +36,10 @@ namespace SDG
                 throw InvalidArgumentException("Time::As", "unit",
                                                "Unit enum value not recognized");
         }
+    }
+
+    uint64_t Time::DeltaTicks(unsigned cap) const
+    {
+        return cap ? SDL_min(deltaTicks_, cap) : deltaTicks_;
     }
 }

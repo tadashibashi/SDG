@@ -6,7 +6,7 @@
 #include "SDG/FileSys/Private/IO.h"
 #include "FileSys.h"
 #include <SDL_rwops.h>
-
+#include "Path.h"
 
 using std::string;
 
@@ -17,7 +17,7 @@ public:
     Impl(): mem(), size(), path(), error(), isOpen(false) {}
     
     char *mem;
-    string path;
+    Path path;
     string error;
     size_t size;
     bool isOpen;
@@ -30,14 +30,9 @@ SDG::FileSys::File::File() : impl(new Impl)
 
 }
 
-SDG::FileSys::File::File(const string &path) : impl(new Impl)
-{
-    Open(path);
-}
-
 SDG::FileSys::File::File(const SDG::Path &path) : impl(new Impl)
 {
-    Open(path.String());
+    Open(path);
 }
 
 SDG::FileSys::File::~File()
@@ -73,21 +68,21 @@ SDG::FileSys::File::GetError() const
 
 
 bool
-SDG::FileSys::File::Open(const string &path)
+SDG::FileSys::File::Open(const Path &path)
 {
-    return (FileSys::GetExtension(path) == "sdgc") ?
+    return (path.Extension() == "sdgc") ?
            OpenEncryptedImpl(path) :
            OpenImpl(path);
 }
 
 
 bool
-SDG::FileSys::File::OpenImpl(const string &filepath)
+SDG::FileSys::File::OpenImpl(const Path &filepath)
 {
     char *mem;
     size_t size;
 
-    if (!IO::ReadFileStr(filepath.c_str(), &mem, &size))
+    if (!IO::ReadFileStr(filepath.String().c_str(), &mem, &size))
     {
         impl->error = string("File::Open: error: ") + SDL_GetError();
         return false;
@@ -102,9 +97,9 @@ SDG::FileSys::File::OpenImpl(const string &filepath)
     return true;
 }
 
-bool SDG::FileSys::File::OpenEncryptedImpl(const string &path)
+bool SDG::FileSys::File::OpenEncryptedImpl(const Path &path)
 {
-    bool result = SDG::IO::ReadEncryptedFileStr(path.c_str(), &impl->mem, &impl->size);
+    bool result = SDG::IO::ReadEncryptedFileStr(path.String().c_str(), &impl->mem, &impl->size);
     if (result)
     {
         impl->isOpen = true;
@@ -130,7 +125,7 @@ SDG::FileSys::File::Close()
 
     impl->isOpen = false;
     impl->size = 0;
-    impl->path = "";
+    impl->path = Path();
 }
 
 bool

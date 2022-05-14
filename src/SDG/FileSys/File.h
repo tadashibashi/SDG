@@ -19,12 +19,11 @@ class File {
 public:
     File();
     ~File();
-    explicit File(const std::string &path);
     explicit File(const Path &path);
 
     /// Loads data found in the file at path into the File class.
     /// @param path path to the file
-    bool Open(const std::string &path);
+    bool Open(const Path &path);
 
     /// Checks whether file is opened or not.
     /// It may or may not have data loaded into memory. Use IsLoaded() to check for this check.
@@ -58,10 +57,10 @@ public:
 private:
     /// Loads data found in the file at path into the File class.
     /// @param filepath path to the file
-    bool OpenImpl(const std::string &filepath);
+    bool OpenImpl(const Path &filepath);
 
     /// Loads an encrypted file
-    bool OpenEncryptedImpl(const std::string &path);
+    bool OpenEncryptedImpl(const Path &path);
 
     /// Private implementation
     Impl *impl;

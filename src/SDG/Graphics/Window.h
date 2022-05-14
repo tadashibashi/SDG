@@ -2,7 +2,6 @@
 // Created by Aaron Ishibashi on 4/29/22.
 //
 #pragma once
-#include "Texture2D.h"
 #include "Color.h"
 
 #include <SDG/Math/Vector2.h>
@@ -15,6 +14,7 @@
 namespace SDG
 {
     class RenderTarget;
+    class Texture2D;
 
     class Window
     {

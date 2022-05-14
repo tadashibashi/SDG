@@ -5,6 +5,7 @@
 #include "Window.h"
 #include "RendererType.h"
 #include "RenderTarget.h"
+#include "Texture2D.h"
 
 #include <SDG/Debug.hpp>
 #include <SDL_gpu.h>

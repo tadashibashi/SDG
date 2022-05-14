@@ -6,13 +6,23 @@
 #include "SDG_Tests.h"
 #include <SDG/Math/Vector2.h>
 
-static float RoundF(float f)
+Vector2 ParseString(const std::string &str)
 {
-    f *= 1000000.f;
-    f = std::round(f);
-    f /= 1000000.f;
-    return f;
+    size_t commaPos = str.find_first_of(',');
+    size_t braceOpen = str.find_first_of('{');
+    size_t braceClose = str.find_first_of('}');
+
+    if (commaPos != str.npos && braceOpen != str.npos && braceClose != str.npos)
+    {
+        return {std::stof(str.substr(1, commaPos-1-braceOpen)),
+                std::stof(str.substr(commaPos+1, braceClose-1-commaPos))};
+    }
+    else
+    {
+        return {};
+    }
 }
+
 
 TEST_CASE("Vector2 tests", "[Vector2]")
 {
@@ -117,6 +127,43 @@ TEST_CASE("Vector2 tests", "[Vector2]")
         vec = Vector2::Rotate(vec, 45);
         REQUIRE(RoundF(vec.X()) == 1.f);
         REQUIRE(RoundF(vec.Y()) == 0.f);
+    }
+
+    SECTION("Length")
+    {
+        REQUIRE(RoundF(Vector2().Length()) == 0);
+        REQUIRE(RoundF(Vector2(1, 1).Length()) == RoundF(std::sqrt(2.f)));
+        REQUIRE(RoundF(Vector2(-1, 1).Length()) == RoundF(std::sqrt(2.f)));
+        REQUIRE(RoundF(Vector2(1, -1).Length()) == RoundF(std::sqrt(2.f)));
+        REQUIRE(RoundF(Vector2(-1, -1).Length()) == RoundF(std::sqrt(2.f)));
+    }
+
+    SECTION("Normalize")
+    {
+        SECTION("Zero Length, no change")
+        {
+            REQUIRE(Vector2().Normalize() == Vector2::Zero());
+        }
+
+        SECTION("Various non-zero lengths")
+        {
+            REQUIRE(RoundF(Vector2(1, 1).Normalize().Length()) == 1.f);
+            REQUIRE(RoundF(Vector2(100, -1241).Normalize().Length()) == 1.f);
+            REQUIRE(RoundF(Vector2(114, 21).Normalize().Length()) == 1.f);
+            REQUIRE(RoundF(Vector2(-1, 4121).Normalize().Length()) == 1.f);
+            REQUIRE(RoundF(Vector2(-91, -704141).Normalize().Length()) == 1.f);
+        }
+    }
+
+    SECTION("String")
+    {
+        REQUIRE(Vector2::Zero() == ParseString(Vector2::Zero().String()));
+        REQUIRE(Vector2::One() == ParseString(Vector2::One().String()));
+        REQUIRE(Vector2(142.124f, -48.5f) == ParseString(Vector2(142.124f, -48.5f).String()));
+        REQUIRE(Vector2(42.f, 24.f) == ParseString(Vector2(42.f, 24.f).String()));
+        REQUIRE(Vector2(-247.f, -7.f) == ParseString(Vector2(-247.f, -7.f).String()));
+        REQUIRE(Vector2(-44.f, 0) == ParseString(Vector2(-44.f, 0).String()));
+        REQUIRE(Vector2(0, 124) == ParseString(Vector2(0, 124).String()));
     }
 
 

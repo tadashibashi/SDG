@@ -6,7 +6,6 @@
 #pragma once
 #ifndef SDG_File_h
 #define SDG_File_h
-#include <string>
 #include <SDG/FileSys/Path.h>
 
 namespace SDG::FileSys
@@ -52,7 +51,8 @@ public:
     /// The size of the file. A null-terminator is automatically appended to the data, but not counted by this function.
     /// Therefore, the result is the same as strlen. This value is set regardless if loadToMemory was set to true after a
     /// successful call to Open.
-    [[nodiscard]] int64_t Size() const;
+    [[nodiscard]]
+    int64_t Size() const;
     
 private:
     /// Loads data found in the file at path into the File class.

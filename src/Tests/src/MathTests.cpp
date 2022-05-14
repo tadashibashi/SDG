@@ -1,11 +1,6 @@
 #include "SDG_Tests.h"
 #include <SDG/Math/Math.h>
 
-// For use when comparing doubles
-// The answer will be considered close enough if equal up to the millionths place
-static double Round(double x);
-static float RoundF(float x);
-
 TEST_CASE("Math::Lerp")
 {
     SECTION("Floating point tests")
@@ -571,19 +566,3 @@ TEST_CASE("Math::WrapF")
 }
 
 // Not sure how to test transform, but it has the same impl as MonoGame, so it should be ok
-
-double Round(double x)
-{
-    x *= 1000000.0;
-    x = round(x);
-    x /= 1000000.0;
-    return x;
-}
-
-float RoundF(float x)
-{
-    x *= 1000000.0f;
-    x = round(x);
-    x /= 1000000.0f;
-    return x;
-}

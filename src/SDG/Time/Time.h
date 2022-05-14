@@ -37,7 +37,8 @@ namespace SDG
         /// is a millisecond.
         [[nodiscard]] uint64_t Ticks() const;
 
-        /// Returns ticks calculated as a certain unit
+        /// Returns ticks calculated in a specified unit
+        /// Time stamped at the last call to Update
         [[nodiscard]] double As(Unit unit);
 
         /// Gets the number of ticks passed during the last Update period.

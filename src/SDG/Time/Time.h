@@ -21,10 +21,10 @@ namespace SDG
     public:
         enum class Unit
         {
-            Ms,
-            Sec,
-            Min,
-            Hr
+            Milliseconds,
+            Seconds,
+            Minutes,
+            Hours
         };
 
         Time();

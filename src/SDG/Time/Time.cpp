@@ -28,10 +28,10 @@ namespace SDG
     {
         switch(unit)
         {
-            case Unit::Ms: return ticks_;
-            case Unit::Sec: return ticks_ * 0.001;
-            case Unit::Min: return ticks_ * 0.001 / 60.0;
-            case Unit::Hr: return ticks_ * 0.001 / 3600.0;
+            case Unit::Milliseconds: return ticks_;
+            case Unit::Seconds: return ticks_ * 0.001;
+            case Unit::Minutes: return ticks_ * 0.001 / 60.0;
+            case Unit::Hours: return ticks_ * 0.001 / 3600.0;
             default:
                 throw InvalidArgumentException("Time::As", "unit",
                                                "Unit enum value not recognized");

@@ -345,10 +345,11 @@ namespace SDG
     }
 
     // ===== Greens ==========
-    Color Color::GreenYellow(Uint8 alpha) {
+    [[maybe_unused]] Color Color::GreenYellow(Uint8 alpha) {
         return Color(173, 255, 47, alpha);
     }
-    Color Color::Chartreuse(Uint8 alpha) {
+
+    [[maybe_unused]] Color Color::Chartreuse(Uint8 alpha) {
         return Color(127, 255, 0, alpha);
     }
     Color Color::LawnGreen(Uint8 alpha) {

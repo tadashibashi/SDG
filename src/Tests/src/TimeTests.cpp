@@ -34,11 +34,11 @@ TEST_CASE("Time tests", "[Time]")
         REQUIRE(time.DeltaTicks() >= 10);
         REQUIRE(time.Ticks() >= 20);
 
-        double ms = time.As(Time::Unit::Ms);
+        double ms = time.As(Time::Unit::Milliseconds);
         REQUIRE(ms == (double)time.Ticks());
-        REQUIRE(ms == time.As(Time::Unit::Sec) * 1000.0);
-        REQUIRE(ms == time.As(Time::Unit::Min) * 1000.0 * 60.0);
-        REQUIRE(ms == time.As(Time::Unit::Hr) * 1000.0 * 3600.0);
+        REQUIRE(ms == time.As(Time::Unit::Seconds) * 1000.0);
+        REQUIRE(ms == time.As(Time::Unit::Minutes) * 1000.0 * 60.0);
+        REQUIRE(ms == time.As(Time::Unit::Hours) * 1000.0 * 3600.0);
 
         // test delta tick maxTicks feature
         SDL_Delay(70);

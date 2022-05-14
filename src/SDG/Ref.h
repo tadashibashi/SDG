@@ -15,6 +15,11 @@
  * prevented, this class at least encourages intentionality about doing so.
  * CRef is the const version of the Ref object.
  *
+ * @limitations since void is not referencable, you can't have a Ref<void> object.
+ * In this case, an alternative would be to store a reference to the void *
+ * or cast the void * to a uintptr_t to store in the Ref.
+ * In both cases you'd re-cast it upon retrieval to the desired type from Get().
+ *
  * @future Make Ref track pointer validity. This seems like it could result in
  * wide-scale unfavorable performance loss if we have to dereference an
  * extra time from a ptr to ptr. Optionally, we could cache an additional ptr

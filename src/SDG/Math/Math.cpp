@@ -1,4 +1,13 @@
+// Put longer multi-line, non-template math functions here
 #include "Math.h"
+
+/**
+ * Returns the quadrant the coordinate is in starting with quadrant zero
+ * on the bottom right, going clockwise until quadrant 3 on the top-right.
+ * This function is a helper used by point direction
+ */
+static int
+GetQuadrant(float x, float y);
 
 SDG::Vector2
 SDG::Math::Transform(SDG::Vector2 position, const SDG::Matrix4x4 &mat)
@@ -26,7 +35,7 @@ SDG::Math::PointDirection(float x1, float y1, float x2, float y2)
 }
 
 int
-SDG::Math::GetQuadrant(float x, float y)
+GetQuadrant(float x, float y)
 {
     if (x > 0 && y >= 0) {
         return 3;
@@ -38,4 +47,10 @@ SDG::Math::GetQuadrant(float x, float y)
         return 0;
     }
     return -1;
+}
+
+template<>
+SDG::Vector2 SDG::Math::Lerp(SDG::Vector2 val, SDG::Vector2 dest, double amt)
+{
+    return Vector2(Lerp(val.X(), dest.Y(), amt), Lerp(val.Y(), dest.Y(), amt));
 }

@@ -3,7 +3,7 @@
  * 
  * 
  * ===========================================================================*/
-#include <catch2/catch_test_macros.hpp>
+#include "SDG_Tests.h"
 #include <SDG/Graphics/Window.h>
 #include <SDG/Graphics/RenderTarget.h>
 

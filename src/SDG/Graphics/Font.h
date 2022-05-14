@@ -47,7 +47,6 @@ namespace SDG
          */
         bool Load(const std::string &filepath, int pointSize);
 
-         // TODO: Test RenderText functions
          /*!
           * Renders solid text to a Texture2D
           * @param text - the text to draw

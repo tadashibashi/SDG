@@ -151,10 +151,14 @@ SDG::Keyboard::CloseImpl()
     }
 }
 
+
+
 const char *SDG::Keyboard::KeyName(Key key)
 {
     return SDL_GetKeyName(SDL_GetKeyFromScancode((SDL_Scancode)Scancodes[(int)key]));
 }
+
+
 
 // ====== Static Implementations ======
 

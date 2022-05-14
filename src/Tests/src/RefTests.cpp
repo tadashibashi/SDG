@@ -1,8 +1,6 @@
-#include <catch2/catch_test_macros.hpp>
+#include "SDG_Tests.h"
 #include <SDG/Ref.h>
 #include <string>
-
-using namespace SDG;
 
 TEST_CASE("Ref tests", "[Ref]")
 {

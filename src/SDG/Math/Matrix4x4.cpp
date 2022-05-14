@@ -54,7 +54,7 @@ namespace SDG
     Matrix4x4::Rotate(float degrees, Vector3 axis)
     {
         if (degrees != 0)
-            mat *= glm::rotate(Math::DegToRad(degrees), glm::vec3{axis.X(), axis.Y(), axis.Z()});
+            mat *= glm::rotate((float)Math::DegToRad(degrees), glm::vec3{axis.X(), axis.Y(), axis.Z()});
         return *this;
     }
 

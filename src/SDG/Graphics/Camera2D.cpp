@@ -124,7 +124,7 @@ namespace SDG
     Camera2D &
     Camera2D::Rotation(float degrees)
     {
-        impl->rotation = Math::Wrap<float>(degrees, 0, 360.f);
+        impl->rotation = Math::WrapF<float>(degrees, 0, 360.f);
         impl->wasChanged = true;
         return *this;
     }
@@ -146,7 +146,7 @@ namespace SDG
     Camera2D::Rotate(float degrees, Vector2 anchor)
     {
         impl->anchor = anchor;
-        impl->rotation = Math::Wrap<float>(degrees + impl->rotation, 0, 360.f);
+        impl->rotation = Math::WrapF<float>(degrees + impl->rotation, 0, 360.f);
         impl->wasChanged = true;
         return *this;
     }

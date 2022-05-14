@@ -1,8 +1,6 @@
-#include <catch2/catch_test_macros.hpp>
+#include "SDG_Tests.h"
 #include <SDG/FileSys/Path.h>
 #include <SDG/Platform.h>
-
-using namespace SDG;
 
 TEST_CASE("Path", "[path]")
 {

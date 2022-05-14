@@ -1,6 +1,5 @@
 #include "SDG/Templates/Delegate.h"
-#include <catch2/catch_test_macros.hpp>
-using namespace SDG;
+#include "SDG_Tests.h"
 
 static Delegate<int> delegate;
 static int delegateTestCounter = 0;

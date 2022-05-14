@@ -4,11 +4,13 @@ TODO:
     - world-to-screen
     - world-bounds
 - Figure out cause of fullscreen/non-fullscreen matrix projection discrepancy.
+    There's an SDL function for controlling the behavior of resolution on new screen
+    I forgot what it is though...
 - TTF font rendering and caching
 - Game system features (subclass of App)
     - Entity
     - Entity Pooling
-    - Sprite renderer
+    - Sprite renderer, animation
     - Scene System
     - Make Asteroids Game as you assemble these systems
 

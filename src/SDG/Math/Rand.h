@@ -24,7 +24,7 @@ namespace SDG
         template <typename T>
         static T Choose(const std::initializer_list<T> &list)
         {
-            auto it = list.begin();
+            typename std::initializer_list<T>::iterator it = list.begin();
             int index = INext((int)list.size());
             for (int i = 0; i < index; ++it, ++i);
 

@@ -1,12 +1,9 @@
 Tests todo:
-- Input
-    - Keyboard
-    - Mouse
 
-- Math
 - Tweens
-- Vector2/3, Rectangle (float may be the only type necessary)
-- GameTime
+- Vector2/3
+- FRectangle
+- Time
 - Graphics
     - RenderTarget
     - Camera2D
@@ -15,4 +12,20 @@ Tests todo:
     - Shader
     - SpriteBatch
     - Texture2D
+
+Finished:
+x Exceptions
+
+- Graphics
     x Window
+- Input (can't really test effectively unless there's a
+         way to use automated input)
+    - Keyboard
+    - Mouse
+x Math
+x Rand
+x Delegate
+x Exceptions (more to come)
+x Path
+x Ref
+x ServiceProvider

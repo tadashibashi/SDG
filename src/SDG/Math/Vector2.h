@@ -3,6 +3,7 @@
 #include <cmath>
 #include <string>
 #include <ostream>
+#include "MathConstants.h"
 
 namespace SDG
 {
@@ -56,10 +57,13 @@ namespace SDG
         }
 
         // Returns a rotated point around {0, 0} anchor
-        static Vec2_ Rotate(const Vec2_ &v, float angle)
+        static Vec2_ Rotate(const Vec2_ &v, float degrees)
         {
-            return Vec2_((T)(v.x * std::cos(angle) - v.y * std::sin(angle)),
-                         (T)(v.x * std::sin(angle) + v.y * std::cos(angle)));
+            float rads = degrees * Math::RadsPerDeg;
+            float cosRads = std::cos(rads);
+            float sinRads = std::sin(rads);
+            return Vec2_((T)(v.x * cosRads - v.y * sinRads),
+                         (T)(v.x * sinRads + v.y * cosRads));
         }
 
         // Distance from zero.

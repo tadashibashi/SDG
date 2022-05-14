@@ -12,19 +12,10 @@
 #include <initializer_list>
 #include <algorithm>
 
-// Just in case there is some macro that clashes
-#ifdef Pi
-#undef Pi
-#endif
+#include "MathConstants.h"
 
 namespace SDG::Math
 {
-    const double Pi = 3.1415926535897932;
-    /// Multiply Radians by this to get Degrees.
-    const double DegsPerRad = 180.0 / Pi;
-    /// Multiply Degrees by this to get Radians.
-    const double RadsPerDeg = Pi / 180.0;
-
     /// Linear interpolation. Requires floating point for accuracy, but
     /// integer types are usable with a floored result.
     template <typename T>

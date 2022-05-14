@@ -6,6 +6,14 @@
 #include "SDG_Tests.h"
 #include <SDG/Math/Vector2.h>
 
+static float RoundF(float f)
+{
+    f *= 1000000.f;
+    f = std::round(f);
+    f /= 1000000.f;
+    return f;
+}
+
 TEST_CASE("Vector2 tests", "[Vector2]")
 {
     SECTION("Constructors")
@@ -92,23 +100,23 @@ TEST_CASE("Vector2 tests", "[Vector2]")
     SECTION("Rotate")
     {
         Vector2 vec(1, 0);
-        REQUIRE(vec.X() == 1);
-        REQUIRE(vec.Y() == 0);
+        REQUIRE(vec.X() == 1.f);
+        REQUIRE(vec.Y() == 0.f);
         vec = Vector2::Rotate(vec, 45);
-        REQUIRE(vec.X() == std::sqrt(2));
-        REQUIRE(vec.Y() == -std::sqrt(2));
-        vec = Vector2::Rotate(vec, 90);
-        REQUIRE(vec.X() == 0);
-        REQUIRE(vec.Y() == -1);
-        vec = Vector2::Rotate(vec, 270);
-        REQUIRE(vec.X() == 0);
-        REQUIRE(vec.Y() == 1);
-        vec = Vector2::Rotate(vec, 315);
-        REQUIRE(vec.X() == std::sqrt(2));
-        REQUIRE(vec.Y() == std::sqrt(2));
-        vec = Vector2::Rotate(vec, 360);
-        REQUIRE(vec.X() == 1);
-        REQUIRE(vec.Y() == 0);
+        REQUIRE(RoundF(vec.X()) == RoundF(std::sqrt(.5f)));
+        REQUIRE(RoundF(vec.Y()) == RoundF(std::sqrt(.5f)));
+        vec = Vector2::Rotate(vec, 45);
+        REQUIRE(vec.X() == 0.f);
+        REQUIRE(RoundF(vec.Y()) == RoundF(1.f));
+        vec = Vector2::Rotate(vec, 180);
+        REQUIRE(RoundF(vec.X()) == 0.f);
+        REQUIRE(RoundF(vec.Y()) == -1.f);
+        vec = Vector2::Rotate(vec, 45);
+        REQUIRE(RoundF(vec.X()) == RoundF(std::sqrt(.5f)));
+        REQUIRE(RoundF(vec.Y()) == RoundF(-std::sqrt(.5f)));
+        vec = Vector2::Rotate(vec, 45);
+        REQUIRE(RoundF(vec.X()) == 1.f);
+        REQUIRE(RoundF(vec.Y()) == 0.f);
     }
 
 

@@ -1,9 +1,8 @@
 /**
- * Color.h
- * Author: Aaron Ishibashi
+ * @file Color.h
  * 
- * Color is a struct that contains the values r, g, b, a
- * Each value goes from 0 (no intensity) to MAX_COLOR_VALUE (Max intensity)
+ * @abstract Color is a struct that contains the values r, g, b, a
+ * Each value goes from 0 (no intensity) to COLOR_MAX (Max intensity)
  * This struct is passed into Renderer functions to tint a sprite,
  * paint the screen or color a rectangle
  * 
@@ -20,6 +19,8 @@ namespace SDG
     {
         static const uint8_t COLOR_MAX = UINT8_MAX;
     public:
+        Color &Set(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = COLOR_MAX);
+
         uint8_t r, g, b, a;
         
         // Defaults to White
@@ -29,9 +30,6 @@ namespace SDG
         // Makes a grayscale color
         explicit constexpr Color(uint8_t grayScale, uint8_t alpha = COLOR_MAX)
             : r(grayScale), g(grayScale), b(grayScale), a(alpha) {}
-
-        void set(uint8_t r, uint8_t g, uint8_t b);
-        void set(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
         
         // Pre-made Colors with modifiable alpha value
         // ===== REDS ===========

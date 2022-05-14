@@ -3,19 +3,15 @@
 
 namespace SDG
 {
-    void Color::set(Uint8 r, Uint8 g, Uint8 b)
+    Color &
+    Color::Set(Uint8 red, Uint8 green, Uint8 blue, Uint8 alpha)
     {
-        this->r = r;
-        this->g = g;
-        this->b = b;
-    }
+        this->r = red;
+        this->g = green;
+        this->b = blue;
+        this->a = alpha;
 
-    void Color::set(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
-    {
-        this->r = r;
-        this->g = g;
-        this->b = b;
-        this->a = a;
+        return *this;
     }
 
     // Pre-made Colors

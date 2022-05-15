@@ -4,7 +4,9 @@
 #include <string>
 #include <ostream>
 #include <SDG/Exceptions/InvalidArgumentException.h>
+#include <SDG/Exceptions/OutOfRangeException.h>
 #include "MathConstants.h"
+
 
 namespace SDG
 {
@@ -23,15 +25,17 @@ namespace SDG
         constexpr Vec2_() : x(0), y(0) { }
         constexpr Vec2_(T x, T y) : x(x), y(y) { }
 
-        T &operator[](int i)
+        [[nodiscard]] T &operator[](int i)
         {
+            if (i < 0 || i > 1)
+                throw OutOfRangeException(i, "Vector2 indexers may only be 0 or 1");
             return *(&x + i);
         }
 
-        T X() const { return x; }
-        T Y() const { return y; }
-        T W() const { return w; }
-        T H() const { return h; }
+        [[nodiscard]] T X() const { return x; }
+        [[nodiscard]] T Y() const { return y; }
+        [[nodiscard]] T W() const { return w; }
+        [[nodiscard]] T H() const { return h; }
 
         Vec2_ &X(T pX) { x = pX; return *this; }
         Vec2_ &Y(T pY) { y = pY; return *this; }
@@ -159,7 +163,7 @@ namespace SDG
         }
 
         template <typename U>
-        explicit operator Vec2_<U>()
+        [[nodiscard]] explicit operator Vec2_<U>()
         {
             static_assert(
                     std::is_convertible_v<T, U>,

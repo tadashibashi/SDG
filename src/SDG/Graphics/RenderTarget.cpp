@@ -82,7 +82,7 @@ namespace SDG
     void
     RenderTarget::Clear(SDG::Color color)
     {
-        GPU_ClearColor(target, {color.r, color.g, color.b, color.a});
+        GPU_ClearColor(target, {color.R(), color.G(), color.B(), color.A()});
     }
 
     void RenderTarget::SwapBuffers()

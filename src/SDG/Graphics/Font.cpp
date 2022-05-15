@@ -103,17 +103,18 @@ SurfaceToTexture(SDL_Surface *surf, const std::string &path)
 SDG::Texture2D *
 SDG::Font::RenderTextBlended(const std::string &text, Color color, bool wrapped, uint32_t wrapLength) const
 {
+    SDL_Color sdlColor = {color.R(), color.G(), color.B(), color.A()};
     SDL_Surface *surf = wrapped ?
-            TTF_RenderText_Blended_Wrapped(impl->font, text.c_str(), {color.r, color.g, color.b, color.a}, wrapLength) :
-            TTF_RenderText_Blended(impl->font, text.c_str(), {color.r, color.g, color.b, color.a});
+            TTF_RenderText_Blended_Wrapped(impl->font, text.c_str(), sdlColor, wrapLength) :
+            TTF_RenderText_Blended(impl->font, text.c_str(), sdlColor);
     return SurfaceToTexture(surf, impl->filepath);
 }
 
 SDG::Texture2D *
 SDG::Font::RenderTextShaded(const std::string &text, Color fgColor, Color bgColor, bool wrapped, uint32_t wrapLength) const
 {
-    SDL_Color fg { fgColor.r, fgColor.g, fgColor.b, fgColor.a };
-    SDL_Color bg { bgColor.r, bgColor.g, bgColor.b, bgColor.a };
+    SDL_Color fg { fgColor.R(), fgColor.G(), fgColor.B(), fgColor.A() };
+    SDL_Color bg { bgColor.R(), bgColor.G(), bgColor.B(), bgColor.A() };
     SDL_Surface *surf = wrapped ?
                         TTF_RenderText_Shaded_Wrapped(impl->font, text.c_str(), fg, bg, wrapLength) :
                         TTF_RenderText_Shaded(impl->font, text.c_str(), fg, bg);
@@ -123,8 +124,9 @@ SDG::Font::RenderTextShaded(const std::string &text, Color fgColor, Color bgColo
 SDG::Texture2D *
 SDG::Font::RenderTextSolid(const std::string &text, Color color, bool wrapped, uint32_t wrapLength) const
 {
+    SDL_Color sdlColor = {color.R(), color.G(), color.B(), color.A()};
     SDL_Surface *surf = wrapped ?
-                        TTF_RenderText_Solid_Wrapped(impl->font, text.c_str(), {color.r, color.g, color.b, color.a}, wrapLength) :
-                        TTF_RenderText_Solid(impl->font, text.c_str(), {color.r, color.g, color.b, color.a});
+                        TTF_RenderText_Solid_Wrapped(impl->font, text.c_str(), sdlColor, wrapLength) :
+                        TTF_RenderText_Solid(impl->font, text.c_str(), sdlColor);
     return SurfaceToTexture(surf, impl->filepath);
 }

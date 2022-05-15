@@ -15,14 +15,24 @@
 
 namespace SDG
 {
-    struct Color
+    class Color
     {
-        static const uint8_t COLOR_MAX = UINT8_MAX;
+    private:
+        uint8_t r, g, b, a;
     public:
+        static const uint8_t COLOR_MAX = UINT8_MAX;
         Color &Set(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = COLOR_MAX);
 
-        uint8_t r, g, b, a;
-        
+        [[nodiscard]] uint8_t R() const { return r; }
+        [[nodiscard]] uint8_t G() const { return g; }
+        [[nodiscard]] uint8_t B() const { return b; }
+        [[nodiscard]] uint8_t A() const { return a; }
+
+        Color &R(uint8_t red) { r = red; return *this; }
+        Color &G(uint8_t green) { g = green; return *this; }
+        Color &B(uint8_t blue) { b = blue; return *this; }
+        Color &A(uint8_t alpha) { a = alpha; return *this; }
+
         // Defaults to White
         constexpr Color() : r(COLOR_MAX), g(COLOR_MAX), b(COLOR_MAX), a(COLOR_MAX) {}
         constexpr Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a = COLOR_MAX)

@@ -36,7 +36,7 @@ SDG::SpriteBatch::RenderBatches()
         GPU_Rect dest {b.dest.X(), b.dest.Y(), b.dest.Width(), b.dest.Height()};
 
         // Blit to the current target
-        GPU_SetColor(b.texture->Image().Get(), {b.color.r, b.color.g, b.color.b, b.color.a});
+        GPU_SetColor(b.texture->Image().Get(), {b.color.R(), b.color.G(), b.color.B(), b.color.A()});
         GPU_BlitRectX(b.texture->Image().Get(), &src, gpuTarget, &dest, b.rotation, b.anchor.X(), b.anchor.Y(),
                       TranslateFlip[(int)b.flip]);
     }

@@ -93,46 +93,48 @@ TEST_CASE("Vector3 tests", "[Vector3]")
         }
     }
 
-    // ======== NOTE: not implemented yet ==========
-//    SECTION("Distance")
-//    {
-//        SECTION("From {0,0} -> {1,1}")
-//        {
-//            Vector3 base = Vector3::Zero();
-//            Vector3 extension = Vector3::One();
-//
-//            float result = Vector3::Distance(base, extension);
-//            REQUIRE(result == std::sqrt(2.f));
-//            REQUIRE(extension.Length() == result);
-//        }
-//
-//        SECTION("From negative number")
-//        {
-//            Vector3 base = {-2.5, -4.4};
-//            Vector3 extension = {4.2f, 5.9f};
-//
-//            float a = extension.X() - base.X();
-//            float b = extension.Y() - base.Y();
-//            float expected = std::sqrt(a * a + b * b);
-//
-//            float result = Vector3::Distance(base, extension);
-//            REQUIRE(result == expected);
-//        }
-//
-//        SECTION("From mixed negative positive")
-//        {
-//            Vector3 base = {2.5412f, -4.4};
-//            Vector3 extension = {4.22f, -5.99f};
-//
-//            float a = extension.X() - base.X();
-//            float b = extension.Y() - base.Y();
-//            float expected = std::sqrt(a * a + b * b);
-//
-//            float result = Vector3::Distance(base, extension);
-//            REQUIRE(result == expected);
-//        }
-//    }
-//
+    SECTION("Distance")
+    {
+        SECTION("From {0,0} -> {1,1}")
+        {
+            Vector3 base = Vector3::Zero();
+            Vector3 extension = Vector3::One();
+
+            float result = Vector3::Distance(base, extension);
+            REQUIRE(result == std::sqrt(3.f));
+            REQUIRE(extension.Length() == result);
+        }
+
+        SECTION("From negative number")
+        {
+            Vector3 base = {-2.5f, -4.4f, -6.4f};
+            Vector3 extension = {4.2f, 5.9f, 42.f};
+
+            float a = extension.X() - base.X();
+            float b = extension.Y() - base.Y();
+            float c = extension.Z() - base.Z();
+            float expected = std::sqrt(a * a + b * b + c * c);
+
+            float result = Vector3::Distance(base, extension);
+            REQUIRE(result == expected);
+        }
+
+        SECTION("From mixed negative positive")
+        {
+            Vector3 base = {2.5412f, -4.4, 214123.4f};
+            Vector3 extension = {4.22f, -5.99f, 4142142.57f};
+
+            float a = extension.X() - base.X();
+            float b = extension.Y() - base.Y();
+            float c = extension.Z() - base.Z();
+            float expected = std::sqrt(a * a + b * b + c * c);
+
+            float result = Vector3::Distance(base, extension);
+            REQUIRE(result == expected);
+        }
+    }
+
+    // not implemented yet
 //    SECTION("Rotate")
 //    {
 //        Vector3 vec(1, 0);

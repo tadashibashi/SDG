@@ -24,17 +24,19 @@ namespace SDG
         [[nodiscard]]
         T Height() const { return h; }
 
-        void X(T pX) { x = pX; }
-        void Y(T pY) { y = pY; }
-        void Width(T pW) { w = pW; }
-        void Height(T pH) { h = pH; }
+        Rect_ &X(T pX) { x = pX; return *this; }
+        Rect_ &Y(T pY) { y = pY; return *this; }
+        Rect_ &Width(T pW) { w = pW; return *this; }
+        Rect_ &Height(T pH) { h = pH; return *this; }
 
-        void Set(T pX, T pY, T pW, T pH) noexcept
+        Rect_ &Set(T pX, T pY, T pW, T pH)
         {
             x = pX;
             y = pY;
             w = pW;
             h = pH;
+
+            return *this;
         }
 
         [[nodiscard]]
@@ -83,7 +85,7 @@ namespace SDG
         bool operator==(const Rect_ &other)
         {
             return (x == other.x && y == other.y &&
-                    w == other.w && h == other.y);
+                    w == other.w && h == other.h);
         }
 
         bool operator!=(const Rect_ &other)

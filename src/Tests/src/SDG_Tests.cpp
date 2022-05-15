@@ -7,8 +7,8 @@
 #include "SDG_Tests.h"
 #include <cmath>
 
-int
-main(int argc, char *argv[])
+// Keep main with this signature for Windows SDL2main
+int main(int argc, char *argv[])
 {
     Catch::Session().run();
     return 0;

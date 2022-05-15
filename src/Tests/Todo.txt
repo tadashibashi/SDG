@@ -1,7 +1,6 @@
 Tests todo:
 
 - Tweens
-- Vector3
 - FRectangle
 - Graphics
     - RenderTarget
@@ -22,7 +21,7 @@ x Exceptions
     - Keyboard
     - Mouse
 x Math
-x Vector2
+x Vector2/3
 x Rand
 x Delegate
 x Exceptions (more to come)

@@ -1,11 +1,9 @@
 /* ============================================================================
- *  File.hpp
+ *  File.h
  *  SDG_Engine
  *
  * ========================================================================= */
 #pragma once
-#ifndef SDG_File_h
-#define SDG_File_h
 #include <SDG/FileSys/Path.h>
 
 namespace SDG::FileSys
@@ -67,5 +65,3 @@ private:
 };
 
 }
-
-#endif /* SDG_File_h */

@@ -5,6 +5,7 @@
  * ===========================================================================*/
 #include <catch2/catch_session.hpp>
 #include "SDG_Tests.h"
+#include <cmath>
 
 int
 main(int argc, char *argv[])
@@ -14,13 +15,13 @@ main(int argc, char *argv[])
 }
 
 double
-SDG::Round(double d)
+SDG::Tests::Round(double d)
 {
     return std::round(d * 1000000.0) / 1000000.0;
 }
 
 float
-SDG::RoundF(float f)
+SDG::Tests::RoundF(float f)
 {
     return std::round(f * 1000000.f) / 1000000.f;
 }

@@ -1,7 +1,3 @@
-//
-// Created by Aaron Ishibashi on 4/29/22.
-//
-
 #include "Window.h"
 #include "RendererType.h"
 #include "RenderTarget.h"
@@ -15,6 +11,7 @@
 #undef GetWindow
 #endif
 
+/// Helper to retrieve underlying SDL_Window * from GPU_Target * for this impl file.
 #define GetWindow(target) SDL_GetWindowFromID(target.Target().Get()->context->windowID)
 
 namespace SDG
@@ -55,7 +52,7 @@ namespace SDG
             return false;
         }
 
-
+// TTF_WasInit is not available in Emscripten's version of SDL_TTF
 //        if (!TTF_WasInit())
 //        {
             if (TTF_Init() != 0)

@@ -6,19 +6,19 @@ TEST_CASE("NullReferenceException tests", "[NullReferenceException]")
     SECTION("Default constructor message")
     {
         NullReferenceException e;
-        REQUIRE(strcmp(e.what(), "Null reference error.") == 0);
+        REQUIRE(strcmp(e.what(), "NullReferenceException") == 0);
     }
 
     SECTION("string constructor message: empty string")
     {
         NullReferenceException e("");
-        REQUIRE(strcmp(e.what(), "Null reference error.") == 0);
+        REQUIRE(strcmp(e.what(), "NullReferenceException") == 0);
     }
 
     SECTION("string constructor message: class name string")
     {
         NullReferenceException e("App");
-        REQUIRE(strcmp(e.what(), "Null reference error with type \"App\"") == 0);
+        REQUIRE(strcmp(e.what(), "NullReferenceException with type \"App\"") == 0);
     }
 
     SECTION("Can be thrown and received by class name")
@@ -220,6 +220,61 @@ TEST_CASE("XMLReaderException tests", "[XMLReaderException]")
         bool wasCaught = false;
         try {
             throw XMLReaderException ("parsing file string", 15);
+        }
+        catch (const std::exception &e)
+        {
+            wasCaught = true;
+        }
+
+        REQUIRE(wasCaught);
+    }
+}
+
+TEST_CASE("OutOfRangeException tests", "[OutOfRangeException]")
+{
+    SECTION("Constructor")
+    {
+        OutOfRangeException e(10, "array out of bounds, max value is 4");
+        REQUIRE(strcmp(e.what(), "Out-of-range error with value 10: "
+                                 "array out of bounds, max value is 4") == 0);
+    }
+
+    SECTION("Can be thrown and received by class name")
+    {
+        bool wasCaught = false;
+        try
+        {
+            throw OutOfRangeException(10, "array out of bounds, max value is 4");
+        }
+        catch (const OutOfRangeException &e)
+        {
+            wasCaught = true;
+        }
+
+        REQUIRE(wasCaught);
+    }
+
+    SECTION("Can be thrown and received by Exception base class")
+    {
+        bool wasCaught = false;
+        try
+        {
+            throw OutOfRangeException(10, "array out of bounds, max value is 4");
+        }
+        catch (const Exception &e)
+        {
+            wasCaught = true;
+        }
+
+        REQUIRE(wasCaught);
+    }
+
+    SECTION("Can be thrown and received by std::exception base class")
+    {
+        bool wasCaught = false;
+        try
+        {
+            throw OutOfRangeException(10, "array out of bounds, max value is 4");
         }
         catch (const std::exception &e)
         {

@@ -1,6 +1,9 @@
 #pragma once
 #include <cmath>
 #include <string>
+#include <ostream>
+#include <SDG/Exceptions/InvalidArgumentException.h>
+#include <SDG/Exceptions/OutOfRangeException.h>
 
 namespace SDG
 {
@@ -16,12 +19,22 @@ namespace SDG
         T X() const { return x; }
         T Y() const { return y; }
         T Z() const { return z; }
-        void X(T pX) { x = pX; }
-        void Y(T pY) { x = pY; }
-        void Z(T pZ) { x = pZ; }
+        Vec3_ &X(T pX) { x = pX; return *this; }
+        Vec3_ &Y(T pY) { y = pY; return *this; }
+        Vec3_ &Z(T pZ) { z = pZ; return *this; }
+
+        Vec3_ &Set(T pX, T pY, T pZ)
+        {
+            x = pX;
+            y = pY;
+            z = pZ;
+            return *this;
+        }
 
         T &operator[](int i)
         {
+            if (i < 0 || i > 2)
+                throw OutOfRangeException(i, "Vector3 indexer must be 0, 1, or 2");
             return *(&x + i);
         }
 
@@ -45,13 +58,13 @@ namespace SDG
         }
 
         // Distance from zero.
-        double Length()
+        [[nodiscard]] double Length() const
         {
             return std::sqrt(x * x + y * y + z * z);
         }
 
         // Only applicable if template type is a decimal/floating-point type.
-        void Normalize()
+        Vec3_ &Normalize()
         {
             double length = this->Length();
             if (length != 0)
@@ -60,6 +73,8 @@ namespace SDG
                 y /= length;
                 z /= length;
             }
+
+            return *this;
         }
 
         template <typename U>
@@ -92,20 +107,23 @@ namespace SDG
         template <typename U>
         Vec3_ &operator/=(const Vec3_<U> &other)
         {
+            if (other.X() == 0 || other.Y() == 0 || other.Z() == 0)
+                throw InvalidArgumentException("Vec3_::operator/=(const Vec3_<U> other)",
+                                           "other", "results in division by zero");
             x /= other.X();
             y /= other.Y();
             z /= other.Z();
             return *this;
         }
 
-        bool operator==(const Vec3_ &other) const
+        [[nodiscard]] bool operator==(const Vec3_ &other) const
         {
             return (x == other.X() &&
                     y == other.Y() &&
                     z == other.Z());
         }
 
-        bool operator!=(const Vec3_ &other) const
+        [[nodiscard]] bool operator!=(const Vec3_ &other) const
         {
             return !(*this == other);
         }
@@ -124,6 +142,9 @@ namespace SDG
         Vec3_ &operator/=(const U scalar)
         {
             static_assert(std::is_arithmetic_v<U>, "Scalar type must be arithmetic");
+            if (scalar == 0)
+                throw InvalidArgumentException("Vec3_::operator/=(const U scalar)",
+                                               "scalar", "results in division by zero");
             x /= scalar;
             y /= scalar;
             z /= scalar;
@@ -131,7 +152,7 @@ namespace SDG
         }
 
         template <typename U>
-        explicit operator Vec3_<U>()
+        [[nodiscard]] explicit operator Vec3_<U>()
         {
             static_assert(std::is_arithmetic_v<U> && std::is_convertible_v<T, U>, "Vec3_ type mismatch");
             return Vec3_<U>(
@@ -142,41 +163,48 @@ namespace SDG
     };
 
     template <typename T, typename U>
-    Vec3_<T> operator+(Vec3_<T> a, Vec3_<U> b)
+    [[nodiscard]] Vec3_<T> operator+(Vec3_<T> a, Vec3_<U> b)
     {
-        return a += b;
+        return Vec3_<T>(a) += b;
     }
 
     template <typename T, typename U>
-    Vec3_<T> operator-(const Vec3_<T> a, const Vec3_<U> b)
+    [[nodiscard]] Vec3_<T> operator-(const Vec3_<T> a, const Vec3_<U> b)
     {
-        return a -= b;
+        return Vec3_<T>(a) -= b;
     }
 
     template <typename T, typename U>
-    Vec3_<T> operator*(const Vec3_<T> a, const Vec3_<U> b)
+    [[nodiscard]] Vec3_<T> operator*(const Vec3_<T> a, const Vec3_<U> b)
     {
-        return a *= b;
+        return Vec3_<T>(a) *= b;
     }
 
     template <typename T, typename U>
-    Vec3_<T> operator/(const Vec3_<T> a, const Vec3_<U> b)
+    [[nodiscard]] Vec3_<T> operator/(const Vec3_<T> a, const Vec3_<U> b)
     {
-        return a /= b;
+        return Vec3_<T>(a) /= b;
     }
 
     template <typename T, typename U>
-    Vec3_<T> operator/(const Vec3_<T> v, U scalar)
+    [[nodiscard]] Vec3_<T> operator/(const Vec3_<T> v, U scalar)
     {
         static_assert(std::is_arithmetic_v<U>, "Scalar type must be arithmetic");
-        return v /= scalar;
+        return Vec3_<T>(v) /= scalar;
     }
 
     template <typename T, typename U>
-    Vec3_<T> operator*(const Vec3_<T> v, U scalar)
+    [[nodiscard]] Vec3_<T> operator*(const Vec3_<T> v, U scalar)
     {
         static_assert(std::is_arithmetic_v<U>, "Scalar type must be arithmetic");
-        return v *= scalar;
+        return Vec3_<T>(v) *= scalar;
+    }
+
+    template <typename T>
+    std::ostream &operator << (std::ostream &os, const Vec3_<T> v)
+    {
+        os << v.String();
+        return os;
     }
 
     typedef Vec3_<float> Vector3;

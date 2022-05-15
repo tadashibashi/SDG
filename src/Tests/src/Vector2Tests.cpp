@@ -7,7 +7,7 @@
 #include <SDG/Math/Vector2.h>
 #include <sstream>
 
-Vector2 ParseString(const std::string &str)
+static Vector2 ParseString(const std::string &str)
 {
     size_t commaPos = str.find_first_of(',');
     size_t braceOpen = str.find_first_of('{');

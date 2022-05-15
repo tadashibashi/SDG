@@ -5,7 +5,7 @@ Tests todo:
 - Graphics
     - RenderTarget
     - Camera2D
-    - Color
+    x Color
     - Font
     - Shader
     - SpriteBatch

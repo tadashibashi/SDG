@@ -97,7 +97,7 @@ namespace SDG
     // ========= Getters ======================================================
 
     bool
-    Texture2D::WasLoaded() const
+    Texture2D::IsLoaded() const
     {
         return static_cast<bool>(impl->image);
     }
@@ -105,14 +105,14 @@ namespace SDG
     Ref<GPU_Image>
     Texture2D::Image() const
     {
-        SDG_Assert(WasLoaded());
+        SDG_Assert(IsLoaded());
         return Ref{impl->image};
     }
 
     const Path &
     Texture2D::Filepath() const
     {
-        SDG_Assert(WasLoaded());
+        SDG_Assert(IsLoaded());
         return impl->path;
     }
 
@@ -124,7 +124,7 @@ namespace SDG
 
     Point Texture2D::Size() const
     {
-        SDG_Assert(WasLoaded());
+        SDG_Assert(IsLoaded());
         return {impl->image->base_w, impl->image->base_h};
     }
 }

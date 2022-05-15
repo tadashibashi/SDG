@@ -3,9 +3,10 @@
 //
 #pragma once
 #include <string>
+
+#include <SDG/FileSys/Path.h>
 #include <SDG/Math/Vector2.h>
 #include <SDG/Ref.h>
-#include <SDG/FileSys/Path.h>
 
 // Prevent MSVC macro clash
 #ifdef LoadImage
@@ -17,7 +18,9 @@ class GPU_Target;
 
 namespace SDG
 {
-    /// Wrapper around a GPU_Image. Meant to be copied.
+    /// Texture2D class automatically frees texture when this object goes out
+    /// of scope. Please be aware of this, as the object will become
+    /// invalidated if the destructor is called.
     class Texture2D
     {
         struct Impl;
@@ -38,7 +41,8 @@ namespace SDG
         /// Gets the dimensions of the texture in pixels
         Point Size() const;
 
-        bool WasLoaded() const;
+        /// Checks whether there is an internal texture loaded.
+        bool IsLoaded() const;
 
         /// Gets the filepath this texture was loaded from.
         /// If this is text rendered from a font, it will contain the font's filepath.

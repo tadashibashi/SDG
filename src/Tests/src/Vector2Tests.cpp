@@ -5,6 +5,7 @@
  * ===========================================================================*/
 #include "SDG_Tests.h"
 #include <SDG/Math/Vector2.h>
+#include <sstream>
 
 Vector2 ParseString(const std::string &str)
 {
@@ -19,7 +20,8 @@ Vector2 ParseString(const std::string &str)
     }
     else
     {
-        return {};
+        // failed to parse string, it was invalid!
+        throw std::invalid_argument(str.c_str());
     }
 }
 
@@ -65,6 +67,33 @@ TEST_CASE("Vector2 tests", "[Vector2]")
             Vector2 zero = Vector2::Zero();
             REQUIRE(zero.X() == 0);
             REQUIRE(zero.Y() == 0);
+        }
+    }
+
+    SECTION("Setters and Getters")
+    {
+        SECTION("X and Y")
+        {
+            Vector2 v;
+            v.X(10).Y(10);
+            REQUIRE(v.X() == 10);
+            REQUIRE(v.Y() == 10);
+        }
+        SECTION("W and H") // {x, y} unioned with {w, h}
+        {
+            Vector2 v;
+            v.W(10).H(10);
+            REQUIRE(v.X() == 10);
+            REQUIRE(v.Y() == 10);
+            REQUIRE(v.W() == 10); // union produces same result
+            REQUIRE(v.H() == 10);
+        }
+        SECTION("Set")
+        {
+            Vector2 v;
+            v.Set(10, 10);
+            REQUIRE(v.X() == 10);
+            REQUIRE(v.Y() == 10);
         }
     }
 
@@ -166,7 +195,199 @@ TEST_CASE("Vector2 tests", "[Vector2]")
         REQUIRE(Vector2(0, 124) == ParseString(Vector2(0, 124).String()));
     }
 
+    SECTION("operator << (ostream &)")
+    {
+        std::stringstream ss;
+        ss << Vector2(2235.4124f, -421478.47821f);
 
+        REQUIRE(Vector2(2235.4124f, -421478.47821f) == ParseString(ss.str()));
+        ss.str(std::string()); // reset the stream
 
+        ss << Vector2::Zero();
 
+        REQUIRE(Vector2::Zero() == ParseString(ss.str()));
+        ss.str(std::string());
+
+        ss << Vector2::One();
+
+        REQUIRE(Vector2::One() == ParseString(ss.str()));
+    }
+
+    SECTION("operator == (const Vector2 &)")
+    {
+        REQUIRE(Vector2::One() == Vector2(1.f, 1.f));
+        REQUIRE(Vector2(245.f, -123.f) == Vector2(245.f, -123.f));
+        REQUIRE(!(Vector2(-456.f, 51.f) == Vector2(14.f, -1247890.f)));
+        REQUIRE(Vector2(-245.123f, -123.321f) == Vector2(-245.123f, -123.321f));
+        REQUIRE(Vector2(123.123f, 123.123f) == Vector2(123.123f, 123.123f));
+    }
+
+    SECTION("operator != (const Vector2 &)")
+    {
+        REQUIRE(Vector2::One() != Vector2(10.f, 10.f));
+        REQUIRE(Vector2(245.f, 123.f) != Vector2(245.f, -123.f));
+        REQUIRE(!(Vector2(-456.f, 51.f) != Vector2(-456.f, 51.f)));
+        REQUIRE(Vector2(245.123f, 123.321f) != Vector2(-245.123f, -123.321f));
+        REQUIRE(Vector2(123.123f, 123.123f) != Vector2(123.123f, 123.1233123f));
+    }
+
+    SECTION("operator + (const Vector2 &)")
+    {
+        REQUIRE(Vector2::One() + Vector2::One() == Vector2(2.f, 2.f));
+        REQUIRE(Vector2::One() + Vector2(-1.f, -1.f) == Vector2::Zero());
+        REQUIRE(Vector2(123.f, -555.f) + Vector2(-10.f, -10.f) == Vector2(113.f, -565.f));
+        REQUIRE(Vector2(44.f, 44.f) + Vector2(22.f, -22.f) == Vector2(66.f, 22.f));
+    }
+
+    SECTION("operator += (const Vector2 &)")
+    {
+        REQUIRE((Vector2::One() += Vector2::One()) == Vector2(2.f, 2.f));
+        REQUIRE((Vector2::One() += Vector2(-1.f, -1.f)) == Vector2::Zero());
+        REQUIRE((Vector2(123.f, -555.f) += Vector2(-10.f, -10.f)) == Vector2(113.f, -565.f));
+        REQUIRE((Vector2(44.f, 44.f) += Vector2(22.f, -22.f)) == Vector2(66.f, 22.f));
+    }
+
+    SECTION("operator - (const Vector2 &)")
+    {
+        REQUIRE(Vector2::One() - Vector2::One() == Vector2::Zero());
+        REQUIRE(Vector2(10, 10) - Vector2(9, 9) == Vector2::One());
+        REQUIRE(Vector2(-10, -10) - Vector2(-10, -10) == Vector2::Zero());
+        REQUIRE(Vector2(44.f, 44.f) - Vector2(-22.f, 22.f) == Vector2(66.f, 22.f));
+    }
+
+    SECTION("operator -= (const Vector2 &)")
+    {
+        REQUIRE((Vector2::One() -= Vector2::One()) == Vector2::Zero());
+        REQUIRE((Vector2(10, 10) -= Vector2(9, 9)) == Vector2::One());
+        REQUIRE((Vector2(-10, -10) -= Vector2(-10, -10)) == Vector2::Zero());
+        REQUIRE((Vector2(44.f, 44.f) -= Vector2(-22.f, 22.f)) == Vector2(66.f, 22.f));
+    }
+
+    SECTION("operator * (float)")
+    {
+        REQUIRE(Vector2(123.f, 123.f) * 0 == Vector2::Zero());
+        REQUIRE(Vector2(14.f, 14.5f) * 1 == Vector2(14.f, 14.5f));
+        REQUIRE(Vector2(2.f, 2.f) * 1.5f == Vector2(3.f, 3.f));
+        REQUIRE(Vector2(4.f, 4.f) * -10.f == Vector2(-40.f, -40.f));
+    }
+
+    SECTION("operator *= (float)")
+    {
+        REQUIRE((Vector2(123.f, 123.f) *= 0) == Vector2::Zero());
+        REQUIRE((Vector2(14.f, 14.5f) *= 1) == Vector2(14.f, 14.5f));
+        REQUIRE((Vector2(2.f, 2.f) *= 1.5f) == Vector2(3.f, 3.f));
+        REQUIRE((Vector2(4.f, 4.f) *= -10.f) == Vector2(-40.f, -40.f));
+    }
+
+    SECTION("operator / (float)")
+    {
+        SECTION("Divide by zero throws an error")
+        {
+            bool didThrow;
+            try {
+                Vector2 result = Vector2(123.f, 123.f) / 0;
+                didThrow = false;
+            }
+            catch(const InvalidArgumentException &e)
+            {
+                didThrow = true;
+            }
+            REQUIRE(didThrow);
+        }
+
+        SECTION("Typical division")
+        {
+            REQUIRE(Vector2(14.f, 14.5f) / 1 == Vector2(14.f, 14.5f));
+            REQUIRE(Vector2(2.f, 2.f) / 2.f == Vector2::One());
+            REQUIRE(Vector2(4.f, 4.f) / -10.f == Vector2(-.4f, -.4f));
+        }
+    }
+
+    SECTION("operator /= (float)")
+    {
+        SECTION("Divide by zero throws an error")
+        {
+            bool didThrow;
+            try {
+                Vector2 result = Vector2(123.f, 123.f) /= Vector2::Zero();
+                didThrow = false;
+            }
+            catch(const InvalidArgumentException &e)
+            {
+                didThrow = true;
+            }
+            REQUIRE(didThrow);
+        }
+
+        SECTION("Typical division")
+        {
+            REQUIRE((Vector2(14.f, 14.5f) /= 1) == Vector2(14.f, 14.5f));
+            REQUIRE((Vector2(2.f, 2.f) /= 2.f) == Vector2::One());
+            REQUIRE((Vector2(4.f, 4.f) /= -10.f) == Vector2(-.4f, -.4f));
+        }
+    }
+
+    SECTION("operator * (const Vector2 &)")
+    {
+        REQUIRE(Vector2(123.f, 123.f) * Vector2::Zero() == Vector2::Zero());
+        REQUIRE(Vector2(14.f, 14.5f) * Vector2::One() == Vector2(14.f, 14.5f));
+        REQUIRE(Vector2(2.f, 2.f) * Vector2(1.5f, 1.5f) == Vector2(3.f, 3.f));
+        REQUIRE(Vector2(4.f, 4.f) * Vector2(-10.f, -10.f) == Vector2(-40.f, -40.f));
+    }
+
+    SECTION("operator *= (const Vector2 &)")
+    {
+        REQUIRE((Vector2(123.f, 123.f) *= Vector2::Zero()) == Vector2::Zero());
+        REQUIRE((Vector2(14.f, 14.5f) *= Vector2::One()) == Vector2(14.f, 14.5f));
+        REQUIRE((Vector2(2.f, 2.f) *= Vector2(1.5f, 1.5f)) == Vector2(3.f, 3.f));
+        REQUIRE((Vector2(4.f, 4.f) *= Vector2(-10.f, -10.f)) == Vector2(-40.f, -40.f));
+    }
+
+    SECTION("operator / (const Vector2 &)")
+    {
+        SECTION("Division by zero throws an error")
+        {
+            bool didThrow;
+            try {
+                Vector2 result = Vector2(123.f, 123.f) /= Vector2::Zero();
+                didThrow = false;
+            }
+            catch(const InvalidArgumentException &e)
+            {
+                didThrow = true;
+            }
+            REQUIRE(didThrow);
+        }
+
+        SECTION("Typical division")
+        {
+            REQUIRE(Vector2(14.f, 14.5f) / Vector2::One() == Vector2(14.f, 14.5f));
+            REQUIRE(Vector2(2.f, 2.f) / (Vector2::One() * 2.f) == Vector2::One());
+            REQUIRE(Vector2(4.f, 4.f) / Vector2(-10.f, -10.f) == Vector2(-.4f, -.4f));
+        }
+    }
+
+    SECTION("operator /= (const Vector2 &)")
+    {
+        SECTION("Division by zero throws an error")
+        {
+            bool didThrow;
+            try {
+                Vector2 result = Vector2(123.f, 123.f) /= 0;
+                didThrow = false;
+            }
+            catch(const InvalidArgumentException &e)
+            {
+                didThrow = true;
+            }
+            REQUIRE(didThrow);
+        }
+
+        SECTION("Typical division")
+        {
+            REQUIRE((Vector2(14.f, 14.5f) /= Vector2::One()) == Vector2(14.f, 14.5f));
+            REQUIRE((Vector2(2.f, 2.f) /= (Vector2::One() * 2.f)) == Vector2::One());
+            REQUIRE((Vector2(4.f, 4.f) /= Vector2(-10.f, -10.f)) == Vector2(-.4f, -.4f));
+        }
+    }
 }

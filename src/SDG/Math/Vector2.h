@@ -3,6 +3,7 @@
 #include <cmath>
 #include <string>
 #include <ostream>
+#include <SDG/Exceptions/InvalidArgumentException.h>
 #include "MathConstants.h"
 
 namespace SDG
@@ -32,10 +33,10 @@ namespace SDG
         T W() const { return w; }
         T H() const { return h; }
 
-        void X(T pX) { x = pX; }
-        void Y(T pY) { y = pY; }
-        void W(T pW) { w = pW; }
-        void H(T pH) { h = pH; }
+        Vec2_ &X(T pX) { x = pX; return *this; }
+        Vec2_ &Y(T pY) { y = pY; return *this; }
+        Vec2_ &W(T pW) { w = pW; return *this; }
+        Vec2_ &H(T pH) { h = pH; return *this; }
 
         Vec2_ &Set(T pX, T pY)
         {
@@ -119,6 +120,10 @@ namespace SDG
         template <typename U>
         Vec2_ &operator/=(const Vec2_<U> &other)
         {
+            if (other.X() == 0 || other.Y() == 0)
+                throw InvalidArgumentException(
+                    "Vec2_::operator/=(Vec2_ other)",
+                    "other", "division by zero");
             x /= other.X();
             y /= other.Y();
             return *this;
@@ -135,17 +140,20 @@ namespace SDG
         template <typename U>
         Vec2_ &operator/=(const U scalar)
         {
+            if (scalar == 0)
+                throw InvalidArgumentException("Vec2_::operator/=(U scalar)",
+                                               "scalar", "division by zero");
             x /= scalar;
             y /= scalar;
             return *this;
         }
 
-        bool operator==(const Vec2_ &other) const
+        [[nodiscard]] bool operator==(const Vec2_ &other) const
         {
             return (x == other.X() && y == other.Y());
         }
 
-        bool operator!=(const Vec2_ &other) const
+        [[nodiscard]] bool operator!=(const Vec2_ &other) const
         {
             return !operator==(other);
         }
@@ -155,7 +163,8 @@ namespace SDG
         {
             static_assert(
                     std::is_convertible_v<T, U>,
-                    "Type mismatch. Vec2_ operand types T and U must have convertible types");
+                    "Type mismatch. Vec2_ operand types T and U must have "
+                    "convertible types");
             return Vec2_<U>(
                     static_cast<U>(x),
                     static_cast<U>(y));
@@ -165,52 +174,60 @@ namespace SDG
     template <typename T>
     std::ostream &operator<<(std::ostream &out, const Vec2_<T> &v)
     {
-        out << "{" << std::to_string(v.X()) << ", " << std::to_string(v.Y()) << "}";
+        out << "{" << std::to_string(v.X()) << ", " <<
+            std::to_string(v.Y()) << "}";
         return out;
     }
 
     template <typename T, typename U>
-    Vec2_<T> operator+(Vec2_<T> a, Vec2_<U> b)
+    [[nodiscard]] Vec2_<T> operator+(Vec2_<T> a, Vec2_<U> b)
     {
         Vec2_<T> temp(a);
         return temp += b;
     }
 
     template <typename T, typename U>
-    Vec2_<T> operator-(const Vec2_<T> a, const Vec2_<U> b)
+    [[nodiscard]] Vec2_<T> operator-(const Vec2_<T> a, const Vec2_<U> b)
     {
         Vec2_<T> temp(a);
         return temp -= b;
     }
 
     template <typename T, typename U>
-    Vec2_<T> operator*(const Vec2_<T> a, const Vec2_<U> b)
+    [[nodiscard]] Vec2_<T> operator*(const Vec2_<T> a, const Vec2_<U> b)
     {
         Vec2_<T> temp(a);
         return temp *= b;
     }
 
+    /// Divides a Vec2_ by a Vec2_.
+    /// Throws SDG::InvalidArgumentException if any division by zero.
     template <typename T, typename U>
-    Vec2_<T> operator/(const Vec2_<T> a, const Vec2_<U> b)
+    [[nodiscard]] Vec2_<T> operator/(const Vec2_<T> a, const Vec2_<U> b)
     {
         Vec2_<T> temp(a);
         return temp /= b;
     }
 
+    /// Divides a Vec2_ by a scalar.
+    /// Throws SDG::InvalidArgumentException if division by zero.
     template <typename T, typename U>
-    Vec2_<T> operator/(const Vec2_<T> v, U scalar)
+    [[nodiscard]] Vec2_<T> operator/(const Vec2_<T> v, U scalar)
     {
-        static_assert(std::is_arithmetic_v<U>, "Right scalar operand must be an arithmetic type.");
+        static_assert(std::is_arithmetic_v<U>,
+                "Right scalar operand must be an arithmetic type.");
+
         Vec2_<T> temp(v);
-        return temp /= scalar;
+        return (temp /= scalar);
     }
 
     template <typename T, typename U>
-    Vec2_<T> operator*(const Vec2_<T> v, U scalar)
+    [[nodiscard]] Vec2_<T> operator*(const Vec2_<T> v, U scalar)
     {
-        static_assert(std::is_arithmetic_v<U>, "Right scalar operand must be an arithmetic type.");
+        static_assert(std::is_arithmetic_v<U>,
+                "Right scalar operand must be an arithmetic type.");
         Vec2_<T> temp(v);
-        return temp *= scalar;
+        return (temp *= scalar);
     }
 
     typedef Vec2_<float> Vector2;

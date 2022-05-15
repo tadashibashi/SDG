@@ -8,7 +8,6 @@
  *
  */
 #pragma once
-#include <SDG/FileSys/FileSys.h>
 #include <iosfwd>
 #include <string>
 
@@ -44,7 +43,7 @@ namespace SDG
         Path(const std::string &pSubpath, BaseDir base = BaseDir::None);
 
         /// Get the subpath portion, not including base path
-        [[nodiscard]] std::string Subpath() const { return subpath; }
+        [[nodiscard]] const std::string &Subpath() const { return subpath; }
 
         /// Checks whether the Path has an extension.
         [[nodiscard]] bool HasExtension() const;

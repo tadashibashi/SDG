@@ -1,5 +1,4 @@
 #include "Texture2D.h"
-#include <SDG/FileSys/FileSys.h>
 #include <SDG/FileSys/File.h>
 #include <SDG/Debug.hpp>
 #include <SDL_gpu.h>
@@ -23,7 +22,7 @@ namespace SDG
         GPU_Image *image;
 
         // Sub-image data, to translate relative to the image
-        std::string path;
+        Path path;
 
         void Free()
         {
@@ -31,7 +30,7 @@ namespace SDG
             {
                 GPU_FreeImage(image);
                 image = nullptr;
-                path = "";
+                path = Path();
             }
         }
     };
@@ -42,7 +41,7 @@ namespace SDG
 
     }
 
-    Texture2D::Texture2D(const string &path) : impl(new Impl)
+    Texture2D::Texture2D(const Path &path) : impl(new Impl)
     {
         LoadImage(path);
     }
@@ -61,7 +60,7 @@ namespace SDG
 
 
     bool
-    Texture2D::LoadImage(const std::string &path)
+    Texture2D::LoadImage(const Path &path)
     {
         // Make sure the texture is clean before loading
         Free();
@@ -83,7 +82,7 @@ namespace SDG
         GPU_Image *tempImage = GPU_LoadImage_RW(io, true);
         if (!tempImage)
         {
-            SDG_Err("problem loading image file ({}): {}", path,
+            SDG_Err("problem loading image file ({}): {}", path.String(),
                     GPU_PopErrorCode().details);
             return false;
         }
@@ -103,21 +102,21 @@ namespace SDG
         return static_cast<bool>(impl->image);
     }
 
-    GPU_Image *
+    Ref<GPU_Image>
     Texture2D::Image() const
     {
         SDG_Assert(WasLoaded());
-        return impl->image;
+        return Ref{impl->image};
     }
 
-    std::string
-    Texture2D::Path() const
+    const Path &
+    Texture2D::Filepath() const
     {
         SDG_Assert(WasLoaded());
         return impl->path;
     }
 
-    Texture2D::Texture2D(GPU_Image *image, const std::string &path)
+    Texture2D::Texture2D(GPU_Image *image, const Path &path)
     {
         impl->image = image;
         impl->path = path;

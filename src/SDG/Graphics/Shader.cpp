@@ -174,6 +174,6 @@ SDG::Shader::Deactivate()
 SDG::Shader &
 SDG::Shader::SetImage(const std::string &varId, Texture2D texture)
 {
-    GPU_SetShaderImage(texture.Image(), GetVarLocation(varId), 1);
+    GPU_SetShaderImage(texture.Image().Get(), GetVarLocation(varId), 1);
     return *this;
 }

@@ -1,6 +1,6 @@
 #include "AssetMgr.h"
 #include <SDL_gpu.h>
-#include "SDG/FileSys/FileSys.h"
+#include <SDG/Debug/Assert.h>
 
 SDG::AssetMgr::~AssetMgr()
 {
@@ -25,33 +25,34 @@ SDG::AssetMgr::UnloadAll()
     UnloadTextures();
 }
 
-const SDG::Texture2D *
-SDG::AssetMgr::LoadTexture(const std::string &path)
+SDG::CRef<SDG::Texture2D>
+SDG::AssetMgr::LoadTexture(const Path &path)
 {
-    auto it = textures.find(path);
+    std::string pathStr = path.String();
+    auto it = textures.find(pathStr);
 
     if (it != textures.end())
-        return it->second;
+        return CRef{it->second};
     else
     {
         auto tex = new Texture2D;
         if (tex->LoadImage(path))
         {
-            textures[path] = tex;
-            return tex;
+            textures[pathStr] = tex;
+            return CRef{tex};
         }
         else
         {
             delete tex;
-            return nullptr;
+            return CRef<Texture2D>{}; // nullptr
         }
     }
 }
 
 void 
-SDG::AssetMgr::UnloadTexture(const std::string &path)
+SDG::AssetMgr::UnloadTexture(const Path &path)
 {
-    auto it = textures.find(path);
+    auto it = textures.find(path.String());
     if (it != textures.end())
     {
         textures.erase(it);
@@ -60,7 +61,8 @@ SDG::AssetMgr::UnloadTexture(const std::string &path)
 }
 
 void 
-SDG::AssetMgr::UnloadTexture(Texture2D *texture)
+SDG::AssetMgr::UnloadTexture(Ref<Texture2D> texture)
 {
-    UnloadTexture(texture->Path());
+    SDG_Assert(texture);
+    UnloadTexture(texture->Filepath());
 }

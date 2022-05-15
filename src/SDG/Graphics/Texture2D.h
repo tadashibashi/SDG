@@ -4,6 +4,8 @@
 #pragma once
 #include <string>
 #include <SDG/Math/Vector2.h>
+#include <SDG/Ref.h>
+#include <SDG/FileSys/Path.h>
 
 // Prevent MSVC macro clash
 #ifdef LoadImage
@@ -21,25 +23,26 @@ namespace SDG
         struct Impl;
     public:
         Texture2D();
-        explicit Texture2D(const std::string &path);
-        Texture2D(GPU_Image *image, const std::string &path);
+        explicit Texture2D(const Path &path);
+        Texture2D(GPU_Image *image, const Path &path);
         ~Texture2D();
 
         /// Gets the inner GPU_Image object ptr.
-        GPU_Image *Image() const;
+        Ref<GPU_Image> Image() const;
 
         /// Load an image into the Texture2D.
         /// @param path
-        bool LoadImage(const std::string &path);
+        bool LoadImage(const Path &path);
         void Free();
 
+        /// Gets the dimensions of the texture in pixels
         Point Size() const;
 
         bool WasLoaded() const;
 
         /// Gets the filepath this texture was loaded from.
         /// If this is text rendered from a font, it will contain the font's filepath.
-        std::string Path() const;
+        const Path &Filepath() const;
         
     private:
         Impl *impl;

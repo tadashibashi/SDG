@@ -319,7 +319,7 @@ namespace SDG
         if (!texture)
             throw NullReferenceException("Texture2D");
 
-        SDL_Surface *surf = GPU_CopySurfaceFromImage(texture->Image());
+        SDL_Surface *surf = GPU_CopySurfaceFromImage(texture->Image().Get());
         if (!surf)
         {
             SDG_Err("Failed to copy SDL_Surface from GPU_Image: {}", GPU_GetErrorString(GPU_PopErrorCode().error));

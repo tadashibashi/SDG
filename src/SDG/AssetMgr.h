@@ -5,7 +5,9 @@
 #pragma once
 #include <string>
 #include <map>
-#include "SDG/Graphics/Texture2D.h"
+#include <SDG/Graphics/Texture2D.h>
+#include <SDG/FileSys/Path.h>
+#include <SDG/Ref.h>
 
 namespace SDG
 {
@@ -20,21 +22,21 @@ namespace SDG
          * @param path
          * @return
          */
-        const Texture2D *LoadTexture(const std::string &path);
+        CRef<Texture2D> LoadTexture(const Path &path);
 
         /**
          * Unloads the Texture2D from memory. Unloaded texture ptr/references are valid for the
          * the lifecycle of the app, but only the inner ptr will be freed and null.
          * @param path
          */
-        void UnloadTexture(const std::string &path);
+        void UnloadTexture(const Path &path);
 
         /**
          * Unloads the Texture2D from memory. Unloaded texture ptr/references are valid for the
          * the lifecycle of the app, but only the inner ptr will be freed and null.
          * @param path
          */
-        void UnloadTexture(Texture2D *texture);
+        void UnloadTexture(Ref<Texture2D> texture);
 
 
         /**

@@ -20,7 +20,7 @@ private:
         // which are initialized by App prior to this function call.
 
         // Temp content
-        kirby = new Texture2D(FileSys::MakePath("assets/textures/kirby.sdgc", FileSys::Base::Root));
+        kirby = new Texture2D(BasePath("assets/textures/kirby.sdgc"));
         shader = new Shader;
         shader->Compile(BasePath("assets/shaders/v1.sdgc"), BasePath("assets/shaders/f1.sdgc"));
         camera.Initialize(Window());

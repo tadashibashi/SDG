@@ -4,6 +4,7 @@
 #pragma once
 #include <string>
 #include <SDG/FileSys/Structs/GameConfig.h>
+#include "Path.h"
 
 using std::string;
 
@@ -11,6 +12,6 @@ namespace SDG
 {
     class XMLReader {
     public:
-        static bool ParseGameConfig(const string &path, GameConfig *config);
+        static bool ParseGameConfig(const SDG::Path &path, GameConfig *config);
     };
 }

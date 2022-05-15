@@ -39,22 +39,6 @@ namespace SDG::FileSys
     [[nodiscard]] string TitleContainer();
 
     /**
-     * Gets a file name portion from a full or relative path.
-     * @param path The file path to perform this function with
-     * @return The filename (including extension)
-     */
-    [[nodiscard]] string ExtractFilename(const string &path);
-
-
-    /**
-     * Gets the extension of a file from a given path.
-     * @param path The path to the file
-     * @return The extension, not including the '.'. A blank string
-     * will be returned if there is no extension.
-     */
-    [[nodiscard]] string GetExtension(const string &path);
-
-    /**
      * Makes a path appended to the executable's root directory.
      * @param path The path to append to the root directory.
      * @return The full appended path

@@ -6,6 +6,7 @@
 #include <vector>
 #include <cstdint>
 #include "Texture2D.h"
+#include <SDG/FileSys/Path.h>
 
 
 namespace SDG
@@ -21,7 +22,7 @@ namespace SDG
         /// EmplaceTarget a vector of floats to a shader uniform value
         Shader &SetUniform(const std::string &varId, std::vector<float> values, int elementsPerValue);
         uint32_t GetVarLocation(const std::string &varId) const;
-        bool Compile(const std::string &vertexPath, const std::string &fragPath);
+        bool Compile(const Path &vertexPath, const Path &fragPath);
         void Close();
         void Activate();
         static void Deactivate();

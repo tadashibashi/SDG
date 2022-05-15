@@ -24,7 +24,7 @@ namespace SDG
         return ticks_;
     }
 
-    double Time::As(Time::Unit unit)
+    double Time::As(Time::Unit unit) const
     {
         switch(unit)
         {

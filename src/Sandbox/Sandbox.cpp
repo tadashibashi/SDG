@@ -22,7 +22,7 @@ private:
         // Temp content
         kirby = new Texture2D(FileSys::MakePath("assets/textures/kirby.sdgc", FileSys::Base::Root));
         shader = new Shader;
-        shader->Compile("assets/shaders/v1.sdgc", "assets/shaders/f1.sdgc");
+        shader->Compile(BasePath("assets/shaders/v1.sdgc"), BasePath("assets/shaders/f1.sdgc"));
         camera.Initialize(Window());
         camera.MakeCurrent();
         return 0;
@@ -38,7 +38,7 @@ private:
 
         if (Input::KeyPressed(Key::Space))
         {
-            SDG_Log("Seconds since game start: {}", Time()->Time() * 0.001f);
+            SDG_Log("Seconds since game start: {}", Time()->As(Time::Unit::Seconds));
         }
 
         if (Input::KeyPressed(Key::S) && Input::KeyPress(Key::V))
@@ -118,7 +118,7 @@ private:
         window->Clear(Color::BlueScreenOfDeath());
 
         shader->Activate();
-        shader->SetUniform("time", (float) Time()->Time());
+        shader->SetUniform("time", (float) Time()->Ticks());
 
         //GPU_BlitScale(kirby->Image(), nullptr, window->InnerWindow().Get(), (float)window->Size().W() / 2,
         //              (window->Size().H()/2) + kirby->Image()->base_h * 0.1f * .5f, 0.1f, 0.1f);

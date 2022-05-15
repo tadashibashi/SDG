@@ -39,7 +39,7 @@ namespace SDG
 
         /// Returns ticks calculated in a specified unit
         /// Time stamped at the last call to Update
-        [[nodiscard]] double As(Unit unit);
+        [[nodiscard]] double As(Unit unit) const;
 
         /// Gets the number of ticks passed during the last Update period.
         /// @param cap optionally set max value to receive. This is

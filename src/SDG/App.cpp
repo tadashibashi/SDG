@@ -48,7 +48,7 @@ SDG::App::Initialize_()
 
     // Get game settings from config file
     try {
-        XMLReader::ParseGameConfig("assets/config.sdgc", &config);
+        XMLReader::ParseGameConfig(BasePath("assets/config.sdgc"), &config);
     }
     catch(const std::exception &e)
     {

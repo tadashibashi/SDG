@@ -44,24 +44,6 @@ SDG::FileSys::MakePath(const string &path, Base root)
     }
 }
 
-
-string
-SDG::FileSys::ExtractFilename(const string &path)
-{
-    auto pos = path.find_last_of('/');
-    return (pos == string::npos) ? path : path.substr(pos + 1);
-}
-
-
-string
-SDG::FileSys::GetExtension(const string &path)
-{
-    string filename = ExtractFilename(path);
-    auto pos = filename.find_last_of('.');
-
-    return (pos == string::npos || pos == 0) ? string() : filename.substr(pos + 1);
-}
-
 void
 SDG::FileSys::Initialize(const string &pAppName, const string &pOrgName)
 {

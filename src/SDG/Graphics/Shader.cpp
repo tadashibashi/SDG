@@ -1,11 +1,6 @@
-//
-// Created by Aaron Ishibashi on 4/13/22.
-//
 #include "Shader.h"
 #include "SDG/Debug.hpp"
 #include "SDG/FileSys/FileSys.h"
-
-#include "SDG/Platform.h"
 #include "SDG/FileSys/File.h"
 #include <SDL_gpu.h>
 
@@ -15,7 +10,7 @@ using namespace SDG::FileSys;
 // This is needed to support particular graphics cards that require this heading data.
 // Code mainly from https://github.com/ryancheung/sdl2-gpu-with-imgui/blob/master/Main.cpp
 static uint32_t
-LoadShader(GPU_ShaderEnum shaderType, const std::string &path)
+LoadShader(GPU_ShaderEnum shaderType, const SDG::Path &path)
 {
     char *source;
     const char *header;
@@ -26,7 +21,7 @@ LoadShader(GPU_ShaderEnum shaderType, const std::string &path)
 
     // Open the shader file
     File file;
-    if (!file.Open(MakePath(path, Base::Root)))
+    if (!file.Open(path))
     {
         SDG_Err("LoadShader file loading error: {}", file.GetError());
         return 0;
@@ -93,19 +88,20 @@ SDG::Shader::GetVarLocation(const std::string &varId) const
 
 
 bool
-SDG::Shader::Compile(const std::string &vertexPath, const std::string &fragPath)
+SDG::Shader::Compile(const Path &vertexPath, const Path &fragPath)
 {
-    uint32_t vertShader = LoadShader(GPU_VERTEX_SHADER, vertexPath.c_str());
+    uint32_t vertShader = LoadShader(GPU_VERTEX_SHADER, vertexPath);
     if (!vertShader)
     {
-        SDG_Err("Failed to load vertex shader ({}) =>\n{}", vertexPath, GPU_GetShaderMessage());
+        SDG_Err("Failed to load vertex shader ({}) =>\n{}", vertexPath.String(),
+                GPU_GetShaderMessage());
         return false;
     }
 
-    uint32_t fragShader = LoadShader(GPU_FRAGMENT_SHADER, fragPath.c_str());
+    uint32_t fragShader = LoadShader(GPU_FRAGMENT_SHADER, fragPath);
     if (!fragShader)
     {
-        SDG_Err("Failed to load fragment shader ({})", fragPath);
+        SDG_Err("Failed to load fragment shader ({})", fragPath.String());
         GPU_FreeShader(vertShader);
         return false;
     }

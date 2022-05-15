@@ -2,12 +2,11 @@
 // Created by Aaron Ishibashi on 4/15/22.
 //
 #include "XMLReader.h"
-#include "SDG/FileSys/FileSys.h"
 #include "File.h"
 
-#include "tinyxml2.h"
-#include "SDG/Debug.hpp"
-#include "SDG/Exceptions/XMLReaderException.h"
+#include <tinyxml2.h>
+#include <SDG/Debug.hpp>
+#include <SDG/Exceptions/XMLReaderException.h>
 
 using namespace tinyxml2;
 
@@ -15,10 +14,10 @@ static void
 CheckResult(int result, const std::string &doing);
 
 static void
-OpenXML(const std::string &path, SDG::FileSys::Base base, XMLDocument *outDoc);
+OpenXML(const SDG::Path &path, XMLDocument *outDoc);
 
 bool
-SDG::XMLReader::ParseGameConfig(const string &path, GameConfig *config)
+SDG::XMLReader::ParseGameConfig(const Path &path, GameConfig *config)
 {
     if (!config)
     {
@@ -31,7 +30,7 @@ SDG::XMLReader::ParseGameConfig(const string &path, GameConfig *config)
     // Retrieve the window element
     XMLDocument doc; XMLElement *root, *win, *app;
     {
-        OpenXML(path, FileSys::Base::Root, &doc);
+        OpenXML(path, &doc);
 
         root = doc.RootElement();
         if (!root)
@@ -90,15 +89,17 @@ CheckResult(int result, const std::string &doing)
 
 
 void
-OpenXML(const std::string &path, SDG::FileSys::Base base, XMLDocument *outDoc)
+OpenXML(const SDG::Path &path, XMLDocument *outDoc)
 {
     SDG::FileSys::File file;
-    file.Open(SDG::FileSys::MakePath(path, base));
+    file.Open(path);
     try {
-        CheckResult(outDoc->Parse(reinterpret_cast<const char *>(file.Data())), "loading file at " + path);
+        CheckResult(outDoc->Parse(reinterpret_cast<const char *>(file.Data())),
+                    "loading file at " + path.String());
     }
     catch(const std::exception &e)
     {
-        SDG_Err("Exception while parsing Xml file ({}): {}", path, e.what());
+        SDG_Err("Exception while parsing Xml file ({}): {}", path.String(),
+                e.what());
     }
 }

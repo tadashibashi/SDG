@@ -1,8 +1,10 @@
-/* =============================================================================
- * Math
+/*!
+ * @file Math.h
+ * @abstract
+ * Contains a group of math helper functions under the SDG::Math namespace.
+ * For pseudo-random number generation, please look at Rand.h
  *
- *
- * ===========================================================================*/
+ */
 #pragma once
 #include "Vector2.h"
 #include "Matrix4x4.h"
@@ -49,7 +51,7 @@ namespace SDG::Math
     inline T TrajectoryX(T degrees, T length)
     {
         static_assert(std::is_floating_point_v<T>, "type T must be a floating point.");
-        return std::cos(DegToRad(degrees)) * length;
+        return std::cos(degrees * RadsPerDeg) * length;
     }
 
     /// Returns the Y value from a projected position.
@@ -59,7 +61,7 @@ namespace SDG::Math
         static_assert(std::is_floating_point_v<T>, "type T must be a floating point.");
 
         // Negative value to match downward y coordinate system
-        return -(std::sin(DegToRad(degrees)) * length);
+        return -(std::sin(degrees * RadsPerDeg) * length);
     }
 
     /**

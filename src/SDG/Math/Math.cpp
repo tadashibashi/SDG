@@ -26,11 +26,11 @@ SDG::Math::PointDirection(float x1, float y1, float x2, float y2)
 
     if (quadrant % 2 == 0)
     { // if quadrants 0 or 2
-        return Abs(RadToDeg(std::atan(diffY / diffX))) + (float)(quadrant * 90);
+        return Abs(DegsPerRad * (std::atan(diffY / diffX))) + (float)(quadrant * 90);
     }
     else
     {   // quadrants 1 or 3
-        return 90-Abs(RadToDeg(std::atan((diffY / diffX)))) + (float)(quadrant * 90);
+        return 90-Abs(DegsPerRad * (std::atan((diffY / diffX)))) + (float)(quadrant * 90);
     }
 }
 

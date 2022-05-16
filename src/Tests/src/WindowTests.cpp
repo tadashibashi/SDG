@@ -6,6 +6,7 @@
 #include "SDG_Tests.h"
 #include <SDG/Graphics/Window.h>
 #include <SDG/Graphics/RenderTarget.h>
+#include <SDL_events.h>
 
 using namespace SDG;
 

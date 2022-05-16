@@ -36,11 +36,10 @@ SDG::App::App(const std::string &appName, const std::string &orgName, const Path
     impl->fileSys.Initialize(appName, orgName);
     Path::SetFileSys(Ref(impl->fileSys));
 
-    GameConfig config;
-
     // Get game settings from config file
+    GameConfig config;
     try {
-        XMLReader::ParseGameConfig(BasePath("assets/config.sdgc"), &config);
+        XMLReader::ParseGameConfig(configPath.String(), &config);
         impl->config = config;
     }
     catch(const std::exception &e)

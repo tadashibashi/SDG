@@ -1,4 +1,8 @@
 #include "RenderTarget.h"
+#include "Private/TranslateFlip.h"
+#include "Texture2D.h"
+#include "Private/Conversions.h"
+#include <SDG/Math/Private/Conversions.h>
 #include <SDL_gpu.h>
 
 namespace SDG
@@ -75,9 +79,10 @@ namespace SDG
         }
     }
 
-    Color RenderTarget::Color() const
+    Color
+    RenderTarget::DrawColor() const
     {
-        return {target->color.r, target->color.g, target->color.b, target->color.a};
+        return Conv::ToSDGColor(target->color);
     }
 
     void
@@ -86,15 +91,37 @@ namespace SDG
         GPU_ClearColor(target, {color.R(), color.G(), color.B(), color.A()});
     }
 
-    void RenderTarget::SwapBuffers()
+    void
+    RenderTarget::SwapBuffers()
     {
         GPU_Flip(target);
     }
 
     RenderTarget &
-    RenderTarget::Color(SDG::Color color)
+    RenderTarget::DrawColor(SDG::Color color)
     {
-        GPU_SetTargetColor(target, {color.R(), color.G(), color.B(), color.A()});
+        GPU_SetTargetColor(target, Conv::ToSDLColor(color));
         return *this;
+    }
+
+    void
+    RenderTarget::DrawTexture(Ref<Texture2D> texture, Rectangle src, FRectangle dest,
+                              float rotation, Vector2 anchor, Flip flip)
+    {
+        // Create rects
+        GPU_Rect gpuSrc = Conv::ToGPURect(src);
+        GPU_Rect gpuDest = Conv::ToGPURect(dest);
+
+        // Blit to the current target
+        GPU_BlitRectX(texture->Image().Get(), &gpuSrc, target,
+                      &gpuDest, rotation, anchor.X(), anchor.Y(),
+                      TranslateFlip[(int)flip]);
+    }
+
+    void RenderTarget::DrawRectangle(FRectangle rect)
+    {
+        GPU_Rectangle2(target,
+                       Conv::ToGPURect(rect),
+                       target->color);
     }
 }

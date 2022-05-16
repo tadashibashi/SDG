@@ -3,7 +3,7 @@
 //
 #include "SpriteBatch.h"
 #include "RenderTarget.h"
-
+#include "Private/TranslateFlip.h"
 #include <SDL_gpu.h>
 #include <algorithm>
 #include <utility>
@@ -19,11 +19,6 @@ SDG::SpriteBatch::SpriteBatch() :
 {
 
 }
-
-static const Uint32 TranslateFlip[4] = {
-        GPU_FLIP_NONE, GPU_FLIP_HORIZONTAL, GPU_FLIP_VERTICAL,
-        GPU_FLIP_HORIZONTAL | GPU_FLIP_VERTICAL
-};
 
 void
 SDG::SpriteBatch::RenderBatches()

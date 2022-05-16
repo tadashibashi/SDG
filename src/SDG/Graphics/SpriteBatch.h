@@ -4,6 +4,7 @@
 #include <SDG/Graphics/Window.h>
 #include <SDG/Math/Rectangle.h>
 #include <SDG/Ref.h>
+#include "Flip.h"
 
 namespace SDG
 {
@@ -18,15 +19,6 @@ namespace SDG
         FrontToBack,
         /// Uses depth parameter to sort. Higher depth values in front; lower in back.
         BackToFront
-    };
-
-    /// Texture flip direction. Used with SpriteBatch functions.
-    enum class Flip
-    {
-        None = 0,
-        Horizontal,
-        Vertical,
-        Both
     };
 
     class SpriteBatch

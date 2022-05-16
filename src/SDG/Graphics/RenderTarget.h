@@ -6,12 +6,16 @@
 #include <SDG/Math/Rectangle.h>
 #include <SDG/Math/Vector2.h>
 #include "Color.h"
+#include "Flip.h"
 
 struct GPU_Target;
 typedef struct GPU_Target GPU_Target;
 
 namespace SDG
 {
+    // forward declarations
+    class Texture2D;
+
     class RenderTarget
     {
     public:
@@ -54,11 +58,14 @@ namespace SDG
         [[nodiscard]] Point BaseSize() const;
 
         /// Gets the current rendering color
-        Color Color() const;
+        Color DrawColor() const;
 
         /// Sets the rendering color. Cumulative effect with image color.
-        RenderTarget &Color(SDG::Color color);
+        RenderTarget &DrawColor(SDG::Color color);
 
+        void DrawTexture(Ref<Texture2D> texture, Rectangle src,
+            FRectangle dest, float rotation, Vector2 anchor, Flip flip);
+        void DrawRectangle(FRectangle rect);
         /*!
          * Gets the internal GPU_Target. Please include SDL_gpu.h in
          * order to access the internals and functions.

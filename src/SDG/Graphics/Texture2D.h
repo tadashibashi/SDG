@@ -17,8 +17,7 @@
 #undef LoadImage
 #endif
 
-class GPU_Image;
-class GPU_Target;
+struct GPU_Image;
 
 namespace SDG
 {

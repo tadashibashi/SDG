@@ -49,7 +49,7 @@ TEST_CASE("Ref tests", "[Ref]")
         Ref<std::string> ref;
         bool didThrow = false;
         try {
-            *ref;
+            std::string &str = *ref;
         }
         catch (const NullReferenceException &e)
         {

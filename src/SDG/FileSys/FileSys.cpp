@@ -2,7 +2,7 @@
 #include <SDG/Debug/Assert.h>
 #include <SDL_error.h>
 #include <SDL_filesystem.h>
-
+#include <stdexcept>
 
 std::string
 SDG::FileSys::BasePath()

@@ -165,7 +165,7 @@ SDG::App::Render_()
     impl->window.SwapBuffers();
 }
 
-const SDG::CRef<SDG::Time>
+SDG::CRef<SDG::Time>
 SDG::App::Time()
 {
     return CRef(impl->time);

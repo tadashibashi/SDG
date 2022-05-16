@@ -6,9 +6,8 @@
 #include <SDG/Exceptions/AssertionException.h>
 #include "Debug.hpp"
 #include "Input.hpp"
-#include <SDG/FileSys/XMLReader.h>
 #include <SDG/FileSys/FileSys.h>
-
+#include <SDG/FileSys/XMLReader.h>
 #include <SDG/Graphics/Window.h>
 
 #include <SDL.h>
@@ -27,11 +26,27 @@ struct SDG::App::Impl {
     SDG::Window window;
     bool isRunning;
     SDG::Time time;
+    SDG::FileSys fileSys;
+    SDG::GameConfig config;
 };
 
-SDG::App::App() : impl(new Impl)
+SDG::App::App(const std::string &appName, const std::string &orgName, const Path &configPath) : impl(new Impl)
 {
+    // Initialize file system
+    impl->fileSys.Initialize(appName, orgName);
+    Path::SetFileSys(Ref(impl->fileSys));
 
+    GameConfig config;
+
+    // Get game settings from config file
+    try {
+        XMLReader::ParseGameConfig(BasePath("assets/config.sdgc"), &config);
+        impl->config = config;
+    }
+    catch(const std::exception &e)
+    {
+        SDG_Err("Failed to parse game config.");
+    }
 }
 
 SDG::App::~App()
@@ -44,20 +59,7 @@ int
 SDG::App::Initialize_()
 {
     SDG_Log("Game initializing.");
-    GameConfig config;
-
-    // Get game settings from config file
-    try {
-        XMLReader::ParseGameConfig(BasePath("assets/config.sdgc"), &config);
-    }
-    catch(const std::exception &e)
-    {
-        SDG_Err("Failed to parse game config.");
-        return -1;
-    }
-
-    FileSys::Initialize(config.appName, config.appOrg);
-
+    GameConfig &config = impl->config;
     impl->window.Initialize(config.width, config.height, config.title.c_str());
     impl->window.Fullscreen(config.fullscreen);
 

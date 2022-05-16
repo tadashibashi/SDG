@@ -78,7 +78,7 @@ set(Engine_Sources
         ServiceProvider.h
 
         Templates/Delegate.h
-        Exceptions.hpp Exceptions/Exception.h Exceptions/Exception.cpp Exceptions/ExceptionExample.h Exceptions/ExceptionExample.cpp Templates/Pool.h Math/MathConstants.h Exceptions/OutOfRangeException.h Exceptions/OutOfRangeException.cpp)
+        Exceptions.hpp Exceptions/Exception.h Exceptions/Exception.cpp Exceptions/ExceptionExample.h Exceptions/ExceptionExample.cpp Templates/Pool.h Math/MathConstants.h Exceptions/OutOfRangeException.h Exceptions/OutOfRangeException.cpp Unique.h)
 
 
 

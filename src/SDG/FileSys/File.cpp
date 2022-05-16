@@ -4,14 +4,12 @@
 //
 #include "File.h"
 #include "SDG/FileSys/Private/IO.h"
-#include "FileSys.h"
-#include <SDL_rwops.h>
 #include "Path.h"
 
 using std::string;
 
 /// Private implementation class data
-class SDG::FileSys::File::Impl
+class SDG::File::Impl
 {
 public:
     Impl(): mem(), size(), path(), error(), isOpen(false) {}
@@ -21,21 +19,21 @@ public:
     string error;
     size_t size;
     bool isOpen;
-}; /* class SDG::FileSys::File::Impl */
+}; /* class SDG::File::Impl */
 
 // === Constructor / Destructor ===============================================
 
-SDG::FileSys::File::File() : impl(new Impl)
+SDG::File::File() : impl(new Impl)
 {
 
 }
 
-SDG::FileSys::File::File(const SDG::Path &path) : impl(new Impl)
+SDG::File::File(const SDG::Path &path) : impl(new Impl)
 {
     Open(path);
 }
 
-SDG::FileSys::File::~File()
+SDG::File::~File()
 {
     // Automatically close the file when it goes out of scope.
     Close();
@@ -43,32 +41,32 @@ SDG::FileSys::File::~File()
 }
 
 const char *
-SDG::FileSys::File::Data() const
+SDG::File::Data() const
 {
     return impl->mem;
 }
 
 bool
-SDG::FileSys::File::IsOpen() const
+SDG::File::IsOpen() const
 {
     return impl->isOpen;
 }
 
 int64_t
-SDG::FileSys::File::Size() const
+SDG::File::Size() const
 {
     return impl->size;
 }
 
 const char *
-SDG::FileSys::File::GetError() const
+SDG::File::GetError() const
 {
     return impl->error.data();
 }
 
 
 bool
-SDG::FileSys::File::Open(const Path &path)
+SDG::File::Open(const Path &path)
 {
     return (path.Extension() == "sdgc") ?
            OpenEncryptedImpl(path) :
@@ -77,14 +75,14 @@ SDG::FileSys::File::Open(const Path &path)
 
 
 bool
-SDG::FileSys::File::OpenImpl(const Path &filepath)
+SDG::File::OpenImpl(const Path &filepath)
 {
     char *mem;
     size_t size;
 
     if (!IO::ReadFileStr(filepath.String().c_str(), &mem, &size))
     {
-        impl->error = string("File::Open: error: ") + SDL_GetError();
+        impl->error = string("File::Open: error: ") + IO::GetError();
         return false;
     }
 
@@ -97,7 +95,7 @@ SDG::FileSys::File::OpenImpl(const Path &filepath)
     return true;
 }
 
-bool SDG::FileSys::File::OpenEncryptedImpl(const Path &path)
+bool SDG::File::OpenEncryptedImpl(const Path &path)
 {
     bool result = SDG::IO::ReadEncryptedFileStr(path.String().c_str(), &impl->mem, &impl->size);
     if (result)
@@ -108,14 +106,14 @@ bool SDG::FileSys::File::OpenEncryptedImpl(const Path &path)
     }
     else
     {
-        impl->error = string("File::OpenEncrypted: error: ") + SDL_GetError();
+        impl->error = string("File::OpenEncrypted: error: ") + IO::GetError();
     }
 
     return result;
 }
 
 void
-SDG::FileSys::File::Close()
+SDG::File::Close()
 {
     if (impl->mem)
     {
@@ -129,7 +127,7 @@ SDG::FileSys::File::Close()
 }
 
 bool
-SDG::FileSys::File::IsLoaded() const
+SDG::File::IsLoaded() const
 {
     return impl->mem;
 }

@@ -1,12 +1,14 @@
-/* ============================================================================
- *  File.h
- *  SDG_Engine
+/*!
+ * @file File.h
  *
- * ========================================================================= */
+ * @class File
+ * @abstract Class that loads a file's contents from disk into memory.
+ * Intended for cleanly wrapping and loading game assets.
+ */
 #pragma once
 #include <SDG/FileSys/Path.h>
 
-namespace SDG::FileSys
+namespace SDG
 {
 
 /// Class that loads a file's contents from disk into memory.
@@ -14,35 +16,31 @@ namespace SDG::FileSys
 class File {
     class Impl;
 public:
+    // ========== Initialization and Destruction ==========
+    /// Initializes an unloaded file.
     File();
+    /// Automatically closes and frees any file contents loaded in this class.
     ~File();
+    /// Initializes and opens file from specified path.
     explicit File(const Path &path);
 
     /// Loads data found in the file at path into the File class.
     /// @param path path to the file
     bool Open(const Path &path);
-
-    /// Checks whether file is opened or not.
-    /// It may or may not have data loaded into memory. Use IsLoaded() to check for this check.
-    [[nodiscard]]
-    bool IsOpen() const;
-    
-    /// Checks if data has been loaded into memory or not.
-    [[nodiscard]]
-    bool IsLoaded() const;
     
     /// Closes the file, freeing it of internally loaded data.
     /// After a call to Free() you may safely re-use this object to open another file.
     /// This is automatically called when the File object goes out of scope.
     void Close();
 
-    // ============= GETTERS =================================================
+    // ============= Getters =================================================
 
     /// Gets the pointer to the file data. Always a valid c-string.
     /// Data from a file will be available if param "loadToMemory" was set to true in a succesful call to Open.
     [[nodiscard]]
     const char *Data() const;
-    
+
+    /// Gets the result of the last call to Open.
     [[nodiscard]]
     const char *GetError() const;
     
@@ -51,6 +49,15 @@ public:
     /// successful call to Open.
     [[nodiscard]]
     int64_t Size() const;
+
+    /// Checks whether file is opened or not.
+    /// It may or may not have data loaded into memory. Use IsLoaded() to check for this check.
+    [[nodiscard]]
+    bool IsOpen() const;
+
+    /// Checks if data has been loaded into memory or not.
+    [[nodiscard]]
+    bool IsLoaded() const;
     
 private:
     /// Loads data found in the file at path into the File class.

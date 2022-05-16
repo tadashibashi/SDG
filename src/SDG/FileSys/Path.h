@@ -10,9 +10,12 @@
 #pragma once
 #include <iosfwd>
 #include <string>
+#include <SDG/Ref.h>
 
 namespace SDG
 {
+    class FileSys;
+
      /// Wrapper around a string, representing a full filepath.
      /// User can specify path base to stem from. More info in enum class Path::Base.
     class Path
@@ -66,9 +69,12 @@ namespace SDG
 
         /// You can add strings to the Path, which is appended to the internal subpath
         Path &operator += (const std::string &str);
+
+        static void SetFileSys(Ref<FileSys> system);
     private:
         std::string subpath;
         BaseDir base;
+        static Ref<FileSys> fileSys;
     };
 
     /// Helper: creates a path stemming from the app personal preference directory (read/write)

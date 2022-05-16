@@ -3,10 +3,9 @@
 //
 #include "XMLReader.h"
 #include "File.h"
-
-#include <tinyxml2.h>
 #include <SDG/Debug.hpp>
 #include <SDG/Exceptions/XMLReaderException.h>
+#include <tinyxml2.h>
 
 using namespace tinyxml2;
 
@@ -91,7 +90,7 @@ CheckResult(int result, const std::string &doing)
 void
 OpenXML(const SDG::Path &path, XMLDocument *outDoc)
 {
-    SDG::FileSys::File file;
+    SDG::File file;
     file.Open(path);
     try {
         CheckResult(outDoc->Parse(reinterpret_cast<const char *>(file.Data())),

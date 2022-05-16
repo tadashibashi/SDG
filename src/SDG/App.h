@@ -2,6 +2,7 @@
 #pragma once
 #include <SDG/Platform.h>
 #include <SDG/Time/Time.h>
+#include <SDG/FileSys/Path.h>
 #include "Ref.h"
 
 namespace SDG
@@ -11,7 +12,8 @@ namespace SDG
     class App {
         struct Impl;
     public:
-        App();
+        App(const std::string &appName, const std::string &orgName,
+            const Path &configPath = BasePath("assets/config.sdgc"));
         virtual ~App();
 
         /// Executes one game frame. Intended for use by platforms that require the

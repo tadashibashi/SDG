@@ -1,50 +1,39 @@
+/*!
+ * @file ServiceProvider.h
+ *
+ * @class ServiceProvider
+ * @abstract A container that allows generic storage by type. It can store one
+ * object reference per type. This allows users to store specific data structures
+ * without tying them to the class that owns it.
+ * Users maintain ownership of the objects that are passed in, since ServiceProvider
+ * does not call destructors or manage memory in any way.
+ */
 #pragma once
-#include <typeindex>
 #include <map>
-#include <SDG/Ref.h>
+#include <typeindex>
+
 #include <SDG/Exceptions/InvalidArgumentException.h>
+#include <SDG/Ref.h>
 
 namespace SDG
 {
-    /// Generic container that can store one object pointer per type.
-    /// ServiceContainer does not own these pointers, and the responsibility
-    /// to manage their memory remains with the user who emplaces each service.
-    /// This generically allows users to store specific data
-    /// structures that other components are dependent on, without tying them
-    /// to the the class that owns it.
+    /// A container that allows generic storage by type. It can store one
+    /// object reference per type.
+    /// Users maintain ownership of the objects that are passed in, since ServiceProvider
+    /// does not call destructors or manage memory in any way.
     class ServiceProvider {
     public:
-        /// Gets a pointer to a stored object of type T, or nullptr if
-        /// one does not exist in the container.
-        /// @tparam T the type of object ptr to retrieve.
-        template <typename T>
-        Ref<T> Get() const
-        {
-            auto it = services.find(typeid(T));
-            return (it == services.end()) ? Ref<T>() : Ref<T>((T *)it->second);
-        }
-
-        /// Gets a pointer to a stored object of type T, or nullptr if
-        /// one does not exist in the container.
-        /// Intended to be used if a service is not guaranteed to be in this obj.
-        /// @param service [out] service to get
-        /// @returns true, if pointer was found; false, if not.
-        template <typename T>
-        bool TryGet(Ref<T> &service) const
-        {
-            auto ref = Ref<T>(Get<T>());
-            service = ref;
-            return static_cast<bool>(ref);
-        }
-
-        /// Stores an object ptr of type T that is passed into the function.
-        /// You as the user maintain responsibility for its memory management.
+        // ========== Emplacement and Removal =================================
+        /// Stores an object reference of type T that is passed into the function.
+        /// You as the user maintain ownership responsibility of this object.
+        /// (ServiceProvider does not call destructors or manage memory)
         /// @param service The object ptr to store
         /// @returns reference to this ServiceContainer for chaining function calls.
         template <typename T>
         ServiceProvider &Emplace(Ref<T> service)
         {
-            static_assert(!std::is_null_pointer_v<T>, "must not pass explicit nullptr to container");
+            static_assert(!std::is_null_pointer_v<T>,
+                    "must not pass explicit nullptr to container");
             if (!service.Get())
                 throw InvalidArgumentException("ServiceProvider::Emplace",
                     "service", "service cannot be a null reference");
@@ -74,20 +63,44 @@ namespace SDG
             return *this;
         }
 
+        // ========== Getters =================================================
+        /// Gets a reference to an object of type T in the container.
+        /// Reference will be null if none exists within.
+        /// @tparam T the type of object ptr to retrieve.
+        template <typename T>
+        [[nodiscard]] Ref<T> Get() const
+        {
+            auto it = services.find(typeid(T));
+            return (it == services.end()) ? Ref<T>() : Ref<T>((T *)it->second);
+        }
+
+        /// Gets a reference to a stored object of type T. Reference will be null if
+        /// one does not exist in the container.
+        /// Intended to be used if a service is not guaranteed to be in this obj.
+        /// @param service [out] service to get
+        /// @returns true, if pointer was found; false, if not.
+        template <typename T>
+        bool TryGet(Ref<T> &service) const
+        {
+            auto ref = Ref<T>(Get<T>());
+            service = ref;
+            return static_cast<bool>(ref);
+        }
+
         /// Gets the number of services stored
-        size_t Size() const
+        [[nodiscard]] size_t Size() const
         {
             return services.size();
         }
 
         /// Checks whether the container is empty
-        bool Empty() const
+        [[nodiscard]] bool Empty() const
         {
             return services.empty();
         }
 
     private:
-        // internal map of object ptr services
+        /// Internal map of object services
         std::map<std::type_index, void *> services;
     };
 }

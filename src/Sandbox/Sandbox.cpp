@@ -12,7 +12,7 @@ static Camera2D camera;
 
 class Sandbox : public App {
 public:
-    Sandbox() : kirby(), shader() { }
+    Sandbox() : App("SDG Engine Test", "aaronishibashi"), kirby(), shader() { }
 private:
     int Initialize() override
     {
@@ -50,7 +50,7 @@ private:
         if (Input::KeyPressed(Key::L) && Input::KeyPress(Key::V))
         {
             // Loaded the game!!
-            FileSys::File sav(PrefPath("game1.sdgc"));
+            File sav(PrefPath("game1.sdgc"));
 
             SDG_Log("Loaded save: \"{}\"", sav.Data());
         }

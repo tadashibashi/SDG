@@ -65,7 +65,7 @@ namespace SDG
         // Make sure the texture is clean before loading
         Free();
 
-        FileSys::File file;
+        File file;
         if (!file.Open(path))
         {
             SDG_Err("problem while loading Texture2D file: {}", file.GetError());

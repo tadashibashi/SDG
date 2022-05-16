@@ -2,6 +2,7 @@
 // Created by Aaron Ishibashi on 5/8/22.
 //
 #include "Path.h"
+#include <SDG/Debug/Assert.h>
 #include <SDG/FileSys/FileSys.h>
 #include <SDG/Platform.h>
 #include <SDL_rwops.h>
@@ -9,6 +10,14 @@
 
 namespace SDG
 {
+    Ref<FileSys> Path::fileSys;
+
+    void
+    Path::SetFileSys(Ref<FileSys> system)
+    {
+        Path::fileSys = system;
+    }
+
     Path::Path() : subpath(), base(BaseDir::None)
     {}
 
@@ -94,6 +103,8 @@ namespace SDG
 
     std::string Path::String() const
     {
+        // FileSys must have been set
+        SDG_Assert(fileSys);
         switch(base)
         {
             case BaseDir::None: return subpath;
@@ -105,8 +116,8 @@ namespace SDG
 #endif
             subpath;
 
-            case BaseDir::Base: return FileSys::RootPath() + subpath;
-            case BaseDir::Pref: return FileSys::TitleContainer() + subpath;
+            case BaseDir::Base: return fileSys->BasePath() + subpath;
+            case BaseDir::Pref: return fileSys->PrefPath() + subpath;
         }
 
         throw std::runtime_error("SDG::Path::base member value not recognized.");

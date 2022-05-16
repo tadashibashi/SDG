@@ -1,10 +1,7 @@
 #include "Shader.h"
 #include "SDG/Debug.hpp"
-#include "SDG/FileSys/FileSys.h"
 #include "SDG/FileSys/File.h"
 #include <SDL_gpu.h>
-
-using namespace SDG::FileSys;
 
 // Prepends shader version data depending on OpenGL or GLES.
 // This is needed to support particular graphics cards that require this heading data.
@@ -20,7 +17,7 @@ LoadShader(GPU_ShaderEnum shaderType, const SDG::Path &path)
 
 
     // Open the shader file
-    File file;
+    SDG::File file;
     if (!file.Open(path))
     {
         SDG_Err("LoadShader file loading error: {}", file.GetError());

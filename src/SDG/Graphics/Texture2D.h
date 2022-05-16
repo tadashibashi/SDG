@@ -1,9 +1,13 @@
-//
-// Created by Aaron Ishibashi on 4/16/22.
-//
+/*!
+ * @file Texture2D.h
+ *
+ * @class Texture2D
+ * @abstract
+ * Texture2D class loads and automatically frees a texture to be used with
+ * SDG_Engine drawing functions. It supports .png, .bmp, and .tga file formats.
+ */
 #pragma once
 #include <string>
-
 #include <SDG/FileSys/Path.h>
 #include <SDG/Math/Vector2.h>
 #include <SDG/Ref.h>
@@ -25,20 +29,25 @@ namespace SDG
     {
         struct Impl;
     public:
+        // ========== Initialization and Destruction ==========
+        /// Initializes an unloaded Texture
         Texture2D();
+        /// Initializes a texture loaded from the given path.
         explicit Texture2D(const Path &path);
+        /// Wraps a GPU_Image object that was already loaded.
         Texture2D(GPU_Image *image, const Path &path);
+        /// Automatically frees the internal texture if one was loaded.
         ~Texture2D();
 
-        /// Gets the inner GPU_Image object ptr.
-        Ref<GPU_Image> Image() const;
-
+        // ========== Loading and unloading ==========
         /// Load an image into the Texture2D.
         /// @param path
         bool LoadImage(const Path &path);
+        /// Free the internal texture, and resets container for reuse.
         void Free();
 
-        /// Gets the dimensions of the texture in pixels
+        // ========== Getters ==========
+        /// Gets the dimensions of the texture in pixels.
         Point Size() const;
 
         /// Checks whether there is an internal texture loaded.
@@ -47,8 +56,12 @@ namespace SDG
         /// Gets the filepath this texture was loaded from.
         /// If this is text rendered from a font, it will contain the font's filepath.
         const Path &Filepath() const;
+
+        /// Gets the inner GPU_Image object ptr.
+        Ref<GPU_Image> Image() const;
         
     private:
+        /// Private implementation
         Impl *impl;
     };
 }

@@ -1,22 +1,10 @@
 #include "FileSys.h"
-#include "SDG/Debug.hpp"
-#include "SDL.h"
+#include <SDG/Debug/Assert.h>
+#include <SDL_filesystem.h>
 
-#include <vector>
-
-static string
-GetPrefPath();
-
-// Cached base path to the executable.
-
-static string appName;
-static string orgName;
-
-
-string
-SDG::FileSys::RootPath()
+std::string
+SDG::FileSys::BasePath()
 {
-    static string basePath;
     if (basePath.empty())
     {
         char *temp = SDL_GetBasePath();
@@ -29,37 +17,16 @@ SDG::FileSys::RootPath()
     return basePath;
 }
 
-
-string
-SDG::FileSys::MakePath(const string &path, Base root)
-{
-    switch(root)
-    {
-        case Base::None: return path;
-        case Base::Root: return RootPath() + path;
-        case Base::Title: return TitleContainer() + path;
-        default:
-            SDG_Err("SDG::FileSys::MakePath: DirectoryBase was not recognized.");
-            return string();
-    }
-}
-
 void
-SDG::FileSys::Initialize(const string &pAppName, const string &pOrgName)
+SDG::FileSys::Initialize(const std::string &pAppName, const std::string &pOrgName)
 {
-    ::appName = pAppName;
-    ::orgName = pOrgName;
+    appName = pAppName;
+    orgName = pOrgName;
 }
 
-string SDG::FileSys::TitleContainer()
+std::string
+SDG::FileSys::PrefPath()
 {
-    return GetPrefPath();
-}
-
-string
-GetPrefPath()
-{
-    static string prefPath;
     if (prefPath.empty())
     {
         char *tPrefPath = SDL_GetPrefPath(orgName.c_str(), appName.c_str());

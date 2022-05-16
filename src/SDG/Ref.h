@@ -1,9 +1,9 @@
 /*!
  * @file Ref.h – SDG_Engine
- * @copyright Aaron Ishibashi © 2022
  *
  * @class Ref / CRef
- * @description A capsule wrapping a pointer, to safely reference another object
+ * @description
+ * A capsule wrapping a pointer, which supports  to reference another object
  * in a uniform fashion. An object holding a Ref object has a clear
  * indicator that it is not the owner of the internal pointer.
  * It also helps prevent accidental copy assignment when retrieving a
@@ -42,11 +42,11 @@ namespace SDG
 
         /// Get the internal ptr. Please do not call delete on it, since it is owned
         /// by the object this reference was retrieved from.
-        T *Get() const { return ref; }
+        [[nodiscard]] T *Get() const { return ref; }
 
         /// Access ptr members. Throws a NullReference exception if ptr was null.
-        T *operator->() const;
-        T &operator *() const;
+        [[nodiscard]] T *operator->() const;
+        [[nodiscard]] T &operator *() const;
 
         bool operator==(const Ref &other);
         bool operator !=(const Ref &other);

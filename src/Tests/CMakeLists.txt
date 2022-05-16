@@ -21,7 +21,7 @@ add_executable(SDG_Tests
         src/DelegateTests.cpp
         src/PathTests.cpp
         src/RefTests.cpp
-        src/ServiceContainerTests.cpp
+        src/ServiceProviderTests.cpp
         src/WindowTests.cpp src/SDG_Tests.cpp src/ExceptionTests.cpp src/SDG_Tests.h src/KeyboardTests.cpp src/MathTests.cpp src/RandTests.cpp src/TimeTests.cpp src/Vector2Tests.cpp src/Vector3Tests.cpp src/RectangleTests.cpp src/ColorTests.cpp)
 
 target_include_directories(SDG_Tests PRIVATE ${CMAKE_SOURCE_DIR}/src

@@ -395,12 +395,12 @@ TEST_CASE("Path", "[path]")
         }
     }
 
-    SECTION("RootPath creates a Path with BaseDir::Root")
+    SECTION("BasePath creates a Path with BaseDir::Root")
     {
         REQUIRE(RootPath().Base() == Path::BaseDir::Root);
     }
 
-    SECTION("RootPath default creates the OS root path")
+    SECTION("BasePath default creates the OS root path")
     {
         REQUIRE(RootPath().String() == root);
     }

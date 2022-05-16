@@ -42,10 +42,10 @@ namespace SDG
         return true;
     }
 
-    Window &
+    Ref<Window>
     GraphicsMgr::Window()
     {
-        return impl->window;
+        return Ref{impl->window};
     }
 
 

@@ -90,4 +90,11 @@ namespace SDG
     {
         GPU_Flip(target);
     }
+
+    RenderTarget &
+    RenderTarget::Color(SDG::Color color)
+    {
+        GPU_SetTargetColor(target, {color.R(), color.G(), color.B(), color.A()});
+        return *this;
+    }
 }

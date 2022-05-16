@@ -24,6 +24,7 @@ namespace SDG
 
         /*!
          * Sets the internal target. Frees any pre-existing target.
+         * This object is now the owner of the GPU_Target object
          * @param pTarget the target to set
          * @return this object reference for chaining
          */
@@ -36,12 +37,9 @@ namespace SDG
          */
         [[nodiscard]] Rectangle Viewport() const;
 
-
-        /*!
-         * Sets the target's viewport rectangle
-         * @param viewport rectangle to set
-         * @return this object reference for chaining
-         */
+        /// Sets the target's viewport rectangle
+        /// @param viewport rectangle to set
+        /// @return this object reference for chaining
         RenderTarget &Viewport(Rectangle viewport);
 
 
@@ -51,13 +49,15 @@ namespace SDG
          */
         [[nodiscard]] Point Size() const;
 
-        /*!
-         * Gets the true underlying dimensions of the target
-         * @return Point containing width and height of the target
-         */
+        /// Gets the true underlying dimensions of the target
+        /// @return Point containing width and height of the target
         [[nodiscard]] Point BaseSize() const;
 
+        /// Gets the current rendering color
         Color Color() const;
+
+        /// Sets the rendering color. Cumulative effect with image color.
+        RenderTarget &Color(SDG::Color color);
 
         /*!
          * Gets the internal GPU_Target. Please include SDL_gpu.h in

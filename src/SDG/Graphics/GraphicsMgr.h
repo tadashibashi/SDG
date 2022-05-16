@@ -28,7 +28,7 @@ namespace SDG
         void DrawRectangle(Rectangle rectangle, Color color);
         void DrawLine(float x1, float y1, float x2, float y2, Color color);
 
-        Window &Window();
+        Ref<Window> Window();
     private:
         // Private implementation to wrap GPU functions.
         Impl *impl;

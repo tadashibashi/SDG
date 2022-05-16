@@ -6,37 +6,26 @@
  *
  */
 #pragma once
-#include <SDG/Ref.h>
-#include <string>
 #include "Texture2D.h"
 #include "Color.h"
+#include <SDG/FileSys/Path.h>
+#include <SDG/Ref.h>
+
 #include <cstdint>
+#include <string>
 
 typedef struct _TTF_Font TTF_Font;
 
 namespace SDG
 {
+    /// A font class that currently supports loading and rendering .ttf fonts
+    /// via SDL2_ttf backend.
     class Font
     {
         class Impl;
     public:
         Font();
         ~Font();
-        // === Getters ===
-
-        [[nodiscard]]
-        bool IsLoaded() const;
-
-        /// Gets the filepath this Font was loaded from.
-        [[nodiscard]]
-        std::string Filepath() const;
-
-        /// Gets a const reference to the internal TTF_Font
-        [[nodiscard]]
-        CRef<TTF_Font> InnerFont() const;
-
-        [[nodiscard]]
-        int PointSize() const;
 
         /*!
          * Loads a ttf font
@@ -45,7 +34,7 @@ namespace SDG
          * @return true: TTF Font loaded successfully
          * @return false: TTF Font failed to load, check error stream for message.
          */
-        bool Load(const std::string &filepath, int pointSize);
+        bool Load(const Path &filepath, int pointSize);
 
          /*!
           * Renders solid text to a Texture2D
@@ -90,9 +79,24 @@ namespace SDG
          */
         void Close();
 
-        /*!
-         * Bool evaluation returns whether there is a font loaded.
-         */
+        // === Getters ===
+
+        [[nodiscard]]
+        bool IsLoaded() const;
+
+        /// Gets the filepath this Font was loaded from.
+        [[nodiscard]]
+        const Path &Filepath() const;
+
+        /// Gets a const reference to the internal TTF_Font
+        [[nodiscard]]
+        CRef<TTF_Font> InnerFont() const;
+
+        /// Gets the font's point size.
+        [[nodiscard]]
+        int PointSize() const;
+
+        /// Automatic evaluation returns whether there is a font loaded.
         [[nodiscard]]
         operator bool();
 

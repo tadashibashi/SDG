@@ -1,4 +1,5 @@
 #include "SDG_Tests.h"
+#include "SDG/FileSys/FileSys.h"
 #include <SDG/FileSys/Path.h>
 #include <SDG/Platform.h>
 
@@ -11,6 +12,12 @@ TEST_CASE("Path", "[path]")
     std::string root = "/";
 #endif
 
+    // Set up file system
+    FileSys fileSys;
+    fileSys.Initialize("SDG Tests", "SDG"); // creates the app pref folder and filepaths
+    Path::SetFileSys(Ref(fileSys));         // gives Path class access to these paths.
+                                            // Changable if you want to use a different
+                                            // set of folders.
 
     SECTION("Path Constructor Tests")
     {

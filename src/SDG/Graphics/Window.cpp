@@ -7,7 +7,7 @@
 #include <SDL_gpu.h>
 #include <SDL_ttf.h>
 
-#ifdef GetWindow // Cancels some conflicts with some MSVC defines
+#ifdef GetWindow // Cancels some conflicts with MSVC defines
 #undef GetWindow
 #endif
 

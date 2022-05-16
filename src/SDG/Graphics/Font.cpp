@@ -9,7 +9,7 @@ public:
     Impl() : font(), pointSize(), filepath() { }
     TTF_Font *font;
     int pointSize;
-    std::string filepath;
+    Path filepath;
 };
 
 SDG::Font::Font() : impl(new Impl)
@@ -24,12 +24,12 @@ SDG::Font::~Font()
 }
 
 bool
-SDG::Font::Load(const std::string &filepath, int pointSize)
+SDG::Font::Load(const Path &filepath, int pointSize)
 {
-    TTF_Font *font = TTF_OpenFont(filepath.c_str(), pointSize);
+    TTF_Font *font = TTF_OpenFont(filepath.String().c_str(), pointSize);
     if (!font)
     {
-        SDG_Err("Failed to load font from path {}", filepath);
+        SDG_Err("Failed to load font from path {}", filepath.String());
         return false;
     }
 
@@ -47,7 +47,7 @@ SDG::Font::Close()
         TTF_CloseFont(impl->font);
         impl->font = nullptr;
         impl->pointSize = 0;
-        impl->filepath.clear();
+        impl->filepath = Path();
     }
 }
 
@@ -57,7 +57,7 @@ SDG::Font::IsLoaded() const
     return impl->font;
 }
 
-std::string
+const SDG::Path &
 SDG::Font::Filepath() const
 {
     return impl->filepath;
@@ -80,7 +80,7 @@ SDG::Font::operator bool()
 }
 
 static SDG::Texture2D *
-SurfaceToTexture(SDL_Surface *surf, const std::string &path)
+SurfaceToTexture(SDL_Surface *surf, const SDG::Path &path)
 {
     if (!surf)
     {

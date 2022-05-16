@@ -54,33 +54,10 @@ namespace SDG
     // ===== Playback Control =================================================
 
     Tween &
-    Tween::Restart()
-    {
-        state = State::Forward;
-        currentTime_ = 0;
-
-        return *this;
-    }
-
-    Tween &
-    Tween::Restart(float startVal, float endVal, float duration, TweenFunction func)
-    {
-        startVal_ = startVal;
-        relVal_ = endVal - startVal_;
-        duration_ = duration;
-        func_ = std::move(func);
-
-        Restart();
-
-        return *this;
-    }
-
-    Tween &
-    Tween::Stop(bool resetTween)
+    Tween::Stop()
     {
         state = State::Inactive;
-        if (resetTween)
-            Reset();
+        Reset();
 
         return *this;
     }
@@ -89,7 +66,7 @@ namespace SDG
     Tween::Reset()
     {
         currentTime_ = 0;
-        state = State::Forward;
+        state = State::Inactive;
 
         return *this;
     }
@@ -100,7 +77,7 @@ namespace SDG
         startVal_ = startVal;
         relVal_ = endVal - startVal_;
         duration_ = duration;
-        func_ = std::move(func);
+        func_ = func;
 
         Reset();
 
@@ -168,6 +145,7 @@ namespace SDG
             // calculate the current value
             float val = func_(currentTime_, startVal_, relVal_,
                               duration_);
+
             val = Math::Clamp<float>(val, startVal_, startVal_ + relVal_);
 
             // apply value to the setter function (if there is one)

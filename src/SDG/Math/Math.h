@@ -108,31 +108,36 @@ namespace SDG::Math
     }
 
     /// Constrains a value between two numbers, inclusively on both ends.
-    /// min value must be smaller or equal to max.
+    /// Min may be greater than max, and the number will still be clamped
+    /// between by both ends.
     template <typename T>
     inline T Clamp(T value, T min, T max)
     {
         static_assert(std::is_arithmetic_v<T>, "type T must be arithmetic");
-        SDG_Assert(min <= max);
+
+        // Protect case where min > max
+        if (min > max)
+            std::swap(min, max);
+
         return Max(Min(value, max), min);
     }
 
+    /// Constrains a value between two Vectors, inclusively on both ends.
+    /// Min's x and y values may be greater than max's, or some combination,
+    /// and the number will still be contained by both limits.
     template <>
     inline Vector2 Clamp(Vector2 value, Vector2 min, Vector2 max)
     {
-        SDG_Assert(min.X() <= max.X());
-        SDG_Assert(min.Y() <= max.Y());
-
         return {Clamp(value.X(), min.X(), max.X()),
                 Clamp(value.Y(), min.Y(), max.Y())};
     }
 
+    /// Constrains a value between two Points, inclusively on both ends.
+    /// Min's x and y values may be greater than max's, or some combination,
+    /// and the number will still be contained by both limits.
     template <>
     inline Point Clamp(Point value, Point min, Point max)
     {
-        SDG_Assert(min.X() <= max.X());
-        SDG_Assert(min.Y() <= max.Y());
-
         return {Clamp(value.X(), min.X(), max.X()),
                 Clamp(value.Y(), min.Y(), max.Y())};
     }
@@ -209,7 +214,8 @@ namespace SDG::Math
     inline T WrapF(T x, T lowBounds, T hiBounds)
     {
         static_assert(std::is_floating_point_v<T>, "type T must be floating point");
-        SDG_Assert(lowBounds <= hiBounds);
+        if (lowBounds > hiBounds)
+            std::swap(lowBounds, hiBounds);
 
         return ModF(x - lowBounds, hiBounds - lowBounds) + lowBounds;
     }
@@ -226,7 +232,8 @@ namespace SDG::Math
     inline T Wrap(T x, T lowBounds, T hiBounds)
     {
         static_assert(std::is_integral_v<T>, "type T must be floating point");
-        SDG_Assert(lowBounds <= hiBounds);
+        if (lowBounds > hiBounds)
+            std::swap(lowBounds, hiBounds);
 
         return Mod(x - lowBounds, hiBounds - lowBounds) + lowBounds;
     }

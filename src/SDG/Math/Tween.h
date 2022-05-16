@@ -50,12 +50,10 @@ namespace SDG
         Tween& Yoyo(bool yoyo);
 
 
-        /// Set the currentTime to zero, and activate Tween
-        Tween &Restart();
-        Tween &Restart(float startVal, float endVal, float duration,
-                     TweenFunction func);
-        Tween &Start() { paused_ = false; if (state == State::Inactive) Restart(); return *this; }
-        Tween &Stop(bool resetTween = true);
+        Tween &Start() { paused_ = false; Reset(); state = State::Forward; return *this; }
+
+        /// Stops the Tween and resets it.
+        Tween &Stop();
 
         State CurrentState() const { return state; }
 

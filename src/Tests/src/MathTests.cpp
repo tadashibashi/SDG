@@ -195,22 +195,15 @@ TEST_CASE("Math::Clamp")
             REQUIRE(result == upperLimit);
         }
 
-#if (SDG_DEBUG)
-        SECTION("Assertion exception thrown when lower limit is greater than upper")
+        SECTION("lower > upper")
         {
-            bool didThrow = false;
-            try {
-                Math::Clamp<float>(0, 100, 50);
-            }
-            catch(const AssertionException &e)
-            {
-                didThrow = true;
-            }
-
-            REQUIRE(didThrow);
+            float num = 100.0123f;
+            float lowerLimit = 50.14f;
+            float upperLimit = 20.941f;
+            float result = Math::Clamp<float>(num, lowerLimit, upperLimit);
+            REQUIRE(result == lowerLimit);
         }
     }
-#endif
 
     SECTION("Integer")
     {
@@ -250,22 +243,15 @@ TEST_CASE("Math::Clamp")
             REQUIRE(result == upperLimit);
         }
 
-#if (SDG_DEBUG)
-        SECTION("Assertion exception thrown when lower limit is greater than upper")
+        SECTION("lower > upper")
         {
-            bool didThrow = false;
-            try {
-                Math::Clamp<int>(0, 100, 50);
-            }
-            catch(const AssertionException &e)
-            {
-                didThrow = true;
-            }
-
-            REQUIRE(didThrow);
+            int num = 100;
+            int lowerLimit = 50;
+            int upperLimit = 20;
+            int result = Math::Clamp<int>(num, lowerLimit, upperLimit);
+            REQUIRE(result == lowerLimit);
         }
     }
-#endif
 
     SECTION("Vector2")
     {
@@ -305,22 +291,32 @@ TEST_CASE("Math::Clamp")
             REQUIRE(result == upperLimit);
         }
 
-#if (SDG_DEBUG)
-        SECTION("Assertion exception thrown when lower limit is greater than upper")
+        SECTION("X low > X high")
         {
-            bool didThrow = false;
-            try {
-                Math::Clamp<Vector2>({0, 0}, {100, 100}, {50, 50});
-            }
-            catch(const AssertionException &e)
-            {
-                didThrow = true;
-            }
-
-            REQUIRE(didThrow);
+            Vector2 num = {1000, 50};
+            Vector2 lowerLimit = {100, 15};
+            Vector2 upperLimit = {15, 24};
+            Vector2 result = Math::Clamp(num, lowerLimit, upperLimit);
+            REQUIRE(result == Vector2{100, 24});
         }
-#endif
 
+        SECTION("Y low > Y high")
+        {
+            Vector2 num = {-24, 1000};
+            Vector2 lowerLimit = {0, 100};
+            Vector2 upperLimit = {15, 24};
+            Vector2 result = Math::Clamp(num, lowerLimit, upperLimit);
+            REQUIRE(result == Vector2{0, 100});
+        }
+
+        SECTION("X low > X high && Y low > Y high")
+        {
+            Vector2 num = {-24, 1000};
+            Vector2 lowerLimit = {1000, 100};
+            Vector2 upperLimit = {15, 24};
+            Vector2 result = Math::Clamp(num, lowerLimit, upperLimit);
+            REQUIRE(result == Vector2{15, 100});
+        }
     }
 
 }
@@ -504,22 +500,17 @@ TEST_CASE("Math::Wrap")
         REQUIRE(Math::Wrap(50, -4, 7) == 6); // multiple wraps
     }
 
-#if (SDG_DEBUG)
-    // throw assertion when higher gets lower in debug mode
-    SECTION("Throw assertion in Debug mode, when upper limit is lower than lower")
+    SECTION("Wrap when low > high")
     {
-        bool didThrow = false;
-        try {
-            Math::Wrap(0, 5, -5);
-        }
-        catch(const AssertionException &e)
-        {
-            didThrow = true;
-        }
-
-        REQUIRE(didThrow);
+        REQUIRE(Math::Wrap(12, 7, 1) == 6);
+        REQUIRE(Math::Wrap(50, 7, 1) == 2);
+        REQUIRE(Math::Wrap(10, 5, -40) == -35); // one wrap
+        REQUIRE(Math::Wrap(50, 7, -4) == 6); // multiple wraps
+        REQUIRE(Math::Wrap(-5, 7, 1) == 1);
+        REQUIRE(Math::Wrap(-50, 7, 1) == 4);
+        REQUIRE(Math::Wrap(-12, -1, -7) == -6);
+        REQUIRE(Math::Wrap(-50, 2, -5) == -1); // multiple wraps
     }
-#endif
 }
 
 TEST_CASE("Math::WrapF")
@@ -547,22 +538,17 @@ TEST_CASE("Math::WrapF")
         REQUIRE(Math::WrapF(50.f, -4.f, 7.f) == 6.f); // multiple wraps
     }
 
-#if (SDG_DEBUG)
-        // throw assertion when higher gets lower in debug mode
-    SECTION("Throw assertion in Debug mode, when upper limit is lower than lower")
+    SECTION("Wrap when low > high")
     {
-        bool didThrow = false;
-        try {
-            Math::WrapF<float>(0, 5.f, -5.f);
-        }
-        catch(const AssertionException &e)
-        {
-            didThrow = true;
-        }
-
-        REQUIRE(didThrow);
+        REQUIRE(Math::WrapF(-5.f, 7.f, 1.f) == 1.f);
+        REQUIRE(Math::WrapF(-50.f, 7.f, 1.f) == 4.f);
+        REQUIRE(Math::WrapF(-12.f, -1.f, -7.f) == -6.f);
+        REQUIRE(Math::WrapF(-50.f, 2.f, -5.f) == -1.f); // multiple wraps
+        REQUIRE(Math::WrapF(12.f, 7.f, 1.f) == 6.f);
+        REQUIRE(Math::WrapF(50.f, 7.f, 1.f) == 2.f);
+        REQUIRE(Math::WrapF(10.f, 5.f, -40.f) == -35.f); // one wrap
+        REQUIRE(Math::WrapF(50.f, 7.f, -4.f) == 6.f); // multiple wraps
     }
-#endif
 }
 
-// Not sure how to test transform, but it has the same impl as MonoGame, so it should be ok
+// Not sure how to extensively test transform, but it has the same impl as MonoGame, so it should be ok

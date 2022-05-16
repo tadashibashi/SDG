@@ -1,4 +1,5 @@
 #include "RenderTarget.h"
+#include <SDL_gpu.h>
 
 namespace SDG
 {

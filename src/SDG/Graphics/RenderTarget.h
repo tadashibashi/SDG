@@ -6,7 +6,9 @@
 #include <SDG/Math/Rectangle.h>
 #include <SDG/Math/Vector2.h>
 #include "Color.h"
-#include <SDL_gpu.h>
+
+struct GPU_Target;
+typedef struct GPU_Target GPU_Target;
 
 namespace SDG
 {
@@ -77,6 +79,7 @@ namespace SDG
 
         /// Will evaluate to true or false if the internal target is null or not.
         operator bool() const;
+
     private:
         GPU_Target *target;
     };

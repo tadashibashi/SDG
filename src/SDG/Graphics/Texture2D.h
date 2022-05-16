@@ -3,7 +3,7 @@
  *
  * @class Texture2D
  * @abstract
- * Texture2D class loads and automatically frees a texture to be used with
+ * Texture2D is a class to load and free an individual texture to be used with
  * SDG_Engine drawing functions. It supports .png, .bmp, and .tga file formats.
  */
 #pragma once

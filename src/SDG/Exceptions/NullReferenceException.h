@@ -10,11 +10,11 @@ namespace SDG
     class NullReferenceException : public Exception
     {
     public:
-        NullReferenceException() : typeName() { }
-        explicit NullReferenceException(const std::string &typeName)
-            : typeName(typeName) { }
+        NullReferenceException() : message() { }
+        explicit NullReferenceException(const std::string &message)
+            : message(message) { }
     private:
         void What(std::ostream &stream) const override;
-        std::string typeName;
+        std::string message;
     };
 }

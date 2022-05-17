@@ -4,8 +4,8 @@
 void
 SDG::NullReferenceException::What(std::ostream &os) const
 {
-    if (typeName.empty())
+    if (message.empty())
         os << "NullReferenceException";
     else
-        os << "NullReferenceException with type \"" << typeName << "\"";
+        os << "NullReferenceException: " << message;
 }

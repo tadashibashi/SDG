@@ -54,27 +54,27 @@ using namespace std;
 static const float BackConst = 1.70158f;
 
 float
-SDG::TweenFunctions::Linear(float currentTime, float start, float relTarget, float duration)
+SDG::TweenF::Linear(float currentTime, float start, float relTarget, float duration)
 {
     return relTarget * currentTime / duration + start;
 }
 
 float
-SDG::TweenFunctions::EaseInQuad(float currentTime, float start, float relTarget, float duration)
+SDG::TweenF::EaseInQuad(float currentTime, float start, float relTarget, float duration)
 {
     currentTime /= duration;
     return relTarget * currentTime * currentTime + start;
 }
 
 float
-SDG::TweenFunctions::EaseOutQuad(float currentTime, float start, float relTarget, float duration)
+SDG::TweenF::EaseOutQuad(float currentTime, float start, float relTarget, float duration)
 {
     currentTime /= duration;
     return -relTarget * currentTime * (currentTime - 2) + start;
 }
 
 float
-SDG::TweenFunctions::EaseInOutQuad(float currentTime, float start, float relTarget, float duration)
+SDG::TweenF::EaseInOutQuad(float currentTime, float start, float relTarget, float duration)
 {
     currentTime /= duration / 2;
     if (currentTime < 1.f)
@@ -89,20 +89,20 @@ SDG::TweenFunctions::EaseInOutQuad(float currentTime, float start, float relTarg
 }
 
 float
-SDG::TweenFunctions::EaseInCubic(float currentTime, float start, float relTarget, float duration) {
+SDG::TweenF::EaseInCubic(float currentTime, float start, float relTarget, float duration) {
     currentTime /= duration;
     return relTarget * currentTime * currentTime * currentTime + start;
 }
 
 float
-SDG::TweenFunctions::EaseOutCubic(float currentTime, float start, float relTarget, float duration)
+SDG::TweenF::EaseOutCubic(float currentTime, float start, float relTarget, float duration)
 {
     currentTime = currentTime/duration - 1;
     return relTarget * (currentTime * currentTime * currentTime + 1) + start;
 }
 
 float
-SDG::TweenFunctions::EaseInOutCubic(float currentTime, float start, float relTarget, float duration)
+SDG::TweenF::EaseInOutCubic(float currentTime, float start, float relTarget, float duration)
 {
     currentTime /= duration/2.f;
     if (currentTime < 1.f)
@@ -117,39 +117,39 @@ SDG::TweenFunctions::EaseInOutCubic(float currentTime, float start, float relTar
 }
 
 float
-SDG::TweenFunctions::EaseInSine(float currentTime, float start, float relTarget, float duration)
+SDG::TweenF::EaseInSine(float currentTime, float start, float relTarget, float duration)
 {
     return -relTarget * cos(currentTime/duration * ((float)M_PI /2.f)) + relTarget + start;
 }
 
 float
-SDG::TweenFunctions::EaseOutSine(float currentTime, float start, float relTarget, float duration)
+SDG::TweenF::EaseOutSine(float currentTime, float start, float relTarget, float duration)
 {
     return relTarget * sin(currentTime / duration * ((float)M_PI/2.f)) + start;
 }
 
 float
-SDG::TweenFunctions::EaseInOutSine(float currentTime, float start, float relTarget, float duration)
+SDG::TweenF::EaseInOutSine(float currentTime, float start, float relTarget, float duration)
 {
     return -relTarget/2.f * (cos((float)M_PI*currentTime/duration) - 1.f) + start;
 }
 
 float
-SDG::TweenFunctions::EaseInBack(float currentTime, float start, float relTarget, float duration)
+SDG::TweenF::EaseInBack(float currentTime, float start, float relTarget, float duration)
 {
     float postfix = currentTime /= duration;
     return relTarget * postfix * currentTime * ((BackConst + 1) * currentTime - BackConst) + start;
 }
 
 float
-SDG::TweenFunctions::EaseOutBack(float currentTime, float start, float relTarget, float duration)
+SDG::TweenF::EaseOutBack(float currentTime, float start, float relTarget, float duration)
 {
     return relTarget * ((currentTime = currentTime/duration-1.f) * currentTime *
         ((BackConst + 1.f) * currentTime + BackConst) + 1.f) + start;
 }
 
 float
-SDG::TweenFunctions::EaseInOutBack(float currentTime, float start, float relTarget, float duration)
+SDG::TweenF::EaseInOutBack(float currentTime, float start, float relTarget, float duration)
 {
     float s = BackConst;
     if ((currentTime /= duration / 2.f) < 1) return relTarget / 2.f * (currentTime * currentTime *
@@ -159,21 +159,21 @@ SDG::TweenFunctions::EaseInOutBack(float currentTime, float start, float relTarg
 }
 
 float
-SDG::TweenFunctions::EaseInQuart(float currentTime, float start, float relTarget, float duration)
+SDG::TweenF::EaseInQuart(float currentTime, float start, float relTarget, float duration)
 {
     currentTime /= duration;
     return relTarget * currentTime * currentTime * currentTime * currentTime + start;
 }
 
 float
-SDG::TweenFunctions::EaseOutQuart(float currentTime, float start, float relTarget, float duration)
+SDG::TweenF::EaseOutQuart(float currentTime, float start, float relTarget, float duration)
 {
     currentTime = currentTime/duration - 1;
     return -relTarget * (currentTime * currentTime * currentTime * currentTime - 1) + start;
 }
 
 float
-SDG::TweenFunctions::EaseInOutQuart(float currentTime, float start, float relTarget, float duration)
+SDG::TweenF::EaseInOutQuart(float currentTime, float start, float relTarget, float duration)
 {
     currentTime /= duration / 2.f;
     if (currentTime < 1.f) return relTarget / 2.f * currentTime * currentTime * currentTime * currentTime + start;
@@ -182,21 +182,21 @@ SDG::TweenFunctions::EaseInOutQuart(float currentTime, float start, float relTar
 }
 
 float
-SDG::TweenFunctions::EaseInQuint(float currentTime, float start, float relTarget, float duration)
+SDG::TweenF::EaseInQuint(float currentTime, float start, float relTarget, float duration)
 {
     currentTime /= duration;
     return relTarget * currentTime * currentTime * currentTime * currentTime * currentTime + start;
 }
 
 float
-SDG::TweenFunctions::EaseOutQuint(float currentTime, float start, float relTarget, float duration)
+SDG::TweenF::EaseOutQuint(float currentTime, float start, float relTarget, float duration)
 {
     currentTime = currentTime/duration - 1;
     return -relTarget * (currentTime * currentTime * currentTime * currentTime * currentTime + 1) + start;
 }
 
 float
-SDG::TweenFunctions::EaseInOutQuint(float currentTime, float start, float relTarget, float duration)
+SDG::TweenF::EaseInOutQuint(float currentTime, float start, float relTarget, float duration)
 {
     currentTime /= duration / 2.f;
     if (currentTime < 1.f) return relTarget / 2.f * currentTime * currentTime * currentTime * currentTime * currentTime + start;
@@ -205,19 +205,19 @@ SDG::TweenFunctions::EaseInOutQuint(float currentTime, float start, float relTar
 }
 
 float
-SDG::TweenFunctions::EaseInExpo(float currentTime, float start, float relTarget, float duration)
+SDG::TweenF::EaseInExpo(float currentTime, float start, float relTarget, float duration)
 {
     return relTarget * pow(2.f, 10.f * (currentTime/duration - 1.f)) + start;
 }
 
 float
-SDG::TweenFunctions::EaseOutExpo(float currentTime, float start, float relTarget, float duration)
+SDG::TweenF::EaseOutExpo(float currentTime, float start, float relTarget, float duration)
 {
     return relTarget * (-pow(2.f, -10.f * currentTime / duration) + 1.f) + start;
 }
 
 float
-SDG::TweenFunctions::EaseInOutExpo(float currentTime, float start, float relTarget, float duration)
+SDG::TweenF::EaseInOutExpo(float currentTime, float start, float relTarget, float duration)
 {
     currentTime /= duration /2.f;
     if (currentTime < 1.f) return relTarget / 2.f * pow(2.f, 10.f * (currentTime - 1.f)) + start;
@@ -226,21 +226,21 @@ SDG::TweenFunctions::EaseInOutExpo(float currentTime, float start, float relTarg
 }
 
 float
-SDG::TweenFunctions::EaseInCirc(float currentTime, float start, float relTarget, float duration)
+SDG::TweenF::EaseInCirc(float currentTime, float start, float relTarget, float duration)
 {
     currentTime /= duration;
     return -relTarget * (sqrt(1.f - currentTime * currentTime) - 1.f ) + start;
 }
 
 float
-SDG::TweenFunctions::EaseOutCirc(float currentTime, float start, float relTarget, float duration)
+SDG::TweenF::EaseOutCirc(float currentTime, float start, float relTarget, float duration)
 {
     currentTime = currentTime / duration - 1.f;
     return relTarget * sqrt(1.f - currentTime * currentTime) + start;
 }
 
 float
-SDG::TweenFunctions::EaseInOutCirc(float currentTime, float start, float relTarget, float duration)
+SDG::TweenF::EaseInOutCirc(float currentTime, float start, float relTarget, float duration)
 {
     currentTime /= duration /2.f;
     if (currentTime < 1.f) return -relTarget / 2.f * (sqrt(1.f - currentTime * currentTime) -1.f) + start;
@@ -249,13 +249,13 @@ SDG::TweenFunctions::EaseInOutCirc(float currentTime, float start, float relTarg
 }
 
 float
-SDG::TweenFunctions::EaseInBounce(float currentTime, float start, float relTarget, float duration)
+SDG::TweenF::EaseInBounce(float currentTime, float start, float relTarget, float duration)
 {
     return relTarget - EaseOutBounce(duration-currentTime, 0, relTarget, duration) + start;
 }
 
 float
-SDG::TweenFunctions::EaseOutBounce(float currentTime, float start, float relTarget, float duration)
+SDG::TweenF::EaseOutBounce(float currentTime, float start, float relTarget, float duration)
 {
     if ((currentTime /= duration) < 1.f/2.75f)
         return relTarget * (7.5625f * currentTime * currentTime) + start;
@@ -277,7 +277,7 @@ SDG::TweenFunctions::EaseOutBounce(float currentTime, float start, float relTarg
 }
 
 float
-SDG::TweenFunctions::EaseInOutBounce(float currentTime, float start, float relTarget, float duration)
+SDG::TweenF::EaseInOutBounce(float currentTime, float start, float relTarget, float duration)
 {
     return (currentTime < duration / 2.f) ?
         EaseInBounce(currentTime * 2.f, 0, relTarget, duration) * .5f + start :

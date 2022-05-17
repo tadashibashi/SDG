@@ -1,29 +1,34 @@
-/**
- * Author: Aaron Ishibashi
- * Date: 3/18/2020
- *
- */
+/// Tween implementation file
 #include "Tween.h"
-#include <SDG/Math/Math.h>
-#include <utility>
-#include <cmath>
+#include <SDG/Debug/Trace.h>
+#include <SDG/Exceptions/InvalidArgumentException.h>
+#include <SDG/Exceptions/NullReferenceException.h>
 
 namespace SDG
 {
-    Tween::Tween(float start, float end, float duration, TweenFunction func,
+    Tween::Tween() :
+            func_(TweenF::Linear), duration_(),
+            onStep_(), isYoyo_()
+    {}
+
+    Tween::Tween(float duration, bool isYoyo, TweenFunction func,
                  std::function<void(float)> setter) :
-            currentTime_(),
             func_(func),
-            startVal_(start),
-            relVal_(end - start),
+            isYoyo_(isYoyo),
             duration_(duration),
-            setter_(std::move(setter)),
-            speed_(1.f),
-            isYoyo_(false)
+            onStep_(std::move(setter))
+    {}
+
+    Tween::Tween(float duration, bool isYoyo, TweenFunction func, Ref<float> ref)
+            : duration_(duration), isYoyo_(isYoyo),
+              func_(func), onStep_(
+                    [&ref](float i)->void
+                    {
+                        *ref = i;
+                    })
     {}
 
     // ===== Setters ==========================================================
-
     Tween&
     Tween::OnFinish(std::function<void()> cb)
     {
@@ -31,135 +36,46 @@ namespace SDG
         return *this;
     }
 
-    Tween&
-    Tween::OnStep(std::function<void(float)> cb)
+    Tween &
+    Tween::OnStep(std::function<void(float)> setter)
     {
-        onStep_ = std::move(cb);
-        return *this;
-    }
-
-    Tween&
-    Tween::Yoyo(bool yoyo) {
-        isYoyo_ = yoyo;
+        onStep_ = std::move(setter);
         return *this;
     }
 
     Tween &
-    Tween::ChangeTarget(const std::function<void(float)> &setter)
+    Tween::Set(float duration, bool isYoyo, TweenFunction func)
     {
-        setter_ = setter;
-        return *this;
-    }
-
-    // ===== Playback Control =================================================
-
-    Tween &
-    Tween::Stop()
-    {
-        state = State::Inactive;
-        Reset();
-
-        return *this;
-    }
-
-    Tween &
-    Tween::Reset()
-    {
-        currentTime_ = 0;
-        state = State::Inactive;
-
-        return *this;
-    }
-
-    Tween &
-    Tween::Reset(float startVal, float endVal, float duration, TweenFunction func)
-    {
-        startVal_ = startVal;
-        relVal_ = endVal - startVal_;
         duration_ = duration;
+        isYoyo_ = isYoyo;
         func_ = func;
 
-        Reset();
-
         return *this;
     }
 
-    // ===== Runtime Impl ==========================================================
-
-    void
-    Tween::Update(const float deltaTime)
-    {
-        if (!paused_)
-            return;
-
-        switch(state)
-        {
-            case State::Inactive:
-                break;
-            case State::Forward: // actively moving forward
-                ApplyCurrentValue();
-                UpdateTimeCounter(deltaTime);
-
-                // State-leaving logic
-                if (currentTime_ >= duration_)
-                {
-                    if (isYoyo_)
-                    {
-                        state = State::Backward;
-                        // any time exceeding the duration gets reflected back
-                        currentTime_ = duration_ - (currentTime_ - duration_);
-                    }
-                    else
-                    {
-                        state = State::Inactive;
-                        currentTime_ = duration_; // clamp time counter
-                        if (onFinish_)
-                            onFinish_();
-                    }
-                }
-                break;
-            case State::Backward: // actively yoyo-ing backward
-                ApplyCurrentValue();
-                UpdateTimeCounter(deltaTime);
-
-                // State-leaving logic
-                if (currentTime_ <= 0)
-                {
-                    // Just set to inactive and finish for now. May add ability to add
-                    // multiple times to run Tween later.
-                    state = State::Inactive;
-                    currentTime_ = 0;
-                    if (onFinish_)
-                        onFinish_();
-                }
-
-                break;
-        }
+    Tween&
+    Tween::Yoyo(bool isYoyo) {
+        isYoyo_ = isYoyo;
+        return *this;
     }
 
-    void Tween::ApplyCurrentValue()
+    float Tween::CalculateValue(float seconds) const
     {
-        // Make sure there is a function to calculate values by
-        if (func_)
-        {
-            // calculate the current value
-            float val = func_(currentTime_, startVal_, relVal_,
-                              duration_);
+        // Cannot calculate a value if there is no TweenFunction to perform.
+        if (!func_)
+            throw NullReferenceException(SDG_TRACE() + "Tween is missing "
+                   "a TweenFunction");
 
-            val = Math::Clamp<float>(val, startVal_, startVal_ + relVal_);
-
-            // apply value to the setter function (if there is one)
-            if (setter_) setter_(val);
-
-            // fire step callback
-            if (onStep_) onStep_(val);
-        }
+        return func_(seconds, 0, 1.0f, duration_);
     }
 
-    void Tween::UpdateTimeCounter(float deltaTime)
+    Tween &Tween::Duration(float duration)
     {
-        // update time counter
-        currentTime_ += deltaTime * speed_ *
-                        ((state == State::Backward) ? -1.f : 1.f);
+        if (duration < 0)
+            throw InvalidArgumentException("Tween::Duration(float duration)",
+                   "duration", "duration must be >= 0");
+        duration_ = duration;
+        return *this;
     }
-}
+
+} /* end namespace SDG */

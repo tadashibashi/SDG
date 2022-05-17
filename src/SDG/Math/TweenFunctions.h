@@ -7,7 +7,7 @@ namespace SDG
     // Type of function to transform a Tween
     // The parameters are: currentTime, start, relativeTarget, duration
     typedef float(*TweenFunction)(float, float, float, float);
-    namespace TweenFunctions
+    namespace TweenF
     {
         float Linear(float currentTime, float start, float relTarget, float duration);
 

@@ -15,12 +15,6 @@ TEST_CASE("NullReferenceException tests", "[NullReferenceException]")
         REQUIRE(strcmp(e.what(), "NullReferenceException") == 0);
     }
 
-    SECTION("string constructor message: class name string")
-    {
-        NullReferenceException e("App");
-        REQUIRE(strcmp(e.what(), "NullReferenceException with type \"App\"") == 0);
-    }
-
     SECTION("Can be thrown and received by class name")
     {
         bool wasCaught = false;

@@ -24,8 +24,6 @@ SDG::XMLReader::ParseGameConfig(const Path &path, GameConfig *config)
         return false;
     }
 
-
-
     // Retrieve the window element
     XMLDocument doc; XMLElement *root, *win, *app;
     {
@@ -37,13 +35,6 @@ SDG::XMLReader::ParseGameConfig(const Path &path, GameConfig *config)
             SDG_Err("Could not parse game config file. The xml file is missing a root element.");
             return false;
         }
-
-//        app = root->FirstChildElement("app");
-//        if (!app)
-//        {
-//            SDG_Err("Could not parse game config file. It's missing an app element.");
-//            return false;
-//        }
 
         win = root->FirstChildElement("window");
         if (!win)
@@ -62,14 +53,6 @@ SDG::XMLReader::ParseGameConfig(const Path &path, GameConfig *config)
         CheckResult(win->QueryAttribute("title", &tTitle), "querying title attribute");
     }
 
-//    const char *tAppName, *tAppOrg;
-//    {
-//        CheckResult(app->QueryAttribute("name", &tAppName), "querying name attribute from app");
-//        CheckResult(app->QueryAttribute("org", &tAppOrg), "querying org attribute from app");
-//    }
-
-//    config->appName = tAppName;
-//    config->appOrg = tAppOrg;
     config->title = tTitle;
     config->width = tWidth;
     config->height = tHeight;

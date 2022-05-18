@@ -54,3 +54,15 @@ SDG::FileSys::PrefPath() const
 
     return prefPath;
 }
+
+SDG::FileSys::FileSys(const string &pAppName, const string &pOrgName)
+    : appName(pAppName), orgName(pOrgName), basePath(), prefPath()
+{
+
+}
+
+SDG::FileSys::FileSys()
+        : appName(), orgName(), basePath(), prefPath()
+{
+
+}

@@ -13,9 +13,8 @@ TEST_CASE("Path", "[path]")
 #endif
 
     // Set up file system
-    FileSys fileSys;
-    fileSys.Initialize("SDG Tests", "SDG"); // creates the app pref folder and filepaths
-    Path::SetFileSys(Ref(fileSys));         // gives Path class access to these paths.
+    FileSys fileSys("SDG Tests", "SDG");
+    Path::PushFileSys(Ref(fileSys));         // gives Path class access to these paths.
                                             // Changable if you want to use a different
                                             // set of folders.
 
@@ -425,6 +424,20 @@ TEST_CASE("Path", "[path]")
     SECTION("Path default creates a Path with BaseDir::None")
     {
         REQUIRE(Path().Base() == Path::BaseDir::None);
+    }
+
+    SECTION("PopFileSys removes latest FileSys")
+    {
+        std::string prefPath1 = PrefPath().String();
+
+        FileSys sys2("SDG Different FileSys Test", "SDG");
+        Path::PushFileSys(Ref(sys2));
+        std::string prefPath2 = PrefPath().String();
+        Path::PopFileSys();
+        std::string prefPath3 = PrefPath().String();
+
+        REQUIRE(prefPath2 != prefPath1);
+        REQUIRE(prefPath1 == prefPath3);
     }
 
 } /* End TEST_CASE for class Path */

@@ -9,6 +9,6 @@ namespace SDG
     {
         int width, height;
         bool fullscreen;
-        std::string appName, appOrg, title;
+        std::string title;
     };
 }

@@ -10,12 +10,19 @@
 
 namespace SDG
 {
-    Ref<FileSys> Path::fileSys;
+    std::stack<Ref<FileSys>> Path::fileSys;
 
     void
-    Path::SetFileSys(Ref<FileSys> system)
+    Path::PushFileSys(Ref<FileSys> system)
     {
-        Path::fileSys = system;
+        Path::fileSys.push(system);
+    }
+
+    void
+    Path::PopFileSys()
+    {
+        if (!Path::fileSys.empty())
+            Path::fileSys.pop();
     }
 
     Path::Path() : subpath(), base(BaseDir::None)
@@ -104,7 +111,7 @@ namespace SDG
     std::string Path::String() const
     {
         // FileSys must have been set
-        SDG_Assert(fileSys);
+        SDG_Assert(!fileSys.empty());
         switch(base)
         {
             case BaseDir::None: return subpath;
@@ -116,8 +123,8 @@ namespace SDG
 #endif
             subpath;
 
-            case BaseDir::Base: return fileSys->BasePath() + subpath;
-            case BaseDir::Pref: return fileSys->PrefPath() + subpath;
+            case BaseDir::Base: return fileSys.top()->BasePath() + subpath;
+            case BaseDir::Pref: return fileSys.top()->PrefPath() + subpath;
         }
 
         throw std::runtime_error("SDG::Path::base member value not recognized.");

@@ -11,6 +11,7 @@
 #include <iosfwd>
 #include <string>
 #include <SDG/Ref.h>
+#include <stack>
 
 namespace SDG
 {
@@ -70,11 +71,19 @@ namespace SDG
         /// You can add strings to the Path, which is appended to the internal subpath
         Path &operator += (const std::string &str);
 
-        static void SetFileSys(Ref<FileSys> system);
+        /// Set the current file system that each Path object will evaluate paths by.
+        /// All calls to String() are affected. Therefore, one Path object may
+        /// evaluate a different String() once the FileSys has changed.
+        /// In this way, multiple FileSys objects are supported, but one should be careful
+        /// to return the FileSys to the original expected system by calling PopFileSys() afterward.
+        static void PushFileSys(Ref<FileSys> system);
+
+        /// Removes the last FileSys that was pushed.
+        static void PopFileSys();
     private:
         std::string subpath;
         BaseDir base;
-        static Ref<FileSys> fileSys;
+        static std::stack<Ref<FileSys>> fileSys;
     };
 
     /// Helper: creates a path stemming from the app personal preference directory (read/write)

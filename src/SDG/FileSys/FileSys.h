@@ -16,6 +16,8 @@ namespace SDG
     class FileSys
     {
     public:
+        FileSys();
+        FileSys(const std::string &pAppName, const std::string &pOrgName);
         /// Gets the path to the program's base directory, including the final slash.
         /// e.g. "path/to/root/".
         /// On Mac, this points to the app's Resource folder.

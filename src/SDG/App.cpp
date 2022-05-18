@@ -22,7 +22,7 @@ static void EmMainLoop(void *arg)
 #endif
 
 struct SDG::App::Impl {
-    Impl() : window(), isRunning(), time() {}
+    Impl(const std::string &appName, const std::string &orgName) : window(), isRunning(), time(), fileSys(appName, orgName) {}
     SDG::Window window;
     bool isRunning;
     SDG::Time time;
@@ -30,11 +30,11 @@ struct SDG::App::Impl {
     SDG::GameConfig config;
 };
 
-SDG::App::App(const std::string &appName, const std::string &orgName, const Path &configPath) : impl(new Impl)
+SDG::App::App(const std::string &appName, const std::string &orgName, const Path &configPath) :
+    impl(new Impl(appName, orgName))
 {
-    // Initialize file system
-    impl->fileSys.Initialize(appName, orgName);
-    Path::SetFileSys(Ref(impl->fileSys));
+    // Make our app's FileSys current
+    Path::PushFileSys(Ref(impl->fileSys));
 
     // Get game settings from config file
     GameConfig config;

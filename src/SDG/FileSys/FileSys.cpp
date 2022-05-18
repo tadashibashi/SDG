@@ -12,7 +12,7 @@ SDG::FileSys::Initialize(const std::string &pAppName, const std::string &pOrgNam
 }
 
 std::string
-SDG::FileSys::BasePath()
+SDG::FileSys::BasePath() const
 {
     if (basePath.empty())
     {
@@ -33,9 +33,8 @@ SDG::FileSys::BasePath()
 }
 
 
-
 std::string
-SDG::FileSys::PrefPath()
+SDG::FileSys::PrefPath() const
 {
     if (prefPath.empty())
     {

@@ -13,8 +13,10 @@ namespace SDG
         Both
     };
 
-    extern
-
-    /// Translates an SDG::Flip to a GPU_Flip flag
-    uint32_t ToGPUFlip(Flip flip);
+    /// Namespace for conversion functions
+    namespace Conv
+    {
+        /// Converts an SDG::Flip to a GPU_Flip flag
+        uint32_t ToGPUFlip(Flip flip);
+    }
 }

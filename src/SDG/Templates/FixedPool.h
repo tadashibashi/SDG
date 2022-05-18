@@ -4,24 +4,26 @@
 
 #include <cstdlib>
 #include <type_traits>
-#include <deque>
+#include <vector>
 
-#include <SDG/Debug/Assert.h>
-#include <SDG/Exceptions/OutOfRangeException.h>
-#include <SDG/Exceptions/InvalidArgumentException.h>
-#include <SDG/Ref.h>
+#include "SDG/Debug/Assert.h"
+#include "SDG/Exceptions/OutOfRangeException.h"
+#include "SDG/Exceptions/InvalidArgumentException.h"
+#include "SDG/Ref.h"
 
 namespace SDG
 {
+    /// Slightly more efficient version of Pool since it does not expand. All data is
+    /// contiguous, speeding up indexing and iteration times.
     template <typename T>
-    class Pool
+    class FixedPool
     {
         static_assert(std::is_default_constructible_v<T>,
-                "Pooled type must be default constructable");
+                      "Pooled type must be default constructable");
     public:
         /// Creates a pool with a specified size, default: 256.
         /// Throws InvalidArgumentException if the size exceeds its max size.
-        Pool(size_t initSize = 256);
+        FixedPool(size_t size);
 
         /// Checks out a fresh Pool object ID.
         /// Pool::operator[] can be used to get a ref to the actual object.
@@ -78,10 +80,9 @@ namespace SDG
         [[nodiscard]]
         Capsule &GetCapsule(const PoolID &id);
 
-        void Expand(size_t size);
-
         /// pool storage
-        std::deque<Capsule> pool;
+        std::vector<Capsule> pool;
+
         /// assigner of unique id #'s to pool objects
         size_t ticket;
         size_t aliveCount;
@@ -90,21 +91,37 @@ namespace SDG
 
 
     template<typename T>
-    Pool<T>::Pool(size_t initSize) : pool(), ticket(0), nextFree(PoolNullIndex),
-        aliveCount(0)
+    FixedPool<T>::FixedPool(size_t size) : pool(), ticket(0), nextFree(PoolNullIndex),
+                                           aliveCount(0)
     {
-        Expand(initSize);
+        // Check for errors
+        if (size > MaxSize())
+        {
+            throw InvalidArgumentException("Pool::Pool(size_t initSize)",
+                                           "initSize", "initCap must be <= Pool<T>::MaxSize(): " +
+                                                       std::to_string(MaxSize()) + ", but got " + std::to_string(size));
+        }
+
+        // Perform resize, and set pool capsule values
+        pool.resize(size);
+
+        for (size_t i = 0; i < size; ++i)
+        {
+            Capsule &capsule = pool[i];
+
+            capsule.next = (i < size - 1) ? i + 1 : PoolNullIndex;
+        }
+
+        nextFree = 0;
     }
 
     template<typename T>
-    PoolID Pool<T>::Checkout()
+    PoolID FixedPool<T>::Checkout()
     {
         // Check if Pool must be expanded
         if (nextFree == PoolNullIndex)
         {
-            // Upon Pool expansion, nextFree will be udpated.
-            // Will throw if pool's MaxSize has been exceeded.
-            Expand(std::min(pool.size() * 2 + 1, MaxSize()));
+            throw RuntimeException("Cannot call Checkout on an empty FixedPool.");
         }
 
         size_t index = nextFree;
@@ -126,14 +143,14 @@ namespace SDG
 
 
     template<typename T>
-    bool Pool<T>::IDValid(const PoolID &id)
+    bool FixedPool<T>::IDValid(const PoolID &id)
     {
         return IsValid(id, GetCapsule(id));
     }
 
 
     template<typename T>
-    void Pool<T>::PutBackAll()
+    void FixedPool<T>::PutBackAll()
     {
         size_t index = 0;
         for (Capsule &capsule : pool)
@@ -154,7 +171,7 @@ namespace SDG
 
 
     template<typename T>
-    void Pool<T>::PutBack(const PoolID &id)
+    void FixedPool<T>::PutBack(const PoolID &id)
     {
         SDG_Assert(id.index < pool.size());
 
@@ -172,7 +189,7 @@ namespace SDG
 
 
     template<typename T>
-    size_t Pool<T>::MaxSize() const
+    size_t FixedPool<T>::MaxSize() const
     {
         // -1 in case max_size == PoolNullIndex for some reason
         return pool.max_size()-1;
@@ -180,10 +197,9 @@ namespace SDG
 
 
     template<typename T>
-    Ref<T> Pool<T>::operator[](const PoolID &id)
+    Ref<T> FixedPool<T>::operator[](const PoolID &id)
     {
         Capsule &capsule = GetCapsule(id);
-
         return IsValid(id, capsule) ?
                Ref{capsule.object} :
                Ref<T>{};
@@ -192,37 +208,8 @@ namespace SDG
 
     // ========== Helper functions ==========
 
-
     template<typename T>
-    void Pool<T>::Expand(size_t size)
-    {
-        size_t current = pool.size();
-
-        // Check for errors
-        if (size > MaxSize())
-        {
-            throw InvalidArgumentException("Pool::Pool(size_t initSize)",
-                                           "initSize", "initCap must be <= Pool<T>::MaxSize(): " +
-                                                       std::to_string(MaxSize()) + ", but got " + std::to_string(size));
-        }
-        if (!(size > current))
-            throw OutOfRangeException(size, "Pool most likely has reached maximum size.");
-
-        // Perform resize, and set pool capsule values
-        pool.resize(size);
-
-        for (size_t i = current; i < size; ++i)
-        {
-            Capsule &capsule = pool[i];
-
-            capsule.next = (i == current) ? nextFree : i - 1;
-        }
-        nextFree = size - 1;
-    }
-
-
-    template<typename T>
-    typename Pool<T>::Capsule &Pool<T>::GetCapsule(const PoolID &id)
+    typename FixedPool<T>::Capsule &FixedPool<T>::GetCapsule(const PoolID &id)
     {
         SDG_Assert(id.index < pool.size());
         return pool[id.index];
@@ -230,7 +217,7 @@ namespace SDG
 
 
     template<typename T>
-    bool Pool<T>::IsValid(const PoolID &id, const Pool::Capsule &capsule)
+    bool FixedPool<T>::IsValid(const PoolID &id, const Capsule &capsule)
     {
         return (capsule.id == id.id && capsule.isAlive);
     }

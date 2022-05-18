@@ -2,7 +2,7 @@
 #include "Private/TranslateFlip.h"
 
 uint32_t
-SDG::ToGPUFlip(SDG::Flip flip)
+SDG::Conv::ToGPUFlip(SDG::Flip flip)
 {
     return TranslateFlip[(int)flip];
 }

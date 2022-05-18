@@ -2,7 +2,14 @@
 #include <SDG/Debug/Assert.h>
 #include <SDL_error.h>
 #include <SDL_filesystem.h>
-#include <stdexcept>
+#include <SDG/Exceptions/RuntimeException.h>
+
+void
+SDG::FileSys::Initialize(const std::string &pAppName, const std::string &pOrgName)
+{
+    appName = pAppName;
+    orgName = pOrgName;
+}
 
 std::string
 SDG::FileSys::BasePath()
@@ -12,7 +19,7 @@ SDG::FileSys::BasePath()
         char *temp = SDL_GetBasePath();
         if (!temp)
         {
-            throw std::runtime_error(
+            throw RuntimeException(
                     std::string("Problem retrieving BasePath: ") +
                     SDL_GetError());
         }
@@ -25,12 +32,7 @@ SDG::FileSys::BasePath()
     return basePath;
 }
 
-void
-SDG::FileSys::Initialize(const std::string &pAppName, const std::string &pOrgName)
-{
-    appName = pAppName;
-    orgName = pOrgName;
-}
+
 
 std::string
 SDG::FileSys::PrefPath()
@@ -40,7 +42,7 @@ SDG::FileSys::PrefPath()
         char *tPrefPath = SDL_GetPrefPath(orgName.c_str(), appName.c_str());
         if (!tPrefPath)
         {
-            throw std::runtime_error(
+            throw RuntimeException(
                     std::string("Problem retrieving PrefPath: ") +
                     SDL_GetError());
         }

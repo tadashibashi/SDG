@@ -1,11 +1,11 @@
 #pragma once
-#include "Exception.h"
+#include "RuntimeException.h"
 #include <string>
 
 namespace SDG
 {
     /// Exception intended for indexers that have exceeded a container's bounds.
-    class OutOfRangeException : public Exception
+    class OutOfRangeException : public RuntimeException
     {
     public:
         OutOfRangeException(int64_t value, const std::string &info);

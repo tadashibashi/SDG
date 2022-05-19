@@ -15,6 +15,7 @@
 
 namespace SDG
 {
+    // ===== Implementation ===================================================
     struct Window::Impl {
         Impl() : target(), title(), icon() {}
         RenderTarget    target;
@@ -22,10 +23,12 @@ namespace SDG
         CRef<Texture2D> icon;
     };
 
+    // ===== Window static variables ==========================================
     size_t Window::windowCount;
     bool Window::manageGraphics;
     Delegate<> Window::OnAllClosed;
 
+    // ===== Window Initialization ============================================
     Window::Window() : impl(new Impl), On{}
     {
 
@@ -109,6 +112,7 @@ namespace SDG
         }
     }
 
+    // ===== Driver ===========================================================
     void
     Window::ProcessInput(const SDL_WindowEvent &ev)
     {
@@ -194,7 +198,7 @@ namespace SDG
        impl->target.Clear(color);
     }
 
-    /// ======= SETTERS =========
+    // ======= Setters ========================================================
 
     Window &
     Window::Title(const char *title)
@@ -350,7 +354,8 @@ namespace SDG
         SDL_Surface *surf = GPU_CopySurfaceFromImage(texture->Image().Get());
         if (!surf)
         {
-            SDG_Err("Failed to copy SDL_Surface from GPU_Image: {}", GPU_GetErrorString(GPU_PopErrorCode().error));
+            SDG_Err("Failed to copy SDL_Surface from GPU_Image: {}",
+                    GPU_GetErrorString(GPU_PopErrorCode().error));
         }
 
         SDL_SetWindowIcon(GetWindow(impl->target), surf);
@@ -360,7 +365,7 @@ namespace SDG
         return *this;
     }
 
-    /// ========= GETTERS ========
+    // ========= Getters ======================================================
 
     std::string
     Window::Title() const
@@ -484,7 +489,8 @@ namespace SDG
         return impl->icon;
     }
 
-    bool Window::IsOpen() const
+    bool
+    Window::IsOpen() const
     {
         return impl->target.IsOpen();
     }

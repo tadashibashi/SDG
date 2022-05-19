@@ -174,13 +174,19 @@ namespace SDG
 
         uint32_t Id() const;
 
-        /// Tells Window whether to handle the graphics library cleanup on its own.
-        /// Cleanup would happen right when the last Window is closed.
-        /// Default: false, does not manage the library cleanup.
-        /// Useful for programs not using a GraphicsMgr-type object to handle this.
-        /// In this case, a listener should be set to close the application
-        /// just before the last Window is closed.
+        /// Tells Window class whether to handle the graphics library cleanup on its own.
+        /// If set to true, cleanup will automatically happen right when the last Window is closed.
+        /// Default: false
+        /// This behavior was made for programs not using a graphics/window manager-type object
+        /// to handle this. When set to true, a listener should be added to Window::OnAllClosed to
+        /// shutdown the rest of the application that may otherwise depend on the graphics library
+        /// for shutdown logic, such as receiving the SDL_QUIT event just before the last Window is closed.
+        /// Even if set to true, please make sure to shutdown any auxilliary libraries like SDL_ttf, mix, net, etc.
+        /// on your own.
         static void StandaloneMode(bool manage) { manageGraphics = manage; }
+
+        static Delegate<> OnAllClosed;
+
     private:
         Impl *impl;
         static size_t windowCount;

@@ -24,6 +24,7 @@ namespace SDG
 
     size_t Window::windowCount;
     bool Window::manageGraphics;
+    Delegate<> Window::OnAllClosed;
 
     Window::Window() : impl(new Impl), On{}
     {
@@ -95,10 +96,15 @@ namespace SDG
             impl->target.Close();
 
             --windowCount;
-            if (manageGraphics && windowCount == 0)
+            if (windowCount == 0)
             {
-                TTF_Quit();
-                GPU_Quit();
+                OnAllClosed.Invoke();
+
+                if (manageGraphics)
+                {
+                    GPU_Quit();
+                }
+
             }
         }
     }
@@ -249,7 +255,8 @@ namespace SDG
         return *this;
     }
 
-    Window &Window::Minimized(bool minimized)
+    Window &
+    Window::Minimized(bool minimized)
     {
         if (minimized)
             SDL_MinimizeWindow(GetWindow(impl->target));
@@ -258,16 +265,17 @@ namespace SDG
         return *this;
     }
 
-    Window &Window::MinimumSize(Point size)
+    Window &
+    Window::MinimumSize(Point size)
     {
-        if (size.X() < 0)
+        if (size.X() < 1)
         {
-            SDG_Warn("Window::MinimumSize size.X() must be > 0; setting it to 0");
+            SDG_Warn("Window::MinimumSize size.X() must be > 0; setting it to 1");
             size.X(1);
         }
-        if (size.Y() < 0)
+        if (size.Y() < 1)
         {
-            SDG_Warn("Window::MinimumSize size.Y() must be > 0; setting it to 0");
+            SDG_Warn("Window::MinimumSize size.Y() must be > 0; setting it to 1");
             size.Y(1);
         }
 
@@ -283,16 +291,17 @@ namespace SDG
         return *this;
     }
 
-    Window &Window::MaximumSize(Point size)
+    Window &
+    Window::MaximumSize(Point size)
     {
         if (size.X() < 1)
         {
-            SDG_Warn("Window::MaximumSize size.X() must be greater than 0; setting it to 1");
+            SDG_Warn("Window::MaximumSize size.X() must be > 0; setting it to 1");
             size.X(1);
         }
         if (size.Y() < 1)
         {
-            SDG_Warn("Window::MaximumSize size.Y() must be greater than 0; setting it to 1");
+            SDG_Warn("Window::MaximumSize size.Y() must be > 0; setting it to 1");
             size.Y(1);
         }
 
@@ -307,19 +316,22 @@ namespace SDG
         return *this;
     }
 
-    Window &Window::MouseGrabbed(bool mouseGrabbed)
+    Window &
+    Window::MouseGrabbed(bool mouseGrabbed)
     {
         SDL_SetWindowMouseGrab(GetWindow(impl->target), (SDL_bool)mouseGrabbed);
         return *this;
     }
 
-    Window &Window::AlwaysOnTop(bool alwaysOnTop)
+    Window &
+    Window::AlwaysOnTop(bool alwaysOnTop)
     {
         SDL_SetWindowAlwaysOnTop(GetWindow(impl->target), (SDL_bool)alwaysOnTop);
         return *this;
     }
 
-    Window &Window::Hidden(bool hidden)
+    Window &
+    Window::Hidden(bool hidden)
     {
         if (hidden)
             SDL_HideWindow(GetWindow(impl->target));
@@ -329,7 +341,8 @@ namespace SDG
         return *this;
     }
 
-    Window &Window::Icon(CRef<Texture2D> texture)
+    Window &
+    Window::Icon(CRef<Texture2D> texture)
     {
         if (!texture)
             throw NullReferenceException("Texture2D");

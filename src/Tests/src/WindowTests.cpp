@@ -557,5 +557,34 @@ TEST_CASE("Window tests", "[Window]")
 
             REQUIRE(Window::Count() == 1);
         }
+
+        SECTION("OnAllClosed received")
+        {
+            bool onAllClosedRecd = false;
+            std::function<void()> onAllClosedHandler = [&onAllClosedRecd]() {
+                onAllClosedRecd = true;
+            };
+            Window::OnAllClosed.AddListener(&onAllClosedHandler);
+
+            REQUIRE(SDL_WasInit(0) != 0);
+            window.Close();
+            REQUIRE(onAllClosedRecd);
+            REQUIRE(SDL_WasInit(0) == 0);
+        }
+    }
+}
+
+TEST_CASE("Window manual graphics lib mode", "[Window]")
+{
+    Window::StandaloneMode(false);
+    Window window;
+    window.Initialize(100, 100, "Window Manual Mode Test", 0);
+
+    SECTION("Closing the last window does not shut down SDL2")
+    {
+        window.Close();
+        REQUIRE(SDL_WasInit(0) != 0);
+        GPU_Quit();
+        REQUIRE(SDL_WasInit(0) == 0);
     }
 }

@@ -1,8 +1,10 @@
 #include "Texture2D.h"
+#include "RenderTarget.h"
 #include <SDG/FileSys/File.h>
 #include <SDG/Debug.hpp>
 #include <SDL_gpu.h>
 #include <memory>
+#include <SDG/Graphics/Window.h>
 
 // Prevent Windows API macro clashes
 #ifdef M_PI
@@ -41,9 +43,9 @@ namespace SDG
 
     }
 
-    Texture2D::Texture2D(const Path &path) : impl(new Impl)
+    Texture2D::Texture2D(const Path &path, Ref<Window> target) : impl(new Impl)
     {
-        LoadImage(path);
+        LoadImage(path, target);
     }
 
     Texture2D::~Texture2D()
@@ -60,7 +62,7 @@ namespace SDG
 
 
     bool
-    Texture2D::LoadImage(const Path &path)
+    Texture2D::LoadImage(const Path &path, Ref<Window> target)
     {
         // Make sure the texture is clean before loading
         Free();
@@ -79,6 +81,7 @@ namespace SDG
             return false;
         }
 
+        GPU_MakeCurrent(target->Target()->Target().Get(), target->Id());
         GPU_Image *tempImage = GPU_LoadImage_RW(io, true);
         if (!tempImage)
         {

@@ -34,11 +34,12 @@
 namespace SDG
 {
     template <typename T>
-    class Ref {
+    class Ref 
+    {
     public:
         Ref() : ref() { }
-        explicit Ref(T &ref) : ref(&ref) { }
-        explicit Ref(T *ref) : ref(ref) { }
+        Ref(T &ref) : ref(&ref) { }
+        Ref(T *ref) : ref(ref) { }
 
         /// Get the internal ptr. Please do not call delete on it, since it is owned
         /// by the object this reference was retrieved from.
@@ -70,8 +71,8 @@ namespace SDG
     class CRef {
     public:
         CRef() : ref() { }
-        explicit CRef(T *ref) : ref(ref) { }
-        explicit CRef(T &ref) : ref(&ref) { }
+        CRef(T *ref) : ref(ref) { }
+        CRef(T &ref) : ref(&ref) { }
 
         /// Get internal ptr
         const T *Get() const { return ref; }
@@ -84,68 +85,70 @@ namespace SDG
     private:
         const T *ref;
     };
-}
 
-template<typename T>
-bool
-SDG::Ref<T>::operator==(const Ref &other)
-{
-    return ref == other.ref;
-}
 
-template<typename T>
-bool
-SDG::Ref<T>::operator!=(const Ref &other)
-{
-    return ref != other.ref;
-}
+    template<typename T>
+    bool
+    Ref<T>::operator==(const Ref &other)
+    {
+        return ref == other.ref;
+    }
 
-template<typename T>
-T *
-SDG::Ref<T>::operator->() const
-{
-    if (!ref) /// Prevent access to a nullptr
-        throw NullReferenceException();
-    return ref;
-}
+    template<typename T>
+    bool
+    Ref<T>::operator!=(const Ref &other)
+    {
+        return ref != other.ref;
+    }
 
-template<typename T>
-T &
-SDG::Ref<T>::operator *() const
-{
-    if (!ref) /// Prevent access to a nullptr
-        throw NullReferenceException();
-    return *ref;
-}
+    template<typename T>
+    T *
+    Ref<T>::operator->() const
+    {
+        if (!ref) /// Prevent access to a nullptr
+            throw NullReferenceException();
+        return ref;
+    }
 
-template<typename T>
-const T *
-SDG::CRef<T>::operator->() const
-{
-    if (!ref) /// Prevent access to a nullptr
-        throw NullReferenceException();
-    return ref;
-}
+    template<typename T>
+    T &
+    Ref<T>::operator *() const
+    {
+        if (!ref) /// Prevent access to a nullptr
+            throw NullReferenceException();
+        return *ref;
+    }
 
-template<typename T>
-const T &
-SDG::CRef<T>::operator *() const
-{
-    if (!ref) /// Prevent access to a nullptr
-        throw NullReferenceException();
-    return *ref;
-}
+    template<typename T>
+    const T *
+    CRef<T>::operator->() const
+    {
+        if (!ref) /// Prevent access to a nullptr
+            throw NullReferenceException();
+        return ref;
+    }
 
-template<typename T>
-bool
-SDG::CRef<T>::operator==(const CRef &other)
-{
-    return ref == other.ref;
-}
+    template<typename T>
+    const T &
+    CRef<T>::operator *() const
+    {
+        if (!ref) /// Prevent access to a nullptr
+            throw NullReferenceException();
+        return *ref;
+    }
 
-template<typename T>
-bool
-SDG::CRef<T>::operator!=(const CRef &other)
-{
-    return ref != other.ref;
+    template<typename T>
+    bool
+    CRef<T>::operator==(const CRef &other)
+    {
+        return ref == other.ref;
+    }
+
+    template<typename T>
+    bool
+    CRef<T>::operator!=(const CRef &other)
+    {
+        return ref != other.ref;
+    }
+
 }

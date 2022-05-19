@@ -9,13 +9,18 @@
 #include <SDG/Ref.h>
 #include <SDG/ClassMacros.h>
 #include <SDG/Math/Rectangle.h>
+#include "RenderTarget.h"
 #include <string>
+
+// forward declaration
+struct SDL_WindowEvent;
 
 namespace SDG
 {
-    class RenderTarget;
+    // forward declaration
     class Texture2D;
 
+    /// Manages one application window.
     class Window
     {
         struct Impl;
@@ -25,8 +30,8 @@ namespace SDG
 
         /// Opens the Window and initializes the internal graphics library.
         /// If called a second time, it will close the existing window, and re-open a new one.
-        /// @param width  window width, must be larger than 0. Throws assertion exception if in Debug mode if not.
-        /// @param height window height, must be larger than 0. Throws assertion exception if in Debug mode if not.
+        /// @param width  window width, must be 0 or larger
+        /// @param height window height, must be 0 or larger
         /// @param title  window title
         /// @param flags  SDL2 Window flags
         bool Initialize(int width, int height, const char *title, unsigned flags = 0);
@@ -39,11 +44,10 @@ namespace SDG
         /// Displays the graphics that were drawn to the Window.
         void SwapBuffers();
 
-        /// Accepts and processes a pointer to an SDL2 event object.
-        /// It must be an SDL_Event with type SDL_WINDOWEVENT.
-        /// Void pointer is used to avoid having to include the SDL header here.
-        /// This function is usually placed inside of an SDL_PollEvents while block.
-        void ProcessInput(void *evt);
+        /// Drives event input to the window.
+        /// Please pass all window events to this function. It automatically
+        /// detects which window events pertain to this Window by id.
+        void ProcessInput(const SDL_WindowEvent &ev);
 
         // === Setters ===
         Window &Title(const char *title);
@@ -65,8 +69,10 @@ namespace SDG
         Window &MouseGrabbed(bool mouseGrab);
         Window &AlwaysOnTop(bool alwaysOnTop);
 
-        // === Getters ===
 
+
+        // === Getters ===
+        bool IsOpen() const;
         std::string Title() const;
         Point Size() const;
 
@@ -88,6 +94,8 @@ namespace SDG
         uint32_t Flags() const;
         Rectangle Viewport() const;
         Ref<RenderTarget> Target() const;
+
+        static size_t Count() { return windowCount; }
 
         /// Window Events
         class Events {
@@ -165,7 +173,17 @@ namespace SDG
         } On;
 
         uint32_t Id() const;
+
+        /// Tells Window whether to handle the graphics library cleanup on its own.
+        /// Cleanup would happen right when the last Window is closed.
+        /// Default: false, does not manage the library cleanup.
+        /// Useful for programs not using a GraphicsMgr-type object to handle this.
+        /// In this case, a listener should be set to close the application
+        /// just before the last Window is closed.
+        static void StandaloneMode(bool manage) { manageGraphics = manage; }
     private:
         Impl *impl;
+        static size_t windowCount;
+        static bool manageGraphics;
     };
 }

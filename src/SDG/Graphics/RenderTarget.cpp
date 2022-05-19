@@ -124,4 +124,15 @@ namespace SDG
                        Conv::ToGPURect(rect),
                        target->color);
     }
+
+    void RenderTarget::MakeCurrent()
+    {
+        GPU_SetCurrentRenderer(target->renderer->id);
+        GPU_SetActiveTarget(target);
+    }
+
+    bool RenderTarget::IsOpen()
+    {
+        return target;
+    }
 }

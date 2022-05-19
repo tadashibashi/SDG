@@ -3,7 +3,7 @@
 
 TEST_CASE("FileSys tests", "[FileSys]")
 {
-    SECTION("Initialize and Constructor produce same result")
+    SECTION("CreateWindow and Constructor produce same result")
     {
         FileSys fileSys1("SDG Tests", "SDG");
         FileSys fileSys2;

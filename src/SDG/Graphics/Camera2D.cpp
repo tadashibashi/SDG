@@ -2,14 +2,14 @@
 #include <SDG/Math/Math.h>
 #include <SDG/Math/Matrix4x4.h>
 
-#include <SDG/Graphics/Window.h>
+#include <SDG/Graphics/RenderTarget.h>
 #include <SDL_gpu.h>
 
 namespace SDG
 {
     struct Camera2D::Impl {
         Impl() : wasChanged(true), mat(1), ortho(1), inverse(), position(), size(),
-            scale(1, 1), rotation(), window()
+            scale(1, 1), rotation(), target()
         {}
 
         mutable bool wasChanged;
@@ -19,7 +19,7 @@ namespace SDG
         Vector2 size;
         Vector2 anchor;
         float rotation;
-        Ref<Window> window;
+        Ref<RenderTarget> target;
         FRectangle worldBounds;
     };
 
@@ -33,11 +33,11 @@ namespace SDG
     }
 
     void
-    Camera2D::Initialize(Ref<Window> window)
+    Camera2D::Initialize(Ref<RenderTarget> target)
     {
-        impl->window = window;
+        impl->target = target;
         //window->onSizeChange.AddListener(this, &Camera2D::SetDimensions);
-        Point resolution = window->Resolution();
+        Point resolution = target->Size();
         SetDimensions(resolution.X(), resolution.Y());
     }
 
@@ -64,8 +64,8 @@ namespace SDG
             pos /= impl->scale;
 
             Vector3 translation(
-                    -pos.X() + impl->window->Size().X()/2.f + impl->anchor.X(),
-                    -pos.Y() + impl->window->Size().Y()/2.f + impl->anchor.Y(),
+                    -pos.X() + impl->target->Size().X() / 2.f + impl->anchor.X(),
+                    -pos.Y() + impl->target->Size().Y() / 2.f + impl->anchor.Y(),
                     0);
             
             mat.Translate(translation)
@@ -79,7 +79,7 @@ namespace SDG
             impl->inverse = mat.Invert();
 
             pos = Math::Transform(pos, impl->mat); // screen-to-world
-            Vector2 dimensions = Math::Transform(pos + impl->window->Size(), impl->mat);
+            Vector2 dimensions = Math::Transform(pos + impl->target->Size(), impl->mat);
             impl->worldBounds = FRectangle(pos.X(), pos.Y(),
                                            dimensions.W(),
                                            dimensions.H());
@@ -182,9 +182,9 @@ namespace SDG
         return *this;
     }
 
-    Matrix4x4 Camera2D::Matrix() const
+    CRef<Matrix4x4> Camera2D::Matrix() const
     {
         Update();
-        return impl->mat;
+        return CRef(impl->mat);
     }
 }

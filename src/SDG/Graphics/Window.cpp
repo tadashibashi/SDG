@@ -1,6 +1,5 @@
 #include "Window.h"
-#include "RendererType.h"
-#include "RenderTarget.h"
+#include "Private/RendererType.h"
 #include "Texture2D.h"
 
 #include <SDG/Debug.hpp>
@@ -18,10 +17,13 @@ namespace SDG
 {
     struct Window::Impl {
         Impl() : target(), title(), icon() {}
-        RenderTarget target;
-        std::string title;
+        RenderTarget    target;
+        std::string     title;
         CRef<Texture2D> icon;
     };
+
+    size_t Window::windowCount;
+    bool Window::manageGraphics;
 
     Window::Window() : impl(new Impl), On{}
     {
@@ -37,13 +39,33 @@ namespace SDG
     bool
     Window::Initialize(int width, int height, const char *title, unsigned flags)
     {
-        SDG_Assert(width > 0 && height > 0);
         Close(); // Make sure to initialize cleanly
 
-        GPU_Target *target = GPU_InitRenderer(RendererType,
-                                              width,
-                                              height,
-                                              flags);
+        GPU_Target *target;
+
+        if (windowCount == 0)
+        {
+            target = GPU_InitRenderer(RendererType,
+                     width,
+                     height,
+                     flags);
+        }
+        else
+        {
+            SDL_Window *window = SDL_CreateWindow(title,
+                      SDL_WINDOWPOS_UNDEFINED,
+                      SDL_WINDOWPOS_UNDEFINED,
+                      width, height,
+                      flags | SDL_WINDOW_OPENGL);
+            if (!window)
+            {
+                SDG_Err("Failed to create window with error: {}", SDL_GetError());
+                return false;
+            }
+
+            target = GPU_CreateTargetFromWindow(SDL_GetWindowID(window));
+        }
+
 
         if (!target)
         {
@@ -52,107 +74,103 @@ namespace SDG
             return false;
         }
 
-// TTF_WasInit is not available in Emscripten's version of SDL_TTF
-//        if (!TTF_WasInit())
-//        {
-            if (TTF_Init() != 0)
-            {
-                SDG_Err("Failed to initialize SDL2_ttf: {}", TTF_GetError());
-                GPU_FreeTarget(target);
-                GPU_Quit();
-                return false;
-            }
-//        }
-
         impl->target.EmplaceTarget(Ref{target});
         if (title)
             Title(title);
 
+        ++windowCount;
         return true;
     }
 
     void
     Window::Close()
     {
-        if (impl->target)
+        if (impl->target.IsOpen())
         {
+            // Sets active target to null if this was currently active
+            if (GPU_GetActiveTarget() == impl->target.Target().Get())
+                GPU_SetActiveTarget(nullptr);
+
+            SDL_DestroyWindow(GetWindow(impl->target));
             impl->target.Close();
-            TTF_Quit();
-            GPU_Quit();
+
+            --windowCount;
+            if (manageGraphics && windowCount == 0)
+            {
+                TTF_Quit();
+                GPU_Quit();
+            }
         }
     }
 
     void
-    Window::ProcessInput(void *evt)
+    Window::ProcessInput(const SDL_WindowEvent &ev)
     {
-        // All SDL_Event that are passed to this function must be of type SDL_WINDOWEVENT
-        SDG_Assert((*static_cast<SDL_Event *>(evt)).type == SDL_WINDOWEVENT);
-
-        SDL_WindowEvent &window = (*static_cast<SDL_Event *>(evt)).window;
-        if (window.windowID == Id())
+        if (ev.windowID == Id())
         {
-            switch(window.event)
+            switch(ev.event)
             {
                 case SDL_WINDOWEVENT_SHOWN:
-                    SDG_Log("Window was shown");
+                    // SDG_Log("Window was shown");
                     On.Show.Invoke();
                     break;
                 case SDL_WINDOWEVENT_HIDDEN:
-                    SDG_Log("Window was hidden");
+                    // SDG_Log("Window was hidden");
                     On.Hide.Invoke();
                     break;
                 case SDL_WINDOWEVENT_EXPOSED:
-                    SDG_Log("Window was exposed");
+                    // SDG_Log("Window was exposed");
                     On.Expose.Invoke();
                     impl->target.SwapBuffers(); // TODO: test this behavior...
                     break;
                 case SDL_WINDOWEVENT_MOVED:
-                    SDG_Log("Window moved: {}, {}",
-                            window.data1,
-                            window.data2);
-                    On.Move.Invoke(window.data1, window.data2);
+                    // SDG_Log("Window moved: {}, {}",
+                    //        ev.data1,
+                    //        ev.data2);
+                    On.Move.Invoke(ev.data1, ev.data2);
                     break;
                 case SDL_WINDOWEVENT_RESIZED:
-                    On.Resize.Invoke(window.data1, window.data2);
+                    On.Resize.Invoke(ev.data1, ev.data2);
                     break;
                 case SDL_WINDOWEVENT_SIZE_CHANGED:
-                    //Resolution({event.window.data1, event.window.data2});
-                    SDG_Log("Window size changed: {}, {}",
-                            window.data1,
-                            window.data2);
-                    On.SizeChange.Invoke(window.data1, window.data2);
+                    //Resolution({event.ev.data1, event.ev.data2});
+                    // SDG_Log("Window size changed: {}, {}",
+                    //        ev.data1,
+                    //        ev.data2);
+                    On.SizeChange.Invoke(ev.data1, ev.data2);
                     break;
                 case SDL_WINDOWEVENT_MINIMIZED:
-                    SDG_Log("Window was minimized");
+                    // SDG_Log("Window was minimized");
                     On.Minimize.Invoke();
                     break;
                 case SDL_WINDOWEVENT_MAXIMIZED:
-                    SDG_Log("Window was maximized");
+                    // SDG_Log("Window was maximized");
                     On.Fullscreen.Invoke();
                     break;
                 case SDL_WINDOWEVENT_RESTORED:
-                    SDG_Log("Window was restored");
+                    // SDG_Log("Window was restored");
                     On.Restore.Invoke();
                     break;
                 case SDL_WINDOWEVENT_ENTER: // Mouse entered the window
-                    SDG_Log("Mouse entered window");
+                    // SDG_Log("Mouse entered window");
                     On.MouseEnter.Invoke();
                     break;
                 case SDL_WINDOWEVENT_LEAVE: // Mouse left the window
-                    SDG_Log("Mouse left window");
+                    // SDG_Log("Mouse left window");
                     On.MouseLeave.Invoke();
                     break;
                 case SDL_WINDOWEVENT_FOCUS_GAINED:
-                    SDG_Log("Window gained keyboard focus");
+                    // SDG_Log("Window gained keyboard focus");
                     On.Focus.Invoke();
                     break;
                 case SDL_WINDOWEVENT_FOCUS_LOST:
-                    SDG_Log("Window lost keyboard focus");
+                    // SDG_Log("Window lost keyboard focus");
                     On.FocusLost.Invoke();
                     break;
                 case SDL_WINDOWEVENT_CLOSE:
-                    SDG_Log("Window closed");
+                    // SDG_Log("Window closed");
                     On.Close.Invoke();
+                    Close();
                     break;
             }
         }
@@ -242,14 +260,14 @@ namespace SDG
 
     Window &Window::MinimumSize(Point size)
     {
-        if (size.X() < 1)
+        if (size.X() < 0)
         {
-            SDG_Warn("Window::MinimumSize size.X() must be greater than 0; setting it to 1");
+            SDG_Warn("Window::MinimumSize size.X() must be > 0; setting it to 0");
             size.X(1);
         }
-        if (size.Y() < 1)
+        if (size.Y() < 0)
         {
-            SDG_Warn("Window::MinimumSize size.Y() must be greater than 0; setting it to 1");
+            SDG_Warn("Window::MinimumSize size.Y() must be > 0; setting it to 0");
             size.Y(1);
         }
 
@@ -451,6 +469,11 @@ namespace SDG
     Window::Icon() const
     {
         return impl->icon;
+    }
+
+    bool Window::IsOpen() const
+    {
+        return impl->target.IsOpen();
     }
 
 }

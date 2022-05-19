@@ -7,14 +7,16 @@
 #include <SDG/Graphics/Window.h>
 #include <SDG/Graphics/RenderTarget.h>
 #include <SDL_events.h>
+#include <SDL_gpu.h>
 
 using namespace SDG;
 
 TEST_CASE("Window tests", "[Window]")
 {
+    Window::StandaloneMode(true);
     Window window;
 
-    SECTION("Initialize")
+    SECTION("CreateWindow")
     {
         bool result = window.Initialize(100, 100, "TestWindow", 2);
 
@@ -267,7 +269,7 @@ TEST_CASE("Window tests", "[Window]")
             ev.window.windowID = window.Id();
 
             // Pass to event handler
-            window.ProcessInput(&ev);
+            window.ProcessInput(ev.window);
 
             // Check that data was mutated via callback,
             // which means that this callback is working.
@@ -288,7 +290,7 @@ TEST_CASE("Window tests", "[Window]")
             ev.type = SDL_WINDOWEVENT;
             ev.window.event = SDL_WINDOWEVENT_SHOWN;
             ev.window.windowID = window.Id();
-            window.ProcessInput(&ev);
+            window.ProcessInput(ev.window);
 
             REQUIRE(i == 1);
         }
@@ -307,7 +309,7 @@ TEST_CASE("Window tests", "[Window]")
             ev.type = SDL_WINDOWEVENT;
             ev.window.event = SDL_WINDOWEVENT_HIDDEN;
             ev.window.windowID = window.Id();
-            window.ProcessInput(&ev);
+            window.ProcessInput(ev.window);
 
             REQUIRE(i == 1);
         }
@@ -326,7 +328,7 @@ TEST_CASE("Window tests", "[Window]")
             ev.type = SDL_WINDOWEVENT;
             ev.window.event = SDL_WINDOWEVENT_EXPOSED;
             ev.window.windowID = window.Id();
-            window.ProcessInput(&ev);
+            window.ProcessInput(ev.window);
 
             REQUIRE(i == 1);
         }
@@ -348,7 +350,7 @@ TEST_CASE("Window tests", "[Window]")
             ev.window.windowID = window.Id();
             ev.window.data1 = 143;
             ev.window.data2 = 245;
-            window.ProcessInput(&ev);
+            window.ProcessInput(ev.window);
 
             REQUIRE(x == 143);
             REQUIRE(y == 245);
@@ -371,7 +373,7 @@ TEST_CASE("Window tests", "[Window]")
             ev.window.windowID = window.Id();
             ev.window.data1 = 14;
             ev.window.data2 = 24;
-            window.ProcessInput(&ev);
+            window.ProcessInput(ev.window);
 
             REQUIRE(x == 14);
             REQUIRE(y == 24);
@@ -394,7 +396,7 @@ TEST_CASE("Window tests", "[Window]")
             ev.window.windowID = window.Id();
             ev.window.data1 = 14;
             ev.window.data2 = 24;
-            window.ProcessInput(&ev);
+            window.ProcessInput(ev.window);
 
             REQUIRE(x == 14);
             REQUIRE(y == 24);
@@ -414,7 +416,7 @@ TEST_CASE("Window tests", "[Window]")
             ev.type = SDL_WINDOWEVENT;
             ev.window.event = SDL_WINDOWEVENT_MINIMIZED;
             ev.window.windowID = window.Id();
-            window.ProcessInput(&ev);
+            window.ProcessInput(ev.window);
 
             REQUIRE(i == 1);
         }
@@ -433,7 +435,7 @@ TEST_CASE("Window tests", "[Window]")
             ev.type = SDL_WINDOWEVENT;
             ev.window.event = SDL_WINDOWEVENT_MAXIMIZED;
             ev.window.windowID = window.Id();
-            window.ProcessInput(&ev);
+            window.ProcessInput(ev.window);
 
             REQUIRE(i == 1);
         }
@@ -452,7 +454,7 @@ TEST_CASE("Window tests", "[Window]")
             ev.type = SDL_WINDOWEVENT;
             ev.window.event = SDL_WINDOWEVENT_RESTORED;
             ev.window.windowID = window.Id();
-            window.ProcessInput(&ev);
+            window.ProcessInput(ev.window);
 
             REQUIRE(i == 1);
         }
@@ -471,7 +473,7 @@ TEST_CASE("Window tests", "[Window]")
             ev.type = SDL_WINDOWEVENT;
             ev.window.event = SDL_WINDOWEVENT_ENTER;
             ev.window.windowID = window.Id();
-            window.ProcessInput(&ev);
+            window.ProcessInput(ev.window);
 
             REQUIRE(i == 1);
         }
@@ -490,7 +492,7 @@ TEST_CASE("Window tests", "[Window]")
             ev.type = SDL_WINDOWEVENT;
             ev.window.event = SDL_WINDOWEVENT_LEAVE;
             ev.window.windowID = window.Id();
-            window.ProcessInput(&ev);
+            window.ProcessInput(ev.window);
 
             REQUIRE(i == 1);
         }
@@ -509,7 +511,7 @@ TEST_CASE("Window tests", "[Window]")
             ev.type = SDL_WINDOWEVENT;
             ev.window.event = SDL_WINDOWEVENT_FOCUS_GAINED;
             ev.window.windowID = window.Id();
-            window.ProcessInput(&ev);
+            window.ProcessInput(ev.window);
 
             REQUIRE(i == 1);
         }
@@ -528,11 +530,32 @@ TEST_CASE("Window tests", "[Window]")
             ev.type = SDL_WINDOWEVENT;
             ev.window.event = SDL_WINDOWEVENT_FOCUS_LOST;
             ev.window.windowID = window.Id();
-            window.ProcessInput(&ev);
+            window.ProcessInput(ev.window);
 
             REQUIRE(i == 1);
         }
+
+        SECTION("Two windows")
+        {
+            bool didThrow;
+            Window window2;
+            REQUIRE(Window::Count() == 1);
+
+            try {
+                window2.Initialize(10, 20, "Window2");
+                didThrow = false;
+            }
+            catch(const std::exception &e)
+            {
+                didThrow = true;
+            }
+
+            REQUIRE(!didThrow);
+            REQUIRE(Window::Count() == 2);
+
+            window2.Close();
+
+            REQUIRE(Window::Count() == 1);
+        }
     }
-
-
 }

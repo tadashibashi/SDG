@@ -10,6 +10,7 @@
 #include <string>
 #include <SDG/FileSys/Path.h>
 #include <SDG/Math/Vector2.h>
+
 #include <SDG/Ref.h>
 
 // Prevent MSVC macro clash
@@ -21,6 +22,9 @@ struct GPU_Image;
 
 namespace SDG
 {
+    class RenderTarget;
+    class Window;
+
     /// Texture2D class automatically frees texture when this object goes out
     /// of scope. Please be aware of this, as the object will become
     /// invalidated if the destructor is called.
@@ -32,7 +36,7 @@ namespace SDG
         /// Initializes an unloaded Texture
         Texture2D();
         /// Initializes a texture loaded from the given path.
-        explicit Texture2D(const Path &path);
+        Texture2D(const Path &path, Ref<Window> target);
         /// Wraps a GPU_Image object that was already loaded.
         Texture2D(GPU_Image *image, const Path &path);
         /// Automatically frees the internal texture if one was loaded.
@@ -41,7 +45,9 @@ namespace SDG
         // ========== Loading and unloading ==========
         /// Load an image into the Texture2D.
         /// @param path
-        bool LoadImage(const Path &path);
+        /// @param target RenderTarget to create texture with. The texture only works on the RenderTarget it was
+        /// created with.
+        bool LoadImage(const Path &path, Ref<Window> target);
         /// Free the internal texture, and resets container for reuse.
         void Free();
 

@@ -8,7 +8,7 @@
 
 namespace SDG
 {
-    class Window;
+    class RenderTarget;
     class Matrix4x4;
 
     class Camera2D
@@ -17,7 +17,7 @@ namespace SDG
     public:
         Camera2D();
         ~Camera2D();
-        void Initialize(Ref<Window> window);
+        void Initialize(Ref<RenderTarget> target);
 
         Vector2 WorldToScreen(Vector2 point) const;
         Vector2 ScreenToWorld(Vector2 point) const;
@@ -34,7 +34,7 @@ namespace SDG
         Vector2 Position() const;
         Camera2D &Position(Vector2 pos);
         Camera2D &MakeCurrent();
-        Matrix4x4 Matrix() const;
+        CRef<Matrix4x4> Matrix() const;
 
         Vector2 ScreenSize() const;
 

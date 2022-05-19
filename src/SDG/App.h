@@ -8,6 +8,7 @@
 namespace SDG
 {
     class Window;
+    class WindowMgr;
 
     class App {
         struct Impl;
@@ -29,7 +30,8 @@ namespace SDG
         CRef<Time> Time();
     protected:
         // Access for base classes
-        Ref<Window> Window();
+        Ref<Window> MainWindow();
+        Ref<WindowMgr> Windows();
 
     private:
         int Initialize_();

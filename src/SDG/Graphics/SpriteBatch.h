@@ -2,6 +2,7 @@
 
 #include <SDG/Graphics/Texture2D.h>
 #include <SDG/Graphics/Window.h>
+
 #include <SDG/Math/Rectangle.h>
 #include <SDG/Ref.h>
 #include "Flip.h"
@@ -9,6 +10,7 @@
 namespace SDG
 {
     class RenderTarget;
+    class Matrix4x4;
 
     /// SpriteBatch depth sort mode.
     enum class SortMode
@@ -38,8 +40,6 @@ namespace SDG
         };
 
     public:
-
-
         SpriteBatch();
         ~SpriteBatch() = default;
 
@@ -47,7 +47,7 @@ namespace SDG
         SpriteBatch(const SpriteBatch &) = delete;
         SpriteBatch &operator=(const SpriteBatch &) = delete;
 
-        void Begin(Ref<RenderTarget> target, SortMode sort = SortMode::FrontToBack);
+        void Begin(Ref<RenderTarget> target, CRef<Matrix4x4> transformMatrix = CRef<Matrix4x4>{}, SortMode sort = SortMode::FrontToBack);
         void End();
         void DrawTexture(Texture2D *texture, Rectangle src, FRectangle dest, float rotation, Vector2 anchor, Flip flip, Color color, float depth);
 
@@ -62,5 +62,6 @@ namespace SDG
         std::vector<BatchCall> batch;
         SortMode sortMode;
         Ref<RenderTarget> target;
+        CRef<Matrix4x4> matrix;
     };
 }

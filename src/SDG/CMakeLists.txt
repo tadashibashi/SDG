@@ -43,9 +43,9 @@ set(Engine_Sources
         Game/Scene.cpp Game/Scene.h
 
         Graphics/Camera2D.cpp Graphics/Camera2D.h
-        Graphics/GraphicsMgr.cpp Graphics/GraphicsMgr.h
+        Graphics/WindowMgr.cpp Graphics/WindowMgr.h
         Graphics/Window.cpp Graphics/Window.h
-        Graphics/RendererType.h
+        Graphics/Private/RendererType.h
         Graphics/Shader.cpp Graphics/Shader.h
         Graphics/Color.h Graphics/Color.cpp
         Graphics/SpriteBatch.cpp Graphics/SpriteBatch.h

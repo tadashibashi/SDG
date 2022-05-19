@@ -23,7 +23,7 @@ namespace SDG
         {
             T *newComp = new T(std::forward<Args>(args)...);
             if (wasInit)
-                newComp->Initialize();
+                newComp->CreateWindow();
 
             typeMap[typeid(T)].emplace_back(newComp);
             components.emplace_back((Component *)newComp);

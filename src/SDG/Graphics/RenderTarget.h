@@ -35,6 +35,8 @@ namespace SDG
         RenderTarget &EmplaceTarget(Ref<GPU_Target> pTarget);
 
 
+        void MakeCurrent();
+
         /*!
          * Gets the target's viewport rectangle
          * @return the viewport rectangle
@@ -72,6 +74,8 @@ namespace SDG
          * @return the raw SDL_gpu GPU_Target reference
          */
         [[nodiscard]] Ref<GPU_Target> Target() const;
+
+        bool IsOpen();
 
         /*!
          * Frees the internal GPU_Target.

@@ -11,7 +11,8 @@
 
 namespace SDG
 {
-    struct WindowMgr::Impl {
+    struct WindowMgr::Impl 
+    {
         Impl() : windows() { }
         std::vector<SDG::Window *> windows;
     };
@@ -25,6 +26,8 @@ namespace SDG
 
     WindowMgr::WindowMgr() : impl(new Impl)
     {
+        Window::StandaloneMode(false); // WindowMgr will manage the graphics library.
+
         if (SDL_WasInit(0) == 0)
         {
             SDL_Init(SDL_INIT_EVERYTHING);
@@ -64,6 +67,7 @@ namespace SDG
         return id;
     }
 
+    // Safely get Window at an id index
     Ref<Window>
     WindowMgr::At(int id)
     {

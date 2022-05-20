@@ -46,7 +46,6 @@ namespace SDG
         Close(); // Make sure to initialize cleanly
 
         GPU_Target *target;
-
         if (windowCount == 0)
         {
             target = GPU_InitRenderer(RendererType,
@@ -112,7 +111,7 @@ namespace SDG
         }
     }
 
-    // ===== Driver ===========================================================
+    // ===== Driver-related ===================================================
     void
     Window::ProcessInput(const SDL_WindowEvent &ev)
     {

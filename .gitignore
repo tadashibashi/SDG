@@ -7,7 +7,7 @@ bin/
 # IDE
 .idea/
 .vs/
+.vscode/
 .DS_Store
 .cache
 CMakeSettings.json
-

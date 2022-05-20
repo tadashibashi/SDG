@@ -36,12 +36,15 @@ namespace SDG
         /// @param flags  SDL2 Window flags
         bool Initialize(int width, int height, const char *title, unsigned flags = 0);
 
-        /// Closes the window and shuts down the graphics library.
+        /// Close the window if it is open, and shut down the graphics library.
         void Close();
 
+        /// Clears the window with a blank screen of a specified color
+        /// @param color the color to clear with. Default: Cornflower Blue
         void Clear(Color color = Color::CornflowerBlue());
 
-        /// Displays the graphics that were drawn to the Window.
+        /// Drives the displays of the graphics that were rendered to the Window.
+        /// Called at the end of rendering to display what was drawn.
         void SwapBuffers();
 
         /// Drives event input to the window.
@@ -99,7 +102,7 @@ namespace SDG
 
         /// Window Events
         class Events {
-            SDG_NOCOPY(Events)
+            SDG_NOCOPY(Events);
         private:
             Events() = default; // Instantiable by window only
         public:

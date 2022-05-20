@@ -1,12 +1,13 @@
 #pragma once
-#include <type_traits>
-#include <cmath>
-#include <string>
-#include <ostream>
-#include <SDG/Exceptions/InvalidArgumentException.h>
-#include <SDG/Exceptions/OutOfRangeException.h>
 #include "MathConstants.h"
 
+#include <SDG/Exceptions/InvalidArgumentException.h>
+#include <SDG/Exceptions/OutOfRangeException.h>
+
+#include <cmath>
+#include <ostream>
+#include <string>
+#include <type_traits>
 
 namespace SDG
 {

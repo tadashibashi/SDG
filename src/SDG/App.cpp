@@ -68,7 +68,8 @@ namespace SDG
         SDG_Log("Game initializing.");
         GameConfig &config = impl->config;
         Ref<Window> window;
-        if (impl->windows.CreateWindow(config.width, config.height, config.title.c_str(), 0, &window) >= 0)
+        if (impl->windows.CreateWindow(config.width, config.height, 
+            config.title.c_str(), 0, &window) >= 0)
         {
             impl->mainWindow = window;
             impl->mainWindow->Fullscreen(config.fullscreen);
@@ -152,7 +153,7 @@ namespace SDG
     SDG::App::Exit()
     {
         impl->isRunning = false;
-    #if SDG_TARGET_WEBGL
+    #if (SDG_TARGET_WEBGL) // since emscripten's main loop is infinite, we need to immediately exit.
         Close();
         emscripten_cancel_main_loop();
     #endif

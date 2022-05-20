@@ -3,14 +3,12 @@
 #include <SDG/Platform.h>
 #include <SDG/Time/Time.h>
 #include <SDG/FileSys/Path.h>
-#include "Ref.h"
+#include <SDG/Ref.h>
 
 namespace SDG
 {
-    class Window;
-    class WindowMgr;
-
-    class App {
+    class App 
+    {
         struct Impl;
     public:
         App(const std::string &appName, const std::string &orgName,
@@ -30,8 +28,8 @@ namespace SDG
         CRef<Time> Time();
     protected:
         // Access for base classes
-        Ref<Window> MainWindow();
-        Ref<WindowMgr> Windows();
+        Ref<class Window> MainWindow();
+        Ref<class WindowMgr> Windows();
 
     private:
         int Initialize_();

@@ -78,7 +78,27 @@ set(Engine_Sources
         ServiceProvider.h
 
         Templates/Delegate.h
-        Exceptions.hpp Exceptions/Exception.h Exceptions/Exception.cpp Exceptions/ExceptionExample.h Exceptions/ExceptionExample.cpp Templates/Pool.h Math/MathConstants.h Exceptions/OutOfRangeException.h Exceptions/OutOfRangeException.cpp Unique.h Graphics/Flip.h Graphics/Flip.cpp Graphics/Private/TranslateFlip.h Graphics/Private/TranslateFlip.cpp Math/Private/Conversions.h Graphics/Private/Conversions.h Math/Tweener.cpp Math/Tweener.h Debug/Trace.h Exceptions/RuntimeException.h Templates/PoolID.h Templates/Private/PoolNullIndex.h Templates/Private/PoolNullIndex.cpp Templates/FixedPool.h)
+        Exceptions.hpp Exceptions/Exception.h 
+        Exceptions/Exception.cpp Exceptions/ExceptionExample.h 
+        Exceptions/ExceptionExample.cpp 
+        Templates/Pool.h 
+        Math/MathConstants.h 
+        Exceptions/OutOfRangeException.h 
+        Exceptions/OutOfRangeException.cpp 
+        Unique.h 
+        Graphics/Flip.h 
+        Graphics/Flip.cpp 
+        Graphics/Private/TranslateFlip.h Graphics/Private/TranslateFlip.cpp 
+        Math/Private/Conversions.h Graphics/Private/Conversions.h 
+        Math/Tweener.cpp Math/Tweener.h 
+        Debug/Trace.h 
+        Exceptions/RuntimeException.h 
+        Templates/PoolID.h 
+        Templates/Private/PoolNullIndex.h 
+        Templates/Private/PoolNullIndex.cpp 
+        Templates/FixedPool.h
+        String.h String.cpp
+        )
 
 
 

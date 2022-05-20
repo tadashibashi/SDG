@@ -1,7 +1,6 @@
 /**
  * @file Color.h
- * 
- * @abstract Color is a struct that contains the values r, g, b, a
+ * Color is a struct that contains the values r, g, b, a
  * Each value goes from 0 (no intensity) to COLOR_MAX (Max intensity)
  * This struct is passed into Renderer functions to tint a sprite,
  * paint the screen or color a rectangle

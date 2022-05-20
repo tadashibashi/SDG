@@ -1,5 +1,3 @@
-//
-// Created by Aaron on 4/21/2022.
-//
+/// Contains the includes relevant to application input controls
 #pragma once
 #include <SDG/Input/Input.h>

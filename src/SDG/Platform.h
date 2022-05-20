@@ -1,19 +1,27 @@
-/// ===== Platform Indicators Definitions ====================
-/// Windows: SDG_TARGET_WINDOWS 1
-/// Linux  : SDG_TARGET_LINUX 1
-/// MacOS  : SDG_TARGET_MAC 1
-///    Intel: SDG_TARGET_MAC_INTEL 1
-/// Desktop: SDG_TARGET_DESKTOP 1
-///    Either Windows, Linux, or MacOS
-/// WebGL  : SDG_TARGET_WEBGL 1
-///    Built with Emscripten
-
-/// --- Not tested yet ---
-/// Android: SDG_TARGET_ANDROID 1
-/// iOS    : SDG_TARGET_IPHONE 1
-/// MacOS ARM64: SDG_TARGET_MAC_SILICON 1
+/*! ===== Platform Indicators Definitions =====================================
+ * @brief Contains platform definitions for both the SDG_Engine and end-user.
+ * All defines will be set with 1 (true) or 0 (false).
+ * Please make sure to check #if (SDG_TARGET_WINDOWS) as opposed to checking
+ * with #ifdef or #if defined(SDG_TARGET_WINDOWS).
+ * ===========================================================================
+ * Windows: SDG_TARGET_WINDOWS
+ * Linux  : SDG_TARGET_LINUX
+ * MacOS  : SDG_TARGET_MAC
+ *    Intel x86_64: SDG_TARGET_MAC_INTEL
+ * Desktop: SDG_TARGET_DESKTOP
+ *    Either Windows, Linux, or MacOS
+ * WebGL  : SDG_TARGET_WEBGL
+ *    Built with Emscripten
+ *
+ * --- Not tested yet ---
+ * Android: SDG_TARGET_ANDROID
+ * iOS    : SDG_TARGET_IPHONE
+ * MacOS ARM64: SDG_TARGET_MAC_SILICON
+ * 
+ */
 #pragma once
 
+// HTML5/WebGL
 #if   defined(__EMSCRIPTEN__)
     #include <emscripten.h>
     #define SDG_TARGET_WEBGL 1
@@ -82,9 +90,9 @@
 #endif
 
 
-/// DEBUG is defined by CMake when CMAKE_BUILD_TYPE is set to Debug or RelWithDebugInfo
-/// Usage: #if SDG_DEBUG
-#if defined(DEBUG) || defined(_DEBUG)
+/// This define is set by CMake when CMAKE_BUILD_TYPE is set to 
+/// "Debug" or "RelWithDebugInfo"
+#if defined(DEBUG)
     #define SDG_DEBUG 1
 #else
     #define SDG_DEBUG 0
@@ -95,6 +103,6 @@
     // MSVC complains if strcpy is used, preferring strcpy_s instead.
     // For non-MSVC compilers, we convert it to strcpy for compatibility.
     // Note: please do not use the return value of strcpy_s
+    // Also it may just be better to just use memcpy
     #define strcpy_s(dest, dsize, src) strcpy(dest, src)
 #endif
-

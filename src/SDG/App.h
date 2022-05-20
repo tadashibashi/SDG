@@ -1,4 +1,10 @@
-/// Main application object
+/*!
+ * @file App.h
+ * @namespace SDG
+ * @class App
+ * Main application object base class
+ * 
+ */
 #pragma once
 #include <SDG/Platform.h>
 #include <SDG/Time/Time.h>

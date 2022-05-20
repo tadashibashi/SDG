@@ -1,3 +1,10 @@
+/*!
+ * @file String.h
+ * @namespace SDG
+ * @class String
+ * Functionality is similar to std::string, with some convenience extensions.
+ * 
+ */
 #pragma once
 #include <string>
 #include <functional>
@@ -51,29 +58,47 @@ namespace SDG
         String &Append(const std::string &str);
         String &Append(const char *str);
         String &Append(char c);
-        String &Erase(size_t index);
-        String &Erase(Iterator begin, Iterator end);
-        String &EraseIf(const std::function<bool(char)> &func);
 
+        /// Erases a character from the String at the specified index.
+        String &Erase(size_t index);
+        /// Erases a range of characters from the String.
+        String &Erase(Iterator begin, Iterator end);
+        /// Erases characters determined by a predicate function.
+        /// @param func the callback that receives each char from the String, 
+        /// one at a time, in which the return value determines whether the
+        /// char will remain in the String. Return true to indicate erasure,
+        /// and false to keep it.
+        String &EraseIf(const std::function<bool(char)> &func);
+        
+        /// Creates a substring from the String
+        /// @param index the index that will begin the substring
+        /// @param count the number of characters to copy to the substring,
+        /// starting its count from the index position. A value of
+        /// String::NullPos means that the rest of the String starting
+        /// from the index will be copied.
         String Substr(size_t index, size_t count = NullPos);
 
+        /// Default position value
         static const size_t NullPos;
+        /// Default minimum capacity the String starts with.
         static const size_t DefaultCap;
 
-        uint64_t Hash() const;
+        /// Creates a hash value for quick comparison.
+        /// Please be sure to cache this value, since hash generation
+        /// takes more computing than direct String comparison would.
+        [[nodiscard]] uint64_t Hash() const;
 
         // operators
+        [[nodiscard]] char &operator[] (size_t index);
         [[nodiscard]] bool operator == (const String &other);
         [[nodiscard]] bool operator == (const std::string &other);
         [[nodiscard]] bool operator == (const char *other);
-
         String &operator += (const String &other);
         String &operator += (const std::string &other);
         String &operator += (const char *other);
         String &operator += (char c);
 
-        [[nodiscard]] char &operator[] (size_t index);
-
+        // iterators
         Iterator begin() { return str_; }
         Iterator end()   { return end_; }
         ConstIterator cbegin() { return str_; }

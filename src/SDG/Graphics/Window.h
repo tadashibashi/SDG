@@ -1,6 +1,13 @@
-//
-// Created by Aaron Ishibashi on 4/29/22.
-//
+/*!
+ * @file Window.h
+ * @class Window
+ * Manages an application Window.
+ * 
+ * It may also manage graphics library by calling 
+ * Window::StandaloneMode(true). With this behavior enabled, the
+ * graphcis library will automatically shutdown when the last Window
+ * has been closed.
+ */
 #pragma once
 #include "Color.h"
 

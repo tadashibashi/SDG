@@ -1,8 +1,7 @@
-/* =============================================================================
- * WindowTests
- * 
- * 
- * ===========================================================================*/
+/*!
+ * @file WindowTests.cpp
+ * Contains tests for class SDG::Window
+ */
 #include "SDG_Tests.h"
 #include <SDG/Graphics/Window.h>
 #include <SDG/Graphics/RenderTarget.h>

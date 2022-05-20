@@ -1,11 +1,10 @@
 /*!
  * @file Texture2D.h
- *
+ * @namespace SDG
  * @class Texture2D
- * @abstract
- * Texture2D is a class to load and free an individual texture to be used with
- * SDG_Engine drawing functions. It supports .png, .bmp, and .tga file formats.
- * 
+ * Texture2D loads and frees a texture file that can be used with SDG_Engine
+ * image drawing functions. It supports .png, .bmp, and .tga file formats.
+ *
  */
 #pragma once
 #include <string>

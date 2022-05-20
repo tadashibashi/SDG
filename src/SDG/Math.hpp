@@ -1,6 +1,4 @@
-//
-// Created by Aaron Ishibashi on 4/21/22.
-//
+/// Contains the includes relevant to math functions and data structures.
 #pragma once
 #include <SDG/Math/Rand.h>
 #include <SDG/Math/Math.h>

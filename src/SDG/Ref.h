@@ -2,30 +2,24 @@
  * @file Ref.h – SDG_Engine
  *
  * @class Ref / CRef
- * @description
- * A capsule wrapping a pointer, which supports  to reference another object
- * in a uniform fashion. An object holding a Ref object has a clear
- * indicator that it is not the owner of the internal pointer.
- * It also helps prevent accidental copy assignment when retrieving a
- * reference from a getter function, and provides a common interface (->)
- * for accessing its members. (It can be a slight hindrance to have to
- * remember whether to use (.) or (->) if it was a pointer or reference.)
- * If the internal pointer is absolutely needed for a function parameter,
- * Get() can be called to retrieve it. While deletion of this pointer is not
- * prevented, this class at least encourages intentionality about doing so.
- * CRef is the const version of the Ref object.
+ * A reference to another object that acts like a pointer.
+ * You can get the internal pointer by calling Ref::Get()
+ * It was designed for safety against accidental copying during ref retrieval,
+ * and helping remember who owns what. It also has a uniform interface,
+ * as opposed to cpp references using dot accessors, and pointers using arrows.
+ * Ref simply uses pointer arrows.
+ * Finally, CRef is the const version of Ref.
  *
- * @limitations since void is not referencable, you can't have a Ref<void> object.
- * In this case, an alternative would be to store a reference to the void *
+ * Limitations: since void is not referencable, you can't have a Ref<void> object.
+ * This is the cost of having a template constructor that accepts references.
+ * In this case, an alternative would be to store Ref<void *> 
+ * (calling Get() will retrieve a pointer to void pointer in this case)
  * or cast the void * to a uintptr_t to store in the Ref.
- * In both cases you'd re-cast it upon retrieval to the desired type from Get().
  *
- * @future Make Ref track pointer validity. This seems like it could result in
- * wide-scale unfavorable performance loss if we have to dereference an
- * extra time from a ptr to ptr. Optionally, we could cache an additional ptr
- * but this would double the size of each reference.
- * To ID memory, we could store the timestamp of when the memory was allocated
- * inside of a structure.
+ * Warning: please make sure to keep these references valid, or let the objects
+ * holding these references know when they are no longer valid. The Ref class
+ * does not track pointer validity in any way, or keep them alive like a
+ * shared_ptr would.
  *
  */
 #pragma once

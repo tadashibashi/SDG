@@ -1,4 +1,9 @@
-
+/*!
+ * @file Flip.h
+ * @enum Flip
+ * Describes image flip direction, used in rendering functions.
+ *
+ */
 #pragma once
 #include <cstdint>
 

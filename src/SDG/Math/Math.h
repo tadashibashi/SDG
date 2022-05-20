@@ -1,19 +1,20 @@
 /*!
  * @file Math.h
- * @abstract
  * Contains a group of math helper functions under the SDG::Math namespace.
  * For pseudo-random number generation, please look at Rand.h
  *
  */
 #pragma once
-#include "Vector2.h"
 #include "Matrix4x4.h"
+#include "Vector2.h"
+
 #include <SDG/Debug.hpp>
 
 #include <cmath>
 #include <initializer_list>
 #include <algorithm>
 
+// Placed beneath std headers to guard against macro clashes with undefs
 #include "MathConstants.h"
 
 namespace SDG::Math

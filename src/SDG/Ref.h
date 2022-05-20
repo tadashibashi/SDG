@@ -1,6 +1,6 @@
 /*!
  * @file Ref.h – SDG_Engine
- *
+ * @namespace SDG
  * @class Ref / CRef
  * A reference to another object that acts like a pointer.
  * You can get the internal pointer by calling Ref::Get()

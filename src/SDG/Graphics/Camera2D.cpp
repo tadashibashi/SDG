@@ -1,8 +1,10 @@
+/// Camera implementation file
 #include "Camera2D.h"
+
+#include <SDG/Graphics/RenderTarget.h>
 #include <SDG/Math/Math.h>
 #include <SDG/Math/Matrix4x4.h>
 
-#include <SDG/Graphics/RenderTarget.h>
 #include <SDL_gpu.h>
 
 namespace SDG

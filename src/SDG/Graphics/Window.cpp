@@ -3,6 +3,7 @@
 #include "Texture2D.h"
 
 #include <SDG/Debug.hpp>
+
 #include <SDL_gpu.h>
 #include <SDL_ttf.h>
 

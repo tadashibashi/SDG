@@ -1,21 +1,24 @@
-//
-// Wrapper for SDL_gpu's GPU_Target
-//
+/*!
+ * @file RenderTarget.h
+ * @namespace SDG
+ * @class RenderTarget
+ * Specifies a RenderTarget used to blit graphics to and display.
+ * 
+ */
 #pragma once
-#include <SDG/Ref.h>
-#include <SDG/Math/Rectangle.h>
-#include <SDG/Math/Vector2.h>
 #include "Color.h"
 #include "Flip.h"
 
+#include <SDG/Math/Rectangle.h>
+#include <SDG/Math/Vector2.h>
+#include <SDG/Ref.h>
+
+// forward declaration
 struct GPU_Target;
 typedef struct GPU_Target GPU_Target;
 
 namespace SDG
 {
-    // forward declarations
-    class Texture2D;
-
     class RenderTarget
     {
     public:
@@ -63,9 +66,9 @@ namespace SDG
         Color DrawColor() const;
 
         /// Sets the rendering color. Cumulative effect with image color.
-        RenderTarget &DrawColor(SDG::Color color);
+        RenderTarget &DrawColor(Color color);
 
-        void DrawTexture(Ref<Texture2D> texture, Rectangle src,
+        void DrawTexture(Ref<class Texture2D> texture, Rectangle src,
             FRectangle dest, float rotation, Vector2 anchor, Flip flip);
         void DrawRectangle(FRectangle rect);
         /*!
@@ -85,7 +88,7 @@ namespace SDG
          */
         void Close();
 
-        void Clear(SDG::Color color = Color::CornflowerBlue());
+        void Clear(Color color = Color::CornflowerBlue());
         void SwapBuffers();
 
         /// Will evaluate to true or false if the internal target is null or not.

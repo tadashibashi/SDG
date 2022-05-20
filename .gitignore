@@ -1,13 +1,16 @@
-# Build directories
+# ===== SDG_Engine Git Ignore File ====
+# Build directories ===================
 build*/
 cmake-build*/
 out/
 bin/
 
-# IDE
+# IDE =================================
+.cache
 .idea/
 .vs/
 .vscode/
-.DS_Store
-.cache
 CMakeSettings.json
+
+# OS-related ==========================
+.DS_Store

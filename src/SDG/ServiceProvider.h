@@ -1,6 +1,6 @@
 /*!
  * @file ServiceProvider.h
- *
+ * @namespace SDG
  * @class ServiceProvider
  * @abstract A container that allows generic storage by type. It can store one
  * object reference per type. This allows users to store specific data structures

@@ -1,6 +1,10 @@
-//
-// Created by Aaron Ishibashi on 4/29/22.
-//
+/*!
+ * @file Camera2D.h
+ * @namespace SDG
+ * @class Camera2D
+ * Controls a camera matrix for use in transforming a view.
+ * Provides functions for converting coordinates between virtual and screen spaces.
+ */
 #pragma once
 #include <SDG/Math/Vector2.h>
 #include <SDG/Math/Rectangle.h>

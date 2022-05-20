@@ -1,7 +1,7 @@
 /// String implementation file
 #include "String.h"
-#include "SDG/Debug/Assert.h"
 
+#include <SDG/Debug/Assert.h>
 #include <SDG/Debug/Logging.h>
 #include <SDG/Exceptions/OutOfRangeException.h>
 

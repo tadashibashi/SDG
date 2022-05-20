@@ -1,3 +1,4 @@
+/// Assert implementation file
 #include "Assert.h"
 
 #if SDG_DEBUG

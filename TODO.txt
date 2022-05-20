@@ -1,5 +1,8 @@
 TODO:
-- Figure out why Textures disappear when main window is Destroyed.
+- Test Font in Sandbox
+- TTF font caching
+- Tiled Map loading
+- Create a minimal repro case of multi-Window close bug, and upstream to Github.
 - Test Camera2D
     x screen-to-world
     - world-to-screen
@@ -7,7 +10,6 @@ TODO:
 - Figure out cause of fullscreen/non-fullscreen matrix projection discrepancy.
     There's an SDL function for controlling the behavior of resolution on new screen
     I forgot what it is though...
-- TTF font rendering and caching
 - Game system features (subclass of App)
     - Entity
     - Entity Pooling

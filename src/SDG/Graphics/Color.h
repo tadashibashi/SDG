@@ -1,8 +1,10 @@
 /**
  * @file Color.h
- * Color is a struct that contains the values r, g, b, a
+ * @namespace SDG
+ * @class Color
+ * Color is a struct that contains the values R, G, B, A
  * Each value goes from 0 (no intensity) to COLOR_MAX (Max intensity)
- * This struct is passed into Renderer functions to tint a sprite,
+ * This class is passed into Renderer functions to tint a sprite,
  * paint the screen or color a rectangle
  * 
  * Pre-made colors are from: quackit.com/css/css_color_codes.cfm

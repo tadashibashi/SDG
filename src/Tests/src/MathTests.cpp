@@ -5,12 +5,12 @@ TEST_CASE("Math::Lerp")
 {
     SECTION("Floating point tests")
     {
-        SECTION("Amount of zero does not affect result")
+        SECTION("Zero amount does not affect result")
         {
             REQUIRE(Math::Lerp<float>(10.f, 20.f, 0) == 10.f);
         }
 
-        SECTION("Amount of .25f brings result quarter way")
+        SECTION("Amount of .25f brings result a quarter way")
         {
             REQUIRE(Math::Lerp<float>(10.f, 20.f, 0.25) == 12.5f);
         }
@@ -101,7 +101,7 @@ TEST_CASE("Math::Lerp")
             REQUIRE(Math::Lerp(Vector2(10.f, 10.f), Vector2(20.f, 20.f), -.5) == Vector2(5.f, 5.f));
         }
     }
-}
+} /* end TEST_CASE("Math::Lerp") */
 
 TEST_CASE("Math::RadToDeg")
 {
@@ -153,7 +153,8 @@ TEST_CASE("Trajectory Functions")
 
     // Trust that Trajectory Vector2 works because it simply uses the
     // TrajectoryX and TrajectoryY functions
-}
+
+} /* end TEST_CASE("Trajectory Functions") */
 
 TEST_CASE("Math::Clamp")
 {
@@ -319,7 +320,7 @@ TEST_CASE("Math::Clamp")
         }
     }
 
-}
+} /* end TEST_CASE("Math::Clamp") */
 
 TEST_CASE("Math::Abs")
 {
@@ -349,7 +350,7 @@ TEST_CASE("Math::Abs")
         }
     }
 
-}
+} /* end TEST_CASE("Math::Abs") */
 
 TEST_CASE("Math::Sign")
 {
@@ -363,6 +364,7 @@ TEST_CASE("Math::Sign")
 
     // 0 results in 1
     REQUIRE(Math::Sign(0) == 1);
+
 }
 
 TEST_CASE("Math::Add")
@@ -422,10 +424,7 @@ TEST_CASE("Math::Add")
 
     }
 
-
-
-
-}
+} /* end TEST_CASE("Math::Add") */
 
 TEST_CASE("Math::Mod")
 {
@@ -448,7 +447,7 @@ TEST_CASE("Math::Mod")
         REQUIRE(Math::Mod(-11, 10) == 9);
         REQUIRE(Math::Mod(11, -10) == -9);
     }
-}
+} /* end TEST_CASE("Math::Mod") */
 
 TEST_CASE("Math::ModF")
 {
@@ -473,7 +472,7 @@ TEST_CASE("Math::ModF")
         REQUIRE(RoundF(Math::ModF(-11.4f, 10.f)) == RoundF(8.6f));
         REQUIRE(RoundF(Math::ModF(11.12f, -10.f)) == RoundF(-8.88f));
     }
-}
+} /* end TEST_CASE("Math::ModF") */
 
 TEST_CASE("Math::Wrap")
 {
@@ -511,7 +510,7 @@ TEST_CASE("Math::Wrap")
         REQUIRE(Math::Wrap(-12, -1, -7) == -6);
         REQUIRE(Math::Wrap(-50, 2, -5) == -1); // multiple wraps
     }
-}
+} /* end TEST_CASE("Math::Wrap") */
 
 TEST_CASE("Math::WrapF")
 {
@@ -549,6 +548,6 @@ TEST_CASE("Math::WrapF")
         REQUIRE(Math::WrapF(10.f, 5.f, -40.f) == -35.f); // one wrap
         REQUIRE(Math::WrapF(50.f, 7.f, -4.f) == 6.f); // multiple wraps
     }
-}
+} /* end TEST_CASE("Math::WrapF") */
 
 // Not sure how to extensively test transform, but it has the same impl as MonoGame, so it should be ok

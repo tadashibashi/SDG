@@ -1,23 +1,27 @@
-/* =============================================================================
- * Delegate
+/*!
+ * @file Delegate.h
+ * @class Delegate
+ * An event observer class that is similar in use to javascript's event handling, except with type safety.
  *
- * ===========================================================================*/
+ */
 #pragma once
+#include <SDG/ClassMacros.h>
+#include <SDG/Exceptions/InvalidArgumentException.h>
+
 #include <any>
 #include <functional>
 #include <typeinfo>
 #include <vector>
-#include <SDG/Exceptions/InvalidArgumentException.h>
 
 using std::any_cast;
 
 namespace SDG {
 
     /**
-     * @abstract
+     * @class
      * A Delegate is an event observer that can invoke callbacks of subscribed listeners when an event has occured.
-     * "Listeners" are actually function pointers the user passes into the Delegate, which gets wraps and stored inside.
-     * No subclassing of a Listener class is necessary, as seen in the typical Observer pattern.
+     * "Listeners" are actually function pointers the user passes into the Delegate, which gets wrapped and stored inside.
+     * No subclassing of a Listener class is necessary, which is the main difference from the Observer pattern.
      * Both member and global function callbacks are supported.
      *
      * @details
@@ -35,7 +39,9 @@ namespace SDG {
      *
      */
     template <typename... Args>
-    class Delegate {
+    class Delegate
+    {
+        SDG_NOCOPY(Delegate);
     private:
         /// Indicates whether a FunctionWrapper contains a Member of Global function
         enum class FunctionType { Member, Global };
@@ -43,31 +49,29 @@ namespace SDG {
         /// Helper class that wraps a Delegate's subscribed listener callbacks.
         /// Enables identification of the wrapped callback via both global function pointer
         /// or object pointer + its member function pointer.
-        class FunctionWrapper {
+        class FunctionWrapper
+        {
         public:
             FunctionWrapper() = delete;
 
             /// Used to wrap member function pointer
             template <typename T>
             FunctionWrapper(T *object, void (T::*func)(Args...)) :
-                    object(object), functionPtr(func),
-                    function([func, object](Args... args)->void
-                        {
-                            (object->*func)(args...);
-                        })
-            {
-            }
+                object(object), functionPtr(func),
+                function([func, object](Args... args)->void
+                    {
+                        (object->*func)(args...);
+                    })
+            {}
 
             /// Used to wrap member function pointer
             explicit FunctionWrapper(void (*func)(Args...)) :
-                    object(nullptr), functionPtr(func), function(func)
-            {
-            }
+                object(nullptr), functionPtr(func), function(func)
+            {}
 
             explicit FunctionWrapper(std::function<void(Args...)> *func) :
                 object(nullptr), functionPtr(func), function(*func)
-            {
-            }
+            {}
 
             void operator()(Args ...args)
             {
@@ -114,10 +118,7 @@ namespace SDG {
             std::function<void(Args...)> function; // the function to call
         };
     public:
-        Delegate() = default;
-        // Prevent copying and assignment
-        Delegate(const Delegate &) = delete;
-        Delegate &operator=(const Delegate &) = delete;
+        Delegate() : functions(), isCalling(), removeThisFrame() { }
 
         // Gets the number of listeners currently attached to this Delegate.
         int Size()
@@ -289,13 +290,13 @@ namespace SDG {
         }
 
         // List of listeners
-        std::vector<FunctionWrapper> functions{};
+        std::vector<FunctionWrapper> functions;
 
         // Flag indicating if this delegate is currently firing callbacks or not.
-        bool isCalling{false};
+        bool isCalling;
 
         // Flag indicated whether removals need to be processed.
-        bool removeThisFrame{false};
+        bool removeThisFrame;
     };
 
 }

@@ -1,8 +1,12 @@
+/// RenderTarget implementation file
 #include "RenderTarget.h"
+
 #include "Private/TranslateFlip.h"
-#include "Texture2D.h"
 #include "Private/Conversions.h"
+#include "Texture2D.h"
+
 #include <SDG/Math/Private/Conversions.h>
+
 #include <SDL_gpu.h>
 
 namespace SDG

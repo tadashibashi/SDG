@@ -1,6 +1,8 @@
-//
-// Created by Aaron Ishibashi on 4/15/22.
-//
+/*!
+ * @file Logging.h
+ * Contains macros for system logging that calls during debug mode.
+ *
+ */
 #pragma once
 #include <SDG/Platform.h>
 #if SDG_DEBUG

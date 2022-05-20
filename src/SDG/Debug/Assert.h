@@ -1,3 +1,8 @@
+/*!
+ * @file Assert.h
+ * Contains macros for assertions that run in debug mode only.
+ * 
+ */
 #pragma once
 #include <SDG/Platform.h>
 #include <SDG/Exceptions/AssertionException.h> // for convenience

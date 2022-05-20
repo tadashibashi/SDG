@@ -1,3 +1,4 @@
+/// Color implementation file
 #include "Color.h"
 #include <SDL.h>
 

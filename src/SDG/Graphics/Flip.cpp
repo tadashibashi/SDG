@@ -1,3 +1,4 @@
+/// Flip conversion implementation file
 #include "Flip.h"
 #include "Private/TranslateFlip.h"
 

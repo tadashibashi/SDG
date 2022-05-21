@@ -1,20 +1,34 @@
 #include "FileSys.h"
+
 #include <SDG/Debug/Assert.h>
-#include <SDL_error.h>
-#include <SDL_filesystem.h>
 #include <SDG/Exceptions/RuntimeException.h>
 
+#include <SDL_error.h>
+#include <SDL_filesystem.h>
+
+SDG::FileSys::FileSys(const String &pAppName, const String &pOrgName)
+    : appName(pAppName), orgName(pOrgName), basePath(), prefPath()
+{
+
+}
+
+SDG::FileSys::FileSys()
+    : appName(), orgName(), basePath(), prefPath()
+{
+
+}
+
 void
-SDG::FileSys::Initialize(const std::string &pAppName, const std::string &pOrgName)
+SDG::FileSys::Initialize(const String &pAppName, const String &pOrgName)
 {
     appName = pAppName;
     orgName = pOrgName;
 }
 
-std::string
+SDG::String
 SDG::FileSys::BasePath() const
 {
-    if (basePath.empty())
+    if (basePath.Empty())
     {
         char *temp = SDL_GetBasePath();
         if (!temp)
@@ -27,18 +41,18 @@ SDG::FileSys::BasePath() const
         SDL_free(temp);
     }
 
-    SDG_Assert(!basePath.empty());
+    SDG_Assert(!basePath.Empty());
 
     return basePath;
 }
 
 
-std::string
+SDG::String
 SDG::FileSys::PrefPath() const
 {
-    if (prefPath.empty())
+    if (prefPath.Empty())
     {
-        char *tPrefPath = SDL_GetPrefPath(orgName.c_str(), appName.c_str());
+        char *tPrefPath = SDL_GetPrefPath(orgName.Cstr(), appName.Cstr());
         if (!tPrefPath)
         {
             throw RuntimeException(
@@ -50,19 +64,8 @@ SDG::FileSys::PrefPath() const
         SDL_free(tPrefPath);
     }
 
-    SDG_Assert(!prefPath.empty());
+    SDG_Assert(!prefPath.Empty());
 
     return prefPath;
 }
 
-SDG::FileSys::FileSys(const string &pAppName, const string &pOrgName)
-    : appName(pAppName), orgName(pOrgName), basePath(), prefPath()
-{
-
-}
-
-SDG::FileSys::FileSys()
-        : appName(), orgName(), basePath(), prefPath()
-{
-
-}

@@ -10,6 +10,7 @@
 #include <SDG/Time/Time.h>
 #include <SDG/FileSys/Path.h>
 #include <SDG/Ref.h>
+#include <SDG/String.h>
 
 namespace SDG
 {
@@ -17,7 +18,7 @@ namespace SDG
     {
         struct Impl;
     public:
-        App(const std::string &appName, const std::string &orgName,
+        App(const String &appName, const String &orgName,
             const Path &configPath = BasePath("assets/config.sdgc"));
         virtual ~App();
 

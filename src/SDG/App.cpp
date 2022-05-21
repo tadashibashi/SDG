@@ -23,7 +23,7 @@ namespace SDG
     // ===== App Implementation ===============================================
     struct App::Impl 
     {
-        Impl(const std::string &appName, const std::string &orgName) 
+        Impl(const String &appName, const String &orgName) 
             : windows(), mainWindow(), isRunning(), time(), 
             fileSys(appName, orgName) {}
 
@@ -36,7 +36,7 @@ namespace SDG
     };
 
 
-    App::App(const std::string &appName, const std::string &orgName, 
+    App::App(const String &appName, const String &orgName, 
         const Path &configPath) : impl(new Impl(appName, orgName))
     {
         // Make our app's FileSys current

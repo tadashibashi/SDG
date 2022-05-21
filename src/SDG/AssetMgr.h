@@ -1,8 +1,14 @@
 /*!
  * @file AssetMgr.h -- SDG_Engine
- * @author Aaron Ishibashi
+ * @class AssetMgr
+ * Object that manages the loading and unloading of asset files.
+ * You can use separate managers and treat them as separate banks.
+ * TODO: make a singleton source of asset files that multiple asset managers
+ * can share. Perhaps use shared_ptr to store the assets, and then when the
+ * last ptr instance gets unloaded/deleted then it gets removed from memory.
  */
 #pragma once
+
 #include <string>
 #include <map>
 #include <SDG/Graphics/Texture2D.h>

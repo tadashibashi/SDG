@@ -241,6 +241,14 @@ namespace SDG
         StrFree(str_);
     }
 
+    String &
+    String::Clear()
+    {
+        end_ = str_;
+        *end_ = '\0';
+        return *this;
+    }
+
     String::String(const String &str) :
             str_(), end_(), full_()
     {
@@ -394,6 +402,12 @@ SDG::String
 SDG::operator + (const char *str1, const SDG::String &str2)
 {
     return SDG::String(str1) + str2;
+}
+
+SDG::String
+SDG::Strcat(const char *str1, const char *str2)
+{
+    return SDG::String(str1) += str2;
 }
 
 bool

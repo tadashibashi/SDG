@@ -6,6 +6,7 @@
  * 
  */
 #pragma once
+
 #include <string>
 #include <functional>
 #include <iterator>
@@ -48,7 +49,10 @@ namespace SDG
         [[nodiscard]] std::string Str() const;
 
         [[nodiscard]] size_t Length() const;
+        /// Size of the internal memory.
         [[nodiscard]] size_t Capacity() const;
+        /// Whether the String has any characters in it.
+        /// More efficient than checking Length() == 0
         [[nodiscard]] bool Empty() const;
 
         /// Reserves the amount of characters inside the String to help prevent
@@ -78,6 +82,8 @@ namespace SDG
         /// String::NullPos means that the rest of the String starting
         /// from the index will be copied.
         String Substr(size_t index, size_t count = NullPos) const;
+
+        String &Clear();
 
         /// Default position value
         static const size_t NullPos;
@@ -111,7 +117,7 @@ namespace SDG
         ConstIterator cend()   { return end_; }
 
         template <typename Ostream>
-        friend Ostream &operator << (Ostream &os, const SDG::String &str)
+        friend Ostream &operator << (Ostream &os, const String &str)
         {
             os << str.Cstr();
             return os;
@@ -122,7 +128,8 @@ namespace SDG
         void Append(const char *str, size_t size);
         /// Safely expands the String's internal capacity.
         void Expand(size_t size);
-        /// Called privately to initialize String.
+        /// Called privately to initialize String. Useful for data
+        /// structures with quick length calculation.
         void Allocate(const char *str, size_t size);
         /// Sets a String that has already initialized.
         void Reallocate(const char *str, size_t size);
@@ -131,14 +138,17 @@ namespace SDG
         char *str_, *end_, *full_;
     };
 
-    SDG::String operator + (const SDG::String &str1, const SDG::String &str2);
-    SDG::String operator + (const SDG::String &str1, const std::string &str2);
-    SDG::String operator + (const SDG::String &str1, const char *str2);
-    SDG::String operator + (const char *str1, const SDG::String &str2);
+    String operator + (const String &str1, const String &str2);
+    String operator + (const String &str1, const std::string &str2);
+    String operator + (const String &str1, const char *str2);
+    String operator + (const char *str1, const String &str2);
 
-    std::string operator + (const std::string &str1, const SDG::String &str2);
-    bool operator == (const std::string &str1, const SDG::String &str2);
-    bool operator != (const std::string &str1, const SDG::String &str2);
+    /// Accepts two c-strings and concatenates them into an String
+    String Strcat(const char *str1, const char *str2);
+
+    std::string operator + (const std::string &str1, const String &str2);
+    bool operator == (const std::string &str1, const String &str2);
+    bool operator != (const std::string &str1, const String &str2);
 }
 
 

@@ -11,6 +11,10 @@
 
 #include <SDG/Math/Rectangle.h>
 
+#ifdef CreateWindow
+#undef CreateWindow
+#endif
+
 namespace SDG
 {
 

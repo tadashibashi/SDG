@@ -120,7 +120,11 @@ if (DEBUG)                                                 # Debug
     set(Engine_CompileDefs DEBUG=1)
     set(CONFIG_Libraries spdlog)
     if (WIN32)
-        set(CONFIG_Libraries ${CONFIG_Libraries} SDL2d SDL2maind)
+        if ("${CMAKE_BUILD_TYPE}" STREQUAL "RelWithDebInfo")
+            set(CONFIG_Libraries ${CONFIG_Libraries} SDL2 SDL2main)
+        else()
+            set(CONFIG_Libraries ${CONFIG_Libraries} SDL2d SDL2maind)
+        endif()
     else()
         set(CONFIG_Libraries ${CONFIG_Libraries} SDL2)
     endif()
@@ -152,7 +156,7 @@ endif()
 
 # ----- Bundled Libraries ----------------------------------------
 if (WINDOWS)   # for Windows
-    if (DEBUG) # set the prefix path for bundled libraries
+    if (DEBUG AND NOT "${CMAKE_BUILD_TYPE}" STREQUAL "RelWithDebInfo") # set the prefix path for bundled libraries
         set(BundledPref "${CMAKE_SOURCE_DIR}/lib/bundled/win/debug")
     else()
         set(BundledPref "${CMAKE_SOURCE_DIR}/lib/bundled/win/release")

@@ -3,8 +3,9 @@
 // TODO: Create a OutFile class, and split InFile. File class should then control 
 // both interfaces
 #include <SDG/FileSys/Private/IO.h>
-
 #include <SDG/Graphics/Font.h>
+
+
 
 using namespace SDG;
 
@@ -37,14 +38,16 @@ private:
         return 0;
     }
 
-    String hello = "Hello world";
 
     void LoadContent()
     {
-        if (font.Load(BasePath("assets/fonts/CourierPrimeCode.sdgc"), 12))
+        if (font.Load(BasePath("assets/fonts/CourierPrimeCode.sdgc"), 32))
         {
-
-            text = font.CreateTextBlended(MainWindow(), hello, Color::Orange(), 300);
+            text = font.CreateTextSolid(MainWindow(), "Hello", Color::MediumPurple());
+            if (text)
+            {
+                SDG_Log("Loaded texture: dimensions: {}", text->Size());
+            }
         }
         else
         {
@@ -162,6 +165,7 @@ private:
 
             spriteBatch.Begin(window->Target(), camera.Matrix());
             Point imgSize = kirby.Size();
+            spriteBatch.DrawTexture(text, {109.f, 109.f}, {1.f, 1.f}, {0, 0}, 0, 0);
             spriteBatch.DrawTexture(&kirby, {0, 0, (int)imgSize.X(), (int)imgSize.Y()},
                                     {10.f, 10.f, (float) imgSize.X() / 100.f, (float) imgSize.Y() / 100.f},
                                     100, Vector2(0, 0), Flip::Both, Color::White(), 1.f);
@@ -170,7 +174,7 @@ private:
                                     angle, Vector2(imgSize.X() / 2.f, imgSize.Y() / 2.f), Flip::None, Color::White(), 1.f);
             spriteBatch.DrawTexture(&kirby,  Math::Transform(pos, mat), Vector2::One(),
                                     {.5f,.5f}, angle*2, angle, Color{(uint8_t)(angle/360.f * 255.f), 255});
-            spriteBatch.DrawTexture(text, {10.f, 10.f});
+
             spriteBatch.End();
         }
 

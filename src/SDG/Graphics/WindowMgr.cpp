@@ -9,6 +9,10 @@
 
 #include <vector>
 
+#ifdef CreateWindow
+#undef CreateWindow
+#endif
+
 namespace SDG
 {
     struct WindowMgr::Impl 
@@ -30,7 +34,11 @@ namespace SDG
 
         if (SDL_WasInit(0) == 0)
         {
-            SDL_Init(SDL_INIT_EVERYTHING);
+            if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS | SDL_INIT_TIMER) != 0)
+            {
+                SDG_Err("Failed to initialize SDL2: {}", SDL_GetError());
+                exit(-1);
+            }
             if (TTF_Init() != 0)
             {
                 SDG_Err("Failed to initialize SDL2_ttf: {}", TTF_GetError());

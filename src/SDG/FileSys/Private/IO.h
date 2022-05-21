@@ -10,7 +10,7 @@
 
 #include <SDG/String.h>
 
-#include <cstdlib>
+#include <cstddef>
 #include <vector>
 
 namespace SDG::IO

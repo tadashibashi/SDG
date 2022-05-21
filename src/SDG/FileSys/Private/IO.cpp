@@ -7,13 +7,10 @@
 #include "IO.h"
 #include <cassert>
 #include "SDL_rwops.h"
-#include <string>
 #include <vector>
 
-using std::string;
-
-static const string encryptionKey = "john316";
-static string errorStr = "No errors.";
+static const SDG::String encryptionKey = "john316";
+static SDG::String errorStr = "No errors.";
 
 static bool
 ReadFileStrImpl(const char *path, char **data, size_t *size, bool appendNull);
@@ -55,7 +52,7 @@ ReadFileStrImpl(const char *path, char **data, size_t *size, bool appendNull)
     mem = (char *)malloc(fileSize + (int)appendNull); // +1 for null terminator
     if (!mem)
     {
-        errorStr = string("error while allocating memory buffer: out of memory");
+        errorStr = SDG::String("error while allocating memory buffer: out of memory");
         SDL_RWclose(io);
         return false;
     }
@@ -63,7 +60,7 @@ ReadFileStrImpl(const char *path, char **data, size_t *size, bool appendNull)
     // Read file all at once. Underlying system should handle buffering.
     if (io->read(io, mem, fileSize, 1) != 1)
     {
-        errorStr = string("error while reading file: ") + SDL_GetError();
+        errorStr = SDG::String("error while reading file: ") + SDL_GetError();
         free(mem);
         SDL_RWclose(io);
         return false;
@@ -76,13 +73,13 @@ ReadFileStrImpl(const char *path, char **data, size_t *size, bool appendNull)
     // close file
     if (SDL_RWclose(io) < 0)
     {
-        errorStr = string("error while closing file: ") + SDL_GetError();
+        errorStr = SDG::String("error while closing file: ") + SDL_GetError();
         free(mem);
         return false;
     }
 
     *data = mem;
-    errorStr = string("No errors.");
+    errorStr = SDG::String("No errors.");
     return true;
 }
 
@@ -130,13 +127,13 @@ _DecryptFile(const char *path, bool nullTerminated, char **mem, size_t *oFileSiz
         size_t objsRead = SDL_RWread(io, &c, 1, 1);
         if (objsRead == 0)
         {
-            errorStr = string("error while reading file: ") + SDL_GetError();
+            errorStr = SDG::String("error while reading file: ") + SDL_GetError();
             free(fileData);
             SDL_RWclose(io);
             return false;
         }
 
-        unsigned char add = encryptionKey[position % encryptionKey.length()];
+        unsigned char add = encryptionKey[position % encryptionKey.Length()];
         *ptr = (unsigned char)(c - add + position);
         *ptr ^= ~add;
         ++position;
@@ -144,7 +141,7 @@ _DecryptFile(const char *path, bool nullTerminated, char **mem, size_t *oFileSiz
 
     if (SDL_RWclose(io) < 0)
     {
-        errorStr = string("error while closing file: ") + SDL_GetError();
+        errorStr = SDG::String("error while closing file: ") + SDL_GetError();
         free(fileData);
         return false;
     }
@@ -187,7 +184,7 @@ SDG::IO::WriteEncryptedFile(const char *path, const std::vector<unsigned char> &
     int bytesRead = 0;
     for(unsigned char c : bytes)
     {
-        unsigned char add = encryptionKey[bytesRead % encryptionKey.length()];
+        unsigned char add = encryptionKey[bytesRead % encryptionKey.Length()];
         c ^= ~add;
         c = (unsigned char)(c + add - bytesRead);
         size_t objsWritten = SDL_RWwrite(io, &c, 1, 1);
@@ -204,7 +201,7 @@ SDG::IO::WriteEncryptedFile(const char *path, const std::vector<unsigned char> &
     return true;
 }
 
-string SDG::IO::GetError()
+SDG::String SDG::IO::GetError()
 {
     return errorStr;
 }

@@ -6,7 +6,7 @@
  * Intended for cleanly wrapping and loading game assets.
  */
 #pragma once
-#include <SDG/FileSys/Path.h>
+#include "Path.h"
 
 namespace SDG
 {
@@ -57,7 +57,7 @@ public:
     bool IsLoaded() const;
 
     const Path &Filepath() const;
-    
+
 private:
     /// Loads data found in the file at path into the File class.
     /// @param filepath path to the file

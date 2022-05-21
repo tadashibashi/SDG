@@ -4,9 +4,6 @@
 //
 #include "File.h"
 #include "SDG/FileSys/Private/IO.h"
-#include "Path.h"
-
-using std::string;
 
 /// Private implementation class data
 class SDG::File::Impl
@@ -16,7 +13,7 @@ public:
     
     char *mem;
     Path path;
-    string error;
+    String error;
     size_t size;
     bool isOpen;
 }; /* class SDG::File::Impl */
@@ -61,7 +58,7 @@ SDG::File::Size() const
 const char *
 SDG::File::GetError() const
 {
-    return impl->error.data();
+    return impl->error.Cstr();
 }
 
 
@@ -82,7 +79,7 @@ SDG::File::OpenImpl(const Path &filepath)
 
     if (!IO::ReadFileStr(filepath.Str().Cstr(), &mem, &size))
     {
-        impl->error = string("File::Open: error: ") + IO::GetError();
+        impl->error = String("File::Open: error: ") + IO::GetError();
         return false;
     }
 
@@ -106,7 +103,7 @@ bool SDG::File::OpenEncryptedImpl(const Path &path)
     }
     else
     {
-        impl->error = string("File::OpenEncrypted: error: ") + IO::GetError();
+        impl->error = String("File::OpenEncrypted: error: ") + IO::GetError();
     }
 
     return result;

@@ -38,7 +38,7 @@ namespace SDG
         RenderTarget &EmplaceTarget(Ref<GPU_Target> pTarget);
 
 
-        void MakeCurrent();
+        void MakeActiveTarget();
 
         /*!
          * Gets the target's viewport rectangle

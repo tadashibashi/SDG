@@ -31,16 +31,24 @@ private:
     int Initialize() override
     {
         Windows()->CreateWindow(300, 300, "Window2", 0, &window2);
-        camera.Initialize(window2->Target());
+        camera.Initialize(MainWindow()->Target());
 
         LoadContent();
         return 0;
     }
-
+    String hello = "Hello world";
     void LoadContent()
     {
-        font.Load(BasePath("assets/fonts/pkmn.sdgc"), 24);
-        text = font.CreateTextShaded(MainWindow(), "Hello world", Color::Black(), Color::Amber());
+        if (font.Load(BasePath("assets/fonts/CourierPrimeCode.sdgc"), 24))
+        {
+
+            text = font.CreateTextBlended(MainWindow(), hello, Color::MediumSeaGreen());
+        }
+        else
+        {
+            SDG_Warn("Failed to load font!\n");
+        }
+
         kirby.Load(MainWindow(), BasePath("assets/textures/kirby.sdgc"));
         kirby2.Load(window2, BasePath("assets/textures/field.sdgc"));
 
@@ -52,8 +60,6 @@ private:
     {
         if (Input::KeyPressed(Key::Escape))
             Exit();
-
-
 
         if (window2->IsOpen())
         {
@@ -104,7 +110,7 @@ private:
             SDG_Log(Input::MouseWheel().String());
         }
 
-        if (window2->IsOpen())
+        if (MainWindow()->IsOpen())
         {
             if (Input::KeyPress(Key::Right))
                 camera.Translate({10, 0}), pos.X(pos.X() - 100);
@@ -125,7 +131,7 @@ private:
             if ((Input::KeyPress(Key::LeftShift) || Input::KeyPress(Key::RightShift)) &&
                 Input::KeyPressed(Key::Minus))
                 camera.Zoom(camera.Zoom() - Vector2(.1, .1));
-        }        
+        }
         
         if (Input::MouseWheelDidMove())
         {
@@ -168,7 +174,7 @@ private:
 
         if (window2->IsOpen())
         {
-            window2->Clear(Color::Olive());
+            window2->Clear(Color::OrangeRed());
             spriteBatch.Begin(window2->Target(), camera.Matrix());
             Point imgSize = kirby2.Size();
             spriteBatch.DrawTexture(&kirby2, {0, 0, imgSize.X(), imgSize.Y()},

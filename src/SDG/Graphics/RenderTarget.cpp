@@ -129,9 +129,8 @@ namespace SDG
                        target->color);
     }
 
-    void RenderTarget::MakeCurrent()
+    void RenderTarget::MakeActiveTarget()
     {
-        GPU_SetCurrentRenderer(target->renderer->id);
         GPU_SetActiveTarget(target);
     }
 

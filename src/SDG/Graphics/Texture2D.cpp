@@ -73,13 +73,16 @@ namespace SDG
     bool
     Texture2D::LoadFromSurface(Ref<Window> context, SDL_Surface *surf, const Path &path)
     {
-        SDG_Assert(surf != nullptr); // if null, the function that created the surface prior to this probably failed.
-        Free(); // make sure the texture is clean before loading
+        SDG_Assert(context);         // context must not be null
+        SDG_Assert(surf != nullptr); // if surface is null, the function that
+                                     // created the surface  probably failed.
+        // Make sure the texture is clean before loading
+        Free();
 
-        /// Set the current GPU context
-        GPU_MakeCurrent(context->Target()->Target().Get(), context->Id()); // loads texture with target context
+        // Textures will load from this context
+        context->MakeCurrent();
 
-        // Conversion
+        // Surface -> GPU_Image
         GPU_Image *image = GPU_CopyImageFromSurface(surf);
         SDL_FreeSurface(surf); // surface data gets copied, so we no longer need it.
 
@@ -93,7 +96,6 @@ namespace SDG
         // Conversion was successful, commit changes
         impl->image = image;
         impl->path = path;
-
         return true;
     }
 
@@ -101,6 +103,8 @@ namespace SDG
     bool
     Texture2D::Load(Ref<Window> context, const Path &path)
     {
+        SDG_Assert(context); // context must not be null
+
         Free(); // make sure the texture is clean before loading
 
         File file;
@@ -117,7 +121,7 @@ namespace SDG
             return false;
         }
 
-        GPU_MakeCurrent(context->Target()->Target().Get(), context->Id());
+        context->MakeCurrent();
         GPU_Image *tempImage = GPU_LoadImage_RW(io, true);
         if (!tempImage)
         {

@@ -145,7 +145,6 @@ namespace SDG
         SDL_Surface *surf = (wrapped) ?  // choose between wrapped and non-wrapped functions
             TTF_RenderText_Solid_Wrapped(impl->font, text.Cstr(), Conv::ToSDLColor(color), wrapLength) :
             TTF_RenderText_Solid(impl->font, text.Cstr(), Conv::ToSDLColor(color));
-
         return SurfaceToTexture(context, surf);
     }
 

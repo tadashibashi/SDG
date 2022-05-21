@@ -50,6 +50,9 @@ namespace SDG
         /// @param color the color to clear with. Default: Cornflower Blue
         void Clear(Color color = Color::CornflowerBlue());
 
+        /// Makes Window's context current to load images with.
+        void MakeCurrent();
+
         /// Drives the displays of the graphics that were rendered to the Window.
         /// Called at the end of rendering to display what was drawn.
         void SwapBuffers();

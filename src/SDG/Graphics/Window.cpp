@@ -187,6 +187,12 @@ namespace SDG
     }
 
     void
+    Window::MakeCurrent()
+    {
+        GPU_MakeCurrent(Target()->Target().Get(), Id());
+    }
+
+    void
     Window::SwapBuffers()
     {
         impl->target.SwapBuffers();

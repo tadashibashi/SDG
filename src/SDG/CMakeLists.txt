@@ -172,7 +172,7 @@ elseif(APPLE)  # for Mac
 elseif(LINUX)  # for Linux
     set(Engine_BundledLibs "${CMAKE_SOURCE_DIR}/lib/bundled/linux")
 else()
-    set(Engine_BundledLibs "")
+    set(Engine_BundledLibs "SDL2_ttf" "freetype" "harfbuzz")
 endif()
 
 set (Engine_Libraries

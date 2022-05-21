@@ -45,7 +45,7 @@ namespace SDG
         /// @return new Texture2D pointer. It becomes the user's responsibility, so please make sure to free it
         /// when it is no longer needed.
          [[nodiscard]]
-         Texture2D *CreateTextSolid(Ref<class Window> target, const String &text, Color color = Color::Black(), bool wrapped = false, uint32_t wrapLength = 0) const;
+         Texture2D *CreateTextSolid(Ref<class Window> target, const String &text, Color color = Color::Black(), uint32_t wrapLength = 0) const;
 
         /// Renders shaded text to a Texture2D
         /// @param text - the text to draw
@@ -56,7 +56,7 @@ namespace SDG
         /// @return new Texture2D pointer. It becomes the user's responsibility, so please make sure to free it
         /// when it is no longer needed.
         [[nodiscard]]
-        Texture2D *CreateTextShaded(Ref<class Window> target, const String &text, Color fgColor, Color bgColor, bool wrapped = false, uint32_t wrapLength = 0) const;
+        Texture2D *CreateTextShaded(Ref<class Window> target, const String &text, Color fgColor, Color bgColor, uint32_t wrapLength = 0) const;
 
         /// Renders Blended text to a Texture2D
         /// @param text - the text to draw
@@ -66,7 +66,7 @@ namespace SDG
         /// @return new Texture2D pointer. It becomes the user's responsibility, so please make sure to free it
         /// when it is no longer needed.
         [[nodiscard]]
-        Texture2D *CreateTextBlended(Ref<class Window> target, const String &text, Color color, bool wrapped = false, uint32_t wrapLength = 0) const;
+        Texture2D *CreateTextBlended(Ref<class Window> target, const String &text, Color color, uint32_t wrapLength = 0) const;
 
         /// Unloads the font, cleaning this object for reuse.
         /// Safe to call on an unloaded Font, and automatically called during object destruction.

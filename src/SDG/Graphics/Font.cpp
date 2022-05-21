@@ -41,7 +41,14 @@ namespace SDG
     Font::Load(const Path &filepath, int pointSize)
     {
         Close();              // unloads any font loaded in this object
-        File file(filepath);  // open the file
+        File file;  // open the file
+        if (!file.Open(filepath))
+        {
+            SDG_Err("Problem opening font ({}): {}", filepath.Filename(),
+                    file.GetError());
+            return false;
+        }
+
         SDL_RWops *rwops = SDL_RWFromConstMem(file.Data(), file.Size());
         if (!rwops)
         {
@@ -113,27 +120,27 @@ namespace SDG
     // ===== Rendering ========================================================
     Texture2D *
     Font::CreateTextBlended(Ref<Window> context, const String &text, 
-        Color color, bool wrapped, uint32_t wrapLength) const
+        Color color, uint32_t wrapLength) const
     {
         // Make the text surface
-        SDL_Surface *surf = (wrapped) ?
+        SDL_Surface *surf = (wrapLength > 0) ?
             TTF_RenderText_Blended_Wrapped(impl->font, text.Cstr(), 
                 Conv::ToSDLColor(color), wrapLength) :
             TTF_RenderText_Blended(impl->font, text.Cstr(), 
                 Conv::ToSDLColor(color));
-        
+        SDG_Log("Creating text blended with text: \"{}\"", text);
         return SurfaceToTexture(context, surf);
     }
 
     Texture2D *
     Font::CreateTextShaded(Ref<Window> context, const String &text, 
-        Color fgColor, Color bgColor, bool wrapped, uint32_t wrapLength) const
+        Color fgColor, Color bgColor, uint32_t wrapLength) const
     {
         SDL_Color fg = Conv::ToSDLColor(fgColor);
         SDL_Color bg = Conv::ToSDLColor(bgColor);
 
         // Make the text surface
-        SDL_Surface *surf = (wrapped) ?
+        SDL_Surface *surf = (wrapLength > 0) ?
             TTF_RenderText_Shaded_Wrapped(impl->font, text.Cstr(), fg, bg, 
                 wrapLength) :
             TTF_RenderText_Shaded(impl->font, text.Cstr(), fg, bg);
@@ -142,11 +149,11 @@ namespace SDG
     }
 
     Texture2D *
-    Font::CreateTextSolid(Ref<Window> context, const String &text, Color color, 
-        bool wrapped, uint32_t wrapLength) const
+    Font::CreateTextSolid(Ref<Window> context, const String &text, Color color,
+                          uint32_t wrapLength) const
     {
         // Make the text surface
-        SDL_Surface *surf = (wrapped) ?
+        SDL_Surface *surf = (wrapLength > 0) ?
             TTF_RenderText_Solid_Wrapped(impl->font, text.Cstr(), 
                 Conv::ToSDLColor(color), wrapLength) :
             TTF_RenderText_Solid(impl->font, text.Cstr(), 

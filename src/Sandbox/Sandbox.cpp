@@ -36,13 +36,15 @@ private:
         LoadContent();
         return 0;
     }
+
     String hello = "Hello world";
+
     void LoadContent()
     {
-        if (font.Load(BasePath("assets/fonts/CourierPrimeCode.sdgc"), 24))
+        if (font.Load(BasePath("assets/fonts/CourierPrimeCode.sdgc"), 12))
         {
 
-            text = font.CreateTextBlended(MainWindow(), hello, Color::MediumSeaGreen());
+            text = font.CreateTextBlended(MainWindow(), hello, Color::Orange(), 300);
         }
         else
         {
@@ -53,7 +55,7 @@ private:
         kirby2.Load(window2, BasePath("assets/textures/field.sdgc"));
 
         shader.Compile(BasePath("assets/shaders/v1.sdgc"), BasePath("assets/shaders/f1.sdgc"));
-        
+
     }
 
     void Update() override
@@ -168,7 +170,7 @@ private:
                                     angle, Vector2(imgSize.X() / 2.f, imgSize.Y() / 2.f), Flip::None, Color::White(), 1.f);
             spriteBatch.DrawTexture(&kirby,  Math::Transform(pos, mat), Vector2::One(),
                                     {.5f,.5f}, angle*2, angle, Color{(uint8_t)(angle/360.f * 255.f), 255});
-            spriteBatch.DrawTexture(text, {200.f, 10.f});
+            spriteBatch.DrawTexture(text, {10.f, 10.f});
             spriteBatch.End();
         }
 

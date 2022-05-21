@@ -10,7 +10,7 @@
 using namespace tinyxml2;
 
 static void
-CheckResult(int result, const std::string &doing);
+CheckResult(int result, const SDG::String &doing);
 
 static void
 OpenXML(const SDG::Path &path, XMLDocument *outDoc);
@@ -63,7 +63,7 @@ SDG::XMLReader::ParseGameConfig(const Path &path, GameConfig *config)
 // ======= Static helper function implementation =================================================
 // Check XMLError; throw exception if a problem occurred.
 void
-CheckResult(int result, const std::string &doing)
+CheckResult(int result, const SDG::String &doing)
 {
     if ((XMLError)result != XML_SUCCESS)
         throw SDG::XMLReaderException(doing, (XMLError)result);
@@ -77,11 +77,11 @@ OpenXML(const SDG::Path &path, XMLDocument *outDoc)
     file.Open(path);
     try {
         CheckResult(outDoc->Parse(reinterpret_cast<const char *>(file.Data())),
-                    "loading file at " + path.String());
+                    "loading file at " + path.Str());
     }
     catch(const std::exception &e)
     {
-        SDG_Err("Exception while parsing Xml file ({}): {}", path.String(),
+        SDG_Err("Exception while parsing Xml file ({}): {}", path.Str(),
                 e.what());
     }
 }

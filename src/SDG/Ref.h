@@ -27,6 +27,7 @@
 
 namespace SDG
 {
+    /// Reference to an object. Access via ->
     template <typename T>
     class Ref 
     {
@@ -58,9 +59,7 @@ namespace SDG
     };
 
 
-    /// Non-smart ptr that serves as a wrapper around a
-    /// ptr reference to prevent accidental deletion and copying
-    /// when retrieving an object ref from another. Accessed via ->
+    /// Const reference to an object. Access via ->
     template <typename T>
     class CRef {
     public:

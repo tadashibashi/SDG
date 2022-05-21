@@ -15,7 +15,7 @@ namespace SDG
 {
 
     /// Class for tracking total time passed since execution and delta time.
-    class  Time
+    class Time
     {
         static const unsigned DefaultMaxDeltaTicks = 64;
     public:

@@ -8,7 +8,8 @@
 #pragma once
 #include <string>
 #include <functional>
-#include <iosfwd>
+#include <iterator>
+#include <spdlog/fmt/ostr.h>
 
 namespace SDG
 {
@@ -76,7 +77,7 @@ namespace SDG
         /// starting its count from the index position. A value of
         /// String::NullPos means that the rest of the String starting
         /// from the index will be copied.
-        String Substr(size_t index, size_t count = NullPos);
+        String Substr(size_t index, size_t count = NullPos) const;
 
         /// Default position value
         static const size_t NullPos;
@@ -90,9 +91,14 @@ namespace SDG
 
         // operators
         [[nodiscard]] char &operator[] (size_t index);
-        [[nodiscard]] bool operator == (const String &other);
-        [[nodiscard]] bool operator == (const std::string &other);
-        [[nodiscard]] bool operator == (const char *other);
+        [[nodiscard]] const char operator[] (size_t index) const;
+
+        [[nodiscard]] bool operator == (const String &other) const;
+        [[nodiscard]] bool operator != (const String &other) const;
+        [[nodiscard]] bool operator == (const std::string &other) const;
+        [[nodiscard]] bool operator != (const std::string &other) const;
+        [[nodiscard]] bool operator == (const char *other) const;
+        [[nodiscard]] bool operator != (const char *other) const;
         String &operator += (const String &other);
         String &operator += (const std::string &other);
         String &operator += (const char *other);
@@ -104,7 +110,12 @@ namespace SDG
         ConstIterator cbegin() { return str_; }
         ConstIterator cend()   { return end_; }
 
-
+        template <typename Ostream>
+        friend Ostream &operator << (Ostream &os, const SDG::String &str)
+        {
+            os << str.Cstr();
+            return os;
+        }
 
     private:
         /// Appends a String to a c-string.
@@ -119,14 +130,16 @@ namespace SDG
         /// Internal string ptrs
         char *str_, *end_, *full_;
     };
+
+    SDG::String operator + (const SDG::String &str1, const SDG::String &str2);
+    SDG::String operator + (const SDG::String &str1, const std::string &str2);
+    SDG::String operator + (const SDG::String &str1, const char *str2);
+    SDG::String operator + (const char *str1, const SDG::String &str2);
+
+    std::string operator + (const std::string &str1, const SDG::String &str2);
+    bool operator == (const std::string &str1, const SDG::String &str2);
+    bool operator != (const std::string &str1, const SDG::String &str2);
 }
 
-SDG::String operator + (const SDG::String &str1, const SDG::String &str2);
-SDG::String operator + (const SDG::String &str1, const std::string &str2);
-SDG::String operator + (const SDG::String &str1, const char *str2);
-SDG::String operator + (const char *str1, const SDG::String &str2);
 
-std::string operator + (const std::string &str1, const SDG::String &str2);
-bool operator == (const std::string &str1, const SDG::String &str2);
 
-std::ostream &operator << (std::ostream &os, const SDG::String &str);

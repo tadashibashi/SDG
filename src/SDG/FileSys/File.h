@@ -36,7 +36,6 @@ public:
     // ============= Getters =================================================
 
     /// Gets the pointer to the file data. Always a valid c-string.
-    /// Data from a file will be available if param "loadToMemory" was set to true in a succesful call to Open.
     [[nodiscard]]
     const char *Data() const;
 
@@ -44,9 +43,7 @@ public:
     [[nodiscard]]
     const char *GetError() const;
     
-    /// The size of the file. A null-terminator is automatically appended to the data, but not counted by this function.
-    /// Therefore, the result is the same as strlen. This value is set regardless if loadToMemory was set to true after a
-    /// successful call to Open.
+    /// The size of the file. A null-terminator is automatically appended to the file data, but not counted by this function.
     [[nodiscard]]
     int64_t Size() const;
 
@@ -58,6 +55,8 @@ public:
     /// Checks if data has been loaded into memory or not.
     [[nodiscard]]
     bool IsLoaded() const;
+
+    const Path &Filepath() const;
     
 private:
     /// Loads data found in the file at path into the File class.

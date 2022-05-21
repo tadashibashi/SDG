@@ -4,6 +4,8 @@
 #include "SpriteBatch.h"
 #include "RenderTarget.h"
 #include "Private/TranslateFlip.h"
+
+#include <SDG/Debug/Assert.h>
 #include <SDG/Math/Matrix4x4.h>
 
 #include <SDL_gpu.h>
@@ -95,8 +97,23 @@ namespace SDG
                                        SDG::FRectangle dest, float rotation, SDG::Vector2 anchor,
                                        SDG::Flip flip, SDG::Color color, float depth)
     {
+        SDG_Assert(texture != nullptr); // please make sure to pass a non-null Texture2D
         batch.emplace_back(texture, std::move(src), std::move(dest), rotation, anchor,
                            flip, std::move(color), depth);
+    }
+
+    void
+    SpriteBatch::DrawTexture(SDG::Texture2D *texture, SDG::Vector2 position,
+                                       SDG::Vector2 scale, SDG::Vector2 normAnchor,
+                                       float rotation, float depth, Color color)
+    {
+        SDG_Assert(texture != nullptr); // please make sure to pass a non-null Texture2D
+        batch.emplace_back(texture,
+                           Rectangle{0, 0, (int)texture->Image()->base_w, (int)texture->Image()->base_h},
+                           FRectangle{position.X(), position.Y(), texture->Image()->base_w * scale.W(), texture->Image()->base_h * scale.H()},
+                           rotation,
+                           Vector2{(float)texture->Image()->base_w * normAnchor.W(), (float)texture->Image()->base_h * normAnchor.H()},
+                           Flip::None, color, depth);
     }
 
     void
@@ -121,18 +138,6 @@ namespace SDG
         RenderBatches();
     }
 
-    void
-    SpriteBatch::DrawTexture(SDG::Texture2D *texture, SDG::Vector2 position,
-                                       SDG::Vector2 scale, SDG::Vector2 normAnchor,
-                                       float rotation, float depth, Color color)
-    {
-        batch.emplace_back(texture,
-                           Rectangle{0, 0, (int)texture->Image()->base_w, (int)texture->Image()->base_h},
-                           FRectangle{position.X(), position.Y(), texture->Image()->base_w * scale.W(), texture->Image()->base_h * scale.H()},
-                           rotation,
-                           Vector2{(float)texture->Image()->base_w * normAnchor.W(), (float)texture->Image()->base_h * normAnchor.H()},
-                           Flip::None, color, depth);
-    }
 
 }
 

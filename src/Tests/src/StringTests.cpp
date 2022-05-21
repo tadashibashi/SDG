@@ -884,20 +884,10 @@ TEST_CASE("String tests", "[String]")
             REQUIRE((str.Substr(5) == "5"));
         }
 
-        SECTION("Out of range index throws OutOfRangeException")
+        SECTION("Out of range index returns blank string")
         {
             String str("012345");
-            bool didThrow;
-            try {
-                String sub = str.Substr(6);
-                didThrow = false;
-            }
-            catch(const OutOfRangeException &e)
-            {
-                didThrow = true;
-            }
-
-            REQUIRE(didThrow);
+            REQUIRE(str.Substr(6).Empty());
         }
 
         SECTION("First part")

@@ -80,7 +80,7 @@ SDG::File::OpenImpl(const Path &filepath)
     char *mem;
     size_t size;
 
-    if (!IO::ReadFileStr(filepath.String().c_str(), &mem, &size))
+    if (!IO::ReadFileStr(filepath.Str().Cstr(), &mem, &size))
     {
         impl->error = string("File::Open: error: ") + IO::GetError();
         return false;
@@ -97,7 +97,7 @@ SDG::File::OpenImpl(const Path &filepath)
 
 bool SDG::File::OpenEncryptedImpl(const Path &path)
 {
-    bool result = SDG::IO::ReadEncryptedFileStr(path.String().c_str(), &impl->mem, &impl->size);
+    bool result = SDG::IO::ReadEncryptedFileStr(path.Str().Cstr(), &impl->mem, &impl->size);
     if (result)
     {
         impl->isOpen = true;
@@ -130,6 +130,12 @@ bool
 SDG::File::IsLoaded() const
 {
     return impl->mem;
+}
+
+const SDG::Path &
+SDG::File::Filepath() const
+{
+    return impl->path;
 }
 
 

@@ -45,7 +45,7 @@ namespace SDG
         // Get game settings from config file
         GameConfig config;
         try {
-            XMLReader::ParseGameConfig(configPath.String(), &config);
+            XMLReader::ParseGameConfig(configPath.Str(), &config);
             impl->config = config;
         }
         catch(const std::exception &e)

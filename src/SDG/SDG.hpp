@@ -1,10 +1,21 @@
 #pragma once
 
-#include "Platform.h"
 #include "App.h"
+#include "AssetMgr.h"
+#include "Platform.h"
+#include "Ref.h"
+#include "String.h"
+#include "ServiceProvider.h"
+
+#include "Templates/Delegate.h"
+#include "Templates/FixedPool.h"
+#include "Templates/Pool.h"
+
+
+
 #include "FileSys.hpp"
 #include "Graphics.hpp"
 #include "Math.hpp"
 #include "Input.hpp"
 #include "Debug.hpp"
-#include "AssetMgr.h"
+

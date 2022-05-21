@@ -3,6 +3,8 @@
 #include "Private/Conversions.h"
 
 #include <SDG/Debug/Logging.h>
+#include <SDG/FileSys/File.h>
+#include <SDG/Graphics/Window.h>
 
 #include <SDL_gpu.h>
 #include <SDL_ttf.h>
@@ -12,15 +14,15 @@ namespace SDG
     /// Converts an SDL_Surface to a Texture2D. Handles surface's
     /// memory management, so the user is no longer responsible.
     static Texture2D *
-    SurfaceToTexture(SDL_Surface *surf, const SDG::Path &path);
+    SurfaceToTexture(Ref<Window> context, SDL_Surface *surf);
 
     // ===== Creation and closure =============================================
     class Font::Impl
     {
     public:
-        Impl() : pointSize(), filepath(), font() { }
+        Impl() : pointSize(), path(), font() { }
         int       pointSize;
-        Path      filepath;
+        Path      path;
         TTF_Font *font;
     };
 
@@ -38,28 +40,42 @@ namespace SDG
     bool
     Font::Load(const Path &filepath, int pointSize)
     {
-        TTF_Font *font = TTF_OpenFont(filepath.String().c_str(), pointSize);
-        if (!font)
+        Close();              // ensures fresh start, unloading any previous font
+        File file(filepath);  // open the file
+        SDL_RWops *rwops = SDL_RWFromConstMem(file.Data(), file.Size());
+        if (!rwops)
         {
-            SDG_Err("Failed to load font from path {}", filepath.String());
+            SDG_Err("Problem converting memory to SDL_RWops: {}", SDL_GetError());
             return false;
         }
 
+        // RWops memory needs to remain for the lifetime of the font. Passing
+        // true to param "freesrc" here automatically frees it on TTF_CloseFont
+        TTF_Font *font = TTF_OpenFontRW(rwops, true, pointSize);
+        if (!font)
+        {
+            SDG_Err("Failed to load font from path {}", filepath.Str());
+            SDL_RWclose(rwops);
+            return false;
+        }
+        
+        // Load was successful, commit changes
         impl->font = font;
         impl->pointSize = pointSize;
-        impl->filepath = filepath;
+        impl->path = filepath;
+
         return true;
     }
 
     void
     Font::Close()
     {
-        if (IsLoaded())
+        if (IsLoaded()) // safe to call if already unloaded
         {
             TTF_CloseFont(impl->font);
             impl->font = nullptr;
             impl->pointSize = 0;
-            impl->filepath = Path();
+            impl->path = Path();
         }
     }
 
@@ -73,7 +89,7 @@ namespace SDG
     const SDG::Path &
     Font::Filepath() const
     {
-        return impl->filepath;
+        return impl->path;
     }
 
     CRef<TTF_Font>
@@ -95,62 +111,54 @@ namespace SDG
 
     // ===== Rendering ========================================================
     Texture2D *
-    Font::RenderTextBlended(const std::string &text, Color color, bool wrapped, 
+    Font::CreateTextBlended(Ref<Window> context, const String &text, Color color, bool wrapped, 
         uint32_t wrapLength) const
     {
-        SDL_Color sdlColor = Conv::ToSDLColor(color);
-        SDL_Surface *surf = wrapped ?
-                TTF_RenderText_Blended_Wrapped(impl->font, text.c_str(), 
-                    sdlColor, wrapLength) :
-                TTF_RenderText_Blended(impl->font, text.c_str(), sdlColor);
-        return SurfaceToTexture(surf, impl->filepath);
+        // Make the text surface
+        SDL_Surface *surf = (wrapped) ?  // choose between wrapped and non-wrapped functions
+            TTF_RenderText_Blended_Wrapped(impl->font, text.Cstr(), Conv::ToSDLColor(color), wrapLength) :
+            TTF_RenderText_Blended(impl->font, text.Cstr(), Conv::ToSDLColor(color));
+        
+        return SurfaceToTexture(context, surf);
     }
 
     Texture2D *
-    Font::RenderTextShaded(const std::string &text, Color fgColor, Color bgColor, 
+    Font::CreateTextShaded(Ref<Window> context, const String &text, Color fgColor, Color bgColor, 
         bool wrapped, uint32_t wrapLength) const
     {
         SDL_Color fg = Conv::ToSDLColor(fgColor);
         SDL_Color bg = Conv::ToSDLColor(bgColor);
-        SDL_Surface *surf = wrapped ?
-                            TTF_RenderText_Shaded_Wrapped(impl->font, text.c_str(),
-                                fg, bg, wrapLength) :
-                            TTF_RenderText_Shaded(impl->font, text.c_str(), fg, bg);
-        return SurfaceToTexture(surf, impl->filepath);
+
+        // Make the text surface
+        SDL_Surface *surf = (wrapped) ?  // choose between wrapped and non-wrapped functions
+            TTF_RenderText_Shaded_Wrapped(impl->font, text.Cstr(), fg, bg, wrapLength) :
+            TTF_RenderText_Shaded(impl->font, text.Cstr(), fg, bg);
+        
+        return SurfaceToTexture(context, surf);
     }
 
     Texture2D *
-    Font::RenderTextSolid(const std::string &text, Color color, bool wrapped, 
+    Font::CreateTextSolid(Ref<Window> context, const String &text, Color color, bool wrapped, 
         uint32_t wrapLength) const
     {
-        SDL_Color sdlColor = Conv::ToSDLColor(color);
-        SDL_Surface *surf = wrapped ?
-                            TTF_RenderText_Solid_Wrapped(impl->font, text.c_str(), 
-                                sdlColor, wrapLength) :
-                            TTF_RenderText_Solid(impl->font, text.c_str(), sdlColor);
-        return SurfaceToTexture(surf, impl->filepath);
+        // Make the text surface
+        SDL_Surface *surf = (wrapped) ?  // choose between wrapped and non-wrapped functions
+            TTF_RenderText_Solid_Wrapped(impl->font, text.Cstr(), Conv::ToSDLColor(color), wrapLength) :
+            TTF_RenderText_Solid(impl->font, text.Cstr(), Conv::ToSDLColor(color));
+
+        return SurfaceToTexture(context, surf);
     }
 
     Texture2D *
-    SurfaceToTexture(SDL_Surface *surf, const SDG::Path &path)
+    SurfaceToTexture(Ref<Window> context, SDL_Surface *surf)
     {
-        if (!surf)
+        if (!surf) // if null, the function that created the surface prior to this failed.
         {
-            SDG_Err("RenderTextBlended: failed to render text: {}", TTF_GetError());
+            SDG_Err("TTF failed to render text: {}", TTF_GetError());
             return nullptr;
         }
 
-        GPU_Image *image = GPU_CopyImageFromSurface(surf);
-        SDL_FreeSurface(surf);
-
-        if (!image)
-        {
-            SDG_Err("RenderTextBlended: failure while copying text image data: {}",
-                TTF_GetError());
-            return nullptr;
-        }
-
-        return new Texture2D(image, path);
+        return new Texture2D(context, surf);
     }
 
 }

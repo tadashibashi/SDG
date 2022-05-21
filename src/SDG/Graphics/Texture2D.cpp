@@ -1,10 +1,15 @@
 #include "Texture2D.h"
 #include "RenderTarget.h"
+
+#include <SDG/Debug/Assert.h>
+#include <SDG/Debug/Logging.h>
+#include <SDG/Debug/Trace.h>
+
 #include <SDG/FileSys/File.h>
-#include <SDG/Debug.hpp>
-#include <SDL_gpu.h>
-#include <memory>
 #include <SDG/Graphics/Window.h>
+
+#include <SDL_gpu.h>
+
 
 // Prevent Windows API macro clashes
 #ifdef M_PI
@@ -43,9 +48,14 @@ namespace SDG
 
     }
 
-    Texture2D::Texture2D(const Path &path, Ref<Window> target) : impl(new Impl)
+    Texture2D::Texture2D(Ref<Window> context, const Path &path) : impl(new Impl)
     {
-        LoadImage(path, target);
+        Load(context, path);
+    }
+
+    Texture2D::Texture2D(Ref<Window> context, SDL_Surface *surf, const Path &path) : impl(new Impl)
+    {
+        LoadFromSurface(context, surf, path);
     }
 
     Texture2D::~Texture2D()
@@ -60,12 +70,38 @@ namespace SDG
         impl->Free();
     }
 
+    bool
+    Texture2D::LoadFromSurface(Ref<Window> context, SDL_Surface *surf, const Path &path)
+    {
+        SDG_Assert(surf != nullptr); // if null, the function that created the surface prior to this probably failed.
+        Free(); // make sure the texture is clean before loading
+
+        /// Set the current GPU context
+        GPU_MakeCurrent(context->Target()->Target().Get(), context->Id()); // loads texture with target context
+
+        // Conversion
+        GPU_Image *image = GPU_CopyImageFromSurface(surf);
+        SDL_FreeSurface(surf); // surface data gets copied, so we no longer need it.
+
+        if (!image)
+        {
+            SDG_Err("{}: SDL_gpu failed to copy image from SDL_Surface: {}", SDG_TRACE(), 
+                GPU_GetErrorString(GPU_PopErrorCode().error));
+            return false;
+        }
+
+        // Conversion was successful, commit changes
+        impl->image = image;
+        impl->path = path;
+
+        return true;
+    }
+
 
     bool
-    Texture2D::LoadImage(const Path &path, Ref<Window> target)
+    Texture2D::Load(Ref<Window> context, const Path &path)
     {
-        // Make sure the texture is clean before loading
-        Free();
+        Free(); // make sure the texture is clean before loading
 
         File file;
         if (!file.Open(path))
@@ -81,11 +117,11 @@ namespace SDG
             return false;
         }
 
-        GPU_MakeCurrent(target->Target()->Target().Get(), target->Id());
+        GPU_MakeCurrent(context->Target()->Target().Get(), context->Id());
         GPU_Image *tempImage = GPU_LoadImage_RW(io, true);
         if (!tempImage)
         {
-            SDG_Err("problem loading image file ({}): {}", path.String(),
+            SDG_Err("problem loading image file ({}): {}", path.Str(),
                     GPU_PopErrorCode().details);
             return false;
         }
@@ -119,13 +155,8 @@ namespace SDG
         return impl->path;
     }
 
-    Texture2D::Texture2D(GPU_Image *image, const Path &path)
-    {
-        impl->image = image;
-        impl->path = path;
-    }
-
-    Point Texture2D::Size() const
+    Point
+    Texture2D::Size() const
     {
         SDG_Assert(IsLoaded());
         return {impl->image->base_w, impl->image->base_h};

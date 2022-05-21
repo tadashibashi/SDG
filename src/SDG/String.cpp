@@ -88,8 +88,10 @@ namespace SDG
     {
         if (size > Capacity())
         {
+            size_t length = Length();
             str_ = StrRealloc(str_, size);
             full_ = str_ + size;
+            end_ = str_ + length;
         }
     }
 
@@ -133,12 +135,11 @@ namespace SDG
     }
 
     String
-    String::Substr(size_t index, size_t count)
+    String::Substr(size_t index, size_t count) const
     {
         size_t length = Length();
         if (index >= length)
-            throw OutOfRangeException(index, "String's current max index is " +
-                                             std::to_string(length - 1));
+            return {};
         return {str_ + index, (count > length - index) ? length - index : count};
     }
 
@@ -148,6 +149,16 @@ namespace SDG
         if (index >= Length())
             throw OutOfRangeException(index, "String's current max index is " +
                 std::to_string(Length() - 1));
+
+        return str_[index];
+    }
+
+    const char
+    String::operator[] (size_t index) const
+    {
+        if (index >= Length())
+            throw OutOfRangeException(index, "String's current max index is " +
+                                             std::to_string(Length() - 1));
 
         return str_[index];
     }
@@ -293,21 +304,39 @@ namespace SDG
     }
 
     bool
-    String::operator==(const String &other)
+    String::operator==(const String &other) const
     {
         return StringsEqual(*this, other.Cstr(), other.Length());
     }
 
     bool
-    String::operator==(const std::string &other)
+    String::operator!=(const String &other) const
+    {
+        return !StringsEqual(*this, other.Cstr(), other.Length());
+    }
+
+    bool
+    String::operator==(const std::string &other) const
     {
         return StringsEqual(*this, other.c_str(), other.length());
     }
 
     bool
-    String::operator==(const char *other)
+    String::operator!=(const std::string &other) const
+    {
+        return !StringsEqual(*this, other.c_str(), other.length());
+    }
+
+    bool
+    String::operator==(const char *other) const
     {
         return StringsEqual(*this, other, other ? strlen(other) : 0);
+    }
+
+    bool
+    String::operator!=(const char *other) const
+    {
+        return !StringsEqual(*this, other, other ? strlen(other) : 0);
     }
 
     String &
@@ -338,46 +367,41 @@ namespace SDG
 
 // ===== Global operators =====================================================
 SDG::String
-operator + (const SDG::String &str1, const SDG::String &str2)
+SDG::operator + (const SDG::String &str1, const SDG::String &str2)
 {
     return SDG::String(str1) += str2;
 }
 
 SDG::String
-operator + (const SDG::String &str1, const std::string &str2)
+SDG::operator + (const SDG::String &str1, const std::string &str2)
 {
     return SDG::String(str1) += str2;
 }
 
 SDG::String
-operator + (const SDG::String &str1, const char *str2)
+SDG::operator + (const SDG::String &str1, const char *str2)
 {
     return SDG::String(str1) += str2;
 }
 
 std::string
-operator + (const std::string &str1, const SDG::String &str2)
+SDG::operator + (const std::string &str1, const SDG::String &str2)
 {
     return std::string(str1) += str2.Cstr();
 }
 
 SDG::String
-operator + (const char *str1, const SDG::String &str2)
+SDG::operator + (const char *str1, const SDG::String &str2)
 {
     return SDG::String(str1) + str2;
 }
 
 bool
-operator == (const std::string &str1, const SDG::String &str2)
+SDG::operator == (const std::string &str1, const SDG::String &str2)
 {
     return str1 == str2.Cstr();
 }
 
-std::ostream &
-operator << (std::ostream &os, const SDG::String &str)
-{
-    return os << str.Cstr();
-}
 
 // ===== Cstring Helper Impl ==================================================
 char *

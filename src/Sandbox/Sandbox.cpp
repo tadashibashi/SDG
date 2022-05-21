@@ -1,36 +1,51 @@
-#include "SDG/SDG.hpp"
-#include "SDL_gpu.h"
-#include "SDG/Graphics/SpriteBatch.h"
-#include "SDG/Math.hpp"
-#include "SDG/Graphics/Camera2D.h"
-#include "SDG/FileSys/Private/IO.h"
-#include <SDG/Graphics/WindowMgr.h>
+#include <SDG/SDG.hpp>
+
+// TODO: Create a OutFile class, and split InFile. File class should then control 
+// both interfaces
+#include <SDG/FileSys/Private/IO.h>
+
+#include <SDG/Graphics/Font.h>
 
 using namespace SDG;
 
-static SpriteBatch spriteBatch;
-static SpriteBatch spriteBatch2;
-static Camera2D camera;
-
-class Sandbox : public App {
+class Sandbox : public App 
+{
 public:
-    Sandbox() : App("SDG Engine Test", "aaronishibashi"), kirby(), shader() { }
+    Sandbox() : App("SDG Engine Test", "aaronishibashi") { }
 private:
+    // Test objects / members
     Ref<Window> window2;
-    Texture2D *kirby2;
+    Texture2D kirby;
+    Texture2D kirby2;
+    Texture2D *text;
+    Shader shader;
+    
+    Font font;
+    Camera2D camera;
+    SpriteBatch spriteBatch;
+
+    float angle = 0;
+    Matrix4x4 mat = Matrix4x4::Identity();
+    Vector2 pos;
+
     int Initialize() override
     {
         Windows()->CreateWindow(300, 300, "Window2", 0, &window2);
-
-        // Temp content
-
-        kirby = new Texture2D(BasePath("assets/textures/kirby.sdgc"), MainWindow());
-        kirby2 = new Texture2D(BasePath("assets/textures/field.sdgc"), window2);
-
-        shader = new Shader;
-        shader->Compile(BasePath("assets/shaders/v1.sdgc"), BasePath("assets/shaders/f1.sdgc"));
         camera.Initialize(window2->Target());
+
+        LoadContent();
         return 0;
+    }
+
+    void LoadContent()
+    {
+        font.Load(BasePath("assets/fonts/pkmn.sdgc"), 24);
+        text = font.CreateTextShaded(MainWindow(), "Hello world", Color::Black(), Color::Amber());
+        kirby.Load(MainWindow(), BasePath("assets/textures/kirby.sdgc"));
+        kirby2.Load(window2, BasePath("assets/textures/field.sdgc"));
+
+        shader.Compile(BasePath("assets/shaders/v1.sdgc"), BasePath("assets/shaders/f1.sdgc"));
+        
     }
 
     void Update() override
@@ -55,7 +70,7 @@ private:
         if (Input::KeyPressed(Key::S) && Input::KeyPress(Key::V))
         {
             // Save the game!!
-            IO::WriteEncryptedFile(PrefPath("game1.sdgc").String().c_str(), {'m', 'y', ' ', 's', 'a', 'v', 'e'});
+            IO::WriteEncryptedFile(PrefPath("game1.sdgc").Str().Cstr(), {'m', 'y', ' ', 's', 'a', 'v', 'e'});
         }
 
         if (Input::KeyPressed(Key::L) && Input::KeyPress(Key::V))
@@ -110,57 +125,56 @@ private:
             if ((Input::KeyPress(Key::LeftShift) || Input::KeyPress(Key::RightShift)) &&
                 Input::KeyPressed(Key::Minus))
                 camera.Zoom(camera.Zoom() - Vector2(.1, .1));
-        }
-    }
-
-    float angle = 0;
-    Matrix4x4 mat = Matrix4x4::Identity();
-    Vector2 pos;
-
-    void Render() override
-    {
+        }        
+        
         if (Input::MouseWheelDidMove())
         {
             angle = fmod(angle + Input::MouseWheel().Y(), 360.f);
         }
+    }
 
 
+
+    void Render() override
+    {
         auto window = MainWindow();
         if (window->IsOpen())
         {
             window->Clear(Color::BlueScreenOfDeath());
 
-            shader->Activate();
-            shader->SetUniform("time", (float) Time()->Ticks());
+            shader.Activate();
+            shader.SetUniform("time", (float) Time()->Ticks());
 
             //GPU_BlitScale(kirby->Image(), nullptr, window->InnerWindow().Get(), (float)window->Size().W() / 2,
             //              (window->Size().H()/2) + kirby->Image()->base_h * 0.1f * .5f, 0.1f, 0.1f);
-            shader->Deactivate();
+            shader.Deactivate();
 
             //GPU_BlitScale(kirby->Image(), nullptr, window->InnerWindow().Get(), (float)window->Size().W() / 2,
             //             window->Size().H()/2, 0.1f, 0.1f);
 
             spriteBatch.Begin(window->Target(), camera.Matrix());
-            spriteBatch.DrawTexture(kirby, {0, 0, kirby->Image()->base_w, kirby->Image()->base_h},
-                                    {10, 10, (float) kirby->Image()->base_w / 100, (float) kirby->Image()->base_h / 100},
+            Point imgSize = kirby.Size();
+            spriteBatch.DrawTexture(&kirby, {0, 0, (int)imgSize.X(), (int)imgSize.Y()},
+                                    {10.f, 10.f, (float) imgSize.X() / 100.f, (float) imgSize.Y() / 100.f},
                                     100, Vector2(0, 0), Flip::Both, Color::White(), 1.f);
-            spriteBatch.DrawTexture(kirby, {0, 0, kirby->Image()->base_w, kirby->Image()->base_h},
-                                    {100, 100, (float) kirby->Image()->base_w / 100, (float) kirby->Image()->base_h / 100},
-                                    angle, Vector2(kirby->Image()->base_w / 2.f, kirby->Image()->base_h / 2.f),
-                                    Flip::None, Color::White(), 1.f);
-            spriteBatch.DrawTexture(kirby,  Math::Transform(pos, mat), Vector2::One(),
+            spriteBatch.DrawTexture(&kirby, {0, 0, (int)imgSize.X(), (int)imgSize.Y()},
+                                    {100.f, 100.f, (float)imgSize.X() / 100.f, (float)imgSize.Y() / 100.f},
+                                    angle, Vector2(imgSize.X() / 2.f, imgSize.Y() / 2.f), Flip::None, Color::White(), 1.f);
+            spriteBatch.DrawTexture(&kirby,  Math::Transform(pos, mat), Vector2::One(),
                                     {.5f,.5f}, angle*2, angle, Color{(uint8_t)(angle/360.f * 255.f), 255});
+            spriteBatch.DrawTexture(text, {200.f, 10.f});
             spriteBatch.End();
         }
 
         if (window2->IsOpen())
         {
             window2->Clear(Color::Olive());
-            spriteBatch2.Begin(window2->Target(), camera.Matrix());
-            spriteBatch2.DrawTexture(kirby2, {0, 0, kirby2->Image()->base_w, kirby2->Image()->base_h},
-                                    {100, 100, (float) kirby2->Image()->base_w / 20, (float) kirby2->Image()->base_h / 20},
+            spriteBatch.Begin(window2->Target(), camera.Matrix());
+            Point imgSize = kirby2.Size();
+            spriteBatch.DrawTexture(&kirby2, {0, 0, imgSize.X(), imgSize.Y()},
+                                    {100, 100, (float)  imgSize.X()/ 20.f, (float) imgSize.Y() / 20.f},
                                     0, Vector2(0, 0), Flip::None, Color::White(), 1.f);
-            spriteBatch2.End();
+            spriteBatch.End();
         }
 
 
@@ -168,14 +182,11 @@ private:
 
     void Close() override
     {
-        delete kirby;
-        delete kirby2;
-        delete shader;
+        kirby.Free();
+        kirby2.Free();
+        shader.Close();
+        delete text;
     }
-
-    // Test Objects
-    Shader *shader;
-    Texture2D *kirby;
 };
 
 /// Entry-point

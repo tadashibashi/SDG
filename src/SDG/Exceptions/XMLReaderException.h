@@ -1,6 +1,6 @@
 #pragma once
 #include "Exception.h"
-#include <string>
+#include <SDG/String.h>
 
 namespace SDG
 {
@@ -11,11 +11,11 @@ namespace SDG
         /// @param doing The task that the program was doing when the error occured
         /// e.g. "opening file example.xml"
         /// @param error The tinyxml2 error code that occured.
-        XMLReaderException(const std::string &doing, int error)
+        XMLReaderException(const String &doing, int error)
             : doing(doing), error(error) {}
     private:
         void What(std::ostream &stream) const override;
-        std::string doing;
+        String doing;
         int error;
     };
 }

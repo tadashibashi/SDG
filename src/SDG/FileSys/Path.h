@@ -8,9 +8,11 @@
  *
  */
 #pragma once
-#include <iosfwd>
-#include <string>
 #include <SDG/Ref.h>
+#include <SDG/String.h>
+
+#include <spdlog/fmt/ostr.h>
+
 #include <stack>
 
 namespace SDG
@@ -44,32 +46,37 @@ namespace SDG
         /// Creates a path with specified base directory and subpath
         /// @param pSubpath the subpath, which will append to the base directory
         /// @param base the base directory from which the subpath will root from
-        Path(const std::string &pSubpath, BaseDir base = BaseDir::None);
+        Path(const String &pSubpath, BaseDir base = BaseDir::None);
 
         /// Get the subpath portion, not including base path
-        [[nodiscard]] const std::string &Subpath() const { return subpath; }
+        [[nodiscard]] const String &Subpath() const { return subpath; }
+
+        [[nodiscard]] bool Empty() const { return subpath.Empty() && base == BaseDir::None; }
+
+        /// Calculates a hash identifier for the path
+        [[nodiscard]] uint64_t Hash() const;
 
         /// Checks whether the Path has an extension.
         [[nodiscard]] bool HasExtension() const;
         /// Checks whether a file exists at the path.
         [[nodiscard]] bool FileExists() const;
         /// Gets the file extension of the Path if there is one.
-        [[nodiscard]] std::string Extension() const;
+        [[nodiscard]] String Extension() const;
         /// Gets the file name (or directory name) if there is one, or a blank string
         /// if not.
-        [[nodiscard]] std::string Filename() const;
+        [[nodiscard]] String Filename() const;
 
         /// Retrieves the Path Base type set in the constructor.
         [[nodiscard]] BaseDir Base() const { return base; }
 
         /// Gets the full path, subpath appended to the base path, as a string
-        [[nodiscard]] std::string String() const;
+        [[nodiscard]] String Str() const;
 
         /// Gets the full path, including the base path, as a string
-        explicit operator std::string() const { return String(); }
+        explicit operator String() const { return Str(); }
 
         /// You can add strings to the Path, which is appended to the internal subpath
-        Path &operator += (const std::string &str);
+        Path &operator += (const String &str);
 
         /// Set the current file system that each Path object will evaluate paths by.
         /// All calls to String() are affected. Therefore, one Path object may
@@ -80,27 +87,34 @@ namespace SDG
 
         /// Removes the last FileSys that was pushed.
         static void PopFileSys();
+
+        template <typename Ostream>
+        friend Ostream &operator << (Ostream &os, const Path &path)
+        {
+            os << path.Str().Cstr();
+            return os;
+        }
     private:
-        std::string subpath;
+        String subpath;
         BaseDir base;
         static std::stack<Ref<FileSys>> fileSys;
     };
 
     /// Helper: creates a path stemming from the app personal preference directory (read/write)
-    Path PrefPath(const std::string &subpath = std::string());
+    Path PrefPath(const String &subpath = String());
     /// Helper: creates a path stemming from the app's base working directory (read only)
-    Path BasePath(const std::string &subpath = std::string());
-    Path RootPath(const std::string &subpath = std::string());
+    Path BasePath(const String &subpath = String());
+    Path RootPath(const String &subpath = String());
+
+    Path operator + (const Path &path, const String &str);
+
+    /// Path <-> string comparison
+    bool operator == (const Path &path, const String &other);
+    bool operator != (const Path &path, const String &other);
+    bool operator == (const String &other, const Path &path);
+    bool operator != (const String &other, const Path &path);
+    /// Path <-> Path comparison
+    bool operator == (const Path &path1, const Path &path2);
+    bool operator != (const Path &path1, const Path &path2);
 }
 
-SDG::Path operator + (const SDG::Path &path, const std::string &str);
-std::ostream &operator << (std::ostream &os, const SDG::Path &path);
-
-/// Path <-> string comparison
-bool operator == (const SDG::Path &path, const std::string &other);
-bool operator != (const SDG::Path &path, const std::string &other);
-bool operator == (const std::string &other, const SDG::Path &path);
-bool operator != (const std::string &other, const SDG::Path &path);
-/// Path <-> Path comparison
-bool operator == (const SDG::Path &path1, const SDG::Path &path2);
-bool operator != (const SDG::Path &path1, const SDG::Path &path2);

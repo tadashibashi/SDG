@@ -29,19 +29,19 @@ SDG::AssetMgr::UnloadAll()
 SDG::CRef<SDG::Texture2D>
 SDG::AssetMgr::LoadTexture(const Path &path)
 {
-    SDG_Assert(target); // Please make sure to set the render target via Initialize() before loading textures.
+    SDG_Assert(context); // Please make sure to set the context via Initialize() before loading textures.
 
-    std::string pathStr = path.String();
-    auto it = textures.find(pathStr);
+    uint64_t hash = path.Hash();
+    auto it = textures.find(hash);
 
     if (it != textures.end())
         return CRef{it->second};
     else
     {
         auto tex = new Texture2D;
-        if (tex->LoadImage(path, target))
+        if (tex->Load(context, path))
         {
-            textures[pathStr] = tex;
+            textures[hash] = tex;
             return CRef{tex};
         }
         else
@@ -55,7 +55,7 @@ SDG::AssetMgr::LoadTexture(const Path &path)
 void 
 SDG::AssetMgr::UnloadTexture(const Path &path)
 {
-    auto it = textures.find(path.String());
+    auto it = textures.find(path.Hash());
     if (it != textures.end())
     {
         textures.erase(it);
@@ -70,7 +70,7 @@ SDG::AssetMgr::UnloadTexture(Ref<Texture2D> texture)
     UnloadTexture(texture->Filepath());
 }
 
-void SDG::AssetMgr::Initialize(SDG::Ref<SDG::Window> target)
+void SDG::AssetMgr::Initialize(SDG::Ref<SDG::Window> context)
 {
-    this->target = target;
+    this->context = context;
 }

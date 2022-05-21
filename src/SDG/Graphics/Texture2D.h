@@ -13,18 +13,11 @@
 
 #include <SDG/Ref.h>
 
-// Prevent MSVC macro clash
-#ifdef LoadImage
-#undef LoadImage
-#endif
-
 struct GPU_Image;
+struct SDL_Surface;
 
 namespace SDG
 {
-    class RenderTarget;
-    class Window;
-
     /// Texture2D class automatically frees texture when this object goes out
     /// of scope. Please be aware of this, as the object will become
     /// invalidated if the destructor is called.
@@ -36,18 +29,25 @@ namespace SDG
         /// Initializes an unloaded Texture
         Texture2D();
         /// Initializes a texture loaded from the given path.
-        Texture2D(const Path &path, Ref<Window> target);
-        /// Wraps a GPU_Image object that was already loaded.
-        Texture2D(GPU_Image *image, const Path &path);
+        Texture2D(Ref<class Window> context, const Path &path);
+
+        Texture2D(Ref<class Window> context, SDL_Surface *surf, const Path &path = Path());
+
         /// Automatically frees the internal texture if one was loaded.
         ~Texture2D();
 
         // ========== Loading and unloading ==========
         /// Load an image into the Texture2D.
-        /// @param path
-        /// @param target RenderTarget to create texture with. The texture only works on the RenderTarget it was
-        /// created with.
-        bool LoadImage(const Path &path, Ref<Window> target);
+        /// @param path path to the image file. Must be in png, tga, or bmp format.
+        /// @param context context to create texture with - it will only render in this context.
+        bool Load(Ref<class Window> context, const Path &path);
+
+        /// Load an image from a surface. Ownership of surface is passed to the Texture2D.
+        /// @param surf the surface to load
+        /// @param context context to create texture with - it will only render in this context.
+        /// @param path path that the surface was loaded from. Made optional since there is not always one.
+        bool LoadFromSurface(Ref<class Window> context, SDL_Surface *surf, const Path &path = Path());
+
         /// Free the internal texture, and resets container for reuse.
         void Free();
 

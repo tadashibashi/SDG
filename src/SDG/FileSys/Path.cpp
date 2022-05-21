@@ -1,11 +1,11 @@
-//
-// Created by Aaron Ishibashi on 5/8/22.
-//
+/// Path implementation file
 #include "Path.h"
 #include <SDG/Debug/Assert.h>
 #include <SDG/FileSys/FileSys.h>
 #include <SDG/Platform.h>
+
 #include <SDL_rwops.h>
+
 #include <ostream>
 
 namespace SDG
@@ -30,10 +30,10 @@ namespace SDG
 
     /// Creates a path with the specified base path.
     /// Trims any preceding forward slashes or white-space of subpath
-    Path::Path(const string &pSubpath, BaseDir base) : subpath(), base(base)
+    Path::Path(const String &pSubpath, BaseDir base) : subpath(), base(base)
     {
         // Only operate if there is a subpath to work with
-        if (!pSubpath.empty())
+        if (!pSubpath.Empty())
         {
             if (base == BaseDir::None) // keep path unaltered if BaseDir::None
             {
@@ -42,7 +42,7 @@ namespace SDG
             else                       // trim path, since it will be appended to BaseDir
             {
 
-                size_t pos = 0, size = pSubpath.size();
+                size_t pos = 0, size = pSubpath.Length();
 #if SDG_TARGET_WINDOWS
                 // If Windows, trim letter named drive prefix
                 if (base == BaseDir::Root)
@@ -54,20 +54,20 @@ namespace SDG
                 }
 #endif
                 // Trim any white space or '/' in beginning of path
-                std::string temp;
+                String temp;
                 while(pos < size && (pSubpath[pos] == '/' || isspace(pSubpath[pos])))
                     ++pos;
-                temp = pSubpath.substr(pos);
+                temp = pSubpath.Substr(pos);
 
                 // Trim any tailing '/' or white-space, or '.'
-                if (!temp.empty())
+                if (!temp.Empty())
                 {
-                    pos = temp.length();
+                    pos = temp.Length();
                     while(pos > 0 && (temp[pos-1] == '/' || isspace(temp[pos-1]) || temp[pos-1] == '.'))
                         --pos;
 
-                    if (pos < temp.length())
-                        temp = temp.substr(0, pos);
+                    if (pos < temp.Length())
+                        temp = temp.Substr(0, pos);
                 }
 
                 // finished substring ops, commit the result
@@ -76,30 +76,30 @@ namespace SDG
         }
     }
 
-    std::string Path::Filename() const
+    String Path::Filename() const
     {
-        auto pos = subpath.find_last_of('/');
-        return (pos == string::npos) ? subpath : subpath.substr(pos + 1);
+        auto pos = subpath.FindLastOf('/');
+        return (pos == String::NullPos) ? subpath : subpath.Substr(pos + 1);
     }
 
-    std::string
+    String
     Path::Extension() const
     {
-        string filename = Filename();
-        auto pos = filename.find_last_of('.');
+        String filename = Filename();
+        auto pos = filename.FindLastOf('.');
 
-        return (pos == string::npos || pos == 0) ? string() : filename.substr(pos + 1);
+        return (pos == String::NullPos || pos == 0) ? string() : filename.Substr(pos + 1);
     }
 
     bool
     Path::HasExtension() const
     {
-        return !Extension().empty();
+        return !Extension().Empty();
     }
 
-    Path &Path::operator+=(const string &str)
+    Path &Path::operator+=(const String &str)
     {
-        if (str.empty()) return *this;
+        if (str.Empty()) return *this;
 
         if (str[0] != '/')
             subpath += '/';
@@ -108,7 +108,7 @@ namespace SDG
         return *this;
     }
 
-    std::string Path::String() const
+    String Path::Str() const
     {
         // FileSys must have been set
         SDG_Assert(!fileSys.empty());
@@ -133,7 +133,7 @@ namespace SDG
     bool
     Path::FileExists() const
     {
-        SDL_RWops *file = SDL_RWFromFile(String().c_str(), "r");
+        SDL_RWops *file = SDL_RWFromFile(Str().Cstr(), "r");
 
         if (file)
         {
@@ -146,70 +146,79 @@ namespace SDG
         }
     }
 
+    uint64_t
+    Path::Hash() const
+    {
+        const uint64_t p = 31;
+        const uint64_t m = 1e9 + 9;
+        uint64_t hash = ((uint64_t)base + 1)% m;
+        uint64_t pPow = p;
+        for (const char *c = subpath.Cstr(); *c != '\0' ; ++c)
+        {
+            hash = (hash + (*c - 'a' + 1) * pPow) % m;
+            pPow = (pPow * p) % m;
+        }
+
+        return hash;
+    }
+
     Path
-    PrefPath(const std::string &subpath)
+    PrefPath(const String &subpath)
     {
         return {subpath, Path::BaseDir::Pref};
     }
 
     Path
-    BasePath(const std::string &subpath)
+    BasePath(const String &subpath)
     {
         return {subpath, Path::BaseDir::Base};
     }
 
     Path
-    RootPath(const std::string &subpath)
+    RootPath(const String &subpath)
     {
         return {subpath, Path::BaseDir::Root};
     }
 }
 
 SDG::Path
-operator+(const SDG::Path &path, const string &str)
+SDG::operator + (const SDG::Path &path, const SDG::String &str)
 {
     return SDG::Path(path) += str;
 }
 
-std::ostream &
-operator<<(std::ostream &os, const SDG::Path &path)
+bool
+SDG::operator == (const SDG::Path &path, const SDG::String &other)
 {
-    os << path.String();
-    return os;
+    return path.Str() == other;
 }
 
 bool
-operator==(const SDG::Path &path, const std::string &other)
+SDG::operator != (const SDG::Path &path, const SDG::String &other)
 {
-    return path.String() == other;
+    return path.Str() != other;
 }
 
 bool
-operator != (const SDG::Path &path, const std::string &other)
+SDG::operator == (const SDG::String &other, const SDG::Path &path)
 {
-    return path.String() != other;
+    return path.Str() == other;
 }
 
 bool
-operator == (const std::string &other, const SDG::Path &path)
+SDG::operator != (const SDG::String &other, const SDG::Path &path)
 {
-    return path.String() == other;
+    return path.Str() != other;
 }
 
 bool
-operator != (const std::string &other, const SDG::Path &path)
+SDG::operator == (const SDG::Path &path1, const SDG::Path &path2)
 {
-    return path.String() != other;
+    return path1.Str() == path2.Str();
 }
 
 bool
-operator == (const SDG::Path &path1, const SDG::Path &path2)
-{
-    return path1.String() == path2.String();
-}
-
-bool
-operator != (const SDG::Path &path1, const SDG::Path &path2)
+SDG::operator != (const SDG::Path &path1, const SDG::Path &path2)
 {
     return !(path1 == path2);
 }

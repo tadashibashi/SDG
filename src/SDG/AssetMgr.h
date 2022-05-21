@@ -17,8 +17,8 @@ namespace SDG
     public:
         ~AssetMgr();
 
-        /// Sets the target to load Textures with.
-        void Initialize(Ref<Window> target);
+        /// Sets the context window to load Textures with.
+        void Initialize(Ref<Window> context);
 
         /**
          * Retrieves a texture already cached in the AssetMgr or loads a new one at the given path.
@@ -57,8 +57,8 @@ namespace SDG
          */
         void UnloadAll();
     private:
-        std::map<std::string, Texture2D *> textures;
-        Ref<Window> target;
+        std::map<uint64_t, Texture2D *> textures;
+        Ref<Window> context;
     };
 }
 

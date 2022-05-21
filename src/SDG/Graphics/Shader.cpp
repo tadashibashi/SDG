@@ -90,7 +90,7 @@ SDG::Shader::Compile(const Path &vertexPath, const Path &fragPath)
     uint32_t vertShader = LoadShader(GPU_VERTEX_SHADER, vertexPath);
     if (!vertShader)
     {
-        SDG_Err("Failed to load vertex shader ({}) =>\n{}", vertexPath.String(),
+        SDG_Err("Failed to load vertex shader ({}) =>\n{}", vertexPath.Str(),
                 GPU_GetShaderMessage());
         return false;
     }
@@ -98,7 +98,7 @@ SDG::Shader::Compile(const Path &vertexPath, const Path &fragPath)
     uint32_t fragShader = LoadShader(GPU_FRAGMENT_SHADER, fragPath);
     if (!fragShader)
     {
-        SDG_Err("Failed to load fragment shader ({})", fragPath.String());
+        SDG_Err("Failed to load fragment shader ({})", fragPath.Str());
         GPU_FreeShader(vertShader);
         return false;
     }

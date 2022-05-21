@@ -10,13 +10,13 @@ namespace SDG
     class AssertionException : public Exception
     {
     public:
-        AssertionException(const std::string &statement, const char *file, int line, const char *func)
+        AssertionException(const String &statement, const char *file, int line, const char *func)
                 : statement(statement), file(file), line(line), func(func)
         {}
 
     private:
         void What(std::ostream &stream) const override;
-        std::string statement, file, func;
+        String statement, file, func;
         int line;
 
     };

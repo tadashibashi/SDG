@@ -1,4 +1,5 @@
 #pragma once
+#include <SDG/String.h>
 #include <exception>
 #include <iosfwd>
 
@@ -13,7 +14,7 @@ namespace SDG
 
         /// If this constructor is used, do not override What() or else this message
         /// will be overwritten.
-        Exception(const std::string &message);
+        Exception(const String &message);
         ~Exception();
         const char *what() const noexcept final;
     private:

@@ -11,10 +11,10 @@ namespace SDG
     {
     public:
         NullReferenceException() : message() { }
-        explicit NullReferenceException(const std::string &message)
+        explicit NullReferenceException(const String &message)
             : message(message) { }
     private:
         void What(std::ostream &stream) const override;
-        std::string message;
+        String message;
     };
 }

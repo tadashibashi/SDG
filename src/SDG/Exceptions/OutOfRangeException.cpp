@@ -1,7 +1,7 @@
 #include "OutOfRangeException.h"
 #include <ostream>
 
-SDG::OutOfRangeException::OutOfRangeException(int64_t value, const std::string &info)
+SDG::OutOfRangeException::OutOfRangeException(int64_t value, const String &info)
         : value(value), info(info)
 {}
 

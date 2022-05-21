@@ -4,12 +4,12 @@
 
 struct SDG::Exception::Impl
 {
-    std::string message;
+    SDG::String message;
 };
 
 SDG::Exception::Exception() : impl(new Impl) { }
 
-SDG::Exception::Exception(const std::string &message) : impl(new Impl)
+SDG::Exception::Exception(const String &message) : impl(new Impl)
 {
     impl->message = message;
 }
@@ -18,14 +18,14 @@ SDG::Exception::~Exception() { delete impl; }
 
 const char *SDG::Exception::what() const noexcept
 {
-    if (impl->message.empty())
+    if (impl->message.Empty())
     {
         std::stringstream stream;
         What(stream);
         impl->message = stream.str();
     }
 
-    return impl->message.c_str();
+    return impl->message.Cstr();
 }
 
 

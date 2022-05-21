@@ -8,12 +8,12 @@ namespace SDG
     class OutOfRangeException : public RuntimeException
     {
     public:
-        OutOfRangeException(int64_t value, const std::string &info);
+        OutOfRangeException(int64_t value, const String &info);
 
     private:
         void What(std::ostream &stream) const override;
 
         int64_t value;
-        std::string info;
+        String info;
     };
 }

@@ -8,7 +8,7 @@ namespace SDG
     {
         stream << "Invalid argument passed to " << func <<
         ". Arg name: " << arg;
-        if (!info.empty())
+        if (!info.Empty())
             stream << ": " << info;
     }
 }

@@ -142,7 +142,7 @@ namespace SDG
 
         bool operator!=(const Rect_ &other)
         {
-            return !(*this == other);
+            return !operator==(other);
         }
 
         // Convertible by casting to other _Rect types. Please be aware of the effects of automatic type casting.

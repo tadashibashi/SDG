@@ -1,9 +1,9 @@
 #pragma once
 #include "Math.h"
 
+#include <SDG/Debug/LoggingImpl.h>
 #include <SDG/Exceptions/InvalidArgumentException.h>
 #include <SDG/Exceptions/OutOfRangeException.h>
-#include <SDG/Debug/LoggingImpl.h>
 #include <SDG/String.h>
 
 #include <type_traits>
@@ -25,11 +25,17 @@ namespace SDG
         constexpr Vec2_() : x(0), y(0) { }
         constexpr Vec2_(T x, T y) : x(x), y(y) { }
 
-        [[nodiscard]] T &operator[](int i)
+        [[nodiscard]]
+        T &operator[](unsigned i)
         {
-            if (i < 0 || i > 1)
-                throw OutOfRangeException(i, "Vector2 indexers may only be 0 or 1");
-            return *(&x + i);
+            switch(i)
+            {
+                case 0: return x;
+                case 1: return y;
+                default:
+                    throw OutOfRangeException(i,
+                      "Vector2 indexers may only be 0 or 1");
+            }
         }
 
         [[nodiscard]] T X() const { return x; }
@@ -49,32 +55,27 @@ namespace SDG
             return *this;
         }
 
-        [[nodiscard]] static constexpr Vec2_ One() { return Vec2_(1, 1); }
-        [[nodiscard]] static constexpr Vec2_ Zero() { return Vec2_(0, 0); }
-
-        // Gets the distance between two vectors
-        [[nodiscard]] static float Distance(const Vec2_ &p1, const Vec2_ &p2)
-        {
-            float a = static_cast<float>(p1.x) - static_cast<float>(p2.x);
-            float b = static_cast<float>(p1.y) - static_cast<float>(p2.y);
-
-            return std::sqrt(a * a + b * b);
-        }
+        [[nodiscard]]
+        static constexpr Vec2_ One() { return Vec2_(1, 1); }
+        [[nodiscard]]
+        static constexpr Vec2_ Zero() { return Vec2_(0, 0); }
 
         // Returns a rotated point around {0, 0} anchor
+        [[nodiscard]]
         static Vec2_ Rotate(const Vec2_ &v, float degrees)
         {
             float rads = degrees * Math::RadsPerDeg;
             float cosRads = Math::Cos(rads);
             float sinRads = Math::Sin(rads);
-            return Vec2_((T)(v.x * cosRads - v.y * sinRads),
-                         (T)(v.x * sinRads + v.y * cosRads));
+            return {(T)(v.x * cosRads - v.y * sinRads),
+                         (T)(v.x * sinRads + v.y * cosRads)};
         }
 
         // Distance from zero.
-        [[nodiscard]] float Length() const
+        [[nodiscard]]
+        float Length() const
         {
-            return std::sqrt((float)(x * x + y * y));
+            return Math::Sqrt((float)(x * x + y * y));
         }
 
         // Scales x and y so that it totals 1 in length
@@ -90,15 +91,21 @@ namespace SDG
             return *this;
         }
 
+        Vec2_ Normal() const
+        {
+            return Vec2_(*this).Normalize();
+        }
+
         // Formats Vec2_ as string: "{x, y}"
-        [[nodiscard]] String Str() const
+        [[nodiscard]]
+        String Str() const
         {
             return "{" + std::to_string(x) + ", " + std::to_string(y) + "}";
         }
 
         // Math operators
         template <typename U>
-        Vec2_ &operator+=(const Vec2_<U> &other)
+        Vec2_ &operator += (const Vec2_<U> &other)
         {
             x += other.X();
             y += other.Y();
@@ -106,7 +113,7 @@ namespace SDG
         }
 
         template <typename U>
-        Vec2_ &operator-=(const Vec2_<U> &other)
+        Vec2_ &operator -= (const Vec2_<U> &other)
         {
             x -= other.X();
             y -= other.Y();
@@ -114,7 +121,7 @@ namespace SDG
         }
 
         template <typename U>
-        Vec2_ &operator*=(const Vec2_<U> &other)
+        Vec2_ &operator *= (const Vec2_<U> &other)
         {
             x *= other.X();
             y *= other.Y();
@@ -122,7 +129,7 @@ namespace SDG
         }
 
         template <typename U>
-        Vec2_ &operator/=(const Vec2_<U> &other)
+        Vec2_ &operator /= (const Vec2_<U> &other)
         {
             if (other.X() == 0 || other.Y() == 0)
                 throw InvalidArgumentException(
@@ -134,7 +141,7 @@ namespace SDG
         }
 
         template <typename U>
-        Vec2_ &operator*=(const U scalar)
+        Vec2_ &operator *= (const U scalar)
         {
             x *= scalar;
             y *= scalar;
@@ -142,7 +149,7 @@ namespace SDG
         }
 
         template <typename U>
-        Vec2_ &operator/=(const U scalar)
+        Vec2_ &operator /= (const U scalar)
         {
             if (scalar == 0)
                 throw InvalidArgumentException("Vec2_::operator/=(U scalar)",
@@ -152,12 +159,14 @@ namespace SDG
             return *this;
         }
 
-        [[nodiscard]] bool operator==(const Vec2_ &other) const
+        [[nodiscard]]
+        bool operator == (const Vec2_ &other) const
         {
             return (x == other.X() && y == other.Y());
         }
 
-        [[nodiscard]] bool operator!=(const Vec2_ &other) const
+        [[nodiscard]]
+        bool operator != (const Vec2_ &other) const
         {
             return !operator==(other);
         }
@@ -178,30 +187,26 @@ namespace SDG
     template <typename U, typename Ostream>
     Ostream &operator << (Ostream &out, const Vec2_<U> &v)
     {
-        out << "{" << std::to_string(v.X()) << ", " <<
-            std::to_string(v.Y()) << "}";
+        out << v.Str();
         return out;
     }
 
     template <typename T, typename U>
     [[nodiscard]] Vec2_<T> operator+(Vec2_<T> a, Vec2_<U> b)
     {
-        Vec2_<T> temp(a);
-        return temp += b;
+        return Vec2_<T>(a) += b;
     }
 
     template <typename T, typename U>
     [[nodiscard]] Vec2_<T> operator-(const Vec2_<T> a, const Vec2_<U> b)
     {
-        Vec2_<T> temp(a);
-        return temp -= b;
+        return Vec2_<T>(a) -= b;
     }
 
     template <typename T, typename U>
     [[nodiscard]] Vec2_<T> operator*(const Vec2_<T> a, const Vec2_<U> b)
     {
-        Vec2_<T> temp(a);
-        return temp *= b;
+        return Vec2_<T>(a) *= b;
     }
 
     /// Divides a Vec2_ by a Vec2_.
@@ -209,8 +214,7 @@ namespace SDG
     template <typename T, typename U>
     [[nodiscard]] Vec2_<T> operator/(const Vec2_<T> a, const Vec2_<U> b)
     {
-        Vec2_<T> temp(a);
-        return temp /= b;
+        return Vec2_<T>(a) /= b;
     }
 
     /// Divides a Vec2_ by a scalar.

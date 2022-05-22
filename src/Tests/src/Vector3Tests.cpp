@@ -185,13 +185,13 @@ TEST_CASE("Vector3 tests", "[Vector3]")
 
     SECTION("String")
     {
-        REQUIRE(Vector3::Zero() == ParseString(Vector3::Zero().String()));
-        REQUIRE(Vector3::One() == ParseString(Vector3::One().String()));
-        REQUIRE(Vector3(142.124f, -48.5f, 123.f) == ParseString(Vector3(142.124f, -48.5f, 123.f).String()));
-        REQUIRE(Vector3(42.f, 24.f, 876.4f) == ParseString(Vector3(42.f, 24.f, 876.4f).String()));
-        REQUIRE(Vector3(-247.f, -7.f, 876.4f) == ParseString(Vector3(-247.f, -7.f, 876.4f).String()));
-        REQUIRE(Vector3(-44.f, 0, 876.4f) == ParseString(Vector3(-44.f, 0, 876.4f).String()));
-        REQUIRE(Vector3(0, 124, 876.4f) == ParseString(Vector3(0, 124, 876.4f).String()));
+        REQUIRE(Vector3::Zero() == ParseString(Vector3::Zero().Str()));
+        REQUIRE(Vector3::One() == ParseString(Vector3::One().Str()));
+        REQUIRE(Vector3(142.124f, -48.5f, 123.f) == ParseString(Vector3(142.124f, -48.5f, 123.f).Str()));
+        REQUIRE(Vector3(42.f, 24.f, 876.4f) == ParseString(Vector3(42.f, 24.f, 876.4f).Str()));
+        REQUIRE(Vector3(-247.f, -7.f, 876.4f) == ParseString(Vector3(-247.f, -7.f, 876.4f).Str()));
+        REQUIRE(Vector3(-44.f, 0, 876.4f) == ParseString(Vector3(-44.f, 0, 876.4f).Str()));
+        REQUIRE(Vector3(0, 124, 876.4f) == ParseString(Vector3(0, 124, 876.4f).Str()));
     }
 
     SECTION("operator << (ostream &)")

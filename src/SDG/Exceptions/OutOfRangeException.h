@@ -1,6 +1,5 @@
 #pragma once
 #include "RuntimeException.h"
-#include <string>
 
 namespace SDG
 {

@@ -5,8 +5,12 @@
  *
  */
 #pragma once
-#include <SDG/Templates/Swap.h>
 #include "MathConstants.h"
+
+#include <SDG/Templates/Swap.h>
+
+#include <initializer_list>
+#include <type_traits>
 
 namespace SDG::Math
 {

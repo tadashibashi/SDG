@@ -97,45 +97,6 @@ TEST_CASE("Vector2 tests", "[Vector2]")
         }
     }
 
-    SECTION("Distance")
-    {
-        SECTION("From {0,0} -> {1,1}")
-        {
-            Vector2 base = Vector2::Zero();
-            Vector2 extension = Vector2::One();
-
-            float result = Vector2::Distance(base, extension);
-            REQUIRE(result == std::sqrt(2.f));
-            REQUIRE(extension.Length() == result);
-        }
-
-        SECTION("From negative number")
-        {
-            Vector2 base = {-2.5, -4.4};
-            Vector2 extension = {4.2f, 5.9f};
-
-            float a = extension.X() - base.X();
-            float b = extension.Y() - base.Y();
-            float expected = std::sqrt(a * a + b * b);
-
-            float result = Vector2::Distance(base, extension);
-            REQUIRE(result == expected);
-        }
-
-        SECTION("From mixed negative positive")
-        {
-            Vector2 base = {2.5412f, -4.4};
-            Vector2 extension = {4.22f, -5.99f};
-
-            float a = extension.X() - base.X();
-            float b = extension.Y() - base.Y();
-            float expected = std::sqrt(a * a + b * b);
-
-            float result = Vector2::Distance(base, extension);
-            REQUIRE(result == expected);
-        }
-    }
-
     SECTION("Rotate")
     {
         Vector2 vec(1, 0);

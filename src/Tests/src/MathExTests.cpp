@@ -1,5 +1,6 @@
 #include "SDG_Tests.h"
 #include <SDG/Math/Intersection.h>
+#include <SDG/Math/MathEx.h>
 
 TEST_CASE("Intersects")
 {
@@ -60,6 +61,48 @@ TEST_CASE("Intersects")
             rect1.Set(0, 0, 10.f, 10.f);
             rect2.Set(10.f, 0, 10.f, 10.f);
             REQUIRE(Math::Intersects(rect1, rect2));
+        }
+    }
+
+    SECTION("PointDistance")
+    {
+        SECTION("Distance")
+        {
+            SECTION("From {0,0} -> {1,1}")
+            {
+                Vector2 base = Vector2::Zero();
+                Vector2 extension = Vector2::One();
+
+                float result = Math::PointDistance(base, extension);
+                REQUIRE(result == std::sqrt(2.f));
+                REQUIRE(extension.Length() == result);
+            }
+
+            SECTION("From negative number")
+            {
+                Vector2 base = {-2.5, -4.4};
+                Vector2 extension = {4.2f, 5.9f};
+
+                float a = extension.X() - base.X();
+                float b = extension.Y() - base.Y();
+                float expected = std::sqrt(a * a + b * b);
+
+                float result = Math::PointDistance(base, extension);
+                REQUIRE(result == expected);
+            }
+
+            SECTION("From mixed negative positive")
+            {
+                Vector2 base = {2.5412f, -4.4};
+                Vector2 extension = {4.22f, -5.99f};
+
+                float a = extension.X() - base.X();
+                float b = extension.Y() - base.Y();
+                float expected = std::sqrt(a * a + b * b);
+
+                float result = Math::PointDistance(base, extension);
+                REQUIRE(result == expected);
+            }
         }
     }
 }

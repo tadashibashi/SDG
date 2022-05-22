@@ -1,10 +1,13 @@
 #pragma once
 #include "Vector2.h"
+#include "Math.h"
+
 #include <SDG/Debug/LoggingImpl.h>
 #include <SDG/Exceptions/InvalidArgumentException.h>
 #include <SDG/Exceptions/OutOfRangeException.h>
-#include <SDG/Math/Math.h>
 #include <SDG/String.h>
+
+#include <type_traits>
 
 namespace SDG
 {
@@ -44,18 +47,25 @@ namespace SDG
             return Vec2_<T>(y, z);
         }
 
-        T &operator[](int i)
+        [[nodiscard]]
+        T &operator[](unsigned i)
         {
-            if (i < 0 || i > 2)
-                throw OutOfRangeException(i, "Vector3 indexer must be 0, 1, or 2");
-            return *(&x + i);
+            switch(i)
+            {
+                case 0: return x;
+                case 1: return y;
+                case 2: return z;
+                default:
+                    throw OutOfRangeException(i,
+                          "Vector3 indexer must be 0, 1, or 2");
+            }
         }
 
         [[nodiscard]] static constexpr Vec3_ One() { return Vec3_(1, 1, 1); }
         [[nodiscard]] static constexpr Vec3_ Zero() { return Vec3_(0, 0, 0); }
 
         // Formats Vec3_ as string: "{x, y, z}"
-        [[nodiscard]] std::string String() const
+        [[nodiscard]] std::string Str() const
         {
             return "{" + std::to_string(x) + ", " + std::to_string(y) +
                 ", " + std::to_string(z) + "}";
@@ -76,7 +86,9 @@ namespace SDG
             return Math::Sqrt((double)(x * x + y * y + z * z));
         }
 
-        // Only applicable if template type is a decimal/floating-point type.
+        /// Makes the length of this Vec3_ one, while maintaining the
+        /// relationship between each member.
+        /// Only applicable if template type is a decimal/floating-point type.
         Vec3_ &Normalize()
         {
             double length = this->Length();
@@ -88,6 +100,12 @@ namespace SDG
             }
 
             return *this;
+        }
+
+        /// Gets a copy of the normal
+        Vec3_ Normal() const
+        {
+            return Vec3_(*this).Normalize();
         }
 
         template <typename U>
@@ -138,7 +156,7 @@ namespace SDG
 
         [[nodiscard]] bool operator!=(const Vec3_ &other) const
         {
-            return !(*this == other);
+            return !operator==(other);
         }
 
         template <typename U>
@@ -216,7 +234,7 @@ namespace SDG
     template <typename Ostream, typename T>
     Ostream &operator << (Ostream &os, const Vec3_<T> v)
     {
-        os << v.String();
+        os << v.Str();
         return os;
     }
 

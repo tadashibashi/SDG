@@ -205,7 +205,7 @@ namespace SDG
                                            "initSize", "initCap must be <= Pool<T>::MaxSize(): " +
                                                        std::to_string(MaxSize()) + ", but got " + std::to_string(size));
         }
-        if (!(size > current))
+        if (size <= current)
             throw OutOfRangeException(size, "Pool most likely has reached maximum size.");
 
         // Perform resize, and set pool capsule values

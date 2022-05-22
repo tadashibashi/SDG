@@ -1,5 +1,6 @@
 #pragma once
 #include <SDG/String.h>
+
 #include <exception>
 #include <iosfwd>
 

@@ -2,19 +2,19 @@
 #include "PoolID.h"
 #include "Private/PoolNullIndex.h"
 
-#include <cstdlib>
+#include <cstddef>
 #include <type_traits>
 #include <vector>
 
-#include "SDG/Debug/Assert.h"
-#include "SDG/Exceptions/OutOfRangeException.h"
-#include "SDG/Exceptions/InvalidArgumentException.h"
-#include "SDG/Ref.h"
+#include <SDG/Debug/Assert.h>
+#include <SDG/Exceptions/OutOfRangeException.h>
+#include <SDG/Exceptions/InvalidArgumentException.h>
+#include <SDG/Ref.h>
 
 namespace SDG
 {
     /// Slightly more efficient version of Pool since it does not expand. All data is
-    /// contiguous, speeding up indexing and iteration times.
+    /// contiguous, helping make indexing and iteration more efficient.
     template <typename T>
     class FixedPool
     {
@@ -89,10 +89,11 @@ namespace SDG
         size_t nextFree;
     };
 
+    // ===== Inline implementation ============================================
 
     template<typename T>
-    FixedPool<T>::FixedPool(size_t size) : pool(), ticket(0), nextFree(PoolNullIndex),
-                                           aliveCount(0)
+    FixedPool<T>::FixedPool(size_t size) : 
+        pool(), ticket(0), nextFree(PoolNullIndex), aliveCount(0)
     {
         // Check for errors
         if (size > MaxSize())

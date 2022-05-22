@@ -1,9 +1,10 @@
 #pragma once
-#include <cmath>
-#include <string>
-#include <ostream>
+#include "Vector2.h"
+#include <SDG/Debug/LoggingImpl.h>
 #include <SDG/Exceptions/InvalidArgumentException.h>
 #include <SDG/Exceptions/OutOfRangeException.h>
+#include <SDG/Math/Math.h>
+#include <SDG/String.h>
 
 namespace SDG
 {
@@ -15,6 +16,8 @@ namespace SDG
     public:
         constexpr Vec3_() : x(0), y(0), z(0) { }
         constexpr Vec3_(T x, T y, T z) : x(x), y(y), z(z) { }
+        constexpr Vec3_(Vec2_<T> v, T z) : x(v.X()), y(v.Y()), z(z) { }
+        constexpr Vec3_(T x, Vec2_<T> v) : x(x), y(v.X()), z(v.Y()) { }
 
         [[nodiscard]] T X() const { return x; }
         [[nodiscard]] T Y() const { return y; }
@@ -29,6 +32,16 @@ namespace SDG
             y = pY;
             z = pZ;
             return *this;
+        }
+
+        [[nodiscard]] Vec2_<T> XY() const
+        {
+            return Vec2_<T>(x, y);
+        }
+
+        [[nodiscard]] Vec2_<T> YZ() const
+        {
+            return Vec2_<T>(y, z);
         }
 
         T &operator[](int i)
@@ -54,13 +67,13 @@ namespace SDG
             double b = static_cast<double>(p1.y) - static_cast<double>(p2.y);
             double c = static_cast<double>(p1.z) - static_cast<double>(p2.z);
 
-            return std::sqrt(a * a + b * b + c * c);
+            return Math::Sqrt(a * a + b * b + c * c);
         }
 
         // Distance from {0, 0, 0}
         [[nodiscard]] double Length() const
         {
-            return std::sqrt(x * x + y * y + z * z);
+            return Math::Sqrt((double)(x * x + y * y + z * z));
         }
 
         // Only applicable if template type is a decimal/floating-point type.
@@ -200,8 +213,8 @@ namespace SDG
         return Vec3_<T>(v) *= scalar;
     }
 
-    template <typename T>
-    std::ostream &operator << (std::ostream &os, const Vec3_<T> v)
+    template <typename Ostream, typename T>
+    Ostream &operator << (Ostream &os, const Vec3_<T> v)
     {
         os << v.String();
         return os;

@@ -1,44 +1,44 @@
-#include "Time.h"
+#include "AppTime.h"
 #include "SDL.h"
 #include <SDG/Exceptions/InvalidArgumentException.h>
 
 namespace SDG
 {
-    Time::Time():
+    AppTime::AppTime():
             deltaTicks_(0), ticks_(0) { }
 
-    void Time::Update()
+    void AppTime::Update()
     {
         Uint64 currentTicks = SDL_GetTicks64();
         deltaTicks_ = currentTicks - ticks_;
         ticks_ = currentTicks;
     }
 
-    uint64_t Time::Now() const
+    uint64_t AppTime::Now() const
     {
         return SDL_GetTicks64();
     }
 
-    uint64_t Time::Ticks() const
+    uint64_t AppTime::Ticks() const
     {
         return ticks_;
     }
 
-    double Time::As(Time::Unit unit) const
+    double AppTime::As(TimeUnit unit) const
     {
         switch(unit)
         {
-            case Unit::Milliseconds: return ticks_;
-            case Unit::Seconds: return ticks_ * 0.001;
-            case Unit::Minutes: return ticks_ * 0.001 / 60.0;
-            case Unit::Hours: return ticks_ * 0.001 / 3600.0;
+            case TimeUnit::Milliseconds: return ticks_;
+            case TimeUnit::Seconds: return ticks_ * 0.001;
+            case TimeUnit::Minutes: return ticks_ * 0.001 / 60.0;
+            case TimeUnit::Hours: return ticks_ * 0.001 / 3600.0;
             default:
-                throw InvalidArgumentException("Time::As", "unit",
+                throw InvalidArgumentException("AppTime::As", "unit",
                                                "Unit enum value not recognized");
         }
     }
 
-    uint64_t Time::DeltaTicks(unsigned cap) const
+    uint64_t AppTime::DeltaTicks(unsigned cap) const
     {
         return cap ? SDL_min(deltaTicks_, cap) : deltaTicks_;
     }

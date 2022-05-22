@@ -1,6 +1,9 @@
 #pragma once
+#include "Vector2.h"
+#include <SDG/String.h>
+#include <SDG/Debug/LoggingImpl.h>
+
 #include <type_traits>
-#include <ostream>
 
 namespace SDG
 {
@@ -24,17 +27,23 @@ namespace SDG
         [[nodiscard]]
         T Height() const { return h; }
 
+        [[nodiscard]]
+        bool Empty() const noexcept
+        {
+            return (w == 0 && h == 0);
+        }
+
         Rect_ &X(T pX) { x = pX; return *this; }
         Rect_ &Y(T pY) { y = pY; return *this; }
         Rect_ &Width(T pW) { w = pW; return *this; }
         Rect_ &Height(T pH) { h = pH; return *this; }
 
-        Rect_ &Set(T pX, T pY, T pW, T pH)
+        Rect_ &Set(T x, T y, T width, T height)
         {
-            x = pX;
-            y = pY;
-            w = pW;
-            h = pH;
+            this->x = x;
+            this->y = y;
+            w = width;
+            h = height;
 
             return *this;
         }
@@ -46,37 +55,80 @@ namespace SDG
         }
 
         [[nodiscard]]
-        T Left() const noexcept
+        T Left() const noexcept { return x; }
+        Rect_ &Left(T left)
         {
-            return x;
+            w = Right() - left;
+            x = left;
+            return *this;
         }
 
         [[nodiscard]]
-        T Right() const noexcept
+        T Right() const noexcept { return x + w; }
+        Rect_ &Right(T right)
         {
-            return x + w;
+            w = right - Left();
+            return *this;
         }
 
         [[nodiscard]]
-        T Top() const noexcept
+        T Top() const noexcept { return y; }
+        Rect_ &Top(T top)
         {
-            return y;
+            h = top - Bottom();
+            y = top;
+            return *this;
         }
 
         [[nodiscard]]
-        T Bottom() const noexcept
+        T Bottom() const noexcept { return y + h; }
+        Rect_ &Bottom(T bottom)
         {
-            return y + h;
+            h = Top() - bottom;
+            return *this;
         }
 
         [[nodiscard]]
-        bool Empty() const noexcept
+        Vec2_<T> Size() const { return {w, h}; }
+
+        [[nodiscard]]
+        Vec2_<T> TopLeft() const { return {Left(), Top()}; }
+        Rect_<T> &TopLeft(Vec2_<T> v)
         {
-            return (w == 0 && h == 0);
+            Top(v.Y());
+            Left(v.X());
+            return *this;
         }
 
         [[nodiscard]]
-        std::string String() const noexcept
+        Vec2_<T> TopRight() const { return {Right(), Top()}; }
+        Rect_<T> &TopRight(Vec2_<T> v)
+        {
+            Top(v.Y());
+            Right(v.X());
+            return *this;
+        }
+
+        [[nodiscard]]
+        Vec2_<T> BottomLeft() const { return Vec2_<T>(Left(), Bottom()); }
+        Rect_<T> &BottomLeft(Vec2_<T> v)
+        {
+            Bottom(v.Y());
+            Left(v.X());
+            return *this;
+        }
+
+        [[nodiscard]]
+        Vec2_<T> BottomRight() const { return Vec2_<T>(Right(), Bottom()); }
+        Rect_<T> &BottomRight(Vec2_<T> v)
+        {
+            Bottom(v.Y());
+            Right(v.X());
+            return *this;
+        }
+
+        [[nodiscard]]
+        String Str() const noexcept
         {
             return "{" + std::to_string(x) + ", " + std::to_string(y) +
                 ", " + std::to_string(w) + ", " + std::to_string(h) + "}";
@@ -91,17 +143,6 @@ namespace SDG
         bool operator!=(const Rect_ &other)
         {
             return !(*this == other);
-        }
-
-        template<typename U>
-        bool Intersects(const Rect_<U> &other)
-        {
-            static_assert(std::is_arithmetic_v<U> && std::is_convertible_v<U, T>, "Rectangle type mismatch.");
-            T topA(Top()), bottomA(Bottom()),
-                    leftA(Left()), rightA(Right()),
-                    topB(other.Top()), bottomB(other.Bottom()),
-                    leftB(other.Left()), rightB(other.Right());
-            return !(topB > bottomA || bottomB < topA || rightB < leftA || leftB > rightA);
         }
 
         // Convertible by casting to other _Rect types. Please be aware of the effects of automatic type casting.
@@ -121,8 +162,8 @@ namespace SDG
         T x, y, w, h;
     };
 
-    template <typename T>
-    std::ostream &operator<<(std::ostream &out, const Rect_<T> &v)
+    template <typename Ostream, typename T>
+    Ostream &operator << (Ostream &out, const Rect_<T> &v)
     {
         out << "{" << std::to_string(v.X()) << ", " << std::to_string(v.Y()) <<
             ", " << std::to_string(v.Width()) << ", " << std::to_string(v.Height()) << "}";

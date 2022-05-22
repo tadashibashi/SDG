@@ -6,11 +6,11 @@
  * 
  */
 #pragma once
-#include <SDG/Platform.h>
-#include <SDG/Time/Time.h>
 #include <SDG/FileSys/Path.h>
+#include <SDG/Platform.h>
 #include <SDG/Ref.h>
 #include <SDG/String.h>
+#include "SDG/Time/AppTime.h"
 
 namespace SDG
 {
@@ -32,7 +32,7 @@ namespace SDG
         /// Shuts down the game before the next frame.
         void Exit();
 
-        CRef<Time> Time();
+        CRef<AppTime> Time();
     protected:
         // Access for base classes
         Ref<class Window> MainWindow();

@@ -119,11 +119,11 @@ TEST_CASE("FRectangle tests", "[FRectangle]")
     {
         // using normal Rectangle here since it's hard to predict floating point results
         Rectangle rect;
-        REQUIRE(rect.String() == "{0, 0, 0, 0}");
+        REQUIRE(rect.Str() == "{0, 0, 0, 0}");
         rect.Set(1, 2, 3, 4);
-        REQUIRE(rect.String() == "{1, 2, 3, 4}");
+        REQUIRE(rect.Str() == "{1, 2, 3, 4}");
         rect.Set(-44, -25, 499, 459);
-        REQUIRE(rect.String() == "{-44, -25, 499, 459}");
+        REQUIRE(rect.Str() == "{-44, -25, 499, 459}");
     }
 
     SECTION("operator == (const FRectangle &)")
@@ -179,66 +179,6 @@ TEST_CASE("FRectangle tests", "[FRectangle]")
         rect.Set(-20041, -3004124, 241243, 2512355);
         ss << rect;
         REQUIRE(ss.str() == "{-20041, -3004124, 241243, 2512355}");
-    }
-
-    SECTION("Intersects")
-    {
-        FRectangle rect1;
-        FRectangle rect2;
-
-        SECTION("Overlapping while empty")
-        {
-            REQUIRE(rect1.Intersects(rect2));
-            rect1.X(100).Y(100);
-            rect2.X(100).Y(100);
-            REQUIRE(rect1.Intersects(rect2));
-        }
-
-        SECTION("Perfect Overlap")
-        {
-            rect1.Set(10, 10, 10, 10);
-            rect2.Set(10, 10, 10, 10);
-            REQUIRE(rect1.Intersects(rect2));
-            rect1.Set(10.45f, 10124.21f, 10.124f, 1247.12f);
-            rect2.Set(10.45f, 10124.21f, 10.124f, 1247.12f);
-            REQUIRE(rect1.Intersects(rect2));
-        }
-
-        SECTION("Partial Overlap")
-        {
-            rect1.Set(0, 0, 10, 10);
-            rect2.Set(5, 5, 10, 10);
-            REQUIRE(rect1.Intersects(rect2));
-            rect1.Set(0, 0, 100000, 10);
-            rect2.Set(10, 0, 10, 100000);
-            REQUIRE(rect1.Intersects(rect2));
-        }
-
-        SECTION("Overlapping on corners")
-        {
-            // Top-Left and bottom-right corners
-            rect1.Set(0, 0, 10.f, 10.f);
-            rect2.Set(10.f, 10.f, 20.f, 20.f);
-            REQUIRE(rect1.Intersects(rect2));
-
-            // Top-right and bottom-left corners
-            rect1.Set(10.f, 0, 10.f, 10.f);
-            rect2.Set(0, 10.f, 10.f, 10.f);
-            REQUIRE(rect1.Intersects(rect2));
-        }
-
-        SECTION("Overlapping on borders")
-        {
-            // Top and bottom
-            rect1.Set(0, 0, 10.f, 10.f);
-            rect2.Set(0, 10.f, 20.f, 20.f);
-            REQUIRE(rect1.Intersects(rect2));
-
-            // Left and right
-            rect1.Set(0, 0, 10.f, 10.f);
-            rect2.Set(10.f, 0, 10.f, 10.f);
-            REQUIRE(rect1.Intersects(rect2));
-        }
     }
 }
 

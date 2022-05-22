@@ -1,0 +1,123 @@
+SDG Engine Code Guidelines
+C++ Standard 17
+
+===== Includes ================================================================
+Order - alphabetical order in these groupings:
+  - Local includes
+  - SDG_Engine includes
+  - 3rd party includes
+  - Std includes
+
+Quotes are used for local includes. 
+A path is considered "local" if it is in the same folder or nested
+deeper in the same subfolder. Otherwise, paths in angled brackets
+stemming from src/ or lib/ for engine or local libraries.
+Standard libraries should all be in angled brackets.
+
+Example:
+// local includes
+#include "MyClass.h"
+#include "Private/Hidden.h"
+
+// engine files in other folders
+#include <SDG/Math/Vector2.h>
+#include <SDG/Ref.h>
+
+// local libraries
+#include <tinyxml2.h>
+
+// standard library
+#include <vector>
+
+===== Naming Convention =======================================================
+Classes, structs, member functions, namespaces
+    Pascal case (using the idea of proper nouns)
+    Examples:
+        class MyClass
+        struct AnExampleStruct
+        MyClass::MyFunction()
+        namespace MyNamespace
+
+Private member variables
+    Camel case.
+    Standard library-like classes may end variable names with an underscore, but
+        don't absolutely have to
+    Examples:
+        anExampleVariable
+        bX_
+
+===== Brace position preference ===============================================
+namespace MyNamespace
+{
+    class MyClass
+    {
+    public:
+        MyClass() : member()
+        {
+            for(int i = 0; i < 10; ++i)
+            {
+                if(i % 2 == 0)
+                {
+                    // perform task
+                }
+            }
+        }
+    };
+}
+
+
+===== Header files ============================================================
+Should begin with "#pragma once", instead of include guards defines to keep
+defined symbols to a minimum to prevent clutter.
+
+
+Regular SDG_Engine and other library header file names should end with ".h"
+
+"Super header" files, which end with ".hpp" will be created for the end-user.
+They should include each relevant header file within that "module" or section
+of the library.
+One master header, "SDG.hpp" will include each of these super header files.
+
+===== Implementation ==========================================================
+Use pImpl idiom to keep the dependency library headers out of the SDG headers.
+- Make sure to initialize variables in the Impl struct in the constructor.
+
+In implementation files, it's preferrable to wrap everything in the common
+namespace instead of writing it out every time.
+Benefits include easier refactoring if we decide to move the function
+or classes to a different namespace, and less clutter in general.
+
+Example:
+
+SDG::Vector2
+SDG::MyClass::Transform(const SDG::Vector2 &vec, const SDG::Matrix4x4 &mat)
+{
+
+}
+
+// This below seems more readable, especially with larger files.
+namespace SDG
+{
+    Vector2
+    MyClass::Transform(const Vector2 &vec, const Matrix4x4 &mat)
+    {
+
+    }
+}
+
+// If we want to move all of these definitions to another namespace, all we'd have
+// to do is change the namespace that wraps it, instead of manually tweaking
+// each "SDG::"
+
+namespace SDG::Math
+{
+...
+}
+
+This is not an absolute requirement, as some naming may make more sense to
+use full specified namespacing.
+
+===== Object ownership ========================================================
+An object containing a raw pointer signifies that that object owns it and must
+handle memory management for it. A Ref will be used to signify a reference
+to another object's object.

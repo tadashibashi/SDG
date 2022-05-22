@@ -101,8 +101,8 @@ TEST_CASE("Vector3 tests", "[Vector3]")
             Vector3 extension = Vector3::One();
 
             float result = Vector3::Distance(base, extension);
-            REQUIRE(result == std::sqrt(3.f));
-            REQUIRE(extension.Length() == result);
+            REQUIRE(RoundF(result) == RoundF(std::sqrt(3.f)));
+            REQUIRE(RoundF(extension.Length()) == RoundF(result));
         }
 
         SECTION("From negative number")

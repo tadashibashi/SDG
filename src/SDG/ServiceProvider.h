@@ -2,18 +2,18 @@
  * @file ServiceProvider.h
  * @namespace SDG
  * @class ServiceProvider
- * @abstract A container that allows generic storage by type. It can store one
+ * A container that allows generic storage by type. It can store one
  * object reference per type. This allows users to store specific data structures
- * without tying them to the class that owns it.
+ * without tying them to the class that owns it, helping prevent circular dependencies.
  * Users maintain ownership of the objects that are passed in, since ServiceProvider
  * does not call destructors or manage memory in any way.
  */
 #pragma once
-#include <map>
-#include <typeindex>
-
 #include <SDG/Exceptions/InvalidArgumentException.h>
 #include <SDG/Ref.h>
+
+#include <map>
+#include <typeindex>
 
 namespace SDG
 {
@@ -21,9 +21,11 @@ namespace SDG
     /// object reference per type.
     /// Users maintain ownership of the objects that are passed in, since ServiceProvider
     /// does not call destructors or manage memory in any way.
-    class ServiceProvider {
+    class ServiceProvider 
+    {
     public:
         // ========== Emplacement and Removal =================================
+
         /// Stores an object reference of type T that is passed into the function.
         /// You as the user maintain ownership responsibility of this object.
         /// (ServiceProvider does not call destructors or manage memory)
@@ -64,6 +66,7 @@ namespace SDG
         }
 
         // ========== Getters =================================================
+
         /// Gets a reference to an object of type T in the container.
         /// Reference will be null if none exists within.
         /// @tparam T the type of object ptr to retrieve.

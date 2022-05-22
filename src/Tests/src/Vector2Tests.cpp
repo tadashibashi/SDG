@@ -7,21 +7,21 @@
 #include <SDG/Math/Vector2.h>
 #include <sstream>
 
-static Vector2 ParseString(const std::string &str)
+static Vector2 ParseString(const String &str)
 {
-    size_t commaPos = str.find_first_of(',');
-    size_t braceOpen = str.find_first_of('{');
-    size_t braceClose = str.find_first_of('}');
+    size_t commaPos = str.FindFirstOf(',');
+    size_t braceOpen = str.FindFirstOf('{');
+    size_t braceClose = str.FindFirstOf('}');
 
-    if (commaPos != str.npos && braceOpen != str.npos && braceClose != str.npos)
+    if (commaPos != str.NullPos && braceOpen != str.NullPos && braceClose != str.NullPos)
     {
-        return {std::stof(str.substr(1, commaPos-1-braceOpen)),
-                std::stof(str.substr(commaPos+1, braceClose-1-commaPos))};
+        return {std::stof(str.Substr(1, commaPos-1-braceOpen).Str()),
+                std::stof(str.Substr(commaPos+1, braceClose-1-commaPos).Str())};
     }
     else
     {
         // failed to parse string, it was invalid!
-        throw std::invalid_argument(str.c_str());
+        throw std::invalid_argument(str.Cstr());
     }
 }
 
@@ -186,13 +186,13 @@ TEST_CASE("Vector2 tests", "[Vector2]")
 
     SECTION("String")
     {
-        REQUIRE(Vector2::Zero() == ParseString(Vector2::Zero().String()));
-        REQUIRE(Vector2::One() == ParseString(Vector2::One().String()));
-        REQUIRE(Vector2(142.124f, -48.5f) == ParseString(Vector2(142.124f, -48.5f).String()));
-        REQUIRE(Vector2(42.f, 24.f) == ParseString(Vector2(42.f, 24.f).String()));
-        REQUIRE(Vector2(-247.f, -7.f) == ParseString(Vector2(-247.f, -7.f).String()));
-        REQUIRE(Vector2(-44.f, 0) == ParseString(Vector2(-44.f, 0).String()));
-        REQUIRE(Vector2(0, 124) == ParseString(Vector2(0, 124).String()));
+        REQUIRE(Vector2::Zero() == ParseString(Vector2::Zero().Str()));
+        REQUIRE(Vector2::One() == ParseString(Vector2::One().Str()));
+        REQUIRE(Vector2(142.124f, -48.5f) == ParseString(Vector2(142.124f, -48.5f).Str()));
+        REQUIRE(Vector2(42.f, 24.f) == ParseString(Vector2(42.f, 24.f).Str()));
+        REQUIRE(Vector2(-247.f, -7.f) == ParseString(Vector2(-247.f, -7.f).Str()));
+        REQUIRE(Vector2(-44.f, 0) == ParseString(Vector2(-44.f, 0).Str()));
+        REQUIRE(Vector2(0, 124) == ParseString(Vector2(0, 124).Str()));
     }
 
     SECTION("operator << (ostream &)")

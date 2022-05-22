@@ -9,6 +9,8 @@ Tests todo:
     - SpriteBatch
     - Texture2D
 
+- MathEx Tests
+
 - Tweener
 
 Finished:

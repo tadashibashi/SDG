@@ -770,7 +770,7 @@ TEST_CASE("String tests", "[String]")
             {
                 String str("012345");
                 str.EraseIf([](char c)->bool {
-                    return isalpha(c);
+                    return std::isalpha(c);
                 });
 
                 REQUIRE((str == "012345"));
@@ -840,7 +840,7 @@ TEST_CASE("String tests", "[String]")
             {
                 String str("012345");
                 str.EraseIf([](char c)->bool {
-                    return isnumber(c);
+                    return std::isdigit(c);
                 });
 
                 REQUIRE((str.Empty()));

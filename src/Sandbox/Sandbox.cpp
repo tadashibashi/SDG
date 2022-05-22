@@ -69,13 +69,13 @@ private:
         if (window2->IsOpen())
         {
             Vector2 mouseWorld = camera.ScreenToWorld((Vector2)Input::MousePosition());
-            window2->Title(mouseWorld.String().c_str());
+            window2->Title(mouseWorld.Str().c_str());
         }
 
 
         if (Input::KeyPressed(Key::Space))
         {
-            SDG_Log("Seconds since game start: {}", Time()->As(Time::Unit::Seconds));
+            SDG_Log("Seconds since game start: {}", Time()->As(AppTime::Unit::Seconds));
         }
 
         if (Input::KeyPressed(Key::S) && Input::KeyPress(Key::V))
@@ -112,7 +112,7 @@ private:
         }
         if (Input::MouseWheelDidMove())
         {
-            SDG_Log(Input::MouseWheel().String());
+            SDG_Log(Input::MouseWheel().Str());
         }
 
         if (MainWindow()->IsOpen())

@@ -6,11 +6,12 @@
  * 
  */
 #pragma once
+#include <SDG/Debug/LoggingImpl.h>
 
 #include <string>
 #include <functional>
 #include <iterator>
-#include <spdlog/fmt/ostr.h>
+
 
 namespace SDG
 {

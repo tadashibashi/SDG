@@ -1,5 +1,5 @@
 #include "SDG_Tests.h"
-#include <SDG/Math/Math.h>
+#include <SDG/Math/MathEx.h>
 
 TEST_CASE("Math::Lerp")
 {
@@ -103,22 +103,22 @@ TEST_CASE("Math::Lerp")
     }
 } /* end TEST_CASE("Math::Lerp") */
 
-TEST_CASE("Math::RadToDeg")
+TEST_CASE("Math::ToDegrees")
 {
-    REQUIRE(Math::RadToDeg(2 * Math::Pi) == 360);
-    REQUIRE(Math::RadToDeg(1.5 * Math::Pi) == 270);
-    REQUIRE(Math::RadToDeg(Math::Pi) == 180);
-    REQUIRE(Math::RadToDeg(.5 * Math::Pi) == 90);
-    REQUIRE(Math::RadToDeg(0) == 0);
+    REQUIRE(Math::ToDegrees(2 * Math::Pi) == 360);
+    REQUIRE(Math::ToDegrees(1.5 * Math::Pi) == 270);
+    REQUIRE(Math::ToDegrees(Math::Pi) == 180);
+    REQUIRE(Math::ToDegrees(.5 * Math::Pi) == 90);
+    REQUIRE(Math::ToDegrees(0) == 0);
 }
 
-TEST_CASE("Math::DegToRad")
+TEST_CASE("Math::ToRadians")
 {
-    REQUIRE(Math::DegToRad(360) == 2 * Math::Pi);
-    REQUIRE(Math::DegToRad(270) == 1.5 * Math::Pi);
-    REQUIRE(Math::DegToRad(180) == Math::Pi);
-    REQUIRE(Math::DegToRad(90) == .5 * Math::Pi);
-    REQUIRE(Math::DegToRad(0) == 0);
+    REQUIRE(Math::ToRadians(360) == 2 * Math::Pi);
+    REQUIRE(Math::ToRadians(270) == 1.5 * Math::Pi);
+    REQUIRE(Math::ToRadians(180) == Math::Pi);
+    REQUIRE(Math::ToRadians(90) == .5 * Math::Pi);
+    REQUIRE(Math::ToRadians(0) == 0);
 }
 
 TEST_CASE("Trajectory Functions")
@@ -127,28 +127,28 @@ TEST_CASE("Trajectory Functions")
 
     SECTION("TrajectoryX")
     {
-        REQUIRE(Round(Math::TrajectoryX<double>(0, 1)) == 1);
-        REQUIRE(Round(Math::TrajectoryX<double>(45, 1)) == SqrtOfHalf);
-        REQUIRE(Round(Math::TrajectoryX<double>(90, 1)) == 0);
-        REQUIRE(Round(Math::TrajectoryX<double>(135, 1)) == -SqrtOfHalf);
-        REQUIRE(Round(Math::TrajectoryX<double>(180, 1)) == -1);
-        REQUIRE(Round(Math::TrajectoryX<double>(225, 1)) == -SqrtOfHalf);
-        REQUIRE(Round(Math::TrajectoryX<double>(270, 1)) == 0);
-        REQUIRE(Round(Math::TrajectoryX<double>(315, 1)) == SqrtOfHalf);
-        REQUIRE(Round(Math::TrajectoryX<double>(360, 1)) == 1);
+        REQUIRE(Round(Math::TrajectoryX(0, 1)) == 1);
+        REQUIRE(Round(Math::TrajectoryX(45, 1)) == SqrtOfHalf);
+        REQUIRE(Round(Math::TrajectoryX(90, 1)) == 0);
+        REQUIRE(Round(Math::TrajectoryX(135, 1)) == -SqrtOfHalf);
+        REQUIRE(Round(Math::TrajectoryX(180, 1)) == -1);
+        REQUIRE(Round(Math::TrajectoryX(225, 1)) == -SqrtOfHalf);
+        REQUIRE(Round(Math::TrajectoryX(270, 1)) == 0);
+        REQUIRE(Round(Math::TrajectoryX(315, 1)) == SqrtOfHalf);
+        REQUIRE(Round(Math::TrajectoryX(360, 1)) == 1);
     }
 
     SECTION("TrajectoryY")
     {
-        REQUIRE(Round(Math::TrajectoryY<double>(0, 1)) == 0);
-        REQUIRE(Round(Math::TrajectoryY<double>(45, 1)) == -SqrtOfHalf);
-        REQUIRE(Round(Math::TrajectoryY<double>(90, 1)) == -1);
-        REQUIRE(Round(Math::TrajectoryY<double>(135, 1)) == -SqrtOfHalf);
-        REQUIRE(Round(Math::TrajectoryY<double>(180, 1)) == 0);
-        REQUIRE(Round(Math::TrajectoryY<double>(225, 1)) == SqrtOfHalf);
-        REQUIRE(Round(Math::TrajectoryY<double>(270, 1)) == 1);
-        REQUIRE(Round(Math::TrajectoryY<double>(315, 1)) == SqrtOfHalf);
-        REQUIRE(Round(Math::TrajectoryY<double>(360, 1)) == 0);
+        REQUIRE(Round(Math::TrajectoryY(0, 1)) == 0);
+        REQUIRE(Round(Math::TrajectoryY(45, 1)) == -SqrtOfHalf);
+        REQUIRE(Round(Math::TrajectoryY(90, 1)) == -1);
+        REQUIRE(Round(Math::TrajectoryY(135, 1)) == -SqrtOfHalf);
+        REQUIRE(Round(Math::TrajectoryY(180, 1)) == 0);
+        REQUIRE(Round(Math::TrajectoryY(225, 1)) == SqrtOfHalf);
+        REQUIRE(Round(Math::TrajectoryY(270, 1)) == 1);
+        REQUIRE(Round(Math::TrajectoryY(315, 1)) == SqrtOfHalf);
+        REQUIRE(Round(Math::TrajectoryY(360, 1)) == 0);
     }
 
     // Trust that Trajectory Vector2 works because it simply uses the
@@ -391,37 +391,6 @@ TEST_CASE("Math::Add")
         REQUIRE(Math::Add<float>({1.0f, -2.0f, 3.0f, -4.0f, 5.0f}) == 3.f);
         // floats, empty list
         REQUIRE(Math::Add<float>({}) == 0);
-    }
-
-    SECTION("Iterators of float-container")
-    {
-        SECTION("All positive")
-        {
-            std::vector<float> nums = {1.2f, 2.1f, 3.2f, 4.9f, 5.3f};
-
-            REQUIRE(Round(Math::Add(nums.begin(), nums.end())) == Round(16.7));
-        }
-
-        SECTION("All negative")
-        {
-            std::vector<float> nums = {-1.2f, -2.1f, -3.2f, -4.9f, -5.3f};
-
-            REQUIRE(Round(Math::Add(nums.begin(), nums.end())) == Round(-16.7));
-        }
-
-        SECTION("Mixed negative and positive")
-        {
-            std::vector<float> nums = {1.0f, -2.0f, 3.0f, -4.0f, 5.0f};
-
-            REQUIRE(Round(Math::Add(nums.begin(), nums.end())) == Round(3.0));
-        }
-
-        SECTION("Empty results in zero")
-        {
-            std::vector<float> nums;
-            REQUIRE(Round(Math::Add(nums.begin(), nums.end())) == 0);
-        }
-
     }
 
 } /* end TEST_CASE("Math::Add") */

@@ -1,4 +1,4 @@
-#include <cstdlib>
+#include "PoolNullIndex.h"
 #include <cstdint>
 
 namespace SDG

@@ -1,21 +1,8 @@
-/* =============================================================================
- * MathConstants
- * 
- * 
- * ===========================================================================*/
+/*!
+ * @file MathConstants.h
+ * File for keeping math constants
+ */
 #pragma once
-// Just in case there is some macro that clashes
-#ifdef Pi
-#undef Pi
-#endif
-
-#ifdef DegsPerRad
-#undef DegsPerRad
-#endif
-
-#ifdef RadsPerDeg
-#undef RadsPerDeg
-#endif
 
 namespace SDG::Math
 {

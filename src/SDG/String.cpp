@@ -22,6 +22,7 @@ namespace SDG
     const size_t String::NullPos    = SIZE_MAX;
 
     // ===== Main implementation ==============================================
+
     void
     String::Allocate(const char *str, size_t size)
     {
@@ -466,3 +467,4 @@ StringsEqual(const SDG::String &str, const char *other, size_t size)
 
     return true;
 }
+

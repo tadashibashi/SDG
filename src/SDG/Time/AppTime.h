@@ -9,25 +9,19 @@
  *
  */
 #pragma once
+#include "TimeUnit.h"
+
 #include <cstdint>
 
 namespace SDG
 {
 
     /// Class for tracking total time passed since execution and delta time.
-    class Time
+    class AppTime
     {
         static const unsigned DefaultMaxDeltaTicks = 64;
     public:
-        enum class Unit
-        {
-            Milliseconds,
-            Seconds,
-            Minutes,
-            Hours
-        };
-
-        Time();
+        AppTime();
 
         /// Intended to be called at the start of the app's update loop
         void Update();
@@ -38,8 +32,8 @@ namespace SDG
         [[nodiscard]] uint64_t Ticks() const;
 
         /// Returns ticks calculated in a specified unit
-        /// Time stamped at the last call to Update
-        [[nodiscard]] double As(Unit unit) const;
+        /// AppTime stamped at the last call to Update
+        [[nodiscard]] double As(TimeUnit unit) const;
 
         /// Gets the number of ticks passed during the last Update period.
         /// @param cap optionally set max value to receive. This is
@@ -48,7 +42,7 @@ namespace SDG
         [[nodiscard]] uint64_t DeltaTicks(unsigned cap = DefaultMaxDeltaTicks) const;
 
         /// Returns the number of ticks at the moment this function is called.
-        /// Use Time() to get the number of ticks passed since the beginning of
+        /// Use AppTime() to get the number of ticks passed since the beginning of
         /// this frame.
         [[nodiscard]] uint64_t Now() const;
 

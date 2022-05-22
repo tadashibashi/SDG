@@ -76,7 +76,8 @@ namespace SDG
         }
     }
 
-    String Path::Filename() const
+    String
+    Path::Filename() const
     {
         auto pos = subpath.FindLastOf('/');
         return (pos == String::NullPos) ? subpath : subpath.Substr(pos + 1);
@@ -88,7 +89,7 @@ namespace SDG
         String filename = Filename();
         auto pos = filename.FindLastOf('.');
 
-        return (pos == String::NullPos || pos == 0) ? string() : filename.Substr(pos + 1);
+        return (pos == String::NullPos || pos == 0) ? String() : filename.Substr(pos + 1);
     }
 
     bool

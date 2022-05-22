@@ -12,7 +12,7 @@ if (EMSCRIPTEN)
     # Exceptions https://emscripten.org/docs/porting/exceptions.html
     # Asyncify runs Emscripten in a thread separate from browser input
 
-    set(CMAKE_CXX_FLAGS "-Os -fexceptions" ${CMAKE_CXX_FLAGS})
+    set(CMAKE_CXX_FLAGS "-Os -fexceptions -sUSE_SDL=2 -sUSE_SDL_TTF=2 ${CMAKE_CXX_FLAGS}")
     set(CMAKE_EXE_LINKER_FLAGS  "${EmscriptenLinkerFlags} ${CMAKE_EXE_LINKER_FLAGS}")
     set(CMAKE_EXECUTABLE_SUFFIX .html)
 endif()
@@ -22,7 +22,11 @@ add_executable(SDG_Tests
         src/PathTests.cpp
         src/RefTests.cpp
         src/ServiceProviderTests.cpp
-        src/WindowTests.cpp src/SDG_Tests.cpp src/ExceptionTests.cpp src/SDG_Tests.h src/KeyboardTests.cpp src/MathTests.cpp src/RandTests.cpp src/TimeTests.cpp src/Vector2Tests.cpp src/Vector3Tests.cpp src/RectangleTests.cpp src/ColorTests.cpp src/FontTests.cpp src/TweenTests.cpp src/PoolTests.cpp src/FixedPoolTests.cpp src/FileSysTests.cpp src/StringTests.cpp)
+        src/WindowTests.cpp src/SDG_Tests.cpp
+        src/ExceptionTests.cpp
+        src/SDG_Tests.h
+        src/KeyboardTests.cpp
+        src/MathTests.cpp src/RandTests.cpp src/AppTimeTests.cpp src/Vector2Tests.cpp src/Vector3Tests.cpp src/RectangleTests.cpp src/ColorTests.cpp src/FontTests.cpp src/TweenTests.cpp src/PoolTests.cpp src/FixedPoolTests.cpp src/FileSysTests.cpp src/StringTests.cpp src/TweenerTests.cpp src/MathExTests.cpp)
 
 target_include_directories(SDG_Tests PRIVATE ${CMAKE_SOURCE_DIR}/src
         lib/Catch2/src)

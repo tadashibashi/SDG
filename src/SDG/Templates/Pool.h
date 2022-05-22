@@ -2,7 +2,7 @@
 #include "PoolID.h"
 #include "Private/PoolNullIndex.h"
 
-#include <cstdlib>
+#include <cstddef>
 #include <type_traits>
 #include <deque>
 

@@ -2,8 +2,7 @@
 #include "Camera2D.h"
 
 #include <SDG/Graphics/RenderTarget.h>
-#include <SDG/Math/Math.h>
-#include <SDG/Math/Matrix4x4.h>
+#include <SDG/Math/MathEx.h>
 
 #include <SDL_gpu.h>
 
@@ -28,17 +27,14 @@ namespace SDG
     void
     Camera2D::SetDimensions(int width, int height)
     {
-        //impl->ortho = Matrix4x4::Ortho(0, (float)width, 0, (float)height);
         impl->size = Vector2(width, height);
         impl->wasChanged = true;
-        SDG_Log("Window dimensions set to {}", impl->size.String());
     }
 
     void
     Camera2D::Initialize(Ref<RenderTarget> target)
     {
         impl->target = target;
-        //window->onSizeChange.AddListener(this, &Camera2D::SetDimensions);
         Point resolution = target->Size();
         SetDimensions(resolution.X(), resolution.Y());
     }

@@ -38,7 +38,7 @@ set(Engine_Sources
         FileSys/XMLReader.cpp FileSys/XMLReader.h
 
         Game/Entity.cpp Game/Entity.h
-        Time/Time.cpp Time/Time.h
+        Time/AppTime.cpp Time/AppTime.h
         Game/ComponentList.cpp Game/ComponentList.h Game/Component.h
         Game/Scene.cpp Game/Scene.h
 
@@ -98,7 +98,7 @@ set(Engine_Sources
         Templates/Private/PoolNullIndex.cpp 
         Templates/FixedPool.h
         String.h String.cpp
-        )
+        Time/TimeUnit.h Debug/LoggingImpl.h Templates/Swap.h Math/MathEx.h Math/MathEx.cpp Math/Intersection.h Math/Circle.h)
 
 
 
@@ -176,7 +176,7 @@ elseif(APPLE)  # for Mac
 elseif(LINUX)  # for Linux
     set(Engine_BundledLibs "${CMAKE_SOURCE_DIR}/lib/bundled/linux")
 else()
-    set(Engine_BundledLibs "SDL2_ttf" "freetype" "harfbuzz")
+    set(Engine_BundledLibs)
 endif()
 
 set (Engine_Libraries

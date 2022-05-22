@@ -1,12 +1,11 @@
 #pragma once
-#include "MathConstants.h"
+#include "Math.h"
 
 #include <SDG/Exceptions/InvalidArgumentException.h>
 #include <SDG/Exceptions/OutOfRangeException.h>
+#include <SDG/Debug/LoggingImpl.h>
+#include <SDG/String.h>
 
-#include <cmath>
-#include <ostream>
-#include <string>
 #include <type_traits>
 
 namespace SDG
@@ -66,8 +65,8 @@ namespace SDG
         static Vec2_ Rotate(const Vec2_ &v, float degrees)
         {
             float rads = degrees * Math::RadsPerDeg;
-            float cosRads = std::cos(rads);
-            float sinRads = std::sin(rads);
+            float cosRads = Math::Cos(rads);
+            float sinRads = Math::Sin(rads);
             return Vec2_((T)(v.x * cosRads - v.y * sinRads),
                          (T)(v.x * sinRads + v.y * cosRads));
         }
@@ -92,7 +91,7 @@ namespace SDG
         }
 
         // Formats Vec2_ as string: "{x, y}"
-        [[nodiscard]] std::string String() const
+        [[nodiscard]] String Str() const
         {
             return "{" + std::to_string(x) + ", " + std::to_string(y) + "}";
         }
@@ -176,8 +175,8 @@ namespace SDG
         }
     };
 
-    template <typename T>
-    std::ostream &operator<<(std::ostream &out, const Vec2_<T> &v)
+    template <typename U, typename Ostream>
+    Ostream &operator << (Ostream &out, const Vec2_<U> &v)
     {
         out << "{" << std::to_string(v.X()) << ", " <<
             std::to_string(v.Y()) << "}";

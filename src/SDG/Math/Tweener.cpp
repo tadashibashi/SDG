@@ -3,108 +3,140 @@
 
 namespace SDG
 {
-    Tweener::Tweener() : currentSeconds(), state(State::Standby), paused(), speed(1.f),
-        tween(), currentValue()
-    {
+    Tweener::Tweener() : time_(), state_(State::Standby), paused_(),
+                         speed_(1.f), tween(), currentValue()
+    { }
 
-    }
+    // ===== Playback controls ================================================
 
-    void Tweener::Play()
+    Tweener &
+    Tweener::Play()
     {
         // If Tween was left in a finished state, restart it
-        if (this->state == State::Standby)
+        if (state_ == State::Standby)
         {
-            if (currentSeconds == tween.Duration())
+            if (time_ == tween.Duration())
                 Restart();
             else
-                state = State::Forward;
+                state_ = State::Forward;
         }
 
-        paused = false;
+        paused_ = false;
+
+        return *this;
     }
 
-    void Tweener::Stop()
+    Tweener &
+    Tweener::Stop()
     {
-        currentSeconds = 0;
-        state = State::Standby;
-        paused = false;
+        time_ = 0;
+        state_ = State::Standby;
+        paused_ = false;
+
+        return *this;
     }
 
-    void Tweener::Restart()
+    Tweener &
+    Tweener::Restart()
     {
-        currentSeconds = 0;
-        state = State::Forward;
-        paused = false;
+        time_ = 0;
+        state_ = State::Forward;
+        paused_ = false;
+
+        return *this;
     }
 
-    void Tweener::Update(float deltaSeconds)
+    // ===== Getters / Setters ================================================
+
+    Tweener &
+    Tweener::Time(float time)
     {
-        if (paused)
+        time_ = Math::Clamp<float>(time, 0, tween.duration_);
+
+        return *this;
+    }
+
+    float
+    Tweener::Time() const
+    {
+        return time_;
+    }
+
+    // ===== Driver-related ===================================================
+
+    void
+    Tweener::Update(float deltaSeconds)
+    {
+        if (paused_)
             return;
 
-        switch(state)
+        switch(state_)
         {
-            case State::Standby:
-                break;
-            case State::Forward: // actively moving forward
-                currentValue = tween.CalculateValue(deltaSeconds);
-                ApplyCurrentValue();
-                UpdateTimeCounter(deltaSeconds);
-
-                // State-leaving logic
-                if (currentSeconds >= tween.Duration())
-                {
-                    if (tween.Yoyo())  // reverse Tween
-                    {
-                        state = State::Backward;
-                        // Any time exceeding the duration gets reflected back
-                        currentSeconds = tween.Duration() - (currentSeconds - tween.Duration());
-                    }
-                    else               // finished
-                    {
-                        state = State::Standby;
-                        currentSeconds = tween.Duration(); // clamp time counter
-                        if (tween.onFinish_)
-                            tween.onFinish_();
-                    }
-                }
-                break;
-            case State::Backward: // actively yoyo-ing backward
-                currentValue = tween.CalculateValue(deltaSeconds);
-                ApplyCurrentValue();
-                UpdateTimeCounter(deltaSeconds);
-
-                // State-leaving logic
-                if (currentSeconds <= 0) // finished
-                {
-                    // Just set to inactive and finish for now. May add ability to add
-                    // repeating behavior later.
-                    state = State::Standby;
-                    currentSeconds = 0;
-                    if (tween.onFinish_)
-                        tween.onFinish_();
-                }
-                break;
+            case State::Standby: break;
+            case State::Forward: ForwardState(deltaSeconds); break;
+            case State::Backward: BackwardState(deltaSeconds); break;
         }
     }
 
-    void Tweener::ApplyCurrentValue()
+    void
+    Tweener::ForwardState(float deltaSeconds)
+    {
+        currentValue = tween.CalculateValue(deltaSeconds);
+        ApplyCurrentValue();
+        UpdateTimeCounter(deltaSeconds);
+
+        // State-leaving logic
+        if (time_ >= tween.Duration())
+        {
+            if (tween.Yoyo())  // reverse Tween
+            {
+                state_ = State::Backward;
+                // Any time exceeding the duration gets reflected back
+                time_ = tween.Duration() -
+                        (time_ - tween.Duration());
+            }
+            else               // finished
+            {
+                state_ = State::Standby;
+                time_ = tween.Duration(); // clamp time counter
+                if (tween.onFinish_)
+                    tween.onFinish_();
+            }
+        }
+    }
+
+    void
+    Tweener::BackwardState(float deltaSeconds)
+    {
+        currentValue = tween.CalculateValue(deltaSeconds);
+        ApplyCurrentValue();
+        UpdateTimeCounter(-deltaSeconds);
+
+        // State-leaving logic
+        if (time_ <= 0) // finished
+        {
+            // Just set to inactive and finish for now.
+            // May add ability to add repeating behavior later.
+            state_ = State::Standby;
+            time_ = 0;
+            if (tween.onFinish_)
+                tween.onFinish_();
+        }
+    }
+
+    void
+    Tweener::ApplyCurrentValue()
     {
         if (tween.onStep_)
             tween.onStep_(currentValue);
     }
 
-    void Tweener::UpdateTimeCounter(float deltaSeconds)
+    void
+    Tweener::UpdateTimeCounter(float deltaSeconds)
     {
         // update time counter
-        currentSeconds += deltaSeconds * speed *
-                          ((state == State::Backward) ? -1.f : 1.f);
+        time_ += deltaSeconds * speed_ *
+                 ((state_ == State::Backward) ? -1.f : 1.f);
     }
 
-    void Tweener::SetTime(float time)
-    {
-        currentSeconds = Math::Clamp<float>(time, 0, tween.duration_);
-    }
-
-
-}
+} /* end namespace SDG */

@@ -17,14 +17,14 @@ TEST_CASE("FileSys tests", "[FileSys]")
 
         SECTION("BasePath is created")
         {
-            REQUIRE(!fileSys1.BasePath().empty());
+            REQUIRE(!fileSys1.BasePath().Empty());
         }
 
         SECTION("PrefPath is created")
         {
             // If this fails, it either means that Read/Write permissions aren't granted to this program
             // in the directory location, or this pref directory is not supported on the platform.
-            REQUIRE(!fileSys1.PrefPath().empty());
+            REQUIRE(!fileSys1.PrefPath().Empty());
         }
 
         SECTION("FileSys #1 is equal to FileSys #2")

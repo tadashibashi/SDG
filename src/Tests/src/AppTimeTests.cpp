@@ -4,25 +4,25 @@
  * 
  * ===========================================================================*/
 #include "SDG_Tests.h"
-#include <SDG/Time/Time.h>
+#include "SDG/Time/AppTime.h"
 #include <SDL.h>
 
-TEST_CASE("Time tests", "[Time]")
+TEST_CASE("AppTime tests", "[AppTime]")
 {
     SECTION("Default constructor values")
     {
-        Time time;
+        AppTime time;
         REQUIRE(time.Ticks() == 0);
         REQUIRE(time.DeltaTicks() == 0);
     }
 
     SECTION("Regular use case")
     {
-        // Initialize SDL, since Time depends on SDL
+        // Initialize SDL, since AppTime depends on SDL
         REQUIRE(SDL_Init(SDL_INIT_TIMER) == 0);
         SDL_Delay(10);
 
-        Time time;
+        AppTime time;
 
         REQUIRE(time.Now() >= 10);
         time.Update();
@@ -34,11 +34,11 @@ TEST_CASE("Time tests", "[Time]")
         REQUIRE(time.DeltaTicks() >= 10);
         REQUIRE(time.Ticks() >= 20);
 
-        double ms = Round(time.As(Time::Unit::Milliseconds));
+        double ms = Round(time.As(TimeUnit::Milliseconds));
         REQUIRE(ms == (double)time.Ticks());
-        REQUIRE(ms == Round(time.As(Time::Unit::Seconds) * 1000.0));
-        REQUIRE(ms == Round(time.As(Time::Unit::Minutes) * 1000.0 * 60.0));
-        REQUIRE(ms == Round(time.As(Time::Unit::Hours) * 1000.0 * 3600.0));
+        REQUIRE(ms == Round(time.As(TimeUnit::Seconds) * 1000.0));
+        REQUIRE(ms == Round(time.As(TimeUnit::Minutes) * 1000.0 * 60.0));
+        REQUIRE(ms == Round(time.As(TimeUnit::Hours) * 1000.0 * 3600.0));
 
         // test delta tick maxTicks feature
         SDL_Delay(70);

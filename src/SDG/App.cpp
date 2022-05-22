@@ -9,8 +9,6 @@
 
 #include <SDL.h>
 
-using std::string;
-
 #if (SDG_TARGET_WEBGL)
 static void EmMainLoop(void *arg)
 {
@@ -30,7 +28,7 @@ namespace SDG
         WindowMgr   windows;
         Ref<Window> mainWindow;
         bool        isRunning;
-        class Time  time;
+        class AppTime  time;
         FileSys     fileSys;
         GameConfig  config;
     };
@@ -186,7 +184,7 @@ namespace SDG
         impl->windows.SwapBuffers();
     }
 
-    CRef<Time>
+    CRef<AppTime>
     App::Time()
     {
         return CRef(impl->time);

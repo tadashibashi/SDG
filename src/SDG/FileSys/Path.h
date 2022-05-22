@@ -8,10 +8,9 @@
  *
  */
 #pragma once
+#include <SDG/Debug/Logging.h>
 #include <SDG/Ref.h>
 #include <SDG/String.h>
-
-#include <spdlog/fmt/ostr.h>
 
 #include <stack>
 

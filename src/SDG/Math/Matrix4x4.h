@@ -1,29 +1,33 @@
-//
-// Created by Aaron Ishibashi on 5/3/22.
-//
+/*!
+ * @file Matrix4x4.h
+ * @namespace SDG
+ * @class Matrix4x4
+ * A 4 by 4 matrix. Wraps a glm::mat4x4.
+ * 
+ */
 #pragma once
 #include "Vector3.h"
-#include <string>
-#include <glm/mat4x4.hpp>
 #include "Rectangle.h"
+
+#include <SDG/String.h>
 
 namespace SDG
 {
-    /// Wraps glm::mat4x4
-    /// Future: implement functions without glm
+    /// A 4 by 4 matrix. Wraps a glm::mat4x4.
     class Matrix4x4
     {
+        struct Impl;
     public:
         /// Default matrix constructor, set to a zero matrix.
         Matrix4x4();
         explicit Matrix4x4(float s);
-        explicit Matrix4x4(glm::mat4x4 matrix) : mat(matrix) {}
+        explicit Matrix4x4(void *glm_mat4x4);
         Matrix4x4(const Matrix4x4 &matrix);
         Matrix4x4 &operator=(const Matrix4x4 &other);
         ~Matrix4x4();
 
         void Log() const;
-        std::string ToString() const;
+        String Str() const;
 
         Matrix4x4 &Translate(Vector3 position);
         void Transform(float *x, float *y) const;
@@ -36,28 +40,29 @@ namespace SDG
         Matrix4x4 &Invert();
 
         /// Both row and column must be numbers between 1-4 (inclusive)
-        float Entry(int row, int column);
+        float Entry(int row, int column) const;
+        float &Entry(int row, int column);
 
-        static Matrix4x4 Identity();
-        static Matrix4x4 Ortho(float left, float right, float bottom, float top);
+        [[nodiscard]] static Matrix4x4 Identity();
+        [[nodiscard]] static Matrix4x4 Ortho(float left, float right, float bottom, float top);
 
         /// Gets the inner matrix, an array of 16 float values. Read-only.
-        [[nodiscard]] const float *Data() const { return &mat[0][0]; }
+        [[nodiscard]] const float *Data() const;
 
         Matrix4x4 &operator *= (const Matrix4x4 &other);
         Matrix4x4 &operator *= (float scalar);
         Matrix4x4 &operator += (const Matrix4x4 &other);
         Matrix4x4 &operator -= (const Matrix4x4 &other);
-        bool operator ==(const Matrix4x4 &other) const;
-        bool operator !=(const Matrix4x4 &other) const;
+        [[nodiscard]] bool operator ==(const Matrix4x4 &other) const;
+        [[nodiscard]] bool operator !=(const Matrix4x4 &other) const;
     private:
-        glm::mat4x4 mat;
+        Impl *impl;
     };
 
-
+    Matrix4x4 operator * (const Matrix4x4 &m1, const Matrix4x4 &m2);
+    Matrix4x4 operator * (const Matrix4x4 &m1, float scalar);
+    Matrix4x4 operator + (const Matrix4x4 &m1, const Matrix4x4 &m2);
+    Matrix4x4 operator - (const Matrix4x4 &m1, const Matrix4x4 &m2);
 }
 
-SDG::Matrix4x4 operator * (const SDG::Matrix4x4 &m1, const SDG::Matrix4x4 &m2);
-SDG::Matrix4x4 operator * (const SDG::Matrix4x4 &m1, float scalar);
-SDG::Matrix4x4 operator + (const SDG::Matrix4x4 &m1, const SDG::Matrix4x4 &m2);
-SDG::Matrix4x4 operator - (const SDG::Matrix4x4 &m1, const SDG::Matrix4x4 &m2);
+

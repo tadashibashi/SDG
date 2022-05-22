@@ -1,7 +1,9 @@
 /*!
  * @file Tweener.h
- * @abstract
+ * @namespace SDG
+ * @class Tweener
  * Driver for a Tween. Designed to separate Tween data from runtime components.
+ *
  */
 #pragma once
 #include "Tween.h"
@@ -24,32 +26,45 @@ namespace SDG
             Backward
         };
 
-        // ========== Playback controls ==========
-
-        /// Starts the Tweener. Behavior is like pressing a play button in audio software.
-        /// Tween will restart if it was finished, and resume if it was paused.
-        /// Please use Restart for resetting the Tween.
-        void Play();
-
-        /// Immediately starts playback fresh from the beginning.
-        void Restart();
-
-        /// Stops the Tweener and resets the playback time to 0. Removes pause.
-        void Stop();
-
-        /// Directly set the time.
-        /// Time parameter automatically gets clamped between 0 and Tween's duration.
-        void SetTime(float time);
+        // ========== Driver ============
 
         /// Progresses the Tween. Drives the amount of time passed for the Tween.
         /// @param deltaSeconds time passed
         void Update(float deltaSeconds);
 
-        /// Gets the Tweener's current playback state
-        State    PlaybackState() const { return state; }
+        // ========== Playback controls ==========
+
+        /// Starts the Tweener. Behavior is like pressing a play button in audio software.
+        /// Tween will restart if it was finished, and resume if it was paused_.
+        /// Please use Restart for resetting the Tween.
+        Tweener &Play();
+
+        /// Immediately starts playback fresh from the beginning.
+        Tweener &Restart();
+
+        /// Stops the Tweener and resets the playback time to 0. Removes pause.
+        Tweener &Stop();
+
+        // ========== Getters / Setters =======================================
+
+        /// Directly set the time.
+        /// AppTime parameter automatically gets clamped between 0 and Tween's duration.
+        Tweener &Time(float time);
+
+        /// Gets the number of seconds progressed into the Tween.
+        /// If Tweener is in forward mode, then time will be increasing until it
+        /// reaches the Tween's duration.
+        /// If Tweener is in backward mode, then time will be subtracting until it
+        /// reaches zero.
+        [[nodiscard]]
+        float    Time() const;
 
         /// Set and modify the current Tween through this getter
-        Tween &  CurrentTween() { return tween; }
+        Tween &  Tween() { return tween; }
+
+        /// Gets the Tweener's current playback state
+        [[nodiscard]]
+        enum State State() const { return state_; }
 
         /// Gets the current value calculated from the Tween during the last Update call.
         [[nodiscard]]
@@ -58,30 +73,36 @@ namespace SDG
         /// Sets the current speed multiplier.
         /// Note: While negative values are allowed, it's currently untested.
         /// It's more efficient to set Paused(true), instead of setting Speed to 0.
-        Tweener &Speed(float multiplier) { speed = multiplier; return *this; }
+        Tweener &Speed(float multiplier) { speed_ = multiplier; return *this; }
 
         /// Gets the current speed multiplier.
         [[nodiscard]]
-        float    Speed() const { return speed; }
+        float    Speed() const { return speed_; }
 
-        /// Sets whether the Tweener is paused.
-        Tweener &Paused(bool isPaused) { paused = isPaused; return *this; }
+        /// Sets whether the Tweener is paused_.
+        Tweener &Paused(bool isPaused) { paused_ = isPaused; return *this; }
 
-        /// Gets whether the Tweener is paused.
-        bool     Paused() const { return paused; }
+        /// Gets whether the Tweener is paused_.
+        [[nodiscard]]
+        bool     Paused() const { return paused_; }
 
     private:
         // ========== data members ==========
-        float currentSeconds;
-        bool paused;
-        float speed;
-        State state;
 
-        Tween tween;
+        float time_;
+        bool paused_;
+        float speed_;
+        enum State state_;
+
+        SDG::Tween tween;
         float currentValue; // cached to prevent repeat TweenFunction calls.
 
         // ========== helpers ==========
+
         void ApplyCurrentValue();
         void UpdateTimeCounter(float deltaSeconds);
+
+        void ForwardState(float deltaSeconds);
+        void BackwardState(float deltaSeconds);
     };
 }

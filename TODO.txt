@@ -1,5 +1,5 @@
 TODO:
-- Test Font in Sandbox
+
 - TTF font caching
 - Tiled Map loading
 - Create a minimal repro case of multi-Window close bug, and upstream to Github.
@@ -23,3 +23,4 @@ Future:
 Done:
 x Create Mouse object to capture mouse clicks and position
     (use old sdg-engine for ref)
+x Test Font in Sandbox

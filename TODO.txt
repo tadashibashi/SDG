@@ -1,5 +1,4 @@
 TODO:
-- Shape intersection
 - TTF font caching
 - Tiled Map loading
 - Create a minimal repro case of multi-Window close bug, and upstream to Github.

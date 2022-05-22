@@ -3,141 +3,139 @@
 //  SDG_Engine
 //
 #include "File.h"
-#include "SDG/FileSys/Private/IO.h"
+#include <SDG/FileSys/Private/IO.h>
 
-/// Private implementation class data
-class SDG::File::Impl
+namespace SDG
 {
-public:
-    Impl(): mem(), size(), path(), error(), isOpen(false) {}
+    /// Private implementation class data
+    class File::Impl
+    {
+    public:
+        Impl(): mem(), size(), path(), error(), isOpen(false) {}
     
-    char *mem;
-    Path path;
-    String error;
-    size_t size;
-    bool isOpen;
-}; /* class SDG::File::Impl */
+        char *mem;
+        Path path;
+        String error;
+        size_t size;
+        bool isOpen;
+    }; /* class File::Impl */
 
-// === Constructor / Destructor ===============================================
+    // === Constructor / Destructor ===============================================
 
-SDG::File::File() : impl(new Impl)
-{
-
-}
-
-SDG::File::File(const SDG::Path &path) : impl(new Impl)
-{
-    Open(path);
-}
-
-SDG::File::~File()
-{
-    // Automatically close the file when it goes out of scope.
-    Close();
-    delete impl;
-}
-
-const char *
-SDG::File::Data() const
-{
-    return impl->mem;
-}
-
-bool
-SDG::File::IsOpen() const
-{
-    return impl->isOpen;
-}
-
-int64_t
-SDG::File::Size() const
-{
-    return impl->size;
-}
-
-const char *
-SDG::File::GetError() const
-{
-    return impl->error.Cstr();
-}
-
-
-bool
-SDG::File::Open(const Path &path)
-{
-    return (path.Extension() == "sdgc") ?
-           OpenEncryptedImpl(path) :
-           OpenImpl(path);
-}
-
-
-bool
-SDG::File::OpenImpl(const Path &filepath)
-{
-    char *mem;
-    size_t size;
-
-    if (!IO::ReadFileStr(filepath.Str().Cstr(), &mem, &size))
+    File::File() : impl(new Impl)
     {
-        impl->error = String("File::Open: error: ") + IO::GetError();
-        return false;
+
     }
 
-    // success -> commit changes
-    impl->mem = mem;
-    impl->size = size;
-    impl->error = "No errors.";
-    impl->isOpen = true;
-    impl->path = filepath;
-    return true;
-}
-
-bool SDG::File::OpenEncryptedImpl(const Path &path)
-{
-    bool result = SDG::IO::ReadEncryptedFileStr(path.Str().Cstr(), &impl->mem, &impl->size);
-    if (result)
+    File::File(const Path &path) : impl(new Impl)
     {
-        impl->isOpen = true;
+        Open(path);
+    }
+
+    File::~File()
+    {
+        // Automatically close the file when it goes out of scope.
+        Close();
+        delete impl;
+    }
+
+    const char *
+    File::Data() const
+    {
+        return impl->mem;
+    }
+
+    bool
+    File::IsOpen() const
+    {
+        return impl->isOpen;
+    }
+
+    int64_t
+    File::Size() const
+    {
+        return impl->size;
+    }
+
+    const char *
+    File::GetError() const
+    {
+        return impl->error.Cstr();
+    }
+
+
+    bool
+    File::Open(const Path &path)
+    {
+        return (path.Extension() == "sdgc") ?
+               OpenEncryptedImpl(path) :
+               OpenImpl(path);
+    }
+
+
+    bool
+    File::OpenImpl(const Path &filepath)
+    {
+        char *mem;
+        size_t size;
+
+        if (!IO::ReadFileStr(filepath.Str().Cstr(), &mem, &size))
+        {
+            impl->error = String("File::Open: error: ") + IO::GetError();
+            return false;
+        }
+
+        // success -> commit changes
+        impl->mem = mem;
+        impl->size = size;
         impl->error = "No errors.";
-        impl->path = path;
+        impl->isOpen = true;
+        impl->path = filepath;
+        return true;
     }
-    else
+
+    bool File::OpenEncryptedImpl(const Path &path)
     {
-        impl->error = String("File::OpenEncrypted: error: ") + IO::GetError();
+        bool result = IO::ReadEncryptedFileStr(path.Str().Cstr(), &impl->mem, &impl->size);
+        if (result)
+        {
+            impl->isOpen = true;
+            impl->error = "No errors.";
+            impl->path = path;
+        }
+        else
+        {
+            impl->error = String("File::OpenEncrypted: error: ") + IO::GetError();
+        }
+
+        return result;
     }
 
-    return result;
-}
-
-void
-SDG::File::Close()
-{
-    if (impl->mem)
+    void
+    File::Close()
     {
-        free(impl->mem);
-        impl->mem = nullptr;
+        if (impl->mem)
+        {
+            free(impl->mem);
+            impl->mem = nullptr;
+        }
+
+        impl->isOpen = false;
+        impl->size = 0;
+        impl->path = Path();
     }
 
-    impl->isOpen = false;
-    impl->size = 0;
-    impl->path = Path();
+    bool
+    File::IsLoaded() const
+    {
+        return impl->mem;
+    }
+
+    const Path &
+    File::Filepath() const
+    {
+        return impl->path;
+    }
+
 }
-
-bool
-SDG::File::IsLoaded() const
-{
-    return impl->mem;
-}
-
-const SDG::Path &
-SDG::File::Filepath() const
-{
-    return impl->path;
-}
-
-
-
-
-
-
 

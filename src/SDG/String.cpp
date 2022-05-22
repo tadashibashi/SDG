@@ -70,6 +70,26 @@ namespace SDG
         return NullPos;
     }
 
+
+    size_t
+    String::Find(const char *str, size_t startingAt) const
+    {
+        for (const char *p = str_ + startingAt, *find = str, *ret = str_; p < end_; ++p)
+        {
+            if (*p == *find)
+            {
+                if (find++ == str)
+                    ret = p;
+                if (*find == '\0')
+                    return ret - str_;
+            } 
+            else
+                find = str;
+        }
+
+        return NullPos;
+    }
+
     size_t
     String::FindLastOf(char c, size_t startingAt) const
     {

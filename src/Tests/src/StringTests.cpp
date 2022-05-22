@@ -909,4 +909,78 @@ TEST_CASE("String tests", "[String]")
         }
     }
 
+    SECTION("Find")
+    {
+        SECTION("Empty string, empty search")
+        {
+            String str;
+            REQUIRE(str.Find("") == str.NullPos);
+        }
+        SECTION("Empty string, str search")
+        {
+            String str;
+            REQUIRE(str.Find("123") == str.NullPos);
+        }
+        SECTION("One char string, multi-char search")
+        {
+            String str("a");
+            REQUIRE(str.Find("abc") == str.NullPos);
+        }
+        SECTION("One char string, empty search")
+        {
+            String str("a");
+            REQUIRE(str.Find("") == str.NullPos);
+        }
+        SECTION("One char string, matching search")
+        {
+            String str("a");
+            REQUIRE(str.Find("a") == 0);
+        }
+        SECTION("Multi-char string, one char search matches midway")
+        {
+            String str("abcdefg");
+            REQUIRE(str.Find("d") == 3);
+        }
+        SECTION("Multi-char string, one char search matches last char")
+        {
+            String str("abcdefg");
+            REQUIRE(str.Find("g") == 6);
+        }
+        SECTION("Multi-char string, search too long")
+        {
+            String str("abc");
+            REQUIRE(str.Find("abcdef") == str.NullPos);
+        }
+        SECTION("Multi-char string, matching search position 0")
+        {
+            String str("abcdef");
+            REQUIRE(str.Find("abcdef") == 0);
+        }
+        SECTION("Multi-char string, matching search position 3")
+        {
+            String str("abcdef");
+            REQUIRE(str.Find("de") == 3);
+        }
+        SECTION("Multi-char string, matching search position 3 until end")
+        {
+            String str("abcdef");
+            REQUIRE(str.Find("def") == 3);
+        }
+        SECTION("StartingAt matches on-the-nose")
+        {
+            String str("abcabcd");
+            REQUIRE(str.Find("abc", 3) == 3);
+        }
+        SECTION("StartingAt misses a match")
+        {
+            String str("abcabcd");
+            REQUIRE(str.Find("abc", 1) == 3);
+        }
+        SECTION("StartingAt too high index")
+        {
+            String str("abcabcd");
+            REQUIRE(str.Find("abc", 10) == str.NullPos);
+        }
+
+    }
 }

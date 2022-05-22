@@ -1,7 +1,5 @@
-//
-// Created by Aaron Ishibashi on 4/15/22.
-//
 #include "Logging.h"
+
 #if SDG_DEBUG
 #include <spdlog/sinks/stdout_sinks.h>
 #include <SDG/Exceptions/AssertionException.h>

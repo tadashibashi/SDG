@@ -118,7 +118,7 @@ TEST_CASE("FRectangle tests", "[FRectangle]")
     SECTION("String")
     {
         // using normal Rectangle here since it's hard to predict floating point results
-        Rectangle rect;
+        SDG::Rectangle rect;
         REQUIRE(rect.Str() == "{0, 0, 0, 0}");
         rect.Set(1, 2, 3, 4);
         REQUIRE(rect.Str() == "{1, 2, 3, 4}");
@@ -161,7 +161,7 @@ TEST_CASE("FRectangle tests", "[FRectangle]")
     SECTION("operator << (ostream &, const FRectangle &)")
     {
         std::stringstream ss;
-        Rectangle rect;
+        SDG::Rectangle rect;
         ss << rect;
         REQUIRE(ss.str() == "{0, 0, 0, 0}");
         ss.str(std::string());

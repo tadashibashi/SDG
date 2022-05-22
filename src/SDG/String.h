@@ -39,6 +39,8 @@ namespace SDG
         /// @returns index or String::NullPos if it wasn't found.
         [[nodiscard]] size_t FindFirstOf(char c, size_t startingAt = 0) const;
 
+        [[nodiscard]] size_t Find(const char *str, size_t startingAt = 0) const;
+
         /// Finds last occurance of a char
         /// @param c the char to search for
         /// @param startingAt the index to start searching from. Setting it to

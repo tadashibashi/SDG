@@ -38,10 +38,10 @@ namespace SDG
         Rect_ &Width(T pW) { w = pW; return *this; }
         Rect_ &Height(T pH) { h = pH; return *this; }
 
-        Rect_ &Set(T x, T y, T width, T height)
+        Rect_ &Set(T pX, T pY, T width, T height)
         {
-            this->x = x;
-            this->y = y;
+            x = pX;
+            y = pY;
             w = width;
             h = height;
 

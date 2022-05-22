@@ -51,12 +51,6 @@ namespace SDG::Math
             return PointDistance(circ.X(), circ.Y(), cx, cy) <= circ.Radius();
         }
 
-        template <typename T, typename U>
-        static inline bool Impl_(Vec2_<T> pt, Rect_<U> rect)
-        {
-            return Impl_(rect, pt);
-        }
-
         /// Nearest pixel intersection check
         template <typename T, typename U>
         static inline bool Impl_(Vec2_<T> a, Vec2_<U> b)
@@ -64,7 +58,18 @@ namespace SDG::Math
             return Math::Round(a) == Math::Round(b);
         }
 
+        template <typename T, typename U>
+        static inline bool Impl_(Vec2_<T> pt, Rect_<U> rect)
+        {
+            return Impl_(rect, pt);
+        }
 
+        template <typename T>
+        static inline bool Impl_(Vec2_<T> pt, Circle circ)
+        {
+            float distance = PointDistance(pt.X(), pt.Y(),circ.X(), circ.Y());
+            return distance <= circ.Radius();
+        }
 
         static inline bool Impl_(Circle a, Circle b)
         {
@@ -76,6 +81,12 @@ namespace SDG::Math
         static inline bool Impl_(Circle circ, Rect_<T> rect)
         {
             return Impl_(std::move(rect), std::move(circ));
+        }
+
+        template <typename T>
+        static inline bool Impl_(Circle circ, Vec2_<T> pt)
+        {
+            return Impl_(std::move(pt), std::move(circ));
         }
     }
 

@@ -2,7 +2,6 @@
 // Created by Aaron Ishibashi on 4/15/22.
 //
 #pragma once
-#include <string>
 #include <SDG/FileSys/Structs/GameConfig.h>
 #include "Path.h"
 

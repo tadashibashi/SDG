@@ -11,5 +11,5 @@ void
 SDG::XMLReaderException::What(std::ostream &stream) const
 {
     stream << "XMLReaderException occured while " << doing <<
-    ": " << XMLDocument::ErrorIDToName((XMLError)error);
+    ": " << tinyxml2::XMLDocument::ErrorIDToName((XMLError)error);
 }

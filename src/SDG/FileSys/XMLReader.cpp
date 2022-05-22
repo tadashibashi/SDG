@@ -13,7 +13,7 @@ static void
 CheckResult(int result, const SDG::String &doing);
 
 static void
-OpenXML(const SDG::Path &path, XMLDocument *outDoc);
+OpenXML(const SDG::Path &path, tinyxml2::XMLDocument *outDoc);
 
 bool
 SDG::XMLReader::ParseGameConfig(const Path &path, GameConfig *config)
@@ -25,7 +25,7 @@ SDG::XMLReader::ParseGameConfig(const Path &path, GameConfig *config)
     }
 
     // Retrieve the window element
-    XMLDocument doc; XMLElement *root, *win, *app;
+    tinyxml2::XMLDocument doc; XMLElement *root, *win, *app;
     {
         OpenXML(path, &doc);
 

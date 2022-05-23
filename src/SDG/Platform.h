@@ -1,5 +1,6 @@
-/*! ===== Platform Indicators Definitions =====================================
- * @brief Contains platform definitions for both the SDG_Engine and end-user.
+/*!
+ * @file Platform.h
+ * Contains platform definitions for both SDG_Engine and end user.
  * All defines will be set with 1 (true) or 0 (false).
  * Please make sure to check #if (SDG_TARGET_WINDOWS) as opposed to checking
  * with #ifdef or #if defined(SDG_TARGET_WINDOWS).
@@ -56,6 +57,11 @@
     #else
         #define SDG_TARGET_IOS 0
     #endif
+#else
+    #define SDG_TARGET_MAC 0
+    #define SDG_TARGET_MAC_INTEL 0
+    #define SDG_TARGET_MAC_SILICON 0
+    #define SDG_TARGET_IOS 0
 #endif
 
 // Windows
@@ -92,7 +98,7 @@
 
 /// This define is set by CMake when CMAKE_BUILD_TYPE is set to 
 /// "Debug" or "RelWithDebugInfo"
-#if defined(DEBUG)
+#if (DEBUG)
     #define SDG_DEBUG 1
 #else
     #define SDG_DEBUG 0

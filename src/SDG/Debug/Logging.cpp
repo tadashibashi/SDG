@@ -1,6 +1,7 @@
 #include "Logging.h"
 
-#if SDG_DEBUG
+#if (SDG_DEBUG)
+#include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/sinks/stdout_sinks.h>
 #include <SDG/Exceptions/AssertionException.h>
 

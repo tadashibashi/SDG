@@ -8,6 +8,6 @@
 #pragma once
 #include <SDG/Platform.h>
 
-#if (DEBUG)
+#if (SDG_DEBUG)
 #include <spdlog/fmt/ostr.h>
 #endif

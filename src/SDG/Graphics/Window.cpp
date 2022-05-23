@@ -63,7 +63,7 @@ namespace SDG
                       flags | SDL_WINDOW_OPENGL);
             if (!window)
             {
-                SDG_Err("Failed to create window with error: {}", SDL_GetError());
+                SDG_Core_Err("Failed to create window with error: {}", SDL_GetError());
                 return false;
             }
 
@@ -73,7 +73,7 @@ namespace SDG
 
         if (!target)
         {
-            SDG_Err("Failed to initialize SDL_gpu GPU_Target: {}",
+            SDG_Core_Err("Failed to initialize SDL_gpu GPU_Target: {}",
                     GPU_GetErrorString(GPU_PopErrorCode().error));
             return false;
         }
@@ -121,20 +121,20 @@ namespace SDG
             switch(ev.event)
             {
                 case SDL_WINDOWEVENT_SHOWN:
-                    // SDG_Log("Window was shown");
+                    // SDG_Core_Log("Window was shown");
                     On.Show.Invoke();
                     break;
                 case SDL_WINDOWEVENT_HIDDEN:
-                    // SDG_Log("Window was hidden");
+                    // SDG_Core_Log("Window was hidden");
                     On.Hide.Invoke();
                     break;
                 case SDL_WINDOWEVENT_EXPOSED:
-                    // SDG_Log("Window was exposed");
+                    // SDG_Core_Log("Window was exposed");
                     On.Expose.Invoke();
                     impl->target.SwapBuffers(); // TODO: test this behavior...
                     break;
                 case SDL_WINDOWEVENT_MOVED:
-                    // SDG_Log("Window moved: {}, {}",
+                    // SDG_Core_Log("Window moved: {}, {}",
                     //        ev.data1,
                     //        ev.data2);
                     On.Move.Invoke(ev.data1, ev.data2);
@@ -144,41 +144,41 @@ namespace SDG
                     break;
                 case SDL_WINDOWEVENT_SIZE_CHANGED:
                     //Resolution({event.ev.data1, event.ev.data2});
-                    // SDG_Log("Window size changed: {}, {}",
+                    // SDG_Core_Log("Window size changed: {}, {}",
                     //        ev.data1,
                     //        ev.data2);
                     On.SizeChange.Invoke(ev.data1, ev.data2);
                     break;
                 case SDL_WINDOWEVENT_MINIMIZED:
-                    // SDG_Log("Window was minimized");
+                    // SDG_Core_Log("Window was minimized");
                     On.Minimize.Invoke();
                     break;
                 case SDL_WINDOWEVENT_MAXIMIZED:
-                    // SDG_Log("Window was maximized");
+                    // SDG_Core_Log("Window was maximized");
                     On.Fullscreen.Invoke();
                     break;
                 case SDL_WINDOWEVENT_RESTORED:
-                    // SDG_Log("Window was restored");
+                    // SDG_Core_Log("Window was restored");
                     On.Restore.Invoke();
                     break;
                 case SDL_WINDOWEVENT_ENTER: // Mouse entered the window
-                    // SDG_Log("Mouse entered window");
+                    // SDG_Core_Log("Mouse entered window");
                     On.MouseEnter.Invoke();
                     break;
                 case SDL_WINDOWEVENT_LEAVE: // Mouse left the window
-                    // SDG_Log("Mouse left window");
+                    // SDG_Core_Log("Mouse left window");
                     On.MouseLeave.Invoke();
                     break;
                 case SDL_WINDOWEVENT_FOCUS_GAINED:
-                    // SDG_Log("Window gained keyboard focus");
+                    // SDG_Core_Log("Window gained keyboard focus");
                     On.Focus.Invoke();
                     break;
                 case SDL_WINDOWEVENT_FOCUS_LOST:
-                    // SDG_Log("Window lost keyboard focus");
+                    // SDG_Core_Log("Window lost keyboard focus");
                     On.FocusLost.Invoke();
                     break;
                 case SDL_WINDOWEVENT_CLOSE:
-                    // SDG_Log("Window closed");
+                    // SDG_Core_Log("Window closed");
                     On.Close.Invoke();
                     Close();
                     break;
@@ -280,12 +280,12 @@ namespace SDG
     {
         if (size.X() < 1)
         {
-            SDG_Warn("Window::MinimumSize size.X() must be > 0; setting it to 1");
+            SDG_Core_Warn("Window::MinimumSize size.X() must be > 0; setting it to 1");
             size.X(1);
         }
         if (size.Y() < 1)
         {
-            SDG_Warn("Window::MinimumSize size.Y() must be > 0; setting it to 1");
+            SDG_Core_Warn("Window::MinimumSize size.Y() must be > 0; setting it to 1");
             size.Y(1);
         }
 
@@ -306,12 +306,12 @@ namespace SDG
     {
         if (size.X() < 1)
         {
-            SDG_Warn("Window::MaximumSize size.X() must be > 0; setting it to 1");
+            SDG_Core_Warn("Window::MaximumSize size.X() must be > 0; setting it to 1");
             size.X(1);
         }
         if (size.Y() < 1)
         {
-            SDG_Warn("Window::MaximumSize size.Y() must be > 0; setting it to 1");
+            SDG_Core_Warn("Window::MaximumSize size.Y() must be > 0; setting it to 1");
             size.Y(1);
         }
 
@@ -360,7 +360,7 @@ namespace SDG
         SDL_Surface *surf = GPU_CopySurfaceFromImage(texture->Image().Get());
         if (!surf)
         {
-            SDG_Err("Failed to copy SDL_Surface from GPU_Image: {}",
+            SDG_Core_Err("Failed to copy SDL_Surface from GPU_Image: {}",
                     GPU_GetErrorString(GPU_PopErrorCode().error));
         }
 

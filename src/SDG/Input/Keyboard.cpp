@@ -111,7 +111,7 @@ SDG::Keyboard::Pressed(SDG::Key key) const
 {
     SDG_Assert(impl->lastState);
     auto scancode = Scancodes[(unsigned)key];
-    //SDG_Log("Check: this state {} ... last state {}", mImpl->state[scancode], mImpl->lastState[scancode]);
+    //SDG_Core_Log("Check: this state {} ... last state {}", mImpl->state[scancode], mImpl->lastState[scancode]);
     return impl->state[scancode] &&
            !impl->lastState[scancode];
 }
@@ -441,7 +441,7 @@ Uint16 KeyToScanCode(Key key)
         case Key::AudioFastForward: return SDL_SCANCODE_AUDIOFASTFORWARD;
 
         default:
-            SDG_Err("Unknown Key value was checked");
+            SDG_Core_Err("Unknown Key value was checked");
             return SDL_SCANCODE_UNKNOWN;
     }
 }

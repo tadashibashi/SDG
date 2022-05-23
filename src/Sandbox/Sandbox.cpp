@@ -46,12 +46,12 @@ private:
             text = font.CreateTextSolid(MainWindow(), "Hello", Color::MediumPurple());
             if (text)
             {
-                SDG_Log("Loaded texture: dimensions: {}", text->Size());
+                SDG_Core_Log("Loaded texture: dimensions: {}", text->Size());
             }
         }
         else
         {
-            SDG_Warn("Failed to load font!\n");
+            SDG_Core_Warn("Failed to load font!\n");
         }
 
         kirby.Load(MainWindow(), BasePath("assets/textures/kirby.sdgc"));
@@ -75,7 +75,7 @@ private:
 
         if (Input::KeyPressed(Key::Space))
         {
-            SDG_Log("Seconds since game start: {}", Time()->As(TimeUnit::Seconds));
+            SDG_Core_Log("Seconds since game start: {}", Time()->As(TimeUnit::Seconds));
         }
 
         if (Input::KeyPressed(Key::S) && Input::KeyPress(Key::V))
@@ -89,7 +89,7 @@ private:
             // Loaded the game!!
             File sav(PrefPath("game1.sdgc"));
 
-            SDG_Log("Loaded save: \"{}\"", sav.Data());
+            SDG_Core_Log("Loaded save: \"{}\"", sav.Data());
         }
 
         if (Input::KeyPressed(Key::F))
@@ -104,15 +104,15 @@ private:
 
         if (Input::MousePressed(MButton::Left))
         {
-            SDG_Log("Pressing left mouse button.");
+            SDG_Core_Log("Pressing left mouse button.");
         }
         if (Input::MousePressed(MButton::Right))
         {
-            SDG_Log("Pressing right mouse button.");
+            SDG_Core_Log("Pressing right mouse button.");
         }
         if (Input::MouseWheelDidMove())
         {
-            SDG_Log(Input::MouseWheel().Str());
+            SDG_Core_Log(Input::MouseWheel().Str());
         }
 
         if (MainWindow()->IsOpen())

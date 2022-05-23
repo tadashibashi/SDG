@@ -88,7 +88,7 @@ namespace SDG
 
         if (!image)
         {
-            SDG_Err("{}: SDL_gpu failed to copy image from SDL_Surface: {}", SDG_TRACE(), 
+            SDG_Core_Err("{}: SDL_gpu failed to copy image from SDL_Surface: {}", SDG_TRACE(),
                 GPU_GetErrorString(GPU_PopErrorCode().error));
             return false;
         }
@@ -110,14 +110,14 @@ namespace SDG
         File file;
         if (!file.Open(path))
         {
-            SDG_Err("problem while loading Texture2D file: {}", file.GetError());
+            SDG_Core_Err("problem while loading Texture2D file: {}", file.GetError());
             return false;
         }
 
         SDL_RWops *io = SDL_RWFromConstMem(file.Data(), file.Size());
         if (!io)
         {
-            SDG_Err("problem while sending data to SDL_RWops: {}", SDL_GetError());
+            SDG_Core_Err("problem while sending data to SDL_RWops: {}", SDL_GetError());
             return false;
         }
 
@@ -125,7 +125,7 @@ namespace SDG
         GPU_Image *tempImage = GPU_LoadImage_RW(io, true);
         if (!tempImage)
         {
-            SDG_Err("problem loading image file ({}): {}", path.Str(),
+            SDG_Core_Err("problem loading image file ({}): {}", path.Str(),
                     GPU_PopErrorCode().details);
             return false;
         }

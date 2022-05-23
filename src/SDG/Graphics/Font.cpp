@@ -44,7 +44,7 @@ namespace SDG
         File file;  // open the file
         if (!file.Open(filepath))
         {
-            SDG_Err("Problem opening font ({}): {}", filepath.Filename(),
+            SDG_Core_Err("Problem opening font ({}): {}", filepath.Filename(),
                     file.GetError());
             return false;
         }
@@ -52,7 +52,7 @@ namespace SDG
         SDL_RWops *rwops = SDL_RWFromConstMem(file.Data(), file.Size());
         if (!rwops)
         {
-            SDG_Err("Problem converting memory to SDL_RWops: {}", 
+            SDG_Core_Err("Problem converting memory to SDL_RWops: {}",
                 SDL_GetError());
             return false;
         }
@@ -62,7 +62,7 @@ namespace SDG
         TTF_Font *font = TTF_OpenFontRW(rwops, true, pointSize);
         if (!font)
         {
-            SDG_Err("Failed to load font from path {}", filepath.Str());
+            SDG_Core_Err("Failed to load font from path {}", filepath.Str());
             SDL_RWclose(rwops);
             return false;
         }
@@ -128,7 +128,7 @@ namespace SDG
                 Conv::ToSDLColor(color), wrapLength) :
             TTF_RenderText_Blended(impl->font, text.Cstr(), 
                 Conv::ToSDLColor(color));
-        SDG_Log("Creating text blended with text: \"{}\"", text);
+        SDG_Core_Log("Creating text blended with text: \"{}\"", text);
         return SurfaceToTexture(context, surf);
     }
 
@@ -167,7 +167,7 @@ namespace SDG
     {
         if (!surf) // if null, the function that created the surface prior to this failed.
         {
-            SDG_Err("TTF failed to render text: {}", TTF_GetError());
+            SDG_Core_Err("TTF failed to render text: {}", TTF_GetError());
             return nullptr;
         }
 

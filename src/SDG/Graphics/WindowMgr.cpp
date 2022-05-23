@@ -36,12 +36,12 @@ namespace SDG
         {
             if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS | SDL_INIT_TIMER) != 0)
             {
-                SDG_Err("Failed to initialize SDL2: {}", SDL_GetError());
+                SDG_Core_Err("Failed to initialize SDL2: {}", SDL_GetError());
                 exit(-1);
             }
             if (TTF_Init() != 0)
             {
-                SDG_Err("Failed to initialize SDL2_ttf: {}", TTF_GetError());
+                SDG_Core_Err("Failed to initialize SDL2_ttf: {}", TTF_GetError());
                 SDL_Quit();
             }
         }

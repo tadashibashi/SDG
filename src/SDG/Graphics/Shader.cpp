@@ -20,7 +20,7 @@ LoadShader(GPU_ShaderEnum shaderType, const SDG::Path &path)
     SDG::File file;
     if (!file.Open(path))
     {
-        SDG_Err("LoadShader file loading error: {}", file.GetError());
+        SDG_Core_Err("LoadShader file loading error: {}", file.GetError());
         return 0;
     }
 
@@ -34,7 +34,7 @@ LoadShader(GPU_ShaderEnum shaderType, const SDG::Path &path)
             header = "#version 100\nprecision mediump int;\nprecision mediump float;\n";
             break;
         default:
-            SDG_Err("Shader language currently unsupported.");
+            SDG_Core_Err("Shader language currently unsupported.");
             return 0;
     }
 
@@ -90,7 +90,7 @@ SDG::Shader::Compile(const Path &vertexPath, const Path &fragPath)
     uint32_t vertShader = LoadShader(GPU_VERTEX_SHADER, vertexPath);
     if (!vertShader)
     {
-        SDG_Err("Failed to load vertex shader ({}) =>\n{}", vertexPath.Str(),
+        SDG_Core_Err("Failed to load vertex shader ({}) =>\n{}", vertexPath.Str(),
                 GPU_GetShaderMessage());
         return false;
     }
@@ -98,7 +98,7 @@ SDG::Shader::Compile(const Path &vertexPath, const Path &fragPath)
     uint32_t fragShader = LoadShader(GPU_FRAGMENT_SHADER, fragPath);
     if (!fragShader)
     {
-        SDG_Err("Failed to load fragment shader ({})", fragPath.Str());
+        SDG_Core_Err("Failed to load fragment shader ({})", fragPath.Str());
         GPU_FreeShader(vertShader);
         return false;
     }
@@ -106,7 +106,7 @@ SDG::Shader::Compile(const Path &vertexPath, const Path &fragPath)
     uint32_t shaderProgram = GPU_LinkShaders(vertShader, fragShader);
     if (!shaderProgram)
     {
-        SDG_Err("Failed to load shader program: {}", GPU_GetShaderMessage());
+        SDG_Core_Err("Failed to load shader program: {}", GPU_GetShaderMessage());
         GPU_FreeShader(vertShader);
         GPU_FreeShader(fragShader);
         return false;

@@ -24,7 +24,7 @@ SDG::XMLReader::ParseGameConfig(const Path &path, GameConfig *config)
 {
     if (!config)
     {
-        SDG_Err("Error: failed to parse game config file: passed a nullptr GameConfig.");
+        SDG_Core_Err("Error: failed to parse game config file: passed a nullptr GameConfig.");
         return false;
     }
 
@@ -37,14 +37,14 @@ SDG::XMLReader::ParseGameConfig(const Path &path, GameConfig *config)
         root = doc.RootElement();
         if (!root)
         {
-            SDG_Err("Could not parse game config file. The xml file is missing a root element.");
+            SDG_Core_Err("Could not parse game config file. The xml file is missing a root element.");
             return false;
         }
 
         win = root->FirstChildElement("window");
         if (!win)
         {
-            SDG_Err("Could not parse game config file. It's missing a window element.");
+            SDG_Core_Err("Could not parse game config file. It's missing a window element.");
             return false;
         }
     }
@@ -86,7 +86,7 @@ OpenXML(const SDG::Path &path, XMLDocument *outDoc)
     }
     catch(const std::exception &e)
     {
-        SDG_Err("Exception while parsing Xml file ({}): {}", path.Str(),
+        SDG_Core_Err("Exception while parsing Xml file ({}): {}", path.Str(),
                 e.what());
     }
 }

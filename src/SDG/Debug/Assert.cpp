@@ -17,7 +17,7 @@ SDG::Debug::_AssertImpl(bool statement, const char *statementStr, const char *fi
             throw SDG::AssertionException(statementStr, file, line, func);
         else
         {
-            SDG_Warn("{}:{}: {}: Assertion failed: {}", Path(file).Filename(), line, func, statementStr);
+            SDG_Core_Warn("{}:{}: {}: Assertion failed: {}", Path(file).Filename(), line, func, statementStr);
         }
 
     }

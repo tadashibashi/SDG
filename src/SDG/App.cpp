@@ -48,7 +48,7 @@ namespace SDG
         }
         catch(const std::exception &e)
         {
-            SDG_Err("Failed to parse game config.");
+            SDG_Core_Err("Failed to parse game config.");
         }
     }
 
@@ -63,7 +63,7 @@ namespace SDG
     int
     App::Initialize_()
     {
-        SDG_Log("Game initializing.");
+        SDG_Core_Log("Game initializing.");
         GameConfig &config = impl->config;
         Ref<Window> window;
         if (impl->windows.CreateWindow(config.width, config.height, 
@@ -114,7 +114,7 @@ namespace SDG
         }
         catch(const Exception &e)
         {
-            SDG_Err("{}", e.what());
+            SDG_Core_Err("{}", e.what());
             Exit();
         }
     }
@@ -126,7 +126,7 @@ namespace SDG
         Close(); // Child class clean up
         Input::Close();
         impl->windows.Close();
-        SDG_Log("Game shut down complete.");
+        SDG_Core_Log("Game shut down complete.");
     }
 
 
@@ -135,7 +135,7 @@ namespace SDG
     {
         if (int err = Initialize_() != 0)
         {
-            SDG_Err("App failed to initialize: error code: {}", err);
+            SDG_Core_Err("App failed to initialize: error code: {}", err);
             return;
         }
 

@@ -48,7 +48,7 @@ TEST_CASE("Tween tests", "[Tween]")
         bool didThrow = false;
         try {
             float val = tween.CalculateValue(1.f);
-            SDG_Err("Failed to throw. Function returned: {}", val);
+            SDG_Core_Err("Failed to throw. Function returned: {}", val);
         }
         catch (const NullReferenceException &e)
         {

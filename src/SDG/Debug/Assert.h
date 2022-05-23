@@ -7,7 +7,7 @@
 #include <SDG/Platform.h>
 #include <SDG/Exceptions/AssertionException.h> // for convenience
 
-#if SDG_DEBUG
+#if (SDG_DEBUG)
 
 namespace SDG::Debug
 {
@@ -16,7 +16,9 @@ namespace SDG::Debug
 }
 
 
+/// Throws an exception when statement is false
 #define SDG_Assert(statement) (SDG::Debug::_AssertImpl(statement, #statement, __FILE__ , __LINE__, __func__, true))
+/// Logs a warning to the console
 #define SDG_AWarn(statement) (SDG::Debug::_AssertImpl(statement, #statement, __FILE__ , __LINE__, __func__, false))
 
 #elif defined(MSVC)

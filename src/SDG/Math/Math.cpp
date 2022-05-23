@@ -94,8 +94,15 @@ namespace SDG::Math
         return std::fmod((std::fmod(x, n) + n), n);
     }
 
-    long
-    Mod(long x, long n)
+    float
+    ModF(float x, float n)
+    {
+        if (n == 0) return 0;
+        return std::fmod((std::fmod(x, n) + n), n);
+    }
+
+    int
+    Mod(int x, int n)
     {
         if (n == 0) return 0;
         return (((x % n) + n) % n);

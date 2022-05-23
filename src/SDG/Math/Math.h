@@ -90,10 +90,8 @@ namespace SDG::Math
     template <typename T>
     inline T Sign(T n) { return (T)(n < 0 ? -1 : 1); }
 
-
-    inline double Round(double n) { return (double)((int)(n + 0.5 )); }
-
-    inline float Round(float n) { return (float)((int)(n + 0.5f)); }
+    template <typename T>
+    inline T Round(T n) { return (T)((int)(n + 0.5L )); }
 
     /// Round to the 10^n's place
     double RoundN(double x, int n);
@@ -154,9 +152,10 @@ namespace SDG::Math
     * Modulo function for floating point types that does not reflect across 0
     */
     double ModF(double x, double n);
+    float ModF(float x, float n);
 
     /// Modulo function for integral types that does not reflect across 0
-    long Mod(long x, long n);
+    int Mod(int x, int n);
 
     /**
      * Return a number that 'wraps around' to the opposite boundary when either boundary is exceeded.

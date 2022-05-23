@@ -180,5 +180,42 @@ TEST_CASE("FRectangle tests", "[FRectangle]")
         ss << rect;
         REQUIRE(ss.str() == "{-20041, -3004124, 241243, 2512355}");
     }
+
+    SECTION("Side tests")
+    {
+        SECTION("Left")
+        {
+            SECTION("Increasing left decreases width")
+            {
+                Rectangle rect(0, 0, 100, 100);
+                rect.Left(10);
+                REQUIRE(rect.Left() == 10);
+                REQUIRE(rect.X() == 10);
+                REQUIRE(rect.Width() == 90);
+            }
+
+            SECTION("Smaller left position increases width")
+            {
+                Rectangle rect(0, 0, 100, 100);
+                rect.Left(-10);
+                REQUIRE(rect.Left() == -10);
+                REQUIRE(rect.X() == -10);
+                REQUIRE(rect.Width() == 110);
+            }
+
+            // Todo: in this case, set Left to Right, and update Right?
+            // we need to accurately portray the position when the next
+            // object that inquires  might expect the left side to be on the actual left side...
+            SECTION("Rectangle with left further than right")
+            {
+                Rectangle rect(0, 0, 100, 100);
+                rect.Left(200);
+                REQUIRE(rect.Left() == 200);
+                REQUIRE(rect.X() == 200);
+                REQUIRE(rect.Width() == -100);
+            }
+
+        }
+    }
 }
 

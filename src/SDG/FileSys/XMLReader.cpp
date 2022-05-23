@@ -3,15 +3,19 @@
 //
 #include "XMLReader.h"
 #include "File.h"
+
 #include <SDG/Debug.hpp>
 #include <SDG/Exceptions/XMLReaderException.h>
+
 #include <tinyxml2.h>
 
 using namespace tinyxml2;
 
+/// Test a tinyxml2 function that returns a result code
 static void
 CheckResult(int result, const SDG::String &doing);
 
+/// Safely open an xml document
 static void
 OpenXML(const SDG::Path &path, tinyxml2::XMLDocument *outDoc);
 
@@ -25,8 +29,9 @@ SDG::XMLReader::ParseGameConfig(const Path &path, GameConfig *config)
     }
 
     // Retrieve the window element
-    tinyxml2::XMLDocument doc; XMLElement *root, *win, *app;
+    tinyxml2::XMLDocument doc; XMLElement *win;
     {
+        XMLElement *root;
         OpenXML(path, &doc);
 
         root = doc.RootElement();

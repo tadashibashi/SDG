@@ -2,7 +2,7 @@
 #include "Private/RendererType.h"
 #include "Texture2D.h"
 
-#include <SDG/Debug.hpp>
+#include <SDG/Debug/Logging.h>
 
 #include <SDL_gpu.h>
 #include <SDL_ttf.h>

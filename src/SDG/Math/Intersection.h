@@ -11,7 +11,7 @@ namespace SDG::Math
 {
     /// Function to check intersection between shapes
     template <typename ShapeA, typename ShapeB>
-    inline bool Intersects(ShapeA a, ShapeB b)
+    [[nodiscard]] inline bool Intersects(ShapeA a, ShapeB b)
     {
         return Intersection::Impl_(a, b);
     }

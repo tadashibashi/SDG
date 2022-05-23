@@ -1,5 +1,7 @@
 /// Contains functions involving non-primitive SDG math classes
 #pragma once
+#include "Circle.h"
+#include "Intersection.h"
 #include "Math.h"
 #include "Matrix4x4.h"
 #include "Vector2.h"
@@ -15,9 +17,11 @@ namespace SDG::Math
     /// @param amt the amount to lerp by as a percentage (0 to 1.f)
     Vector2 Lerp(Vector2 val, Vector2 dest, double amt);
     FRectangle Lerp(FRectangle val, FRectangle dest, double amt);
+    Circle Lerp(Circle val, Circle dest, double amt);
 
     Vector2 Round(Vector2 v);
     FRectangle Round(FRectangle rect);
+    Circle Round(Circle c);
 
     Vector2 Transform(Vector2 position, const Matrix4x4 &mat);
 

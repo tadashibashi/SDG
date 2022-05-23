@@ -98,7 +98,7 @@ set(Engine_Sources
         Templates/Private/PoolNullIndex.cpp 
         Templates/FixedPool.h
         String.h String.cpp
-        Time/TimeUnit.h Debug/LogImpl.h Templates/Swap.h Math/MathEx.h Math/MathEx.cpp Math/Intersection.h Math/Circle.h "StringView.h" "StringView.cpp")
+        Time/TimeUnit.h Debug/LogImpl.h Templates/Swap.h Math/Shape.h Math/Shape.cpp Math/Intersection.h Math/Circle.h "StringView.h" "StringView.cpp")
 
 
 

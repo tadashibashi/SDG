@@ -1,4 +1,4 @@
-#include "MathEx.h"
+#include "Shape.h"
 
 namespace SDG
 {
@@ -26,6 +26,13 @@ namespace SDG
                           Lerp(val.Height(), dest.Height(), amt));
     }
 
+    Circle Math::Lerp(Circle val, Circle dest, double amt)
+    {
+        return Circle(Lerp(val.X(), dest.X(), amt),
+            Lerp(val.Y(), dest.Y(), amt),
+            Lerp(val.Radius(), dest.Radius(), amt));
+    }
+
     Vector2
     Math::Round(Vector2 v)
     {
@@ -37,5 +44,9 @@ namespace SDG
     {
         return FRectangle(Math::Round(rect.X()), Math::Round(rect.Y()),
                           Math::Round(rect.Width()), Math::Round(rect.Height()));
+    }
+    Circle Math::Round(Circle c)
+    {
+        return Circle(Round(c.X()), Round(c.Y()), Round(c.Radius()));
     }
 }

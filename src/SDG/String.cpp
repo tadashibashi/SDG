@@ -120,13 +120,12 @@ namespace SDG
     String::Erase(size_t index)
     {
         if (index >= Length())
-            throw OutOfRangeException(index, "String's current max index is " +
+            throw OutOfRangeException(index, "String max index: " +
                                              std::to_string(Length() - 1));
 
         for (char *p = str_ + index; p < end_ - 1; ++p)
-        {
             *p = *(p + 1);
-        }
+
         --end_;
         *end_ = '\0';
 
@@ -195,7 +194,7 @@ namespace SDG
         uint64_t pPow = 1;
         for (const char *c = str_; c < end_; ++c)
         {
-            hash = (hash + (*c - 'a' + 1) * pPow) % m;
+            hash = (hash + ((uint64_t)*c - 'a' + 1) * pPow) % m;
             pPow = (pPow * p) % m;
         }
 

@@ -26,7 +26,7 @@ add_executable(SDG_Tests
         src/ExceptionTests.cpp
         src/SDG_Tests.h
         src/KeyboardTests.cpp
-        src/MathTests.cpp src/RandTests.cpp src/AppTimeTests.cpp src/Vector2Tests.cpp src/Vector3Tests.cpp src/RectangleTests.cpp src/ColorTests.cpp src/FontTests.cpp src/TweenTests.cpp src/PoolTests.cpp src/FixedPoolTests.cpp src/FileSysTests.cpp src/StringTests.cpp src/TweenerTests.cpp src/MathExTests.cpp)
+        src/MathTests.cpp src/RandTests.cpp src/AppTimeTests.cpp src/Vector2Tests.cpp src/Vector3Tests.cpp src/RectangleTests.cpp src/ColorTests.cpp src/FontTests.cpp src/TweenTests.cpp src/PoolTests.cpp src/FixedPoolTests.cpp src/FileSysTests.cpp src/StringTests.cpp src/TweenerTests.cpp "src/ShapeFunctionTests.cpp")
 
 target_include_directories(SDG_Tests PRIVATE ${CMAKE_SOURCE_DIR}/src
         lib/Catch2/src)

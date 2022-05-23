@@ -23,36 +23,40 @@ namespace SDG
     class Rect_
     {
     public:
-        Rect_() : x(0), y(0), w(0), h(0) { }
-        Rect_(T x, T y, T w, T h) : x(x), y(y), w(w), h(h) { }
+        Rect_() noexcept : x(0), y(0), w(0), h(0) { }
+        Rect_(T x, T y, T w, T h) noexcept : x(x), y(y), w(w), h(h) { }
 
         /// Gets the horizontal position of the rectangle.
-        [[nodiscard]] T X() const { return x; }
+        [[nodiscard]] T X() const noexcept { return x; }
         /// Sets the horizontal position of the rectangle.
-        Rect_ &X(T pX) { x = pX; return *this; }
+        Rect_ &X(T pX) noexcept { x = pX; return *this; }
 
         /// Gets the vertical position of the rectangle.
-        [[nodiscard]] T Y() const { return y; }
+        [[nodiscard]] T Y() const noexcept { return y; }
         /// Sets the vertical position of the rectangle.
-        Rect_ &Y(T pY) { y = pY; return *this; }
+        Rect_ &Y(T pY) noexcept { y = pY; return *this; }
 
         /// Gets the width of the rectangle.
-        [[nodiscard]] T Width() const { return w; }
+        [[nodiscard]] T Width() const noexcept { return w; }
         /// Sets the width of the rectangle.
         Rect_ &Width(T pW) { w = pW; return *this; }
 
         /// Gets the height of the rectangle.
-        [[nodiscard]] T Height() const { return h; }
+        [[nodiscard]] T Height() const noexcept { return h; }
         /// Sets the height of the rectangle.
-        Rect_ &Height(T pH) { h = pH; return *this; }
+        Rect_ &Height(T pH) noexcept { h = pH; return *this; }
 
         /// Sets the members of the rectangle.
-        Rect_ &Set(T pX, T pY, T width, T height);
+        Rect_ &Set(T pX, T pY, T width, T height) noexcept;
+
+        Vec2_<T> Position() const noexcept { return { x, y }; }
+        Rect_ &Position(T pX, T pY) noexcept { x = pX, y = pY; return *this; }
 
         /// Returns whether the rectangle is empty (zero area)
         [[nodiscard]] bool Empty() const noexcept;
         /// Returns the dimensions of the rectangle as a vec2
-        [[nodiscard]] Vec2_<T> Size() const { return {w, h}; }
+        [[nodiscard]] Vec2_<T> Size() const noexcept { return {w, h}; }
+        Rect_ &Size(Vec2_<T> size) noexcept { w = size.X(); h = size.Y(); return *this; }
         /// Gets the area of the rectangle (width x height)
         [[nodiscard]] T Area() const noexcept { return w * h; }
 
@@ -118,7 +122,7 @@ namespace SDG
 
     template<typename T>
     Rect_<T> &
-    Rect_<T>::Set(T pX, T pY, T width, T height)
+    Rect_<T>::Set(T pX, T pY, T width, T height) noexcept
     {
         x = pX;
         y = pY;

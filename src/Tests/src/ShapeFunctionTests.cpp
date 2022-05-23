@@ -1,10 +1,10 @@
 #include "SDG_Tests.h"
 #include <SDG/Math/Intersection.h>
-#include <SDG/Math/MathEx.h>
+#include <SDG/Math/Shape.h>
 
 TEST_CASE("Intersects")
 {
-    SECTION("Intersects")
+    SECTION("Rectangle - Rectangle")
     {
         FRectangle rect1;
         FRectangle rect2;
@@ -61,6 +61,69 @@ TEST_CASE("Intersects")
             rect1.Set(0, 0, 10.f, 10.f);
             rect2.Set(10.f, 0, 10.f, 10.f);
             REQUIRE(Math::Intersects(rect1, rect2));
+        }
+    }
+
+    SECTION("Rectangle - Circle")
+    {
+        Rectangle rect;
+        Circle    circ;
+
+        SECTION("Not colliding")
+        {
+            rect.Set(0, 0, 10, 10);
+            circ.Set(100, 100, 1);
+            REQUIRE(!Math::Intersects(rect, circ));
+        }
+
+        SECTION("Basic collision")
+        {
+            rect.Set(0, 0, 10, 10);
+            circ.Set(0, 0, 1);
+            REQUIRE(Math::Intersects(rect, circ));
+        }
+        SECTION("Touching side")
+        {
+            rect.Set(0, 0, 10, 10);
+            circ.Set(11, 5, 1);
+            REQUIRE(Math::Intersects(rect, circ));
+        }
+        SECTION("Touching corner")
+        {
+            rect.Set(0, 0, 10, 10);
+            circ.Set(11, 0, 1);
+            REQUIRE(Math::Intersects(rect, circ));
+        }
+    }
+
+    SECTION("Rect - Point")
+    {
+        Rectangle rect;
+        Point point;
+
+        SECTION("Not inside")
+        {
+            rect.Set(0, 0, 10, 10);
+            point.X(100).Y(100);
+            REQUIRE(!Math::Intersects(rect, point));
+        }
+        SECTION("Inside")
+        {
+            rect.Set(0, 0, 10, 10);
+            point.X(5).Y(5);
+            REQUIRE(Math::Intersects(rect, point));
+        }
+        SECTION("Touching side")
+        {
+            rect.Set(0, 0, 10, 10);
+            point.X(5).Y(10);
+            REQUIRE(Math::Intersects(rect, point));
+        }
+        SECTION("Touching corner")
+        {
+            rect.Set(0, 0, 10, 10);
+            point.X(10).Y(10);
+            REQUIRE(Math::Intersects(rect, point));
         }
     }
 

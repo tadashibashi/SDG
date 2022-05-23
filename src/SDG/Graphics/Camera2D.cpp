@@ -2,7 +2,7 @@
 #include "Camera2D.h"
 
 #include <SDG/Graphics/RenderTarget.h>
-#include <SDG/Math/MathEx.h>
+#include <SDG/Math/Shape.h>
 
 #include <SDL_gpu.h>
 

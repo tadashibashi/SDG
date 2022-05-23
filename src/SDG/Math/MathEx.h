@@ -28,8 +28,8 @@ namespace SDG::Math
      */
     inline Vector2 Trajectory(float degrees, float length)
     {
-        return Vector2((float)TrajectoryX(degrees, length),
-                       (float)TrajectoryY(degrees, length));
+        return Vector2(TrajectoryX(degrees, length),
+                       TrajectoryY(degrees, length));
     }
 
     /// Constrains a value between two Vectors, inclusively on both ends.

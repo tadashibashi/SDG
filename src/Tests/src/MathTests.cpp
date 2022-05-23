@@ -7,32 +7,32 @@ TEST_CASE("Math::Lerp")
     {
         SECTION("Zero amount does not affect result")
         {
-            REQUIRE(Math::Lerp<float>(10.f, 20.f, 0) == 10.f);
+            REQUIRE(Math::Lerp(10.f, 20.f, 0) == 10.f);
         }
 
         SECTION("Amount of .25f brings result a quarter way")
         {
-            REQUIRE(Math::Lerp<float>(10.f, 20.f, 0.25) == 12.5f);
+            REQUIRE(Math::Lerp(10.f, 20.f, 0.25) == 12.5f);
         }
 
         SECTION("Amount of .5f brings result half way")
         {
-            REQUIRE(Math::Lerp<float>(10.f, 20.f, 0.5) == 15.f);
+            REQUIRE(Math::Lerp(10.f, 20.f, 0.5) == 15.f);
         }
 
         SECTION("Amount of .75f brings three-thirds way")
         {
-            REQUIRE(Math::Lerp<float>(10.f, 20.f, 0.75) == 17.5f);
+            REQUIRE(Math::Lerp(10.f, 20.f, 0.75) == 17.5f);
         }
 
         SECTION("Amount of 1.f brings all the way")
         {
-            REQUIRE(Math::Lerp<float>(10.f, 20.f, 1.0) == 20.f);
+            REQUIRE(Math::Lerp(10.f, 20.f, 1.0) == 20.f);
         }
 
         SECTION("Negative amount flips result")
         {
-            REQUIRE(Math::Lerp<float>(10.f, 20.f, -.5) == 5.f);
+            REQUIRE(Math::Lerp(10.f, 20.f, -.5) == 5.f);
         }
     }
 
@@ -40,32 +40,32 @@ TEST_CASE("Math::Lerp")
     {
         SECTION("Amount of zero does not affect result")
         {
-            REQUIRE(Math::Lerp<int>(10, 20, 0) == 10);
+            REQUIRE(Math::Lerp(10, 20, 0) == 10);
         }
 
         SECTION("Amount of .25f brings result quarter way")
         {
-            REQUIRE(Math::Lerp<int>(10, 20, 0.25) == 12); // 12.5 floored
+            REQUIRE(Math::Lerp(10, 20, 0.25) == 12.5);
         }
 
         SECTION("Amount of .5f brings result half way")
         {
-            REQUIRE(Math::Lerp<int>(10, 20, 0.5) == 15);
+            REQUIRE(Math::Lerp(10, 20, 0.5) == 15);
         }
 
         SECTION("Amount of .75f brings three-thirds way")
         {
-            REQUIRE(Math::Lerp<int>(10, 20, 0.75) == 17); // 17.5 floored
+            REQUIRE(Math::Lerp(10, 20, 0.75) == 17.5);
         }
 
         SECTION("Amount of 1.f brings all the way")
         {
-            REQUIRE(Math::Lerp<int>(10, 20, 1.0) == 20);
+            REQUIRE(Math::Lerp(10, 20, 1.0) == 20);
         }
 
         SECTION("Negative amount flips result")
         {
-            REQUIRE(Math::Lerp<int>(10, 20, -.5) == 5);
+            REQUIRE(Math::Lerp(10, 20, -.5) == 5);
         }
     }
 
@@ -114,11 +114,11 @@ TEST_CASE("Math::ToDegrees")
 
 TEST_CASE("Math::ToRadians")
 {
-    REQUIRE(Math::ToRadians(360) == 2 * Math::Pi);
-    REQUIRE(Math::ToRadians(270) == 1.5 * Math::Pi);
-    REQUIRE(Math::ToRadians(180) == Math::Pi);
-    REQUIRE(Math::ToRadians(90) == .5 * Math::Pi);
-    REQUIRE(Math::ToRadians(0) == 0);
+    REQUIRE(Round(Math::ToRadians(360)) == Round(2 * Math::Pi));
+    REQUIRE(Round(Math::ToRadians(270)) == Round(1.5 * Math::Pi));
+    REQUIRE(Round(Math::ToRadians(180)) == Round(Math::Pi));
+    REQUIRE(Round(Math::ToRadians(90)) == Round(.5 * Math::Pi));
+    REQUIRE(Round(Math::ToRadians(0)) == Round(0));
 }
 
 TEST_CASE("Trajectory Functions")
@@ -155,6 +155,14 @@ TEST_CASE("Trajectory Functions")
     // TrajectoryX and TrajectoryY functions
 
 } /* end TEST_CASE("Trajectory Functions") */
+
+TEST_CASE("Math::Min and Math::Max")
+{
+    REQUIRE(Math::Min(10, 20) == 10);
+    REQUIRE(Math::Min(20, 10) == 10);
+    REQUIRE(Math::Max(10, 20) == 20);
+    REQUIRE(Math::Max(20, 10) == 20);
+}
 
 TEST_CASE("Math::Clamp")
 {
@@ -366,34 +374,6 @@ TEST_CASE("Math::Sign")
     REQUIRE(Math::Sign(0) == 1);
 
 }
-
-TEST_CASE("Math::Add")
-{
-    SECTION("Int param list")
-    {
-        // ints, all positive
-        REQUIRE(Math::Add({1, 2, 3, 4, 5}) == 15);
-        // ints, all negative
-        REQUIRE(Math::Add({-1, -2, -3, -4, -5}) == -15);
-        // ints, mixed
-        REQUIRE(Math::Add({1, -2, 3, -4, 5}) == 3);
-        // ints, empty list
-        REQUIRE(Math::Add<int>({}) == 0);
-    }
-
-    SECTION("float param list")
-    {
-        // floats, all positive
-        REQUIRE(Math::Add<float>({1.2f, 2.1f, 3.2f, 4.9f, 5.3f}) == 16.7f);
-        // floats, all negative
-        REQUIRE(Math::Add<float>({-1.2f, -2.1f, -3.2f, -4.9f, -5.3f}) == -16.7f);
-        // floats, mixed
-        REQUIRE(Math::Add<float>({1.0f, -2.0f, 3.0f, -4.0f, 5.0f}) == 3.f);
-        // floats, empty list
-        REQUIRE(Math::Add<float>({}) == 0);
-    }
-
-} /* end TEST_CASE("Math::Add") */
 
 TEST_CASE("Math::Mod")
 {

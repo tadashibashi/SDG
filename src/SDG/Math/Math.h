@@ -12,52 +12,64 @@
 #include <initializer_list>
 #include <type_traits>
 
+// Optional more efficient Min/Max/Clamp, perhaps for internal use
 #define SDG_Min(a, b) ((a) < (b) ? (a) : (b))
 #define SDG_Max(a, b) ((a) > (b) ? (a) : (b))
-#define SDG_Clamp(n, min, max) (SDG_Max(SDG_Min(n, max)), min))
+#define SDG_Clamp(n, min, max) (((n) < (max) ? (n) : (max)) > (min) ? \
+    ((n) < (max) ? (n) : (max)) : (min))
 
 namespace SDG::Math
 {
     /// Linear interpolation. Requires floating point for accuracy, but
     /// integer types are usable with a floored result.
     template <typename T>
-    inline T Lerp(T val, T dest, double amt)
+    inline double Lerp(T val, T dest, double amt)
     {
         return (dest - val) * amt + val;
     }
 
-    inline double ToDegrees(double rad)
+    inline float Lerp(float val, float dest, float amt)
+    {
+        return (dest - val) * amt + val;
+    }
+
+    template<typename T>
+    inline double ToDegrees(T rad)
     {
         return rad * DegsPerRad;
     }
 
-    inline double ToRadians(double degrees)
+    inline float ToDegrees(float rad)
+    {
+        return rad * (float)DegsPerRad;
+    }
+
+    template<typename T>
+    inline double ToRadians(T degrees)
     {
         return degrees * RadsPerDeg;
     }
 
-    /// Returns the Y value from a projected position.
-    double TrajectoryX(double degrees, double length);
+    inline float ToRadians(float degrees)
+    {
+        return degrees * (float)RadsPerDeg;
+    }
 
-    /// Returns the Y value from a projected position.
-    double TrajectoryY(double degrees, double length);
-
-    /// Returns the largest of two numbers.
+    /// Returns the largest of two numbers. Please use SDG_Min for a more
+    /// efficient macro version.
     template <typename T>
     inline T Min(T a, T b)
     {
-        static_assert(std::is_arithmetic_v<T>, "type T must be arithmetic");
-        return a < b ? a : b;
+        return SDG_Min(a, b);
     }
 
-    /// Returns the largest of two numbers.
+    /// Returns the largest of two numbers. Please use SDG_Max for a more
+    /// efficient macro version.
     template <typename T>
     inline T Max(T a, T b)
     {
-        static_assert(std::is_arithmetic_v<T>, "type T must be arithmetic");
-        return a > b ? a : b;
+        return SDG_Max(a, b);
     }
-
 
     /// Constrains a value between two numbers, inclusively on both ends.
     /// Min may be greater than max, and the number will still be clamped
@@ -65,53 +77,29 @@ namespace SDG::Math
     template <typename T>
     inline T Clamp(T value, T min, T max)
     {
-        static_assert(std::is_arithmetic_v<T>, "type T must be arithmetic");
-
         // Protect case where min > max
-        if (min > max)
-            Swap(min, max);
-
-        return Max(Min(value, max), min);
+        return (min > max) ? SDG_Clamp(value, max, min) :
+            SDG_Clamp(value, min, max);
     }
 
     /// Returns the absolute value of a number
     template <typename T>
-    inline T Abs(T n)
-    {
-        static_assert(std::is_arithmetic_v<T>, "type T must be arithmetic");
-        return n < 0 ? -n : n;
-    }
+    inline T Abs(T n) { return n < 0 ? -n : n; }
 
     /// Returns +1 on positive number or 0, and -1 on negative numbers
     template <typename T>
-    inline T Sign(T n)
-    {
-        static_assert(std::is_arithmetic_v<T>, "type T must be arithmetic");
-        return (T)(n < 0 ? -1 : 1);
-    }
+    inline T Sign(T n) { return (T)(n < 0 ? -1 : 1); }
 
-    /// Adds a list of numbers
-    template <typename T>
-    inline T Add(std::initializer_list<T> num)
-    {
-        static_assert(std::is_arithmetic_v<T>, "type T must be arithmetic");
-        T total = 0;
-        for (auto n: num)
-        {
-            total += n;
-        }
 
-        return total;
-    }
+    inline double Round(double n) { return (double)((int)(n + 0.5 )); }
 
-    template <typename T>
-    T Round(T n)
-    {
-        static_assert(std::is_arithmetic_v<T>,
-                      "must be arithmetic type to perform Math::Round");
+    inline float Round(float n) { return (float)((int)(n + 0.5f)); }
 
-        return (T)((int)( (long double)n + 0.5L ));
-    }
+    /// Round to the 10^n's place
+    double RoundN(double x, int n);
+
+    /// Round to the 10^n's place
+    float RoundN(float x, int n);
 
     double Cos(double rad);
     float Cos(float rad);
@@ -135,6 +123,32 @@ namespace SDG::Math
     float Log(float n);
     double Log10(double n);
     float Log10(float n);
+
+    /// Returns the Y value from a projected position.
+    template<typename T>
+    inline double TrajectoryX(T degrees, T length)
+    {
+        return Cos(degrees * RadsPerDeg) * length;
+    }
+
+    inline float TrajectoryX(float degrees, float length)
+    {
+        return Cos(degrees * RadsPerDeg) * length;
+    }
+
+    /// Returns the Y value from a projected position.
+    template<typename T>
+    inline double TrajectoryY(T degrees, T length)
+    {
+        // Negative value to match downward y coordinate system
+        return -(Sin(degrees * RadsPerDeg) * length);
+    }
+
+    inline float TrajectoryY(float degrees, float length)
+    {
+        // Negative value to match downward y coordinate system
+        return (float)-(Sin(degrees * RadsPerDeg) * length);
+    }
 
     /**
     * Modulo function for floating point types that does not reflect across 0

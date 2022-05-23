@@ -88,19 +88,6 @@ namespace SDG::Math
     }
 
     double
-    TrajectoryX(double degrees, double length)
-    {
-        return std::cos(degrees * RadsPerDeg) * length;
-    }
-
-    double
-    TrajectoryY(double degrees, double length)
-    {
-        // Negative value to match downward y coordinate system
-        return -(std::sin(degrees * RadsPerDeg) * length);
-    }
-
-    double
     ModF(double x, double n)
     {
         if (n == 0) return 0;
@@ -120,6 +107,18 @@ namespace SDG::Math
         float a = x1 - x2;
         float b = y1 - y2;
         return std::sqrt(a * a + b * b);
+    }
+
+    double RoundN(double x, int n)
+    {
+        double p = std::pow(10, n);
+        return Round(x * p) / p;
+    }
+
+    float RoundN(float x, int n)
+    {
+        float p = std::pow(10, n);
+        return Round(x * p) / p;
     }
 
 }

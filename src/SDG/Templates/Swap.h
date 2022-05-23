@@ -1,15 +1,21 @@
 #pragma once
-//#include <type_traits>
 
 namespace SDG
 {
+    /// Swaps a with b with the default copy assignment operator.
+    /// Please specialize this function for special cases.
     template <typename T>
-    void Swap(T &a, T &b)
+    inline void Swap(T &a, T &b)
     {
-        static_assert(std::is_copy_assignable_v<T>,
-            "Please specialize this function for unique cases");
         T temp = a;
         a = b;
         b = temp;
     }
+
+#define SDG_Swap(a, b) do \
+    { unsigned char z__swap_temp__z[sizeof(a) == sizeof(b) ? (signed)sizeof(a) : -1]; \
+      memcpy(z__swap_temp__z, &b, sizeof(a)); \
+      memcpy(&b,&a,       sizeof(a)); \
+      memcpy(&a,z__swap_temp__z,sizeof(a)); \
+    } while(0)
 }

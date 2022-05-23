@@ -313,7 +313,7 @@ TEST_CASE("FRectangle tests", "[FRectangle]")
         SECTION("RightTop")
         {
             Rectangle rect(0, 0, 100, 100);
-            rect.RightTop({10, 10});
+            rect.RightTop({110, 10});
             REQUIRE(rect.RightTop() == Point{110, 10});
             REQUIRE(rect.Top() == 10);
             REQUIRE(rect.Right() == 110);

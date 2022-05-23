@@ -2,7 +2,7 @@
 #include "String.h"
 
 #include <SDG/Debug/Assert.h>
-#include <SDG/Debug/Logging.h>
+#include <SDG/Debug/Log.h>
 #include <SDG/Exceptions/OutOfRangeException.h>
 
 #include <algorithm>

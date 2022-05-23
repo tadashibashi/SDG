@@ -2,7 +2,7 @@
 #include "RenderTarget.h"
 
 #include <SDG/Debug/Assert.h>
-#include <SDG/Debug/Logging.h>
+#include <SDG/Debug/Log.h>
 #include <SDG/Debug/Trace.h>
 
 #include <SDG/FileSys/File.h>

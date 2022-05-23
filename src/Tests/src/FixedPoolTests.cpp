@@ -1,5 +1,5 @@
 #include "SDG_Tests.h"
-#include "SDG/Debug/Logging.h"
+#include "SDG/Debug/Log.h"
 #include <SDG/Templates/FixedPool.h>
 
 TEST_CASE("FixedFixedPool tests", "[FixedPool]")

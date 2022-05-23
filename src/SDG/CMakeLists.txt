@@ -15,7 +15,7 @@ set(Engine_Sources
 
         # Debug
         Debug.hpp
-        Debug/Logging.h
+        Debug/Log.h
         Debug/Logging.cpp
         Debug/Assert.h
         Debug/Assert.cpp
@@ -98,7 +98,7 @@ set(Engine_Sources
         Templates/Private/PoolNullIndex.cpp 
         Templates/FixedPool.h
         String.h String.cpp
-        Time/TimeUnit.h Debug/LoggingImpl.h Templates/Swap.h Math/MathEx.h Math/MathEx.cpp Math/Intersection.h Math/Circle.h "StringView.h" "StringView.cpp")
+        Time/TimeUnit.h Debug/LogImpl.h Templates/Swap.h Math/MathEx.h Math/MathEx.cpp Math/Intersection.h Math/Circle.h "StringView.h" "StringView.cpp")
 
 
 

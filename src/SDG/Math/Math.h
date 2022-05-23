@@ -12,6 +12,10 @@
 #include <initializer_list>
 #include <type_traits>
 
+#define SDG_Min(a, b) ((a) < (b) ? (a) : (b))
+#define SDG_Max(a, b) ((a) > (b) ? (a) : (b))
+#define SDG_Clamp(n, min, max) (SDG_Max(SDG_Min(n, max)), min))
+
 namespace SDG::Math
 {
     /// Linear interpolation. Requires floating point for accuracy, but

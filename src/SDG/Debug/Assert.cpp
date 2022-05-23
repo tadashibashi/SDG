@@ -2,7 +2,7 @@
 #include "Assert.h"
 
 #if SDG_DEBUG
-#include "Logging.h"
+#include "Log.h"
 
 #include <SDG/Exceptions/AssertionException.h>
 #include <SDG/FileSys/Path.h>

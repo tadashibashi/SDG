@@ -1,166 +1,284 @@
+/*!
+ * @file Rectangle.h
+ * @namepspace SDG
+ * @class Rect_
+ * Represents an axis-aligned rectangle. Templatizable to all numeric types.
+ * Two included typedefs are Rectangle (Rect_<int>), and FRectangle
+ * (Rect_<float>)
+ *
+ * Corner names use reversed "LeftTop" instead of normal English "TopLeft",
+ * since it is easier to associate [x, y] coord order with the new name order.
+ */
 #pragma once
 #include "Vector2.h"
 #include <SDG/String.h>
-#include <SDG/Debug/LoggingImpl.h>
-
-#include <type_traits>
+#include <SDG/Debug/LogImpl.h>
 
 namespace SDG
 {
+    /// Represents an axis-aligned rectangle.
+    /// @tparam T Type of the members. Two typedefs that come
+    /// with the file are Rectangle (Rect_<int>), and FRectangle (Rect_<float>)
     template <typename T>
     class Rect_
     {
-        static_assert(std::is_arithmetic_v<T>, "Rect_ requires an arithmetic template type");
     public:
         Rect_() : x(0), y(0), w(0), h(0) { }
         Rect_(T x, T y, T w, T h) : x(x), y(y), w(w), h(h) { }
 
-        [[nodiscard]]
-        T X() const { return x; }
-
-        [[nodiscard]]
-        T Y() const { return y; }
-
-        [[nodiscard]]
-        T Width() const { return w; }
-
-        [[nodiscard]]
-        T Height() const { return h; }
-
-        [[nodiscard]]
-        bool Empty() const noexcept
-        {
-            return (w == 0 && h == 0);
-        }
-
+        /// Gets the horizontal position of the rectangle.
+        [[nodiscard]] T X() const { return x; }
+        /// Sets the horizontal position of the rectangle.
         Rect_ &X(T pX) { x = pX; return *this; }
+
+        /// Gets the vertical position of the rectangle.
+        [[nodiscard]] T Y() const { return y; }
+        /// Sets the vertical position of the rectangle.
         Rect_ &Y(T pY) { y = pY; return *this; }
+
+        /// Gets the width of the rectangle.
+        [[nodiscard]] T Width() const { return w; }
+        /// Sets the width of the rectangle.
         Rect_ &Width(T pW) { w = pW; return *this; }
+
+        /// Gets the height of the rectangle.
+        [[nodiscard]] T Height() const { return h; }
+        /// Sets the height of the rectangle.
         Rect_ &Height(T pH) { h = pH; return *this; }
 
-        Rect_ &Set(T pX, T pY, T width, T height)
-        {
-            x = pX;
-            y = pY;
-            w = width;
-            h = height;
+        /// Sets the members of the rectangle.
+        Rect_ &Set(T pX, T pY, T width, T height);
 
-            return *this;
-        }
+        /// Returns whether the rectangle is empty (zero area)
+        [[nodiscard]] bool Empty() const noexcept;
+        /// Returns the dimensions of the rectangle as a vec2
+        [[nodiscard]] Vec2_<T> Size() const { return {w, h}; }
+        /// Gets the area of the rectangle (width x height)
+        [[nodiscard]] T Area() const noexcept { return w * h; }
 
-        [[nodiscard]]
-        T Area() const noexcept
-        {
-            return w * h;
-        }
+        /// Gets the horizontal position of the rectangle's left side.
+        [[nodiscard]] T Left() const noexcept { return x; }
+        /// Sets the horizontal position of the rectangle's left side.
+        /// It cannot exceed the right side, and will be limited by it.
+        Rect_ &Left(T left) noexcept;
 
-        [[nodiscard]]
-        T Left() const noexcept { return x; }
-        Rect_ &Left(T left)
-        {
-            w = Right() - left;
-            x = left;
-            return *this;
-        }
+        /// Gets the horizontal position of the rectangle's right side.
+        [[nodiscard]] T Right() const noexcept { return x + w; }
+        /// Sets the horizontal position of the rectangle's right side.
+        /// It cannot cross the left side, and will be limited by it.
+        Rect_ &Right(T right) noexcept;
 
-        [[nodiscard]]
-        T Right() const noexcept { return x + w; }
-        Rect_ &Right(T right)
-        {
-            w = right - Left();
-            return *this;
-        }
+        /// Gets the vertical position of the rectangle's top.
+        [[nodiscard]] T Top() const noexcept { return y; }
+        /// Sets the horizontal position of the rectangle's top.
+        /// It cannot cross the bottom side, and will be limited by it.
+        Rect_ &Top(T top) noexcept;
 
-        [[nodiscard]]
-        T Top() const noexcept { return y; }
-        Rect_ &Top(T top)
-        {
-            h = top - Bottom();
-            y = top;
-            return *this;
-        }
+        /// Gets the vertical position of the rectangle's bottom side.
+        [[nodiscard]] T Bottom() const noexcept { return y + h; }
+        /// Sets the horizontal position of the rectangle's top.
+        /// It cannot cross the bottom side, and will be limited by it.
+        Rect_ &Bottom(T bottom) noexcept;
 
-        [[nodiscard]]
-        T Bottom() const noexcept { return y + h; }
-        Rect_ &Bottom(T bottom)
-        {
-            h = Top() - bottom;
-            return *this;
-        }
+        /// Gets the position of the rectangle's top-left corner.
+        [[nodiscard]] Vec2_<T> LeftTop() const noexcept;
+        /// Sets the position of the rectangle's top-left corner.
+        Rect_<T> &LeftTop(Vec2_<T> v) noexcept;
 
-        [[nodiscard]]
-        Vec2_<T> Size() const { return {w, h}; }
+        /// Gets the position of the rectangle's top-right corner.
+        [[nodiscard]] Vec2_<T> RightTop() const noexcept;
+        /// Sets the position of the rectangle's top-right corner.
+        Rect_<T> &RightTop(Vec2_<T> v) noexcept;
 
-        [[nodiscard]]
-        Vec2_<T> TopLeft() const { return {Left(), Top()}; }
-        Rect_<T> &TopLeft(Vec2_<T> v)
-        {
-            Top(v.Y());
-            Left(v.X());
-            return *this;
-        }
+        /// Gets the position of the rectangle's bottom-left corner.
+        [[nodiscard]] Vec2_<T> LeftBottom() const noexcept;
+        /// Sets the position of the rectangle's bottom-left corner.
+        Rect_<T> &LeftBottom(Vec2_<T> v) noexcept;
 
-        [[nodiscard]]
-        Vec2_<T> TopRight() const { return {Right(), Top()}; }
-        Rect_<T> &TopRight(Vec2_<T> v)
-        {
-            Top(v.Y());
-            Right(v.X());
-            return *this;
-        }
+        /// Gets the position of the rectangle's bottom-right corner.
+        [[nodiscard]] Vec2_<T> RightBottom() const noexcept;
+        /// Sets the position of the rectangle's bottom-right corner.
+        Rect_<T> &RightBottom(Vec2_<T> v) noexcept;
 
-        [[nodiscard]]
-        Vec2_<T> BottomLeft() const { return Vec2_<T>(Left(), Bottom()); }
-        Rect_<T> &BottomLeft(Vec2_<T> v)
-        {
-            Bottom(v.Y());
-            Left(v.X());
-            return *this;
-        }
+        /// Creates a string representation of the rectangle.
+        [[nodiscard]] String Str() const noexcept;
 
-        [[nodiscard]]
-        Vec2_<T> BottomRight() const { return Vec2_<T>(Right(), Bottom()); }
-        Rect_<T> &BottomRight(Vec2_<T> v)
-        {
-            Bottom(v.Y());
-            Right(v.X());
-            return *this;
-        }
+        bool operator==(const Rect_ &other) const noexcept;
+        bool operator!=(const Rect_ &other) const noexcept;
 
-        [[nodiscard]]
-        String Str() const noexcept
-        {
-            return "{" + std::to_string(x) + ", " + std::to_string(y) +
-                ", " + std::to_string(w) + ", " + std::to_string(h) + "}";
-        }
-
-        bool operator==(const Rect_ &other)
-        {
-            return (x == other.x && y == other.y &&
-                    w == other.w && h == other.h);
-        }
-
-        bool operator!=(const Rect_ &other)
-        {
-            return !operator==(other);
-        }
-
-        // Convertible by casting to other _Rect types. Please be aware of the effects of automatic type casting.
+        // Convertible by casting to other _Rect types.
+        // Please be aware of the effects of automatic numeric type casting.
         template<typename U>
-        explicit operator Rect_<U>()
-        {
-            static_assert(std::is_convertible_v<U, T>, "Rectangle type mismatch.");
-            return Rect_<U> (
-                    static_cast<U>(x),
-                    static_cast<U>(y),
-                    static_cast<U>(w),
-                    static_cast<U>(h));
-        }
+        explicit operator Rect_<U>() const noexcept;
 
     private:
         // data members
         T x, y, w, h;
     };
+
+    template<typename T>
+    Rect_<T> &
+    Rect_<T>::Set(T pX, T pY, T width, T height)
+    {
+        x = pX;
+        y = pY;
+        w = width;
+        h = height;
+
+        return *this;
+    }
+
+    template<typename T>
+    bool
+    Rect_<T>::Empty() const noexcept
+    {
+        return (w == 0 && h == 0);
+    }
+
+    template<typename T>
+    Rect_<T> &
+    Rect_<T>::Left(T left) noexcept
+    {
+        T right = Right();
+        left = SDG_Min(left, right);
+
+        w = right - left;
+        x = left;
+        return *this;
+    }
+
+    template<typename T>
+    Rect_<T> &
+    Rect_<T>::Right(T right) noexcept
+    {
+        T left = Left();
+        right = SDG_Max(right, left);
+
+        w = right - left;
+        return *this;
+    }
+
+    template<typename T>
+    Rect_<T> &
+    Rect_<T>::Top(T top) noexcept
+    {
+        T bottom = Bottom();
+        top = SDG_Min(top, bottom);
+
+        h = bottom - top;
+        y = top;
+        return *this;
+    }
+
+    template<typename T>
+    Rect_<T> &
+    Rect_<T>::Bottom(T bottom) noexcept
+    {
+        T top = Top();
+        bottom = SDG_Max(bottom, top);
+
+        h = bottom - top;
+        return *this;
+    }
+
+    template<typename T>
+    Vec2_<T>
+    Rect_<T>::LeftTop() const noexcept
+    {
+        return {Left(), Top()};
+    }
+
+    template<typename T>
+    Rect_<T> &
+    Rect_<T>::LeftTop(Vec2_<T> v) noexcept
+    {
+        Top(v.Y());
+        Left(v.X());
+        return *this;
+    }
+
+    template<typename T>
+    Vec2_<T>
+    Rect_<T>::RightTop() const noexcept
+    {
+        return {Right(), Top()};
+    }
+
+    template<typename T>
+    Rect_<T> &
+    Rect_<T>::RightTop(Vec2_<T> v) noexcept
+    {
+        Top(v.Y());
+        Right(v.X());
+        return *this;
+    }
+
+    template<typename T>
+    Vec2_<T>
+    Rect_<T>::LeftBottom() const noexcept
+    {
+        return Vec2_<T>(Left(), Bottom());
+    }
+
+    template<typename T>
+    Rect_<T> &
+    Rect_<T>::LeftBottom(Vec2_<T> v) noexcept
+    {
+        Bottom(v.Y());
+        Left(v.X());
+        return *this;
+    }
+
+    template<typename T>
+    Vec2_<T>
+    Rect_<T>::RightBottom() const noexcept
+    {
+        return Vec2_<T>(Right(), Bottom());
+    }
+
+    template<typename T>
+    Rect_<T> &
+    Rect_<T>::RightBottom(Vec2_<T> v) noexcept
+    {
+        Bottom(v.Y());
+        Right(v.X());
+        return *this;
+    }
+
+    template<typename T>
+    String
+    Rect_<T>::Str() const noexcept
+    {
+        return "{" + std::to_string(x) + ", " + std::to_string(y) +
+               ", " + std::to_string(w) + ", " + std::to_string(h) + "}";
+    }
+
+    template<typename T>
+    bool
+    Rect_<T>::operator==(const Rect_ &other) const noexcept
+    {
+        return (x == other.x && y == other.y &&
+                w == other.w && h == other.h);
+    }
+
+    template<typename T>
+    bool
+    Rect_<T>::operator!=(const Rect_ &other) const noexcept
+    {
+        return !operator==(other);
+    }
+
+    template<typename T>
+    template<typename U>
+    Rect_<T>::operator Rect_<U>() const noexcept
+    {
+        return Rect_<U> (
+                static_cast<U>(x),
+                        static_cast<U>(y),
+                        static_cast<U>(w),
+                        static_cast<U>(h));
+    }
+
 
     template <typename Ostream, typename T>
     Ostream &operator << (Ostream &out, const Rect_<T> &v)

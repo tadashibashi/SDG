@@ -8,7 +8,7 @@
  *
  */
 #pragma once
-#include <SDG/Debug/Logging.h>
+#include <SDG/Debug/Log.h>
 #include <SDG/Ref.h>
 #include <SDG/String.h>
 

@@ -2,7 +2,7 @@
 // Created by Aaron Ishibashi on 5/5/22.
 //
 #include "Mouse.h"
-#include "SDG/Debug/Logging.h"
+#include "SDG/Debug/Log.h"
 #include <SDL_events.h>
 
 static const uint32_t mouseButtons[5] = {

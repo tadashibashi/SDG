@@ -1,5 +1,5 @@
 #pragma once
-#include <SDG/Debug/LoggingImpl.h>
+#include <SDG/Debug/LogImpl.h>
 #include <SDG/String.h>
 
 #include <cstddef>

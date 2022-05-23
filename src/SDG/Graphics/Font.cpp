@@ -2,7 +2,7 @@
 #include "Font.h"
 #include "Private/Conversions.h"
 
-#include <SDG/Debug/Logging.h>
+#include <SDG/Debug/Log.h>
 #include <SDG/FileSys/File.h>
 #include <SDG/Graphics/Window.h>
 

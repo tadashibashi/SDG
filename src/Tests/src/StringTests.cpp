@@ -1,6 +1,6 @@
 #include "SDG_Tests.h"
 #include "SDG/Exceptions/OutOfRangeException.h"
-#include <SDG/Debug/Logging.h>
+#include <SDG/Debug/Log.h>
 #include <SDG/String.h>
 
 #include <sstream>

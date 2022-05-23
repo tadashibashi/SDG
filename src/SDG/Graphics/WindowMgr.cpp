@@ -1,6 +1,6 @@
 #include "WindowMgr.h"
 
-#include <SDG/Debug/Logging.h>
+#include <SDG/Debug/Log.h>
 #include <SDG/Math/Vector2.h>
 
 #include <SDL_ttf.h>

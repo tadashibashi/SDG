@@ -187,7 +187,7 @@ TEST_CASE("FRectangle tests", "[FRectangle]")
         {
             SECTION("Increasing left decreases width")
             {
-                Rectangle rect(0, 0, 100, 100);
+                FRectangle rect(0, 0, 100, 100);
                 rect.Left(10);
                 REQUIRE(rect.Left() == 10);
                 REQUIRE(rect.X() == 10);
@@ -196,25 +196,143 @@ TEST_CASE("FRectangle tests", "[FRectangle]")
 
             SECTION("Smaller left position increases width")
             {
-                Rectangle rect(0, 0, 100, 100);
+                FRectangle rect(0, 0, 100, 100);
                 rect.Left(-10);
                 REQUIRE(rect.Left() == -10);
                 REQUIRE(rect.X() == -10);
                 REQUIRE(rect.Width() == 110);
             }
 
-            // Todo: in this case, set Left to Right, and update Right?
-            // we need to accurately portray the position when the next
-            // object that inquires  might expect the left side to be on the actual left side...
-            SECTION("Rectangle with left further than right")
+            SECTION("Left further than right is limited by right")
             {
                 Rectangle rect(0, 0, 100, 100);
                 rect.Left(200);
-                REQUIRE(rect.Left() == 200);
-                REQUIRE(rect.X() == 200);
-                REQUIRE(rect.Width() == -100);
+                REQUIRE(rect.Left() == 100);
+                REQUIRE(rect.X() == 100);
+                REQUIRE(rect.Width() == 0);
+            }
+        }
+
+        SECTION("Right")
+        {
+            SECTION("Increasing right increases width")
+            {
+                FRectangle rect(0, 0, 100, 100);
+                rect.Right(110);
+                REQUIRE(rect.Right() == 110);
+                REQUIRE(rect.Width() == 110);
             }
 
+            SECTION("Smaller right position decreases width")
+            {
+                FRectangle rect(0, 0, 100, 100);
+                rect.Right(90);
+                REQUIRE(rect.Right() == 90);
+                REQUIRE(rect.Width() == 90);
+            }
+
+            SECTION("Right lower than left is limited by left")
+            {
+                Rectangle rect(0, 0, 100, 100);
+                rect.Right(-10);
+                REQUIRE(rect.Right() == 0);
+                REQUIRE(rect.X() == 0);
+                REQUIRE(rect.Width() == 0);
+            }
+        }
+
+        SECTION("Top")
+        {
+            SECTION("Increasing top decreases height")
+            {
+                FRectangle rect(0, 0, 100, 100);
+                rect.Top(10);
+                REQUIRE(rect.Top() == 10);
+                REQUIRE(rect.Y() == 10);
+                REQUIRE(rect.Height() == 90);
+            }
+
+            SECTION("Smaller top position increases height")
+            {
+                FRectangle rect(0, 0, 100, 100);
+                rect.Top(-10);
+                REQUIRE(rect.Top() == -10);
+                REQUIRE(rect.Y() == -10);
+                REQUIRE(rect.Height() == 110);
+            }
+
+            SECTION("Right lower than left is limited by left")
+            {
+                Rectangle rect(0, 0, 100, 100);
+                rect.Top(110);
+                REQUIRE(rect.Top() == 100);
+                REQUIRE(rect.Y() == 100);
+                REQUIRE(rect.Height() == 0);
+            }
+        }
+
+        SECTION("Bottom")
+        {
+            SECTION("Increasing bottom increases height")
+            {
+                FRectangle rect(0, 0, 100, 100);
+                rect.Bottom(110);
+                REQUIRE(rect.Bottom() == 110);
+                REQUIRE(rect.Height() == 110);
+            }
+
+            SECTION("Smaller bottom position decreases height")
+            {
+                FRectangle rect(0, 0, 100, 100);
+                rect.Bottom(90);
+                REQUIRE(rect.Bottom() == 90);
+                REQUIRE(rect.Height() == 90);
+            }
+
+            SECTION("bottom lower than top is limited by top")
+            {
+                Rectangle rect(0, 0, 100, 100);
+                rect.Bottom(-10);
+                REQUIRE(rect.Bottom() == 0);
+                REQUIRE(rect.Y() == 0);
+                REQUIRE(rect.Height() == 0);
+            }
+        }
+    }
+
+    SECTION("Corners")
+    {
+        SECTION("LeftTop")
+        {
+            Rectangle rect(0, 0, 100, 100);
+            rect.LeftTop({10, 10});
+            REQUIRE(rect.LeftTop() == Point{10, 10});
+            REQUIRE(rect.Top() == 10);
+            REQUIRE(rect.Left() == 10);
+        }
+        SECTION("RightTop")
+        {
+            Rectangle rect(0, 0, 100, 100);
+            rect.RightTop({10, 10});
+            REQUIRE(rect.RightTop() == Point{110, 10});
+            REQUIRE(rect.Top() == 10);
+            REQUIRE(rect.Right() == 110);
+        }
+        SECTION("LeftBottom")
+        {
+            Rectangle rect(0, 0, 100, 100);
+            rect.LeftBottom({-10, 90});
+            REQUIRE(rect.LeftBottom() == Point{-10, 90});
+            REQUIRE(rect.Bottom() == 90);
+            REQUIRE(rect.Left() == -10);
+        }
+        SECTION("RightBottom")
+        {
+            Rectangle rect(0, 0, 100, 100);
+            rect.RightBottom({90, 90});
+            REQUIRE(rect.RightBottom() == Point{90, 90});
+            REQUIRE(rect.Bottom() == 90);
+            REQUIRE(rect.Right() == 90);
         }
     }
 }

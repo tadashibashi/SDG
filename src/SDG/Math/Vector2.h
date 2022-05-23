@@ -1,7 +1,7 @@
 #pragma once
 #include "Math.h"
 
-#include <SDG/Debug/LoggingImpl.h>
+#include <SDG/Debug/LogImpl.h>
 #include <SDG/Exceptions/InvalidArgumentException.h>
 #include <SDG/Exceptions/OutOfRangeException.h>
 #include <SDG/String.h>

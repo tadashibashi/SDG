@@ -194,7 +194,7 @@ namespace SDG
         uint64_t pPow = 1;
         for (const char *c = str_; c < end_; ++c)
         {
-            hash = (hash + ((uint64_t)*c - 'a' + 1) * pPow) % m;
+            hash = (hash + ((int64_t)*c - 'a' + 1) * pPow) % m;
             pPow = (pPow * p) % m;
         }
 

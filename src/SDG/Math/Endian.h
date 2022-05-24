@@ -6,9 +6,18 @@
 //
 #pragma once
 #include <cstdint>
+#include <cstddef>
 
 namespace SDG
 {
+    enum class Endian : uint8_t
+    {
+        Unknown,
+        Little,
+        Big
+    };
+
+    /// Reverses the byte order of the type passed into it
     template <typename T>
     T ReverseEndian(T u)
     {
@@ -20,26 +29,14 @@ namespace SDG
 
         source.u = u;
 
-        for (unsigned long k = 0; k < sizeof(T); k++)
+        for (size_t k = 0; k < sizeof(T); k++)
             dest.u8[k] = source.u8[sizeof(T) - k - 1];
 
         return dest.u;
     }
 
-    bool IsBigEndian()
-    {
-        static int isBigEndian = -1;
-        if (isBigEndian == -1)
-        {
-            union {
-                uint32_t word;
-                uint8_t bytes[4];
-            } test;
-            test.word = 1u;
+    void *ReverseEndian(void *ptr, size_t size);
 
-            isBigEndian = (test.bytes[0] == 0);
-        }
-
-        return isBigEndian;
-    }
+    /// Gets the endianness of the current operating system
+    Endian SystemEndian();
 }

@@ -81,7 +81,7 @@ OpenXML(const SDG::Path &path, XMLDocument *outDoc)
     SDG::File file;
     file.Open(path);
     try {
-        CheckResult(outDoc->Parse(reinterpret_cast<const char *>(file.Data())),
+        CheckResult(outDoc->Parse((const char *)file.Data(), file.Size()),
                     "loading file at " + path.Str());
     }
     catch(const std::exception &e)

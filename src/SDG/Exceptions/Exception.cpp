@@ -2,30 +2,24 @@
 #include <string>
 #include <sstream>
 
-struct SDG::Exception::Impl
-{
-    SDG::String message;
-};
+SDG::Exception::Exception() : message() { }
 
-SDG::Exception::Exception() : impl(new Impl) { }
-
-SDG::Exception::Exception(const String &message) : impl(new Impl)
+SDG::Exception::Exception(const String &message) : message(message)
 {
-    impl->message = message;
 }
 
-SDG::Exception::~Exception() { delete impl; }
+SDG::Exception::~Exception() { }
 
 const char *SDG::Exception::what() const noexcept
 {
-    if (impl->message.Empty())
+    if (message.Empty())
     {
         std::stringstream stream;
         What(stream);
-        impl->message = stream.str();
+        message = stream.str();
     }
 
-    return impl->message.Cstr();
+    return message.Cstr();
 }
 
 

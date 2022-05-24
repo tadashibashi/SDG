@@ -31,7 +31,7 @@ private:
 
     int Initialize() override
     {
-        Windows()->CreateWindow(300, 300, "Window2", 0, &window2);
+        //Windows()->CreateWindow(300, 300, "Window2", 0, &window2);
         camera.Initialize(MainWindow()->Target());
 
         LoadContent();
@@ -41,7 +41,7 @@ private:
 
     void LoadContent()
     {
-        if (font.Load(BasePath("assets/fonts/CourierPrimeCode.sdgc"), 32))
+        /*if (font.Load(BasePath("assets/fonts/CourierPrimeCode.sdgc"), 32))
         {
             text = font.CreateTextSolid(MainWindow(), "Hello", Color::MediumPurple());
             if (text)
@@ -52,10 +52,10 @@ private:
         else
         {
             SDG_Core_Warn("Failed to load font!\n");
-        }
+        }*/
 
-        kirby.Load(MainWindow(), BasePath("assets/textures/kirby.sdgc"));
-        kirby2.Load(window2, BasePath("assets/textures/field.sdgc"));
+        kirby.Load(MainWindow(), BasePath("assets/textures/DawSession.sdgc"));
+        //kirby2.Load(window2, BasePath("assets/textures/DawSession.sdgc"));
 
         shader.Compile(BasePath("assets/shaders/v1.sdgc"), BasePath("assets/shaders/f1.sdgc"));
 
@@ -66,11 +66,11 @@ private:
         if (Input::KeyPressed(Key::Escape))
             Exit();
 
-        if (window2->IsOpen())
+       /* if (window2->IsOpen())
         {
             Vector2 mouseWorld = camera.ScreenToWorld((Vector2)Input::MousePosition());
             window2->Title(mouseWorld.Str().Cstr());
-        }
+        }*/
 
 
         if (Input::KeyPressed(Key::Space))
@@ -81,15 +81,21 @@ private:
         if (Input::KeyPressed(Key::S) && Input::KeyPress(Key::V))
         {
             // Save the game!!
-            IO::WriteEncryptedFile(PrefPath("game1.sdgc").Str().Cstr(), {'m', 'y', ' ', 's', 'a', 'v', 'e'});
+            File file;
+            file.Write("My saved game!");
+            file.Write(Time()->As(TimeUnit::Seconds));
+            file.Save(PrefPath("game1.sdgc"));
         }
 
         if (Input::KeyPressed(Key::L) && Input::KeyPress(Key::V))
         {
             // Loaded the game!!
             File sav(PrefPath("game1.sdgc"));
-
-            SDG_Core_Log("Loaded save: \"{}\"", sav.Data());
+            String str;
+            sav.Read(str, 14);
+            double i;
+            sav.Read(i);
+            SDG_Core_Log("Loaded save: \"{}\": {}", str, i);
         }
 
         if (Input::KeyPressed(Key::F))
@@ -165,7 +171,7 @@ private:
 
             spriteBatch.Begin(window->Target(), camera.Matrix());
             Point imgSize = kirby.Size();
-            spriteBatch.DrawTexture(text, {109.f, 109.f}, {1.f, 1.f}, {0, 0}, 0, 0);
+            //spriteBatch.DrawTexture(text, {109.f, 109.f}, {1.f, 1.f}, {0, 0}, 0, 0);
             spriteBatch.DrawTexture(&kirby, {0, 0, (int)imgSize.X(), (int)imgSize.Y()},
                                     {10.f, 10.f, (float) imgSize.X() / 100.f, (float) imgSize.Y() / 100.f},
                                     100, Vector2(0, 0), Flip::Both, Color::White(), 1.f);
@@ -178,16 +184,16 @@ private:
             spriteBatch.End();
         }
 
-        if (window2->IsOpen())
-        {
-            window2->Clear(Color::OrangeRed());
-            spriteBatch.Begin(window2->Target(), camera.Matrix());
-            Point imgSize = kirby2.Size();
-            spriteBatch.DrawTexture(&kirby2, {0, 0, imgSize.X(), imgSize.Y()},
-                                    {100, 100, (float)  imgSize.X()/ 20.f, (float) imgSize.Y() / 20.f},
-                                    0, Vector2(0, 0), Flip::None, Color::White(), 1.f);
-            spriteBatch.End();
-        }
+        //if (window2->IsOpen())
+        //{
+        //    window2->Clear(Color::OrangeRed());
+        //    spriteBatch.Begin(window2->Target(), camera.Matrix());
+        //    Point imgSize = kirby2.Size();
+        //    spriteBatch.DrawTexture(&kirby2, {0, 0, imgSize.X(), imgSize.Y()},
+        //                            {100, 100, (float)  imgSize.X()/ 20.f, (float) imgSize.Y() / 20.f},
+        //                            0, Vector2(0, 0), Flip::None, Color::White(), 1.f);
+        //    spriteBatch.End();
+        //}
 
 
     }

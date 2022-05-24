@@ -7,6 +7,7 @@
  */
 #pragma once
 #include "Path.h"
+#include <SDG/Position.h>
 
 namespace SDG
 {
@@ -35,9 +36,13 @@ public:
 
     // ============= Getters =================================================
 
-    /// Gets the pointer to the file data. Always a valid c-string.
+    /// Gets the pointer to the file data.
     [[nodiscard]]
-    const char *Data() const;
+    const uint8_t *Data() const;
+
+    /// Gets the data as a c-string text data.
+    [[nodiscard]]
+    const char *Cstr() const;
 
     /// Gets the result of the last call to Open.
     [[nodiscard]]
@@ -55,6 +60,33 @@ public:
     /// Checks if data has been loaded into memory or not.
     [[nodiscard]]
     bool IsLoaded() const;
+
+    bool Save(const Path &path) const;
+
+    template<typename T>
+    size_t Write(const T &obj)
+    {
+        return Write(&obj, sizeof(T));
+    }
+
+    size_t Write(const void *ptr, size_t size);
+    size_t Write(const String &str);
+    size_t Write(const char *str);
+
+    template<typename T>
+    size_t Read(T &obj)
+    {
+        return Read(&obj, sizeof(T));
+    }
+
+    size_t Read(void *ptr, size_t size);
+    size_t Read(String &str, size_t length);
+    size_t Read(char *str, size_t length);
+
+    File &Seek(int64_t bytes, Position origin = Position::Start);
+    size_t Tell() const;
+
+    File &Reserve(size_t bytes);
 
     const Path &Filepath() const;
 

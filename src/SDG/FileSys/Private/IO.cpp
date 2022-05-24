@@ -5,39 +5,34 @@
 //  Low-level functions to read and write files.
 //
 #include "IO.h"
-#include <cassert>
 #include "SDL_rwops.h"
-#include <vector>
 
 static const SDG::String encryptionKey = "john316";
 static SDG::String errorStr = "No errors.";
 
 static bool
-ReadFileStrImpl(const char *path, char **data, size_t *size, bool appendNull);
-
-static bool
-ReadEncryptedFileStrImpl(const char *path, char **data, size_t *size, bool appendNull);
+ReadFileStrImpl(const char *path, uint8_t **data, size_t *size, bool appendNull);
 
 static SDL_RWops *
 _OpenRW(const char *path, const char *mode, int64_t *oFileSize);
 
 bool
-SDG::IO::ReadFile(const char *path, char **data, size_t *size)
+SDG::IO::ReadFile(const char *path, uint8_t **data, size_t *size)
 {
     return ReadFileStrImpl(path, data, size, false);
 }
 
 bool
-SDG::IO::ReadFileStr(const char *path, char **data, size_t *size)
+SDG::IO::ReadFileStr(const char *path, uint8_t **data, size_t *size)
 {
     return ReadFileStrImpl(path, data, size, true);
 }
 
 bool
-ReadFileStrImpl(const char *path, char **data, size_t *size, bool appendNull)
+ReadFileStrImpl(const char *path, uint8_t **data, size_t *size, bool appendNull)
 {
     SDL_RWops *io;
-    char *mem;
+    uint8_t *mem;
     int64_t fileSize;
 
     // open the file
@@ -49,7 +44,7 @@ ReadFileStrImpl(const char *path, char **data, size_t *size, bool appendNull)
     }
 
     // load file to memory
-    mem = (char *)malloc(fileSize + (int)appendNull); // +1 for null terminator
+    mem = (uint8_t *)malloc(fileSize + (int)appendNull); // +1 for null terminator
     if (!mem)
     {
         errorStr = SDG::String("error while allocating memory buffer: out of memory");
@@ -110,7 +105,7 @@ _OpenRW(const char *path, const char *mode, int64_t *oFileSize)
 
 // private helper to load / decrypt a file
 bool
-_DecryptFile(const char *path, bool nullTerminated, char **mem, size_t *oFileSize)
+_DecryptFile(const char *path, bool nullTerminated, uint8_t **mem, size_t *oFileSize)
 {
     int64_t fileSize;
     SDL_RWops *io = _OpenRW(path, "rb", &fileSize);
@@ -118,12 +113,13 @@ _DecryptFile(const char *path, bool nullTerminated, char **mem, size_t *oFileSiz
         return false;
 
     // Allocate buffer, and fill it with encrypted data
-    auto *fileData = (unsigned char *)malloc(fileSize + nullTerminated); // +1 for null terminator to make it a valid c-str
+    uint8_t *fileData;
+    fileData = (uint8_t *)malloc(fileSize + nullTerminated); // +1 for null terminator to make it a valid c-str
 
     int position = 0;
-    for (unsigned char *ptr = fileData, *end = fileData + fileSize; ptr != end; ++ptr)
+    for (uint8_t *ptr = fileData, *end = fileData + fileSize; ptr != end; ++ptr)
     {
-        unsigned char c;
+        uint8_t c;
         size_t objsRead = SDL_RWread(io, &c, 1, 1);
         if (objsRead == 0)
         {
@@ -152,26 +148,26 @@ _DecryptFile(const char *path, bool nullTerminated, char **mem, size_t *oFileSiz
     if (oFileSize)
         *oFileSize = (size_t)fileSize;
 
-    *mem = (char *)fileData;
+    *mem = (uint8_t *)fileData;
     return true;
 }
 
 
 bool
-SDG::IO::ReadEncryptedFile(const char *path, char **mem, size_t *oFileSize)
+SDG::IO::ReadEncryptedFile(const char *path, uint8_t **mem, size_t *oFileSize)
 {
     return _DecryptFile(path, false, mem, oFileSize);
 }
 
 
 bool
-SDG::IO::ReadEncryptedFileStr(const char *path, char **mem, size_t *oFileSize)
+SDG::IO::ReadEncryptedFileStr(const char *path, uint8_t **mem, size_t *oFileSize)
 {
     return _DecryptFile(path, true, mem, oFileSize);
 }
 
 bool
-SDG::IO::WriteEncryptedFile(const char *path, const std::vector<unsigned char> &bytes)
+SDG::IO::WriteEncryptedFile(const char *path, const uint8_t *mem, size_t size)
 {
     // TODO: Implement saving backup of any preexisting file if there is an error during writing.
     SDL_RWops *io = _OpenRW(path, "w+b", nullptr);
@@ -182,15 +178,17 @@ SDG::IO::WriteEncryptedFile(const char *path, const std::vector<unsigned char> &
 
     // Encrypt file
     int bytesRead = 0;
-    for(unsigned char c : bytes)
+    for (const uint8_t *p = mem, *end = mem + size; p != end; ++p)
     {
-        unsigned char add = encryptionKey[bytesRead % encryptionKey.Length()];
+        uint8_t c = *p;
+        uint8_t add = (uint8_t)encryptionKey[bytesRead % encryptionKey.Length()];
         c ^= ~add;
         c = (unsigned char)(c + add - bytesRead);
         size_t objsWritten = SDL_RWwrite(io, &c, 1, 1);
 
-        if (objsWritten == 0)
+        if (objsWritten != 1)
         {
+            SDL_RWclose(io);
             return false;
         }
 
@@ -198,6 +196,26 @@ SDG::IO::WriteEncryptedFile(const char *path, const std::vector<unsigned char> &
     }
     SDL_RWclose(io);
 
+    return true;
+}
+
+bool
+SDG::IO::WriteFile(const char *path, const uint8_t *mem, size_t size)
+{
+    SDL_RWops *io = _OpenRW(path, "w+b", nullptr);
+    if (!io)
+    {
+        return false;
+    }
+
+    size_t writtenObjs = SDL_RWwrite(io, mem, size, 1);
+    if (writtenObjs != 1)
+    {
+        SDL_RWclose(io);
+        return false;
+    }
+    
+    SDL_RWclose(io);
     return true;
 }
 

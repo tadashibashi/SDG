@@ -4,19 +4,18 @@
 //
 #include "File.h"
 #include <SDG/FileSys/Private/IO.h>
-
+#include <SDG/Buffer.h>
 namespace SDG
 {
     /// Private implementation class data
     class File::Impl
     {
     public:
-        Impl(): mem(), size(), path(), error(), isOpen(false) {}
+        Impl(): buf(), path(), error(), isOpen(false) {}
     
-        char *mem;
+        Buffer buf;
         Path path;
         String error;
-        size_t size;
         bool isOpen;
     }; /* class File::Impl */
 
@@ -39,10 +38,16 @@ namespace SDG
         delete impl;
     }
 
-    const char *
+    const uint8_t *
     File::Data() const
     {
-        return impl->mem;
+        return impl->buf.Data();
+    }
+
+    const char *
+    File::Cstr() const
+    {
+        return (const char *)impl->buf.Data();
     }
 
     bool
@@ -54,7 +59,7 @@ namespace SDG
     int64_t
     File::Size() const
     {
-        return impl->size;
+        return impl->buf.Size();
     }
 
     const char *
@@ -76,7 +81,7 @@ namespace SDG
     bool
     File::OpenImpl(const Path &filepath)
     {
-        char *mem;
+        uint8_t *mem;
         size_t size;
 
         if (!IO::ReadFileStr(filepath.Str().Cstr(), &mem, &size))
@@ -86,8 +91,7 @@ namespace SDG
         }
 
         // success -> commit changes
-        impl->mem = mem;
-        impl->size = size;
+        impl->buf = Buffer(mem, size);
         impl->error = "No errors.";
         impl->isOpen = true;
         impl->path = filepath;
@@ -96,12 +100,15 @@ namespace SDG
 
     bool File::OpenEncryptedImpl(const Path &path)
     {
-        bool result = IO::ReadEncryptedFileStr(path.Str().Cstr(), &impl->mem, &impl->size);
+        uint8_t *mem;
+        size_t size;
+        bool result = IO::ReadEncryptedFileStr(path.Str().Cstr(), &mem, &size);
         if (result)
         {
             impl->isOpen = true;
             impl->error = "No errors.";
             impl->path = path;
+            impl->buf = Buffer(mem, size);
         }
         else
         {
@@ -114,21 +121,81 @@ namespace SDG
     void
     File::Close()
     {
-        if (impl->mem)
-        {
-            free(impl->mem);
-            impl->mem = nullptr;
-        }
-
+        impl->buf.Clear();
         impl->isOpen = false;
-        impl->size = 0;
         impl->path = Path();
     }
 
     bool
     File::IsLoaded() const
     {
-        return impl->mem;
+        return impl->isOpen;
+    }
+
+    bool
+    File::Save(const Path &path) const
+    {
+        if (path.Extension() == "sdgc")
+            return IO::WriteEncryptedFile(path.Str().Cstr(),
+                impl->buf.Data(), impl->buf.Size());
+        else
+            return IO::WriteFile(path.Str().Cstr(),
+                impl->buf.Data(), impl->buf.Size());
+    }
+
+    size_t
+    File::Write(const void *ptr, size_t size)
+    {
+        return impl->buf.Write(ptr, size);
+    }
+
+    size_t File::Write(const String &str)
+    {
+        return impl->buf.Write(str);
+    }
+
+    size_t
+    File::Write(const char *str)
+    {
+        return impl->buf.Write(str);
+    }
+
+    size_t
+    File::Read(void *ptr, size_t size)
+    {
+        return impl->buf.Read(ptr, size);
+    }
+
+    size_t
+    File::Read(String &str, size_t length)
+    {
+        return impl->buf.Read(str, length);
+    }
+
+    size_t
+    File::Read(char *str, size_t length)
+    {
+        return impl->buf.Read(str, length);
+    }
+
+    File &
+    File::Seek(int64_t bytes, Position origin)
+    {
+        impl->buf.Seek(bytes, origin);
+        return *this;
+    }
+
+    size_t
+    File::Tell() const
+    {
+        return impl->buf.Tell();
+    }
+
+    File &
+    File::Reserve(size_t bytes)
+    {
+        impl->buf.Reserve(bytes);
+        return *this;
     }
 
     const Path &

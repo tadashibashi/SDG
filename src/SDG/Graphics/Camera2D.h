@@ -46,6 +46,7 @@ namespace SDG
         /// Gets the absolute scale or zoom of the view
         Vector2 Scale() const;
 
+        /// Moves the camera relative to its current position
         Camera2D &Translate(Vector2 pos);
         /// Sets the absolute world position of the camera
         Camera2D &Position(Vector2 pos);

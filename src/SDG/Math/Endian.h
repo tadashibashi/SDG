@@ -1,9 +1,7 @@
-//
-//  Endian.h
-//  SDG_Engine
-//
-//  Created by Aaron Ishibashi on 4/26/22.
-//
+/*!
+ * @file Endian.h
+ * Contains utility functions pertaining to endianness
+ */
 #pragma once
 #include <cstdint>
 #include <cstddef>
@@ -18,24 +16,16 @@ namespace SDG
     };
 
     /// Reverses the byte order of the type passed into it
+    /// Please only use primitive types, since various compilers have
+    /// implementation-specific ways of padding bytes in classes/structs.
     template <typename T>
-    T ReverseEndian(T u)
+    void ReverseEndian(T u)
     {
-        union
-        {
-            T u;
-            uint8_t u8[sizeof(T)];
-        } source, dest;
-
-        source.u = u;
-
-        for (size_t k = 0; k < sizeof(T); k++)
-            dest.u8[k] = source.u8[sizeof(T) - k - 1];
-
-        return dest.u;
+        ReverseEndian((uint8_t *)&u, sizeof(T));
     }
 
-    void *ReverseEndian(void *ptr, size_t size);
+    /// Reverses the byte order of a buffer of bytes
+    void ReverseEndian(uint8_t *ptr, size_t size);
 
     /// Gets the endianness of the current operating system
     Endian SystemEndian();

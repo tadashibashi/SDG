@@ -56,28 +56,28 @@ namespace SDG
             pos = Vector2(round(pos.X()), round(pos.Y()));
             pos /= impl->scale;
 
-            auto target = GPU_GetActiveTarget();
+            //auto target = GPU_GetActiveTarget();
+//            Vector3 translation(
+//                    -pos.X() + (target ? target->w / 2.f : 0),
+//                    -pos.Y() + (target ? target->h / 2.f : 0),
+//                    0);
             Vector3 translation(
-                    -pos.X() + (target ? target->w / 2.f : 0),
-                    -pos.Y() + (target ? target->h / 2.f : 0),
+                    -pos.X(),
+                    -pos.Y(),
                     0);
             
-            
-            
-
-            mat
+            mat  // Todo: optimize later by combining like transformations
                 .Translate(translation)
-                .Translate({ pos, 0 })
-                .Scale({ impl->scale.X(), impl->scale.Y(), 1.f })
-                .Translate({ -pos, 0 })
-                .Translate({ impl->anchor.X(), impl->anchor.Y(), 0 })
+                .Translate({ pos + impl->anchor, 0 })
+                .Scale({ impl->scale, 1.f })
+                .Translate({ -pos - impl->anchor, 0 })
+                .Translate({ impl->anchor, 0 })
                 .Rotate(impl->angle, { 0, 0, 1.f })
-                .Translate({ -impl->anchor.X(), -impl->anchor.Y(), 0 });
+                .Translate({ -impl->anchor, 0 });
 
             // Commit results
             impl->mat = mat;
             impl->inverse = mat.Invert();
-
             impl->wasChanged = false;
         }
     }

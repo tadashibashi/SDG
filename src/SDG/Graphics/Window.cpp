@@ -131,7 +131,7 @@ namespace SDG
                 case SDL_WINDOWEVENT_EXPOSED:
                     // SDG_Core_Log("Window was exposed");
                     On.Expose.Invoke();
-                    impl->target.SwapBuffers(); // TODO: test this behavior...
+                    impl->target.SwapBuffers();
                     break;
                 case SDL_WINDOWEVENT_MOVED:
                     // SDG_Core_Log("Window moved: {}, {}",

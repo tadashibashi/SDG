@@ -5,11 +5,8 @@
 
 TEST_CASE("Camera2D tests", "[Camera2D]")
 {
-    Window::StandaloneMode(true);
-    Window window;
-    window.Initialize(640, 480, "Camera Tests");
     Camera2D camera;
-    camera.Initialize(window.Target());
+    camera.ViewportSize(640, 480);
     
     SECTION("Window to World") // screen space view port not implemented...
     {
@@ -17,7 +14,8 @@ TEST_CASE("Camera2D tests", "[Camera2D]")
         camera.Position({ 100, 200 });
         REQUIRE(camera.ScreenToWorld({ 0, 0 }) == Vector2(100, 200));
         camera.Zoom({ 2.f, 2.f });
-        REQUIRE(camera.ScreenToWorld({ 0, 0 }) == Vector2(50, 100));
+        camera.Position({0, 0});
+        REQUIRE(camera.ScreenToWorld({ 100, 200 }) == Vector2(50, 100));
     }
 
     SECTION("World to Window")

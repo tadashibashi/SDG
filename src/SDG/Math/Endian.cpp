@@ -5,7 +5,7 @@
 
 namespace SDG
 {
-    void *ReverseEndian(void *ptr, size_t size)
+    void ReverseEndian(uint8_t *ptr, size_t size)
     {
         uint8_t *temp = (uint8_t *)malloc(size);
         if (!temp)
@@ -28,7 +28,6 @@ namespace SDG
         }
 
         free(temp);
-        return ptr;
     }
 
     Endian SystemEndian()

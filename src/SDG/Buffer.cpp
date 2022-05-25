@@ -32,6 +32,8 @@ namespace SDG
         return dest;
     }
 
+    const size_t Buffer::DefaultInitCap = 32;
+
     Buffer::Buffer(size_t initCap, Endian endian) :
         buf_(Malloc<uint8_t>(initCap)), head_(buf_), end_(buf_), 
         endian_(endian == Endian::Unknown ? SystemEndian() : endian), 
@@ -72,38 +74,49 @@ namespace SDG
         Free(buf_);
     }
 
-    /// Reads memory into the buffer. Endianness of the data read is
-    /// affected by the target data endianness.
-    /// @param size size of the memory to read. Should be equal or smaller
-    /// than the size of the buffer you're passing.
     size_t
-    Buffer::Read(void *buffer, size_t size)
+    Buffer::Read(void *buffer, size_t size) const
     {
-        CheckBounds(head_ + size, false);
-        MemcpyEndian(buffer, head_, size, endian_);
-        head_ += size;
-        return size;
+        return ReadImpl(buffer, size, true, true);
     }
 
     size_t
-    Buffer::Read(String &str, size_t length)
+    Buffer::Read(String &str, size_t length) const
     {
-        CheckBounds(head_ + length, false);
+        CheckBoundsRead(head_ + length);
         str = String((const char *)head_, length);
         head_ += length;
         return length;
     }
 
     size_t
-    Buffer::Read(char *str, size_t length)
+    Buffer::Read(char *str, size_t length) const
     {
-        CheckBounds(head_ + length, false);
-        memcpy(str, head_, length);
-        head_ += length;
+        return ReadImpl(str, length, false, true);
+    }
+
+    size_t
+    Buffer::Peek(void *buffer, size_t size) const
+    {
+        return ReadImpl(buffer, size, true, false);
+    }
+
+    size_t
+    Buffer::Peek(String &str, size_t length) const
+    {
+        CheckBoundsRead(head_ + length);
+        str = String((const char *)head_, length);
         return length;
     }
 
-    size_t Buffer::Write(const String &str)
+    size_t
+    Buffer::Peek(char *str, size_t length) const
+    {
+        return ReadImpl(str, length, false, false);
+    }
+
+    size_t
+    Buffer::Write(const String &str)
     {
         return Write(str.Cstr(), str.Length());
     }
@@ -118,43 +131,31 @@ namespace SDG
     size_t
     Buffer::Write(const void *buffer, size_t size)
     {
-        CheckBounds((uint8_t *)head_ + size, true);
-        MemcpyEndian(head_, buffer, size, endian_);
-        head_ += size;
-        if (head_ > end_)
-            end_ = head_;
-        return size;
+        return WriteImpl(buffer, size, true);
     }
 
     size_t
     Buffer::Write(const char *buffer, size_t size)
     {
-        CheckBounds((uint8_t *)head_ + size, true);
-        memcpy(head_, buffer, size);
-        head_ += size;
-        if (head_ > end_)
-            end_ = head_;
-        return size;
+        return WriteImpl(buffer, size, false);
     }
 
-    Buffer &
+    void
     Buffer::Reserve(size_t size)
     {
         Expand(size);
-        return *this;
     }
 
-    Buffer &
-    Buffer::Seek(int64_t bytes, Position origin)
+    void
+    Buffer::Seek(int64_t bytes, Position origin) const
     {
         uint8_t *position = GetPosition(bytes, origin);
-        CheckBounds(position, false);
+        CheckBoundsRead(position);
         head_ = position;
-        return *this;
     }
 
     uint8_t *
-    Buffer::GetPosition(int64_t bytes, Position origin)
+    Buffer::GetPosition(int64_t bytes, Position origin) const
     {
         switch (origin)
         {
@@ -172,11 +173,13 @@ namespace SDG
     void
     Buffer::Expand(size_t newCap)
     {
-        size_t position = Tell();
-        size_t size = Size();
-
         if (newCap > Capacity())
         {
+            // These vals need to be cached before mutating Buffer
+            size_t position = Tell();
+            size_t size = Size();
+
+            // Commit changes
             buf_ = Realloc(buf_, newCap);
             head_ = buf_ + position;
             end_ = buf_ + size;
@@ -185,22 +188,54 @@ namespace SDG
     }
 
     void
-    Buffer::CheckBounds(uint8_t *ptr, bool writing)
+    Buffer::CheckBoundsWrite(uint8_t *ptr)
     {
-        if (writing)
+        if (ptr < buf_)
+            throw OutOfRangeException((uintptr_t)ptr - (uintptr_t)buf_ - 1,
+                "Attempted to write data outside of Buffer bounds");
+        else if (ptr > cap_)
+            Expand((ptr - buf_) * 2 + 1);
+    }
+
+    void
+    Buffer::CheckBoundsRead(uint8_t *ptr) const
+    {
+        if (ptr < buf_ || ptr > end_)
         {
-            if (ptr < buf_)
-                throw OutOfRangeException((uintptr_t)ptr - (uintptr_t)buf_ - 1, "Attempted to write data outside of Buffer bounds");
-            else if (ptr > cap_)
-                Expand((ptr-buf_) * 2 + 1);    
+            throw OutOfRangeException((uintptr_t)ptr - (uintptr_t)buf_ - 1, "Attempted to read/seek outside of Buffer's bounds. "
+                "Max position: " + std::to_string(end_-buf_));
         }
+    }
+
+    size_t
+    Buffer::ReadImpl(void *buf, size_t size, bool useEndian, bool moveHead) const
+    {
+        CheckBoundsRead(head_ + size);
+        if (useEndian)
+            MemcpyEndian(buf, head_, size, endian_);
         else
-        {
-            if (ptr < buf_ || ptr > end_)
-            {
-                throw OutOfRangeException((uintptr_t)ptr - (uintptr_t)buf_ - 1, "Attempted to read/seek outside of Buffer's bounds. "
-                    "Max position: " + std::to_string(end_-buf_));
-            }
-        }
+            memcpy(buf, head_, size);
+
+        if (moveHead)
+            head_ += size;
+
+        return size;
+    }
+
+    size_t
+    Buffer::WriteImpl(const void *buf, size_t size, bool useEndian)
+    {
+        CheckBoundsWrite(head_ + size); // check in-bounds and cap expansion
+        if (useEndian)
+            MemcpyEndian(head_, buf, size, endian_);
+        else
+            memcpy(head_, buf, size);
+
+        head_ += size;    // move the read/write head
+
+        if (head_ > end_) // move end ptr when writing beyond it
+            end_ = head_;
+
+        return size;
     }
 }

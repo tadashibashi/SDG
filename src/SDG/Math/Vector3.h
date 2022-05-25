@@ -182,6 +182,14 @@ namespace SDG
             return *this;
         }
 
+        Vec3_ &operator -()
+        {
+            x = -x;
+            y = -y;
+            z = -z;
+            return *this;
+        }
+
         template <typename U>
         [[nodiscard]] explicit operator Vec3_<U>()
         {

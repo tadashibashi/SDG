@@ -32,7 +32,6 @@ private:
     int Initialize() override
     {
         //Windows()->CreateWindow(300, 300, "Window2", 0, &window2);
-        camera.Initialize(MainWindow()->Target());
 
         LoadContent();
         return 0;
@@ -124,24 +123,26 @@ private:
         if (MainWindow()->IsOpen())
         {
             if (Input::KeyPress(Key::Right))
-                camera.Translate({10, 0}), pos.X(pos.X() - 100);
+                camera.Translate(Vector2{ 10, 0 }), 
+                pos.X(pos.X() - 100);
             if (Input::KeyPress(Key::Left))
-                camera.Translate({-10, 0}), pos.X(pos.X() + 100);
+                camera.Translate(Vector2{ -10, 0 }), 
+                pos.X(pos.X() + 100);
             if (Input::KeyPress(Key::Up))
                 camera.Translate({0, -10});
             if (Input::KeyPress(Key::Down))
                 camera.Translate({0, 10});
 
             if (Input::KeyPress(Key::C))
-                camera.Rotate(10, camera.ScreenToWorld(camera.ScreenSize()/2));
+                camera.Rotate(10).PivotPoint(camera.ScreenToWorld((Vector2)MainWindow()->ClientSize() / 2.f));
             // Must be called after every alteration of the matrix has occured to update it to the gpu.
 
             if ((Input::KeyPress(Key::LeftShift) || Input::KeyPress(Key::RightShift)) &&
-                Input::KeyPressed(Key::Equals))
-                camera.Zoom(camera.Zoom() + Vector2(.1, .1));
+                Input::KeyPress(Key::Equals))
+                camera.Zoom({1.1f, 1.1f});
             if ((Input::KeyPress(Key::LeftShift) || Input::KeyPress(Key::RightShift)) &&
-                Input::KeyPressed(Key::Minus))
-                camera.Zoom(camera.Zoom() - Vector2(.1, .1));
+                Input::KeyPress(Key::Minus))
+                camera.Zoom({0.9f, 0.9f});
         }
         
         if (Input::MouseWheelDidMove())

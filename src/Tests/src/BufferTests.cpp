@@ -106,7 +106,7 @@ TEST_CASE("Buffer tests", "[Buffer]")
             buf.Write(20.512f);
             buf.Seek(0);
             int i; float f;
-            REQUIRE(buf.Read(i) == sizeof(i));
+            buf.Read(i);
             REQUIRE(i == 10);
             buf.Read(f);
             REQUIRE(f == 20.512f);

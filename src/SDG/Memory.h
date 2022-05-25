@@ -6,7 +6,7 @@ namespace SDG
 {
     /// Safe Malloc function. Throws a RuntimeException when allocation fails.
     template<typename T = void>
-    T *Malloc(size_t n)
+    inline T *Malloc(size_t n)
     {
         T *temp = (T *)malloc(sizeof(T) > 0 ? sizeof(T) * n : n);
         if (!temp)
@@ -17,7 +17,7 @@ namespace SDG
 
     /// Safe Realloc function. Throws a RuntimeException when reallocation fails.
     template<typename T = void>
-    T *Realloc(T *block, size_t size)
+    inline T *Realloc(T *block, size_t size)
     {
         T *temp = (T *)realloc(block, size);
         if (!temp)
@@ -27,7 +27,7 @@ namespace SDG
     }
 
     /// Frees a block of data allocated with SDG::Malloc/SDG::Realloc
-    void Free(void *block)
+    inline void Free(void *block)
     {
         free(block);
     }

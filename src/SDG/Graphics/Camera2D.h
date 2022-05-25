@@ -2,7 +2,7 @@
  * @file Camera2D.h
  * @namespace SDG
  * @class Camera2D
- * Controls a camera matrix for use in transforming a view.
+ * Controls a camera matrix to control a viewport
  * Provides functions for converting coordinates between virtual and screen spaces.
  */
 #pragma once
@@ -12,41 +12,63 @@
 
 namespace SDG
 {
-    class RenderTarget;
-    class Matrix4x4;
-
+    /// Class that
     class Camera2D
     {
         struct Impl;
     public:
         Camera2D();
         ~Camera2D();
-        void Initialize(Ref<RenderTarget> target);
 
-        Vector2 WorldToScreen(Vector2 point) const;
-        Vector2 ScreenToWorld(Vector2 point) const;
+        /// Converts a world position to a screen position
+        Vector2 WorldToScreen(Vector2 worldPos) const;
+        /// Converts a screen position to a world position
+        Vector2 ScreenToWorld(Vector2 screenPos) const;
 
+        /// Sets the pivot point about which the camera rotates
+        Camera2D &PivotPoint(Vector2 point) noexcept;
+        /// Gets the pivot point about which the camera rotates
+        Vector2 PivotPoint() const noexcept;
 
-        Camera2D &Rotate(float degrees, Vector2 anchor = Vector2());
-        Camera2D &Rotation(float degrees);
-        float Rotation() const;
-
+        /// Sets the angle of the camera, relatively
+        /// @param degrees - number to add to the current angle
+        Camera2D &Rotate(float degrees) noexcept;
+        /// Sets the absolute rotation of the view, in degrees
+        /// @param degrees - auto-wraps between 0 - 360
+        Camera2D &Angle(float degrees) noexcept;
+        /// Gets the absolute rotation of the view, in degrees (0-360)
+        float Angle() const noexcept;
+        
+        /// Multiplies the current scale
         Camera2D &Zoom(Vector2 zoom);
-        Vector2 Zoom() const;
+        /// Sets the absolute scale or zoom of the view
+        Camera2D &Scale(Vector2 scale);
+        /// Gets the absolute scale or zoom of the view
+        Vector2 Scale() const;
 
-        Camera2D &Translate(Vector2 position);
-        Vector2 Position() const;
+        Camera2D &Translate(Vector2 pos);
+        /// Sets the absolute world position of the camera
         Camera2D &Position(Vector2 pos);
-        Camera2D &MakeCurrent();
-        CRef<Matrix4x4> Matrix() const;
+        /// Gets the absolute world position of the camera
+        Vector2 Position() const;
 
-        Vector2 ScreenSize() const;
+        /// Begins camera transformation on the current target
+        void Begin();
+        /// Ends effects of camera transformation and restores the last one
+        void End();
 
-        FRectangle WorldBounds() const;
+        /// Gets the internal matrix for referencing
+        CRef<class Matrix4x4> Matrix() const;
+
+        /// Sets the viewport resolution size
+        void ViewportSize(int width, int height);
+
+        /// Gets the viewport resolution size
+        Vector2 ViewportSize() const;
     private:
         // Only call this when changed
         void Update() const;
-        void SetDimensions(int width, int height);
+        
         Impl *impl;
     };
 }

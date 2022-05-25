@@ -1,16 +1,21 @@
 /// Camera implementation file
 #include "Camera2D.h"
 
+#include <SDG/Debug/Assert.h>
+#include <SDG/Debug/Log.h>
 #include <SDG/Graphics/RenderTarget.h>
 #include <SDG/Math/Shape.h>
 
 #include <SDL_gpu.h>
 
+#include <utility>
+
+
 namespace SDG
 {
     struct Camera2D::Impl {
         Impl() : wasChanged(true), mat(1), ortho(1), inverse(), position(), size(),
-            scale(1, 1), rotation(), target()
+            scale(1, 1), angle()
         {}
 
         mutable bool wasChanged;
@@ -19,24 +24,14 @@ namespace SDG
         Vector2 scale;
         Vector2 size;
         Vector2 anchor;
-        float rotation;
-        Ref<RenderTarget> target;
-        FRectangle worldBounds;
+        float angle;
     };
 
     void
-    Camera2D::SetDimensions(int width, int height)
+    Camera2D::ViewportSize(int width, int height)
     {
         impl->size = Vector2(width, height);
         impl->wasChanged = true;
-    }
-
-    void
-    Camera2D::Initialize(Ref<RenderTarget> target)
-    {
-        impl->target = target;
-        Point resolution = target->Size();
-        SetDimensions(resolution.X(), resolution.Y());
     }
 
     Camera2D::Camera2D() : impl(new Impl)
@@ -61,26 +56,28 @@ namespace SDG
             pos = Vector2(round(pos.X()), round(pos.Y()));
             pos /= impl->scale;
 
+            auto target = GPU_GetActiveTarget();
             Vector3 translation(
-                    -pos.X() + impl->target->Size().X() / 2.f + impl->anchor.X(),
-                    -pos.Y() + impl->target->Size().Y() / 2.f + impl->anchor.Y(),
+                    -pos.X() + (target ? target->w / 2.f : 0),
+                    -pos.Y() + (target ? target->h / 2.f : 0),
                     0);
             
-            mat.Translate(translation)
-               .Rotate(impl->rotation, {0, 0, 1.f})
-               .Translate({-impl->anchor.X(), -impl->anchor.Y(), 0})
-               .Scale({impl->scale.X(), impl->scale.Y(), 1.f});
+            
+            
 
+            mat
+                .Translate(translation)
+                .Translate({ pos, 0 })
+                .Scale({ impl->scale.X(), impl->scale.Y(), 1.f })
+                .Translate({ -pos, 0 })
+                .Translate({ impl->anchor.X(), impl->anchor.Y(), 0 })
+                .Rotate(impl->angle, { 0, 0, 1.f })
+                .Translate({ -impl->anchor.X(), -impl->anchor.Y(), 0 });
 
             // Commit results
             impl->mat = mat;
             impl->inverse = mat.Invert();
 
-            pos = Math::Transform(pos, impl->mat); // screen-to-world
-            Vector2 dimensions = Math::Transform(pos + impl->target->Size(), impl->mat);
-            impl->worldBounds = FRectangle(pos.X(), pos.Y(),
-                                           dimensions.W(),
-                                           dimensions.H());
             impl->wasChanged = false;
         }
     }
@@ -88,71 +85,85 @@ namespace SDG
     Camera2D &
     Camera2D::Zoom(Vector2 zoom)
     {
-        impl->scale = zoom;
+        impl->scale *= zoom;
+        impl->wasChanged = true;
+        return *this;
+    }
+
+    Camera2D &
+    Camera2D::Scale(Vector2 scale)
+    {
+        impl->scale = scale;
         impl->wasChanged = true;
         return *this;
     }
 
     Vector2
-    Camera2D::Zoom() const
+    Camera2D::Scale() const
     {
         return impl->scale;
     }
 
     Vector2
-    Camera2D::ScreenSize() const
+    Camera2D::ViewportSize() const
     {
         return impl->size;
     }
 
     Vector2
-    Camera2D::WorldToScreen(Vector2 point) const
+    Camera2D::WorldToScreen(Vector2 worldPos) const
     {
         Update();
-        return Math::Transform(point, impl->mat);
+        return Math::Transform(worldPos, impl->mat);
     }
 
     Vector2
-    Camera2D::ScreenToWorld(Vector2 point) const
+    Camera2D::ScreenToWorld(Vector2 screenPos) const
     {
         Update();
-        return Math::Transform(point, impl->inverse);
+        return Math::Transform(screenPos, impl->inverse);
     }
 
     Camera2D &
-    Camera2D::Rotation(float degrees)
+    Camera2D::PivotPoint(Vector2 anchor) noexcept
     {
-        impl->rotation = Math::WrapF<float>(degrees, 0, 360.f);
+        impl->anchor = std::move(anchor);
+        impl->wasChanged = true;
+        return *this;
+    }
+
+    Vector2
+    Camera2D::PivotPoint() const noexcept
+    {
+        return impl->anchor;
+    }
+
+    Camera2D &
+    Camera2D::Rotate(float degrees) noexcept
+    {
+        impl->angle = Math::WrapF<float>(impl->angle + degrees, 0, 360.f);
+        impl->wasChanged = true;
+        return *this;
+    }
+
+    Camera2D &
+    Camera2D::Angle(float degrees) noexcept
+    {
+        impl->angle = Math::WrapF<float>(degrees, 0, 360);
         impl->wasChanged = true;
         return *this;
     }
 
     float
-    Camera2D::Rotation() const
+    Camera2D::Angle() const noexcept
     {
-        return impl->rotation;
-    }
-
-    FRectangle
-    Camera2D::WorldBounds() const
-    {
-        Update();
-        return impl->worldBounds;
+        return impl->angle;
     }
 
     Camera2D &
-    Camera2D::Rotate(float degrees, Vector2 anchor)
+    Camera2D::Translate(Vector2 pos)
     {
-        impl->anchor = anchor;
-        impl->rotation = Math::WrapF<float>(degrees + impl->rotation, 0, 360.f);
-        impl->wasChanged = true;
-        return *this;
-    }
-
-    Camera2D &
-    Camera2D::Translate(Vector2 position)
-    {
-        impl->position += position;
+        impl->position += pos;
         impl->wasChanged = true;
         return *this;
     }
@@ -172,15 +183,22 @@ namespace SDG
         return *this;
     }
 
-    Camera2D &
-    Camera2D::MakeCurrent()
+    void
+    Camera2D::Begin()
     {
         Update();
+        GPU_PushMatrix();
         GPU_LoadMatrix(impl->mat.Data());
-        return *this;
     }
 
-    CRef<Matrix4x4> Camera2D::Matrix() const
+    void
+    Camera2D::End()
+    {
+        GPU_PopMatrix();
+    }
+
+    CRef<Matrix4x4>
+    Camera2D::Matrix() const
     {
         Update();
         return CRef(impl->mat);

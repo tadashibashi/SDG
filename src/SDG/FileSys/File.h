@@ -48,12 +48,14 @@ public:
     [[nodiscard]]
     const char *GetError() const;
     
-    /// The size of the file. A null-terminator is automatically appended to the file data, but not counted by this function.
+    /// The size of the file. A null-terminator is automatically appended to 
+    /// the file data, but not counted by this function.
     [[nodiscard]]
     int64_t Size() const;
 
     /// Checks whether file is opened or not.
-    /// It may or may not have data loaded into memory. Use IsLoaded() to check for this check.
+    /// It may or may not have data loaded into memory. Use IsLoaded() to check
+    /// for this check.
     [[nodiscard]]
     bool IsOpen() const;
 
@@ -61,7 +63,13 @@ public:
     [[nodiscard]]
     bool IsLoaded() const;
 
+    /// Saves the data into a file at the indicated path.
+    /// Returns true
     bool Save(const Path &path) const;
+
+    /// Overwrites the file at the path that the file was previously opened at.
+    /// It will fail to save if the File did not previously load successfully.
+    bool Save() const;
 
     template<typename T>
     size_t Write(const T &obj)

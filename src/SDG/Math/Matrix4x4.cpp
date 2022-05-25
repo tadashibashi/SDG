@@ -63,7 +63,7 @@ namespace SDG
     const float *
     Matrix4x4::Data() const 
     {
-        return &impl->mat[0][0]; 
+        return &impl->mat[0][0];
     }
 
     Matrix4x4 &

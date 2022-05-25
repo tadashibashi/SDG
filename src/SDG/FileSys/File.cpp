@@ -143,6 +143,15 @@ namespace SDG
                 impl->buf.Data(), impl->buf.Size());
     }
 
+    bool
+    File::Save() const
+    {
+        if (IsOpen())
+            return Save(impl->path);
+        else
+            return false;
+    }
+
     size_t
     File::Write(const void *ptr, size_t size)
     {

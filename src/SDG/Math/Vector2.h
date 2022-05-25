@@ -171,6 +171,13 @@ namespace SDG
             return !operator==(other);
         }
 
+        Vec2_ &operator -()
+        {
+            x = -x;
+            y = -y;
+            return *this;
+        }
+
         template <typename U>
         [[nodiscard]] explicit operator Vec2_<U>()
         {

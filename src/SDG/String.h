@@ -33,11 +33,19 @@ namespace SDG
         String &operator = (const std::string &str);
         String &operator = (const char *cstr);
 
-        /// Finds first occurance of a char
-        /// @param c the char to search for
-        /// @param startingAt the index to start searching from, default: 0
-        /// @returns index or String::NullPos if it wasn't found.
+        /// Finds first occurance of a char.
+        /// @param c - the char to search for
+        /// @param startingAt - the index to start searching from, default: 0
+        /// @returns the index where char c was found in the string, or 
+        /// String::NullPos if it wasn't found.
         [[nodiscard]] size_t FindFirstOf(char c, size_t startingAt = 0) const;
+
+        /// Finds first occurance of any char inside a list.
+        /// @param list - a list of chars in which each char will be checked against
+        /// @param startingAt - the position in the string to start checking at
+        /// @returns the index where a matching char was found or
+        ///          String::NullPos if none was found.
+        [[nodiscard]] size_t FindFirstOf(const char *list, size_t startingAt = 0) const; 
 
         [[nodiscard]] size_t Find(const char *str, size_t startingAt = 0) const;
 
@@ -47,6 +55,13 @@ namespace SDG
         /// NullPos searches from the end, which is this param's default value.
         /// @returns index or String::NullPos if it wasn't found.
         [[nodiscard]] size_t FindLastOf(char c, size_t startingAt = NullPos) const;
+
+        /// Finds last occurance of any char inside a list.
+        /// @param list - a list of chars in which each char will be checked against
+        /// @param startingAt - the position in the string to start checking at
+        /// @returns the index where a matching char was found or
+        ///          String::NullPos if none was found.
+        [[nodiscard]] size_t FindLastOf(const char *list, size_t startingAt = NullPos) const;
 
         [[nodiscard]] const char *Cstr() const;
         [[nodiscard]] std::string Str() const;
@@ -69,8 +84,10 @@ namespace SDG
 
         /// Erases a character from the String at the specified index.
         String &Erase(size_t index);
+
         /// Erases a range of characters from the String.
         String &Erase(Iterator begin, Iterator end);
+
         /// Erases characters determined by a predicate function.
         /// @param func the callback that receives each char from the String, 
         /// one at a time, in which the return value determines whether the

@@ -4,6 +4,7 @@
 #include <SDG/Debug/Assert.h>
 #include <SDG/Debug/Log.h>
 #include <SDG/Exceptions/OutOfRangeException.h>
+#include <SDG/Math/Math.h>
 
 #include <algorithm>
 #include <cstdlib>
@@ -70,6 +71,19 @@ namespace SDG
         return NullPos;
     }
 
+    size_t
+    String::FindFirstOf(const char *list, size_t startingAt) const
+    {
+        SDG_Assert(list && *list != '\0'); // list should have substance
+
+        for (char *p = str_ + startingAt; p < end_; ++p)
+            for (const char *q = list; *q != '\0'; ++q)
+                if (*p == *q)
+                    return p - str_;
+
+        return NullPos;
+    }
+
 
     size_t
     String::Find(const char *str, size_t startingAt) const
@@ -93,8 +107,8 @@ namespace SDG
     size_t
     String::FindLastOf(char c, size_t startingAt) const
     {
-        if (startingAt >= Length())
-            startingAt = Length() - 1;
+        // Make sure we start at a valid index
+        startingAt = Math::Min(startingAt, Length() - 1);
 
         for (char *p = str_ + startingAt; p >= str_; --p)
             if (*p == c)
@@ -103,6 +117,21 @@ namespace SDG
         return NullPos;
     }
 
+    size_t
+    String::FindLastOf(const char *list, size_t startingAt) const
+    {
+        SDG_Assert(list && *list != '\0'); // list should have substance
+
+        // Make sure we start at a valid index
+        startingAt = Math::Min(startingAt, Length() - 1);
+
+        for (char *p = str_ + startingAt; p >= str_; --p)
+            for (const char *q = list; *q != '\0'; ++q)
+                if (*p == *q)
+                    return p - str_;
+
+        return NullPos;
+    }
 
     void
     String::Expand(size_t size)
@@ -138,6 +167,7 @@ namespace SDG
         // Make sure iterators are in bounds.
         SDG_Assert(begin >= str_ && begin <= end && end <= end_);
 
+        // Shift everything from end onward onto begin
         Iterator p = begin, o = end;
         while (o < end_)
             *p++ = *o++;
@@ -151,6 +181,7 @@ namespace SDG
     String &
     String::EraseIf(const std::function<bool(char)> &func)
     {
+        // Remove-if erase idiom
         return Erase(std::remove_if(begin(), end(), func), end());
     }
 

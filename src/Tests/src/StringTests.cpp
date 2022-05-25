@@ -192,7 +192,7 @@ TEST_CASE("String tests", "[String]")
         }
     }
 
-    SECTION("FindLastOf")
+    SECTION("FindLastOf: single char")
     {
         SECTION("When not found, it returns String::NullPos")
         {
@@ -231,6 +231,83 @@ TEST_CASE("String tests", "[String]")
         {
             String str("path/file.txt");
             size_t pos = str.FindLastOf('/');
+            REQUIRE(pos == 4);
+        }
+
+        SECTION("Finds first when there are two occurrences")
+        {
+            String str("path/to/file.txt");
+            size_t pos = str.FindLastOf('/');
+            REQUIRE(pos == 7);
+        }
+    }
+
+    SECTION("FindLastOf: multiple char")
+    {
+        SECTION("When not found, it returns String::NullPos: one char")
+        {
+            String str("testing");
+            REQUIRE(str.FindLastOf("/") == str.NullPos);
+        }
+        SECTION("When not found, it returns String::NullPos: multiple chars")
+        {
+            String str("testing");
+            REQUIRE(str.FindLastOf("/810w") == str.NullPos);
+        }
+
+        SECTION("When not found in empty str, it returns String::NullPos: one char")
+        {
+            String str("");
+            REQUIRE(str.FindLastOf("/") == str.NullPos);
+        }
+        SECTION("When not found in empty str, it returns String::NullPos: multiple chars")
+        {
+            String str("");
+            REQUIRE(str.FindLastOf("/sdf") == str.NullPos);
+        }
+
+        SECTION("Finds at end of string: one char")
+        {
+            String str("path/");
+            size_t pos = str.FindLastOf("/");
+            REQUIRE(pos == str.Length() - 1);
+        }
+        SECTION("Finds at end of string: multi char")
+        {
+            String str("path/");
+            size_t pos = str.FindLastOf("q/^");
+            REQUIRE(pos == str.Length() - 1);
+        }
+        SECTION("Finds at end of string: multi char, end of list")
+        {
+            String str("path/");
+            size_t pos = str.FindLastOf("q^/");
+            REQUIRE(pos == str.Length() - 1);
+        }
+
+        SECTION("Finds at beginning of string: one char")
+        {
+            String str("/path");
+            size_t pos = str.FindLastOf("/");
+            REQUIRE(pos == 0);
+        }
+        SECTION("Finds at beginning of string: multi char")
+        {
+            String str("/path");
+            size_t pos = str.FindLastOf("q/f");
+            REQUIRE(pos == 0);
+        }
+
+        SECTION("Finds in middle of string: one char")
+        {
+            String str("path/file.txt");
+            size_t pos = str.FindLastOf("/");
+            REQUIRE(pos == 4);
+        }
+        SECTION("Finds in middle of string: multi char")
+        {
+            String str("path/file.txt");
+            size_t pos = str.FindLastOf("*/!@#");
             REQUIRE(pos == 4);
         }
 

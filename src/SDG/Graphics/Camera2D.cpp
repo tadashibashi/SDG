@@ -70,10 +70,8 @@ namespace SDG
                 .Translate(translation)
                 .Translate({ pos + impl->anchor, 0 })
                 .Scale({ impl->scale, 1.f })
-                .Translate({ -pos - impl->anchor, 0 })
-                .Translate({ impl->anchor, 0 })
                 .Rotate(impl->angle, { 0, 0, 1.f })
-                .Translate({ -impl->anchor, 0 });
+                .Translate({-pos - impl->anchor, 0 });
 
             // Commit results
             impl->mat = mat;

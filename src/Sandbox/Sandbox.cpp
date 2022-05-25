@@ -52,7 +52,7 @@ private:
         {
             SDG_Core_Warn("Failed to load font!\n");
         }*/
-
+        camera.PivotPoint({320, 240});
         kirby.Load(MainWindow(), BasePath("assets/textures/DawSession.sdgc"));
         //kirby2.Load(window2, BasePath("assets/textures/DawSession.sdgc"));
 
@@ -134,7 +134,7 @@ private:
                 camera.Translate({0, 10});
 
             if (Input::KeyPress(Key::C))
-                camera.Rotate(10).PivotPoint(camera.ScreenToWorld((Vector2)MainWindow()->ClientSize() / 2.f));
+                camera.Rotate(10);
             // Must be called after every alteration of the matrix has occured to update it to the gpu.
 
             if ((Input::KeyPress(Key::LeftShift) || Input::KeyPress(Key::RightShift)) &&

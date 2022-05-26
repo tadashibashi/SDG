@@ -19,3 +19,6 @@
 [submodule "lib/spdlog"]
 	path = lib/spdlog
 	url = https://github.com/gabime/spdlog
+[submodule "lib/crunch"]
+	path = lib/crunch
+	url = https://github.com/ChevyRay/crunch

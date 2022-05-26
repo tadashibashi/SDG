@@ -2,8 +2,10 @@
 // Created by Aaron Ishibashi on 4/15/22.
 //
 #pragma once
+#include "InputComponent.h"
 #include "Key.h"
 #include "MButton.h"
+
 #include <SDG/Math/Vector2.h>
 #include <SDG/Ref.h>
 
@@ -11,16 +13,15 @@
 
 namespace SDG
 {
-    enum InputTypes : uint32_t {
+    enum InputTypes : uint32_t 
+    {
         SDG_INPUTTYPE_KEYBOARD = 1u,
         SDG_INPUTTYPE_MOUSE    = 1u << 1u,
         SDG_INPUTTYPE_GAMEPAD  = 1u << 2u
     };
 
-    class Keyboard;
-    class Mouse;
-
-    class Input {
+    class Input 
+    {
     public:
         // Call this before the main loop begins
         static void Initialize(uint32_t types = SDG_INPUTTYPE_KEYBOARD | SDG_INPUTTYPE_MOUSE);
@@ -49,8 +50,8 @@ namespace SDG
         static Vector2 MouseLastWheel();
         static bool MouseWheelDidMove();
 
-        static CRef<Keyboard> Keyboard();
-        static CRef<Mouse> Mouse();
+        static CRef<class Keyboard> Keyboard();
+        static CRef<class Mouse> Mouse();
     private:
         static uint32_t types;
     };

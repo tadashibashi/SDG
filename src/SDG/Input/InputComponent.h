@@ -10,7 +10,8 @@ namespace SDG
     /**
      * Abstract base class for Input devices
      */
-    class InputComponent {
+    class InputComponent 
+    {
     public:
         InputComponent() : wasInit(false) { }
         virtual ~InputComponent() {}

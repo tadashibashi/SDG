@@ -6,101 +6,133 @@
 #include <SDL_events.h>
 #include "Keyboard.h"
 #include "Mouse.h"
+#include <SDG/Ref.h>
 
+#include <vector>
+#include <SDG/Debug/Assert.h>
 
 using SDG::Key;
 
-uint32_t SDG::Input::types = 0;
+uint32_t SDG::Input::types;
 
 
 static SDG::Keyboard keyboard;
 static SDG::Mouse mouse;
+static std::vector<SDG::Ref<SDG::InputComponent>> inputs;
 
 void
 SDG::Input::Initialize(uint32_t inputTypes)
 {
+    // Initialize input type if it has not yet been initialized
+    if ((inputTypes & SDG_INPUTTYPE_KEYBOARD) && !(types & SDG_INPUTTYPE_KEYBOARD))
+    {
+        inputs.emplace_back(keyboard);
+        keyboard.Initialize();
+    }
+
+    if ((inputTypes & SDG_INPUTTYPE_MOUSE) && !(types & SDG_INPUTTYPE_MOUSE))
+    {
+        inputs.emplace_back(mouse);
+        mouse.Initialize();
+    }
+
     types = inputTypes;
-    keyboard.Initialize();
-    mouse.Initialize();
 }
 
 void
 SDG::Input::Close()
 {
-    keyboard.Close();
-    mouse.Close();
+    for (Ref<InputComponent> input : inputs)
+    {
+        input->Close();
+        types = 0;
+    }
+        
 }
 
 void
 SDG::Input::UpdateLastStates()
 {
-    keyboard.UpdateLastStates();
-    mouse.UpdateLastStates();
+    for (Ref<InputComponent> input : inputs)
+    {
+        input->UpdateLastStates();
+    }
 }
 
 bool
 SDG::Input::KeyPress(Key key)
 {
+    SDG_Assert(keyboard.WasInit());
     return keyboard.Press(key);
 }
 
 bool
 SDG::Input::KeyPressed(Key key)
 {
+    SDG_Assert(keyboard.WasInit());
     return keyboard.Pressed(key);
 }
 
 bool
 SDG::Input::KeyRelease(Key key)
 {
+    SDG_Assert(keyboard.WasInit());
     return keyboard.Release(key);
 }
 
 bool
 SDG::Input::KeyReleased(Key key)
 {
+    SDG_Assert(keyboard.WasInit());
     return keyboard.Released(key);
 }
 
 bool
 SDG::Input::MousePress(MButton button)
 {
+    SDG_Assert(mouse.WasInit());
     return mouse.Press(button);
 }
 
 bool
 SDG::Input::MousePressed(MButton button)
 {
+    SDG_Assert(mouse.WasInit());
     return mouse.Pressed(button);
 }
 
 bool
 SDG::Input::MouseRelease(MButton button)
 {
+    SDG_Assert(mouse.WasInit());
     return mouse.Release(button);
 }
 
 bool
 SDG::Input::MouseReleased(MButton button)
 {
+    SDG_Assert(mouse.WasInit());
     return mouse.Released(button);
 }
 
 SDG::Point
 SDG::Input::MousePosition()
 {
+    SDG_Assert(mouse.WasInit());
     return mouse.Position();
 }
 
 SDG::Point
 SDG::Input::MouseLastPosition()
 {
+    SDG_Assert(mouse.WasInit());
     return mouse.LastPosition();
 }
 
 bool
 SDG::Input::MouseDidMove()
 {
+    SDG_Assert(mouse.WasInit());
     return mouse.DidMove();
 }
 
@@ -113,10 +145,12 @@ SDG::Input::ProcessInput(void *evt)
         case SDL_KEYDOWN:
         case SDL_KEYUP:
         case SDL_KEYMAPCHANGED:
-            keyboard.ProcessInput(ev);
+            if (keyboard.WasInit())
+                keyboard.ProcessInput(ev);
             break;
         case SDL_MOUSEWHEEL:
-            mouse.ProcessInput(ev);
+            if (mouse.WasInit())
+                mouse.ProcessInput(ev);
             break;
     }
 }

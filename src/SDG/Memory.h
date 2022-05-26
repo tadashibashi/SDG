@@ -5,6 +5,8 @@
 namespace SDG
 {
     /// Safe Malloc function. Throws a RuntimeException when allocation fails.
+    /// Allocates space for n number of T objects.
+    /// @param n number of objects of type T to fit in the memory
     template<typename T = void>
     inline T *Malloc(size_t n)
     {

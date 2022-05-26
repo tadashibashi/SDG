@@ -2,6 +2,7 @@
 #include <SDL_events.h>
 #include <cstdlib>
 #include <SDG/Debug.hpp>
+#include <SDG/Memory.h>
 
 using SDG::Key;
 
@@ -57,17 +58,20 @@ SDG::Keyboard::~Keyboard()
 bool
 SDG::Keyboard::InitializeImpl()
 {
-    impl->state = SDL_GetKeyboardState(&impl->numKeys);
-    impl->lastState = (Uint8 *)malloc(sizeof(Uint8) * impl->numKeys);
-    memcpy(impl->lastState, impl->state, impl->numKeys);
-
-    // Populate the scancodes array if it hasn't already been set
-    if (Scancodes[(unsigned)Key::D] != KeyToScanCode(Key::D))
+    if (!impl->state) // only initialize if it has not been yet
     {
-        for (unsigned i = 0; i < (unsigned)Key::_MaxCount; ++i)
+        impl->state = SDL_GetKeyboardState(&impl->numKeys);
+        impl->lastState = Malloc<Uint8>(impl->numKeys);
+        memcpy(impl->lastState, impl->state, impl->numKeys);
+
+        // Populate the scancodes array if it hasn't already been set
+        if (Scancodes[(unsigned)Key::D] != KeyToScanCode(Key::D))
         {
-            Scancodes[i] = KeyToScanCode((Key)i);
-            SDG_Assert(Scancodes[i] < SDL_NUM_SCANCODES);
+            for (unsigned i = 0; i < (unsigned)Key::_MaxCount; ++i)
+            {
+                Scancodes[i] = KeyToScanCode((Key)i);
+                SDG_Assert(Scancodes[i] < SDL_NUM_SCANCODES);
+            }
         }
     }
 

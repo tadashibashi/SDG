@@ -2,7 +2,7 @@
 #include "Math.h"
 
 #include <SDG/Debug/LogImpl.h>
-#include <SDG/Exceptions/InvalidArgumentException.h>
+#include <SDG/Exceptions/DivisionByZeroException.h>
 #include <SDG/Exceptions/OutOfRangeException.h>
 #include <SDG/String.h>
 
@@ -132,9 +132,7 @@ namespace SDG
         Vec2_ &operator /= (const Vec2_<U> &other)
         {
             if (other.X() == 0 || other.Y() == 0)
-                throw InvalidArgumentException(
-                    "Vec2_::operator/=(Vec2_ other)",
-                    "other", "division by zero");
+                throw DivisionByZeroException("Vec2_::operator/=(Vec2_" + other.Str() +")");
             x /= other.X();
             y /= other.Y();
             return *this;
@@ -152,8 +150,7 @@ namespace SDG
         Vec2_ &operator /= (const U scalar)
         {
             if (scalar == 0)
-                throw InvalidArgumentException("Vec2_::operator/=(U scalar)",
-                                               "scalar", "division by zero");
+                throw DivisionByZeroException("Vec2_::operator /= (0)");
             x /= scalar;
             y /= scalar;
             return *this;
@@ -171,11 +168,9 @@ namespace SDG
             return !operator==(other);
         }
 
-        Vec2_ &operator -()
+        Vec2_ operator -()
         {
-            x = -x;
-            y = -y;
-            return *this;
+            return {-x, -y};
         }
 
         template <typename U>
@@ -232,8 +227,7 @@ namespace SDG
         static_assert(std::is_arithmetic_v<U>,
                 "Right scalar operand must be an arithmetic type.");
 
-        Vec2_<T> temp(v);
-        return (temp /= scalar);
+        return Vec2_<T>(v) /= scalar;
     }
 
     template <typename T, typename U>
@@ -241,8 +235,7 @@ namespace SDG
     {
         static_assert(std::is_arithmetic_v<U>,
                 "Right scalar operand must be an arithmetic type.");
-        Vec2_<T> temp(v);
-        return (temp *= scalar);
+        return (Vec2_<T>(v) *= scalar);
     }
 
     typedef Vec2_<float> Vector2;

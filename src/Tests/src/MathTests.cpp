@@ -1,5 +1,5 @@
 #include "SDG_Tests.h"
-#include <SDG/Math/Shape.h>
+#include <SDG/Math/MathShape.h>
 
 TEST_CASE("Math::Lerp")
 {

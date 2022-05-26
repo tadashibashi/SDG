@@ -1,4 +1,4 @@
-/// Contains functions involving non-primitive SDG math classes
+/// Contains functions and overloads involving non-primitive SDG math classes
 #pragma once
 #include "Circle.h"
 #include "Intersection.h"
@@ -11,7 +11,6 @@
 namespace SDG::Math
 {
     /// Linear interpolation
-    /// @tparam T requires floating point for accuracy, although integers will work, but get floored.
     /// @param val the Vec2 to work with
     /// @param dest the target destination
     /// @param amt the amount to lerp by as a percentage (0 to 1.f)

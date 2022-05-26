@@ -2,14 +2,14 @@ Tests todo:
 - Set up content copying for testing classes that load files.
 - Graphics
     - RenderTarget
-    - Camera2D
+    x Camera2D
     x Color
     - Font
     - Shader
     - SpriteBatch
     - Texture2D
 
-- Finish MathEx Tests
+- Finish Shape Tests
 - Adjusted Math tests
 
 - Tweener

@@ -3,7 +3,7 @@
 #include "Math.h"
 
 #include <SDG/Debug/LogImpl.h>
-#include <SDG/Exceptions/InvalidArgumentException.h>
+#include <SDG/Exceptions/DivisionByZeroException.h>
 #include <SDG/Exceptions/OutOfRangeException.h>
 #include <SDG/String.h>
 
@@ -14,7 +14,8 @@ namespace SDG
     template <typename T>
     class  Vec3_
     {
-        static_assert(std::is_arithmetic_v<T>, "Vec3_ template type must be an arithmetic type");
+        static_assert(std::is_arithmetic_v<T>,
+                "Vec3_ template type must be an arithmetic type");
         struct { T x, y, z; };
     public:
         constexpr Vec3_() : x(0), y(0), z(0) { }
@@ -139,8 +140,7 @@ namespace SDG
         Vec3_ &operator/=(const Vec3_<U> &other)
         {
             if (other.X() == 0 || other.Y() == 0 || other.Z() == 0)
-                throw InvalidArgumentException("Vec3_::operator/=(const Vec3_<U> other)",
-                                           "other", "results in division by zero");
+                throw DivisionByZeroException("Vec3_::operator/=(Vec3_<U>" + Str() + ")");
             x /= other.X();
             y /= other.Y();
             z /= other.Z();
@@ -174,20 +174,16 @@ namespace SDG
         {
             static_assert(std::is_arithmetic_v<U>, "Scalar type must be arithmetic");
             if (scalar == 0)
-                throw InvalidArgumentException("Vec3_::operator/=(const U scalar)",
-                                               "scalar", "results in division by zero");
+                throw DivisionByZeroException("Vec3_::operator /= (0)");
             x /= scalar;
             y /= scalar;
             z /= scalar;
             return *this;
         }
 
-        Vec3_ &operator -()
+        Vec3_ operator -()
         {
-            x = -x;
-            y = -y;
-            z = -z;
-            return *this;
+            return {-x, -y, -z};
         }
 
         template <typename U>

@@ -20,6 +20,13 @@ namespace SDG
         Camera2D();
         ~Camera2D();
 
+    public: // Driver functions
+        /// Begins camera transformation on the current target
+        void Begin();
+        /// Ends effects of camera transformation and restores the last one
+        void End();
+
+    public: // Setters and Getters
         /// Converts a world position to a screen position
         Vector2 WorldToScreen(Vector2 worldPos) const;
         /// Converts a screen position to a world position
@@ -27,8 +34,10 @@ namespace SDG
 
         /// Sets the pivot point about which the camera rotates
         Camera2D &PivotPoint(Vector2 point) noexcept;
+        /// Sets the pivot point about which the camera rotates
+        Camera2D &PivotPoint(float pointX, float pointY) noexcept;
         /// Gets the pivot point about which the camera rotates
-        Vector2 PivotPoint() const noexcept;
+        const Vector2 &PivotPoint() const noexcept;
 
         /// Sets the angle of the camera, relatively
         /// @param degrees - number to add to the current angle
@@ -40,34 +49,42 @@ namespace SDG
         float Angle() const noexcept;
         
         /// Multiplies the current scale
-        Camera2D &Zoom(Vector2 zoom);
-        /// Sets the absolute scale or zoom of the view
-        Camera2D &Scale(Vector2 scale);
+        Camera2D &Zoom(Vector2 zoom) noexcept;
+        /// Multiplies both current x and y scales by one value
+        Camera2D &Zoom(float zoom) noexcept;
+        /// Multiplies the current scale
+        Camera2D &Zoom(float zoomX, float zoomY) noexcept;
+        /// Sets the absolute scale of the view
+        Camera2D &Scale(Vector2 scale) noexcept;
+        /// Sets the absolute scale's width and height to the same value
+        Camera2D &Scale(float scale) noexcept;
+        /// Sets the absolute scale of the view
+        Camera2D &Scale(float scaleX, float scaleY) noexcept;
         /// Gets the absolute scale or zoom of the view
-        Vector2 Scale() const;
+        const Vector2 &Scale() const noexcept;
 
         /// Moves the camera relative to its current position
-        Camera2D &Translate(Vector2 pos);
+        Camera2D &Translate(Vector2 pos) noexcept;
+        /// Moves the camera relative to its current position
+        Camera2D &Translate(float posX, float posY) noexcept;
         /// Sets the absolute world position of the camera
-        Camera2D &Position(Vector2 pos);
+        Camera2D &Position(Vector2 pos) noexcept;
+        /// Sets the absolute world position of the camera
+        Camera2D &Position(float posX, float posY) noexcept;
         /// Gets the absolute world position of the camera
-        Vector2 Position() const;
+        const Vector2 &Position() const noexcept;
 
-        /// Begins camera transformation on the current target
-        void Begin();
-        /// Ends effects of camera transformation and restores the last one
-        void End();
+        /// Sets the viewport resolution size
+        Camera2D &ViewportSize(Point size) noexcept;
+        /// Sets the viewport resolution size
+        Camera2D &ViewportSize(int width, int height) noexcept;
+        /// Gets the viewport resolution size
+        const Point &ViewportSize() const noexcept;
 
         /// Gets the internal matrix for referencing
         CRef<class Matrix4x4> Matrix() const;
-
-        /// Sets the viewport resolution size
-        void ViewportSize(int width, int height);
-
-        /// Gets the viewport resolution size
-        Vector2 ViewportSize() const;
     private:
-        // Only call this when changed
+        /// Call this when updating the latest matrix state is required
         void Update() const;
         
         Impl *impl;

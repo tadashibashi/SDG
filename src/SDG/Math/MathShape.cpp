@@ -1,4 +1,4 @@
-#include "Shape.h"
+#include "MathShape.h"
 
 namespace SDG
 {

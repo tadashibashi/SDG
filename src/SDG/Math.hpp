@@ -2,7 +2,7 @@
 #pragma once
 #include <SDG/Math/Endian.h>
 #include <SDG/Math/Math.h>
-#include <SDG/Math/Shape.h>
+#include <SDG/Math/MathShape.h>
 #include <SDG/Math/Matrix4x4.h>
 #include <SDG/Math/Rand.h>
 #include <SDG/Math/Tween.h>

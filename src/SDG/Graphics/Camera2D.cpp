@@ -4,7 +4,7 @@
 #include <SDG/Debug/Assert.h>
 #include <SDG/Debug/Log.h>
 #include <SDG/Graphics/RenderTarget.h>
-#include <SDG/Math/Shape.h>
+#include <SDG/Math/MathShape.h>
 
 #include <SDL_gpu.h>
 
@@ -22,17 +22,10 @@ namespace SDG
         Matrix4x4 mat, ortho, inverse;
         Vector2 position;
         Vector2 scale;
-        Vector2 size;
+        Point size;
         Vector2 anchor;
         float angle;
     };
-
-    void
-    Camera2D::ViewportSize(int width, int height)
-    {
-        impl->size = Vector2(width, height);
-        impl->wasChanged = true;
-    }
 
     Camera2D::Camera2D() : impl(new Impl)
     {
@@ -44,7 +37,8 @@ namespace SDG
         delete impl;
     }
 
-    void Camera2D::Update() const
+    void
+    Camera2D::Update() const
     {
         if (impl->wasChanged)
         {
@@ -55,19 +49,9 @@ namespace SDG
             pos *= impl->scale;
             pos = Vector2(round(pos.X()), round(pos.Y()));
             pos /= impl->scale;
-
-            //auto target = GPU_GetActiveTarget();
-//            Vector3 translation(
-//                    -pos.X() + (target ? target->w / 2.f : 0),
-//                    -pos.Y() + (target ? target->h / 2.f : 0),
-//                    0);
-            Vector3 translation(
-                    -pos.X(),
-                    -pos.Y(),
-                    0);
             
             mat  // Todo: optimize later by combining like transformations
-                .Translate(translation)
+                .Translate({-pos, 0})
                 .Translate({ pos + impl->anchor, 0 })
                 .Scale({ impl->scale, 1.f })
                 .Rotate(impl->angle, { 0, 0, 1.f })
@@ -81,31 +65,71 @@ namespace SDG
     }
 
     Camera2D &
-    Camera2D::Zoom(Vector2 zoom)
+    Camera2D::Zoom(Vector2 zoom) noexcept
     {
-        impl->scale *= zoom;
-        impl->wasChanged = true;
-        return *this;
+        return Scale(Scale() * zoom);
+    }
+
+
+    Camera2D &
+    Camera2D::Zoom(float zoom) noexcept
+    {
+        return Zoom({ zoom, zoom });
     }
 
     Camera2D &
-    Camera2D::Scale(Vector2 scale)
+    Camera2D::Zoom(float zoomX, float zoomY) noexcept
+    {
+        return Zoom({ zoomX, zoomY });
+    }
+
+    Camera2D &
+    Camera2D::Scale(Vector2 scale) noexcept
     {
         impl->scale = scale;
         impl->wasChanged = true;
         return *this;
     }
 
-    Vector2
-    Camera2D::Scale() const
+    Camera2D &
+    Camera2D::Scale(float scaleX, float scaleY) noexcept
+    {
+        return Scale({ scaleX, scaleY });
+    }
+
+    Camera2D &
+    Camera2D::Scale(float scale) noexcept
+    {
+        return Scale({ scale, scale });
+    }
+
+    const Vector2 &
+    Camera2D::Scale() const noexcept
     {
         return impl->scale;
     }
 
-    Vector2
-    Camera2D::ViewportSize() const
+    const Point &
+    Camera2D::ViewportSize() const noexcept
     {
         return impl->size;
+    }
+
+    Camera2D &
+    Camera2D::ViewportSize(Point size) noexcept
+    {
+        SDG_Assert(size.X() > 0 && size.Y() > 0);
+
+        impl->size = std::move(size);
+        impl->wasChanged = true;
+        return *this;
+    }
+
+
+    Camera2D &
+    Camera2D::ViewportSize(int width, int height) noexcept
+    {
+        return ViewportSize({ width, height });
     }
 
     Vector2
@@ -130,7 +154,13 @@ namespace SDG
         return *this;
     }
 
-    Vector2
+    Camera2D &
+    Camera2D::PivotPoint(float pointX, float pointY) noexcept
+    {
+        return PivotPoint({ pointX, pointY });
+    }
+
+    const Vector2 &
     Camera2D::PivotPoint() const noexcept
     {
         return impl->anchor;
@@ -139,9 +169,7 @@ namespace SDG
     Camera2D &
     Camera2D::Rotate(float degrees) noexcept
     {
-        impl->angle = Math::WrapF<float>(impl->angle + degrees, 0, 360.f);
-        impl->wasChanged = true;
-        return *this;
+        return Angle(Angle() + degrees);
     }
 
     Camera2D &
@@ -159,22 +187,32 @@ namespace SDG
     }
 
     Camera2D &
-    Camera2D::Translate(Vector2 pos)
+    Camera2D::Translate(Vector2 pos) noexcept
     {
-        impl->position += pos;
-        impl->wasChanged = true;
-        return *this;
+        return Position(Position() + pos);
     }
 
-    Vector2
-    Camera2D::Position() const
+    Camera2D &
+    Camera2D::Translate(float posX, float posY) noexcept
+    {
+        return Translate({ posX, posY });
+    }
+
+    const Vector2 &
+    Camera2D::Position() const noexcept
     {
         return impl->position;
     }
 
+    Camera2D &
+    Camera2D::Position(float posX, float posY) noexcept
+    {
+        return Position({ posX, posY });
+    }
+
     /// EmplaceTarget the specific position
     Camera2D &
-    Camera2D::Position(Vector2 pos)
+    Camera2D::Position(Vector2 pos) noexcept
     {
         impl->position = pos;
         impl->wasChanged = true;

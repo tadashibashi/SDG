@@ -114,18 +114,6 @@ TEST_CASE("FRectangle tests", "[FRectangle]")
         }
     }
 
-
-    SECTION("String")
-    {
-        // using normal Rectangle here since it's hard to predict floating point results
-        SDG::Rectangle rect;
-        REQUIRE(rect.Str() == "{0, 0, 0, 0}");
-        rect.Set(1, 2, 3, 4);
-        REQUIRE(rect.Str() == "{1, 2, 3, 4}");
-        rect.Set(-44, -25, 499, 459);
-        REQUIRE(rect.Str() == "{-44, -25, 499, 459}");
-    }
-
     SECTION("operator == (const FRectangle &)")
     {
         FRectangle rect1;

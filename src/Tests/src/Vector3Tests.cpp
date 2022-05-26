@@ -288,7 +288,7 @@ TEST_CASE("Vector3 tests", "[Vector3]")
                 Vector3 result = Vector3(123.f, 123.f, 123.f) / 0;
                 didThrow = false;
             }
-            catch(const InvalidArgumentException &e)
+            catch(const DivisionByZeroException &e)
             {
                 didThrow = true;
             }
@@ -312,7 +312,7 @@ TEST_CASE("Vector3 tests", "[Vector3]")
                 Vector3 result = Vector3(123.f, 123.f, 123.f) /= Vector3::Zero();
                 didThrow = false;
             }
-            catch(const InvalidArgumentException &e)
+            catch(const DivisionByZeroException &e)
             {
                 didThrow = true;
             }
@@ -352,7 +352,7 @@ TEST_CASE("Vector3 tests", "[Vector3]")
                 Vector3 result = Vector3() /= Vector3::Zero();
                 didThrow = false;
             }
-            catch(const InvalidArgumentException &e)
+            catch(const DivisionByZeroException &e)
             {
                 didThrow = true;
             }
@@ -376,7 +376,7 @@ TEST_CASE("Vector3 tests", "[Vector3]")
                 Vector3 result = Vector3() /= 0;
                 didThrow = false;
             }
-            catch(const InvalidArgumentException &e)
+            catch(const DivisionByZeroException &e)
             {
                 didThrow = true;
             }
@@ -389,5 +389,17 @@ TEST_CASE("Vector3 tests", "[Vector3]")
             REQUIRE((Vector3(2.f, 2.f, 2.f) /= (Vector3::One() * 2.f)) == Vector3::One());
             REQUIRE((Vector3(4.f, 4.f, 4.f) /= Vector3(-10.f, -10.f, -100.f)) == Vector3(-.4f, -.4f, -.04f));
         }
+    }
+
+    SECTION("- operator")
+    {
+        Vector3 v;
+        REQUIRE(-v == v); // negative zero is zero
+        v.Set(10, 10, 10);
+        REQUIRE(-v == Vector3(-10, -10, -10));
+        REQUIRE(-(-v) == Vector3(10, 10, 10));
+        v.Set(14, -28, 42);
+        REQUIRE(-v == Vector3(-14, 28, -42));
+        REQUIRE(v == -Vector3(-14, 28, -42));
     }
 }

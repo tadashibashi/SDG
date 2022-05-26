@@ -95,6 +95,13 @@
     #define SDG_TARGET_DESKTOP 0
 #endif
 
+// Mobile platform checks
+#if (SDG_TARGET_IOS || SDG_TARGET_ANDROID)
+#define SDG_TARGET_MOBILE 1
+#else
+#define SDG_TARGET_MOBILE 0
+#endif
+
 
 /// This define is set by CMake when CMAKE_BUILD_TYPE is set to 
 /// "Debug" or "RelWithDebugInfo"

@@ -1,4 +1,8 @@
 TODO:
+- Input:
+    - Gamepad class creation and implementation.
+    - allow user to specify desired input types in the config.
+- Texture 
 - TTF font caching
 - Tiled Map loading
 - Create a minimal repro case of multi-Window close bug, and upstream to Github.

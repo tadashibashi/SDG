@@ -3,26 +3,44 @@
 //
 
 #include "Input.h"
-#include <SDL_events.h>
 #include "Keyboard.h"
 #include "Mouse.h"
+
+#include <SDG/Debug/Assert.h>
+#include <SDG/Platform.h>
 #include <SDG/Ref.h>
 
+#include <SDL_events.h>
+
 #include <vector>
-#include <SDG/Debug/Assert.h>
+
 
 using SDG::Key;
 
-uint32_t SDG::Input::types;
+uint32_t SDG::InputDriver::types;
 
 
 static SDG::Keyboard keyboard;
 static SDG::Mouse mouse;
 static std::vector<SDG::Ref<SDG::InputComponent>> inputs;
 
-void
-SDG::Input::Initialize(uint32_t inputTypes)
+uint32_t SDG::GetDefaultInputTypes()
 {
+#if (SDG_TARGET_DESKTOP)
+    return SDG_INPUTTYPE_KEYBOARD | SDG_INPUTTYPE_MOUSE | SDG_INPUTTYPE_GAMEPAD;
+#elif (SDG_TARGET_MOBILE)
+    return SDG_INPUTTYPE_KEYBOARD | SDG_INPUTTYPE_TOUCH;
+#elif (SDG_TARGET_WEB)
+    return SDG_INPUTTYPE_KEYBOARD | SDG_INPUTTYPE_MOUSE | SDG_INPUTTYPE_GAMEPAD;
+#endif
+}
+
+void
+SDG::InputDriver::Initialize(uint32_t inputTypes)
+{
+    if (inputTypes == SDG_INPUTTYPE_DEFAULT)
+        inputTypes = GetDefaultInputTypes();
+
     // Initialize input type if it has not yet been initialized
     if ((inputTypes & SDG_INPUTTYPE_KEYBOARD) && !(types & SDG_INPUTTYPE_KEYBOARD))
     {
@@ -36,11 +54,13 @@ SDG::Input::Initialize(uint32_t inputTypes)
         mouse.Initialize();
     }
 
+    // TODO: Gamepad class implementation
+
     types = inputTypes;
 }
 
 void
-SDG::Input::Close()
+SDG::InputDriver::Close()
 {
     for (Ref<InputComponent> input : inputs)
     {
@@ -51,11 +71,29 @@ SDG::Input::Close()
 }
 
 void
-SDG::Input::UpdateLastStates()
+SDG::InputDriver::UpdateLastStates()
 {
     for (Ref<InputComponent> input : inputs)
     {
         input->UpdateLastStates();
+    }
+}
+
+void
+SDG::InputDriver::ProcessInput(const SDL_Event &ev)
+{
+    switch (ev.type)
+    {
+    case SDL_KEYDOWN:
+    case SDL_KEYUP:
+    case SDL_KEYMAPCHANGED:
+        if (keyboard.WasInit())
+            keyboard.ProcessInput(ev);
+        break;
+    case SDL_MOUSEWHEEL:
+        if (mouse.WasInit())
+            mouse.ProcessInput(ev);
+        break;
     }
 }
 
@@ -136,25 +174,6 @@ SDG::Input::MouseDidMove()
     return mouse.DidMove();
 }
 
-void
-SDG::Input::ProcessInput(void *evt)
-{
-    SDL_Event &ev = *static_cast<SDL_Event *>(evt);
-    switch (ev.type)
-    {
-        case SDL_KEYDOWN:
-        case SDL_KEYUP:
-        case SDL_KEYMAPCHANGED:
-            if (keyboard.WasInit())
-                keyboard.ProcessInput(ev);
-            break;
-        case SDL_MOUSEWHEEL:
-            if (mouse.WasInit())
-                mouse.ProcessInput(ev);
-            break;
-    }
-}
-
 SDG::Vector2
 SDG::Input::MouseWheel()
 {
@@ -171,16 +190,4 @@ bool
 SDG::Input::MouseWheelDidMove()
 {
     return mouse.WheelDidMove();
-}
-
-SDG::CRef <SDG::Keyboard>
-SDG::Input::Keyboard()
-{
-    return CRef{keyboard};
-}
-
-SDG::CRef <SDG::Mouse>
-SDG::Input::Mouse()
-{
-    return CRef{mouse};
 }

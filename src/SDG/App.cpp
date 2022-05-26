@@ -73,7 +73,8 @@ namespace SDG
             impl->mainWindow->Fullscreen(config.fullscreen);
         }
 
-        Input::Initialize();
+        // TODO: game config can specify input types through an array?
+        InputDriver::Initialize(SDG_INPUTTYPE_DEFAULT);
 
         impl->isRunning = true;
         return Initialize(); // Child class initialization;
@@ -83,7 +84,7 @@ namespace SDG
     void
     App::ProcessInput()
     {
-        Input::UpdateLastStates();
+        InputDriver::UpdateLastStates();
 
         // Event polling
         SDL_Event ev;
@@ -99,7 +100,7 @@ namespace SDG
                     break;
             }
 
-            Input::ProcessInput(&ev);
+            InputDriver::ProcessInput(ev);
         }
     }
 
@@ -124,7 +125,7 @@ namespace SDG
     App::Close_()
     {
         Close(); // Child class clean up
-        Input::Close();
+        InputDriver::Close();
         impl->windows.Close();
         SDG_Core_Log("Game shut down complete.");
     }

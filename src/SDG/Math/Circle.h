@@ -28,6 +28,11 @@ namespace SDG
         Circle &Y(float pY) { y = pY; return *this; }
         Circle &Radius(float pRadius) { radius = pRadius; return *this; }
         Circle &Position(Vector2 position) { x = position.X(), y = position.Y(); return *this; }
+
+        [[nodiscard]] bool operator == (const Circle &other) const
+        {
+            return x == other.X() && y == other.Y() && radius == other.Radius();
+        }
     private:
         float radius, x, y;
     };

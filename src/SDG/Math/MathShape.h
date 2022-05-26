@@ -19,8 +19,13 @@ namespace SDG::Math
     Circle Lerp(Circle val, Circle dest, double amt);
 
     Vector2 Round(Vector2 v);
+    Vector3 Round(Vector3 v);
     FRectangle Round(FRectangle rect);
     Circle Round(Circle c);
+    Vector2 RoundN(Vector2 v, int n);
+    Vector3 RoundN(Vector3 v, int n);
+    FRectangle RoundN(FRectangle rect, int n);
+    Circle RoundN(Circle c, int n);
 
     Vector2 Transform(Vector2 position, const Matrix4x4 &mat);
 

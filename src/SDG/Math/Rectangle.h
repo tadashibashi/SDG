@@ -24,7 +24,11 @@ namespace SDG
     {
     public:
         Rect_() noexcept : x(0), y(0), w(0), h(0) { }
-        Rect_(T x, T y, T w, T h) noexcept : x(x), y(y), w(w), h(h) { }
+        Rect_(T x, T y, T width, T height) noexcept :
+            x(x), y(y), w(width), h(height) { }
+        Rect_(Vec2_<T> pos, Vec2_<T> size) noexcept :
+            x(pos.X()), y(pos.Y()), w(size.X()), h(size.Y()) { }
+
 
         /// Gets the horizontal position of the rectangle.
         [[nodiscard]] T X() const noexcept { return x; }

@@ -91,12 +91,12 @@ namespace SDG::Math
     inline T Sign(T n) { return (T)(n < 0 ? -1 : 1); }
 
     template <typename T>
-    inline T Round(T n) { return (T)((int)(n + 0.5L )); }
+    inline T Round(T n) { return (T)((int)(n + (n < 0 ? -0.5L : 0.5L))); }
 
-    /// Round to the 10^n's place
+    /// Round to the 10^n's place. n == number of desired decimal places
     double RoundN(double x, int n);
 
-    /// Round to the 10^n's place
+    /// Round to the 10^n's place. n == number of desired decimal places
     float RoundN(float x, int n);
 
     double Cos(double rad);

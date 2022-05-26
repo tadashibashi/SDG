@@ -39,14 +39,46 @@ namespace SDG
         return Vector2(Math::Round(v.X()), Math::Round(v.Y()));
     }
 
+    Vector3
+    Math::Round(Vector3 v)
+    {
+        return Vector3(Math::Round(v.X()), Math::Round(v.Y()), Math::Round(v.Z()));
+    }
+
     FRectangle
     Math::Round(FRectangle rect)
     {
         return FRectangle(Math::Round(rect.X()), Math::Round(rect.Y()),
                           Math::Round(rect.Width()), Math::Round(rect.Height()));
     }
-    Circle Math::Round(Circle c)
+
+    Circle
+    Math::Round(Circle c)
     {
         return Circle(Round(c.X()), Round(c.Y()), Round(c.Radius()));
+    }
+
+    Vector2
+    Math::RoundN(Vector2 v, int n)
+    {
+        return Vector2(Math::RoundN(v.X(), n), Math::RoundN(v.Y(), n));
+    }
+
+    Vector3
+    Math::RoundN(Vector3 v, int n)
+    {
+        return Vector3(Math::RoundN(v.X(), n), Math::RoundN(v.Y(), n), Math::RoundN(v.Z(), n));
+    }
+
+    FRectangle
+    Math::RoundN(FRectangle rect, int n)
+    {
+        return FRectangle(Math::RoundN(rect.X(), n), Math::RoundN(rect.Y(), n),
+            Math::RoundN(rect.Width(), n), Math::RoundN(rect.Height(), n));
+    }
+    Circle
+    Math::RoundN(Circle c, int n)
+    {
+        return Circle(RoundN(c.X(), n), RoundN(c.Y(), n), RoundN(c.Radius(), n));
     }
 }

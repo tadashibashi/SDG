@@ -429,6 +429,66 @@ TEST_CASE("Shape.h")
                 REQUIRE(Math::Clamp(point, rect) == Point(100, 100));
             }
         }
+
+
+        SECTION("Circle within an FRectangle")
+        {
+            SECTION("Transparent if not crossing limits")
+            {
+                Circle circ(50, 50, 10);
+                FRectangle rect(0, 0, 100, 100);
+                REQUIRE(Math::Clamp(circ, rect) == circ);
+            }
+
+            SECTION("Clamped on right side")
+            {
+                Circle circ(250, 50, 10);
+                FRectangle rect(0, 0, 100, 100);
+                REQUIRE(Math::Clamp(circ, rect) == Circle(90, 50, 10));
+            }
+            SECTION("Clamped on left side")
+            {
+                Circle circ(-100, 50, 10);
+                FRectangle rect(0, 0, 100, 100);
+                REQUIRE(Math::Clamp(circ, rect) == Circle(10, 50, 10));
+            }
+            SECTION("Clamped on top side")
+            {
+                Circle circ(50, -50, 10);
+                FRectangle rect(0, 0, 100, 100);
+                REQUIRE(Math::Clamp(circ, rect) == Circle(50, 10, 10));
+            }
+            SECTION("Clamped on bottom")
+            {
+                Circle circ(50, 250, 10);
+                FRectangle rect(0, 0, 100, 100);
+                REQUIRE(Math::Clamp(circ, rect) == Circle(50, 90, 10));
+            }
+            SECTION("Clamped on top-left corner")
+            {
+                Circle circ(-50, -50, 10);
+                FRectangle rect(0, 0, 100, 100);
+                REQUIRE(Math::Clamp(circ, rect) == Circle(10, 10, 10));
+            }
+            SECTION("Clamped on top-right corner")
+            {
+                Circle circ(250, -50, 10);
+                FRectangle rect(0, 0, 100, 100);
+                REQUIRE(Math::Clamp(circ, rect) == Circle(90, 10, 10));
+            }
+            SECTION("Clamped on bottom-left corner")
+            {
+                Circle circ(-50, 250, 10);
+                FRectangle rect(0, 0, 100, 100);
+                REQUIRE(Math::Clamp(circ, rect) == Circle(10, 90, 10));
+            }
+            SECTION("Clamped on bottom-right corner")
+            {
+                Circle circ(250, 250, 10);
+                FRectangle rect(0, 0, 100, 100);
+                REQUIRE(Math::Clamp(circ, rect) == Circle(90, 90, 10));
+            }
+        }
     }
 
 

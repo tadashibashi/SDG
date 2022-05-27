@@ -118,13 +118,13 @@ namespace SDG::Math
 
     double RoundN(double x, int n)
     {
-        double p = std::pow(10, n);
+        double p = std::pow(10, -n);
         return Round(x * p) / p;
     }
 
     float RoundN(float x, int n)
     {
-        float p = std::pow(10, n);
+        float p = std::pow(10, -n);
         return Round(x * p) / p;
     }
 

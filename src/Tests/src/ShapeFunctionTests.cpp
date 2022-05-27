@@ -97,33 +97,170 @@ TEST_CASE("Shape.h")
         }
     }
 
-    SECTION("Round Vector2")
+    SECTION("Round")
     {
-        REQUIRE(Math::Round(Vector2(1.111111f, 0.9999999f)) == Vector2::One());
-        REQUIRE(Math::Round(Vector2(-0.5f, -1.4f)) == -Vector2::One());
-        REQUIRE(Math::Round(Vector2::Zero()) == Vector2::Zero());
+        SECTION("Round Vector2")
+        {
+            REQUIRE(Math::Round(Vector2(1.111111f, 0.9999999f)) == Vector2::One());
+            REQUIRE(Math::Round(Vector2(-0.5f, -1.4f)) == -Vector2::One());
+            REQUIRE(Math::Round(Vector2::Zero()) == Vector2::Zero());
+        }
+
+        SECTION("Round Vector3")
+        {
+            REQUIRE(Math::Round(Vector3(1.111111f, 0.5f, 0.99999f)) == Vector3::One());
+            REQUIRE(Math::Round(Vector3(-0.5f, -1.0001f, -1.487f)) == -Vector3::One());
+            REQUIRE(Math::Round(Vector3::Zero()) == Vector3::Zero());
+        }
+
+        SECTION("Round FRectangle")
+        {
+            REQUIRE(Math::Round(FRectangle(0.0001f, -9.9999f, .5f, 22.1f)) == FRectangle(0, -10, 1, 22));
+            REQUIRE(Math::Round(FRectangle(0.4f, -9.4f, .4f, 10.4f)) == FRectangle(0, -9, 0, 10));
+            REQUIRE(Math::Round(FRectangle(1, 2, 3, 4)) == FRectangle(1, 2, 3, 4));
+        }
+
+        SECTION("Round Circle")
+        {
+            REQUIRE(Math::Round(Circle(14.4f, 14.5f, 16.4f)) == Circle(14, 15, 16));
+            REQUIRE(Math::Round(Circle(-13.999f, -15.14f, -15.99f)) == Circle(-14, -15, -16));
+            REQUIRE(Math::Round(Circle(14, 15, 16)) == Circle(14, 15, 16));
+        }
     }
 
-    SECTION("Round Vector3")
+    SECTION("RoundN")
     {
-        REQUIRE(Math::Round(Vector3(1.111111f, 0.5f, 0.99999f)) == Vector3::One());
-        REQUIRE(Math::Round(Vector3(-0.5f, -1.0001f, -1.487f)) == -Vector3::One());
-        REQUIRE(Math::Round(Vector3::Zero()) == Vector3::Zero());
+        SECTION("Vector2")
+        {
+            SECTION("hundreths place")
+            {
+                Vector2 v(0.005f, -0.014f);
+                REQUIRE(Math::RoundN(v, -2) == Vector2(0.01f, -0.01f));
+            }
+            SECTION("hundreds place")
+            {
+                Vector2 v(1850, -1840);
+                REQUIRE(Math::RoundN(v, 2) == Vector2(1900, -1800));
+            }
+            SECTION("zero places")
+            {
+                Vector2 v(108.423f, -192.412f);
+                REQUIRE(Math::RoundN(v, 0) == Vector2(108, -192));
+            }
+        }
+        SECTION("Vector3")
+        {
+            SECTION("hundreths place")
+            {
+                Vector3 v(0.005f, -0.014f, 923.123f);
+                REQUIRE(Math::RoundN(v, -2) == Vector3(0.01f, -0.01f, 923.12f));
+            }
+            SECTION("hundreds place")
+            {
+                Vector3 v(1850, -1840, 18493);
+                REQUIRE(Math::RoundN(v, 2) == Vector3(1900, -1800, 18500));
+            }
+            SECTION("zero places")
+            {
+                Vector3 v(108.423f, -192.412f, 1234.523f);
+                REQUIRE(Math::RoundN(v, 0) == Vector3(108, -192, 1235));
+            }
+        }
+        SECTION("Circle")
+        {
+            SECTION("hundreths place")
+            {
+                Circle c(0.005f, -0.014f, 923.123f);
+                REQUIRE(Math::RoundN(c, -2) == Circle(0.01f, -0.01f, 923.12f));
+            }
+            SECTION("hundreds place")
+            {
+                Circle c(1850, -1840, 18493);
+                REQUIRE(Math::RoundN(c, 2) == Circle(1900, -1800, 18500));
+            }
+            SECTION("zero places")
+            {
+                Circle c(108.423f, -192.412f, 1234.523f);
+                REQUIRE(Math::RoundN(c, 0) == Circle(108, -192, 1235));
+            }
+        }
+        SECTION("FRectangle")
+        {
+            SECTION("hundreths place")
+            {
+                FRectangle r(0.005f, -0.014f, 923.123f, 13.145f);
+                REQUIRE(Math::RoundN(r, -2) == FRectangle(0.01f, -0.01f, 923.12f, 13.15f));
+            }
+            SECTION("hundreds place")
+            {
+                FRectangle r(1850, -1840, 18493, 2432);
+                REQUIRE(Math::RoundN(r, 2) == FRectangle(1900, -1800, 18500, 2400));
+            }
+            SECTION("zero places")
+            {
+                FRectangle r(108.423f, -192.412f, 1234.523f, 143.123f);
+                REQUIRE(Math::RoundN(r, 0) == FRectangle(108, -192, 1235, 143));
+            }
+        }
     }
 
-    SECTION("Round FRectangle")
+    SECTION("Clamp")
     {
-        REQUIRE(Math::Round(FRectangle(0.0001f, -9.9999f, .5f, 22.1f)) == FRectangle(0, -10, 1, 22));
-        REQUIRE(Math::Round(FRectangle(0.4f, -9.4f, .4f, 10.4f)) == FRectangle(0, -9, 0, 10));
-        REQUIRE(Math::Round(FRectangle(1, 2, 3, 4)) == FRectangle(1, 2, 3, 4));
+        SECTION("Vector2 within two Vector2")
+        {
+            SECTION("Transparently pass vec within limits")
+            {
+                Vector2 pnt(10, 20);
+                Vector2 min(0, 0);
+                Vector2 max(100, 100);
+                REQUIRE(Math::Clamp(pnt, min, max) == Vector2(10, 20));
+            }
+            SECTION("Lower limit clamped x")
+            {
+                Vector2 pnt(10, 20);
+                Vector2 min(50, 0);
+                Vector2 max(100, 100);
+                REQUIRE(Math::Clamp(pnt, min, max) == Vector2(50, 20));
+            }
+            SECTION("Lower limit clamped y")
+            {
+                Vector2 pnt(10, 20);
+                Vector2 min(0, 50);
+                Vector2 max(100, 100);
+                REQUIRE(Math::Clamp(pnt, min, max) == Vector2(10, 50));
+            }
+            SECTION("Lower limit clamped")
+            {
+                Vector2 pnt(10, 20);
+                Vector2 min(50, 50);
+                Vector2 max(100, 100);
+                REQUIRE(Math::Clamp(pnt, min, max) == min);
+            }
+            SECTION("Upper limit clamped x")
+            {
+                Vector2 pnt(10, 20);
+                Vector2 min(0, 0);
+                Vector2 max(5, 100);
+                REQUIRE(Math::Clamp(pnt, min, max) == Vector2(5, 20));
+            }
+            SECTION("Upper limit clamped y")
+            {
+                Vector2 pnt(10, 20);
+                Vector2 min(0, 0);
+                Vector2 max(100, 10);
+                REQUIRE(Math::Clamp(pnt, min, max) == Vector2(10, 10));
+            }
+            SECTION("Upper limit clamped")
+            {
+                Vector2 pnt(10, 20);
+                Vector2 min(0, 0);
+                Vector2 max(5, 5);
+                REQUIRE(Math::Clamp(pnt, min, max) == max);
+            }
+        }
     }
 
-    SECTION("Round Circle")
-    {
-        REQUIRE(Math::Round(Circle(14.4f, 14.5f, 16.4f)) == Circle(14, 15, 16));
-        REQUIRE(Math::Round(Circle(-13.999f, -15.14f, -15.99f)) == Circle(-14, -15, -16));
-        REQUIRE(Math::Round(Circle(14, 15, 16)) == Circle(14, 15, 16));
-    }
+
 
     SECTION("Transform")
     {
@@ -132,57 +269,59 @@ TEST_CASE("Shape.h")
         SECTION("Translated position")
         {
             transform.Translate({ 10, 10, 0 });
-            REQUIRE(Math::RoundN(Math::Transform(position, transform), 6) == Math::RoundN(Vector2(10, 10), 6));
+            REQUIRE(Math::RoundN(Math::Transform(position, transform), -6) == Math::RoundN(Vector2(10, 10), -6));
             transform.Translate({ 100, -100, 0 });
-            REQUIRE(Math::RoundN(Math::Transform(position, transform), 6) == Math::RoundN(Vector2(110, -90), 6));
+            REQUIRE(Math::RoundN(Math::Transform(position, transform), -6) == Math::RoundN(Vector2(110, -90), -6));
         }
         SECTION("Rotated position")
         {
             position.Set(10, 0);
             transform.Rotate(90, { 0, 0, 1 });
-            REQUIRE(Math::RoundN(Math::Transform(position, transform), 5) == Math::RoundN(Vector2(0, 10), 5));
+            REQUIRE(Math::RoundN(Math::Transform(position, transform), -5) == Math::RoundN(Vector2(0, 10), -5));
             transform.Rotate(90, { 0, 0, 1 });
-            REQUIRE(Math::RoundN(Math::Transform(position, transform), 5) == Math::RoundN(Vector2(-10, 0), 5));
+            REQUIRE(Math::RoundN(Math::Transform(position, transform), -5) == Math::RoundN(Vector2(-10, 0), -5));
         }
         SECTION("Scaled position")
         {
             position.Set(10, 10);
             transform.Scale(2);
-            REQUIRE(Math::RoundN(Math::Transform(position, transform), 6) == Math::RoundN(Vector2(20, 20), 6));
+            REQUIRE(Math::RoundN(Math::Transform(position, transform), -6) == Math::RoundN(Vector2(20, 20), -6));
             transform.Scale(2);
-            REQUIRE(Math::RoundN(Math::Transform(position, transform), 6) == Math::RoundN(Vector2(40, 40), 6));
+            REQUIRE(Math::RoundN(Math::Transform(position, transform), -6) == Math::RoundN(Vector2(40, 40), -6));
             transform.Scale(.25);
-            REQUIRE(Math::RoundN(Math::Transform(position, transform), 6) == Math::RoundN(Vector2(10, 10), 6));
+            REQUIRE(Math::RoundN(Math::Transform(position, transform), -6) == Math::RoundN(Vector2(10, 10), -6));
         }
     }
      
 
     SECTION("Trajectory Vector2")
     {
-        const double SqrtOfHalf = Round(std::sqrt(.5));
+        const double SqrtOfHalf = Math::RoundN(std::sqrt(.5), -6);
 
         SECTION("Trajectory")
         {
-            REQUIRE(Math::RoundN(Math::Trajectory(0, 1), 5) == 
-                Math::RoundN(Vector2(1, 0), 5));
-            REQUIRE(Math::RoundN(Math::Trajectory(45, 1), 6) == 
-                Math::RoundN(Vector2(SqrtOfHalf,-SqrtOfHalf), 6));
-            REQUIRE(Math::RoundN(Math::Trajectory(90, 1), 5) == 
-                Math::RoundN(Vector2(0, -1), 5));
-            REQUIRE(Math::RoundN(Math::Trajectory(135, 1), 6) == 
-                Math::RoundN(Vector2(-SqrtOfHalf, -SqrtOfHalf), 6));
-            REQUIRE(Math::RoundN(Math::Trajectory(180, 1), 5) == 
-                Math::RoundN(Vector2(-1, 0), 5));
-            REQUIRE(Math::RoundN(Math::Trajectory(225, 1), 6) == 
-                Math::RoundN(Vector2(-SqrtOfHalf, SqrtOfHalf), 6));
-            REQUIRE(Math::RoundN(Math::Trajectory(270, 1), 5) == 
-                Math::RoundN(Vector2(0, 1), 5));
-            REQUIRE(Math::RoundN(Math::Trajectory(315, 1), 6) == 
-                Math::RoundN(Vector2(SqrtOfHalf, SqrtOfHalf), 6));
-            REQUIRE(Math::RoundN(Math::Trajectory(360, 1), 5) == 
-                Math::RoundN(Vector2(1, 0), 5));
+            REQUIRE(Math::RoundN(Math::Trajectory(0, 1), -5) == 
+                Math::RoundN(Vector2(1, 0), -5));
+            REQUIRE(Math::RoundN(Math::Trajectory(45, 1), -6) == 
+                Math::RoundN(Vector2(SqrtOfHalf,-SqrtOfHalf), -6));
+            REQUIRE(Math::RoundN(Math::Trajectory(90, 1), -5) == 
+                Math::RoundN(Vector2(0, -1), -5));
+            REQUIRE(Math::RoundN(Math::Trajectory(135, 1), -6) == 
+                Math::RoundN(Vector2(-SqrtOfHalf, -SqrtOfHalf), -6));
+            REQUIRE(Math::RoundN(Math::Trajectory(180, 1), -5) == 
+                Math::RoundN(Vector2(-1, 0), -5));
+            REQUIRE(Math::RoundN(Math::Trajectory(225, 1), -6) == 
+                Math::RoundN(Vector2(-SqrtOfHalf, SqrtOfHalf), -6));
+            REQUIRE(Math::RoundN(Math::Trajectory(270, 1), -5) == 
+                Math::RoundN(Vector2(0, 1), -5));
+            REQUIRE(Math::RoundN(Math::Trajectory(315, 1), -6) == 
+                Math::RoundN(Vector2(SqrtOfHalf, SqrtOfHalf), -6));
+            REQUIRE(Math::RoundN(Math::Trajectory(360, 1), -5) == 
+                Math::RoundN(Vector2(1, 0), -5));
         }
     }
+
+    
 
 }
 

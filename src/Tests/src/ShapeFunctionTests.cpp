@@ -258,6 +258,177 @@ TEST_CASE("Shape.h")
                 REQUIRE(Math::Clamp(pnt, min, max) == max);
             }
         }
+
+        SECTION("Vector2 within an FRectangle")
+        {
+            SECTION("Transparent if not crossing limits")
+            {
+                Vector2 point(50, 50);
+                FRectangle rect(0, 0, 100, 100);
+                REQUIRE(Math::Clamp(point, rect) == point);
+            }
+
+            SECTION("Clamped on right side")
+            {
+                Vector2 point(250, 50);
+                FRectangle rect(0, 0, 100, 100);
+                REQUIRE(Math::Clamp(point, rect) == Vector2(100, 50));
+            }
+            SECTION("Clamped on left side")
+            {
+                Vector2 point(-100, 50);
+                FRectangle rect(0, 0, 100, 100);
+                REQUIRE(Math::Clamp(point, rect) == Vector2(0, 50));
+            }
+            SECTION("Clamped on top side")
+            {
+                Vector2 point(50, -50);
+                FRectangle rect(0, 0, 100, 100);
+                REQUIRE(Math::Clamp(point, rect) == Vector2(50, 0));
+            }
+            SECTION("Clamped on bottom")
+            {
+                Vector2 point(50, 250);
+                FRectangle rect(0, 0, 100, 100);
+                REQUIRE(Math::Clamp(point, rect) == Vector2(50, 100));
+            }
+            SECTION("Clamped on top-left corner")
+            {
+                Vector2 point(-50, -50);
+                FRectangle rect(0, 0, 100, 100);
+                REQUIRE(Math::Clamp(point, rect) == Vector2::Zero());
+            }
+            SECTION("Clamped on top-right corner")
+            {
+                Vector2 point(250, -50);
+                FRectangle rect(0, 0, 100, 100);
+                REQUIRE(Math::Clamp(point, rect) == Vector2(100, 0));
+            }
+            SECTION("Clamped on bottom-left corner")
+            {
+                Vector2 point(-50, 250);
+                FRectangle rect(0, 0, 100, 100);
+                REQUIRE(Math::Clamp(point, rect) == Vector2(0, 100));
+            }
+            SECTION("Clamped on bottom-right corner")
+            {
+                Vector2 point(250, 250);
+                FRectangle rect(0, 0, 100, 100);
+                REQUIRE(Math::Clamp(point, rect) == Vector2(100, 100));
+            }
+        }
+
+        SECTION("Point within two Points")
+        {
+            SECTION("Transparently pass vec within limits")
+            {
+                Point pnt(10, 20);
+                Point min(0, 0);
+                Point max(100, 100);
+                REQUIRE(Math::Clamp(pnt, min, max) == Point(10, 20));
+            }
+            SECTION("Lower limit clamped x")
+            {
+                Point pnt(10, 20);
+                Point min(50, 0);
+                Point max(100, 100);
+                REQUIRE(Math::Clamp(pnt, min, max) == Point(50, 20));
+            }
+            SECTION("Lower limit clamped y")
+            {
+                Point pnt(10, 20);
+                Point min(0, 50);
+                Point max(100, 100);
+                REQUIRE(Math::Clamp(pnt, min, max) == Point(10, 50));
+            }
+            SECTION("Lower limit clamped")
+            {
+                Point pnt(10, 20);
+                Point min(50, 50);
+                Point max(100, 100);
+                REQUIRE(Math::Clamp(pnt, min, max) == min);
+            }
+            SECTION("Upper limit clamped x")
+            {
+                Point pnt(10, 20);
+                Point min(0, 0);
+                Point max(5, 100);
+                REQUIRE(Math::Clamp(pnt, min, max) == Point(5, 20));
+            }
+            SECTION("Upper limit clamped y")
+            {
+                Point pnt(10, 20);
+                Point min(0, 0);
+                Point max(100, 10);
+                REQUIRE(Math::Clamp(pnt, min, max) == Point(10, 10));
+            }
+            SECTION("Upper limit clamped")
+            {
+                Point pnt(10, 20);
+                Point min(0, 0);
+                Point max(5, 5);
+                REQUIRE(Math::Clamp(pnt, min, max) == max);
+            }
+        }
+
+        SECTION("Point within an Rectangle")
+        {
+            SECTION("Transparent if not crossing limits")
+            {
+                Point point(50, 50);
+                Rectangle rect(0, 0, 100, 100);
+                REQUIRE(Math::Clamp(point, rect) == point);
+            }
+
+            SECTION("Clamped on right side")
+            {
+                Point point(250, 50);
+                Rectangle rect(0, 0, 100, 100);
+                REQUIRE(Math::Clamp(point, rect) == Point(100, 50));
+            }
+            SECTION("Clamped on left side")
+            {
+                Point point(-100, 50);
+                Rectangle rect(0, 0, 100, 100);
+                REQUIRE(Math::Clamp(point, rect) == Point(0, 50));
+            }
+            SECTION("Clamped on top side")
+            {
+                Point point(50, -50);
+                Rectangle rect(0, 0, 100, 100);
+                REQUIRE(Math::Clamp(point, rect) == Point(50, 0));
+            }
+            SECTION("Clamped on bottom")
+            {
+                Point point(50, 250);
+                Rectangle rect(0, 0, 100, 100);
+                REQUIRE(Math::Clamp(point, rect) == Point(50, 100));
+            }
+            SECTION("Clamped on top-left corner")
+            {
+                Point point(-50, -50);
+                Rectangle rect(0, 0, 100, 100);
+                REQUIRE(Math::Clamp(point, rect) == Point::Zero());
+            }
+            SECTION("Clamped on top-right corner")
+            {
+                Point point(250, -50);
+                Rectangle rect(0, 0, 100, 100);
+                REQUIRE(Math::Clamp(point, rect) == Point(100, 0));
+            }
+            SECTION("Clamped on bottom-left corner")
+            {
+                Point point(-50, 250);
+                Rectangle rect(0, 0, 100, 100);
+                REQUIRE(Math::Clamp(point, rect) == Point(0, 100));
+            }
+            SECTION("Clamped on bottom-right corner")
+            {
+                Point point(250, 250);
+                Rectangle rect(0, 0, 100, 100);
+                REQUIRE(Math::Clamp(point, rect) == Point(100, 100));
+            }
+        }
     }
 
 

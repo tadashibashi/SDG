@@ -84,11 +84,33 @@ namespace SDG::Math
                        WrapF(v.Y(), rect.Top(), rect.Bottom()));
     }
 
+    /// @brief Wraps a point inside of a rectangle with added margin
+    /// @param p - point to wrap
+    /// @param rect - rectangle to add margin to 
+    /// @param margin - margin added to rectangle
+    /// @return resulting point
+    inline Vector2 Wrap(Vector2 v, FRectangle rect, Vector2 margin)
+    {
+        return Wrap(v, FRectangle(rect.X() - margin.X(), rect.Y() - margin.Y(),
+            rect.Width() + margin.X() * 2.f, rect.Height() + margin.Y() * 2.f));
+    }
+
     /// Wraps a point inside of a rectangle
     inline Point Wrap(Point p, Rectangle rect)
     {
         return Point(Wrap(p.X(), rect.Left(), rect.Right()),
                        Wrap(p.Y(), rect.Top(), rect.Bottom()));
+    }
+
+    /// @brief Wraps a point inside of a rectangle with added margin
+    /// @param p - point to wrap
+    /// @param rect - rectangle to add margin to
+    /// @param margin - margin added to rectangle
+    /// @return resulting point
+    inline Point Wrap(Point p, Rectangle rect, Point margin)
+    {
+        return Wrap(p, Rectangle(rect.X() - margin.X(), rect.Y() - margin.Y(),
+            rect.Width() + margin.X() * 2, rect.Height() + margin.Y() * 2));
     }
 
     /// Gets the angle, in degrees, between two points

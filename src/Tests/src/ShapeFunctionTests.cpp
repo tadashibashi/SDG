@@ -440,6 +440,13 @@ TEST_CASE("Shape.h")
                 REQUIRE(Math::Clamp(circ, rect) == circ);
             }
 
+            SECTION("zero-sized Circle behaves like a point")
+            {
+                Circle circ(1000, 50, 0);
+                FRectangle rect(0, 0, 100, 100);
+                REQUIRE(Math::Clamp(circ, rect) == Circle(100, 50, 0));
+            }
+
             SECTION("Clamped on right side")
             {
                 Circle circ(250, 50, 10);
@@ -487,6 +494,385 @@ TEST_CASE("Shape.h")
                 Circle circ(250, 250, 10);
                 FRectangle rect(0, 0, 100, 100);
                 REQUIRE(Math::Clamp(circ, rect) == Circle(90, 90, 10));
+            }
+        }
+    }
+
+    SECTION("Wrap")
+    {
+        SECTION("Vector2 inside of FRectangle")
+        {
+            SECTION("Transparent when inside limits")
+            {
+                Vector2 point(50, 50);
+                FRectangle rect(0, 0, 100, 100);
+                REQUIRE(Math::Wrap(point, rect) == point);
+            }
+            SECTION("Right side")
+            {
+                SECTION("Once over")
+                {
+                    Vector2 point(100, 50);
+                    FRectangle rect(0, 0, 100, 100);
+                    REQUIRE(Math::Wrap(point, rect) == Vector2(0, 50));
+                }
+                SECTION("Ten times over")
+                {
+                    Vector2 point(10000, 50);
+                    FRectangle rect(0, 0, 100, 100);
+                    REQUIRE(Math::Wrap(point, rect) == Vector2(0, 50));
+                }
+                SECTION("One hundred times over")
+                {
+                    Vector2 point(10000, 50);
+                    FRectangle rect(0, 0, 100, 100);
+                    REQUIRE(Math::Wrap(point, rect) == Vector2(0, 50));
+                }
+            }
+            SECTION("Left side")
+            {
+                SECTION("Once over")
+                {
+                    Vector2 point(-1, 50);
+                    FRectangle rect(0, 0, 100, 100);
+                    REQUIRE(Math::Wrap(point, rect) == Vector2(99, 50));
+                }
+                SECTION("Ten times over")
+                {
+                    Vector2 point(-1001, 50);
+                    FRectangle rect(0, 0, 100, 100);
+                    REQUIRE(Math::Wrap(point, rect) == Vector2(99, 50));
+                }
+                SECTION("One-hundred times over")
+                {
+                    Vector2 point(-10001, 50);
+                    FRectangle rect(0, 0, 100, 100);
+                    REQUIRE(Math::Wrap(point, rect) == Vector2(99, 50));
+                }
+            }
+            SECTION("Bottom side")
+            {
+                SECTION("Once over")
+                {
+                    Vector2 point(50, 100);
+                    FRectangle rect(0, 0, 100, 100);
+                    REQUIRE(Math::Wrap(point, rect) == Vector2(50, 0));
+                }
+                SECTION("Ten times over")
+                {
+                    Vector2 point(50, 1000);
+                    FRectangle rect(0, 0, 100, 100);
+                    REQUIRE(Math::Wrap(point, rect) == Vector2(50, 0));
+                }
+                SECTION("One-hundred times over")
+                {
+                    Vector2 point(50, 10000);
+                    FRectangle rect(0, 0, 100, 100);
+                    REQUIRE(Math::Wrap(point, rect) == Vector2(50, 0));
+                }
+            }
+            SECTION("Top side")
+            {
+                SECTION("Once over")
+                {
+                    Vector2 point(50, -1);
+                    FRectangle rect(0, 0, 100, 100);
+                    REQUIRE(Math::Wrap(point, rect) == Vector2(50, 99));
+                }
+                SECTION("Ten times over")
+                {
+                    Vector2 point(50, -1001);
+                    FRectangle rect(0, 0, 100, 100);
+                    REQUIRE(Math::Wrap(point, rect) == Vector2(50, 99));
+                }
+                SECTION("One hundred times over")
+                {
+                    Vector2 point(50, -10001);
+                    FRectangle rect(0, 0, 100, 100);
+                    REQUIRE(Math::Wrap(point, rect) == Vector2(50, 99));
+                }
+            }
+        }
+
+        SECTION("Vector2 inside of FRectangle + margin")
+        {
+            SECTION("Transparent when inside limits")
+            {
+                Vector2 point(50, 50);
+                FRectangle rect(10, 10, 80, 80);
+                REQUIRE(Math::Wrap(point, rect, { 10, 10 }) == point);
+            }
+            SECTION("Right side")
+            {
+                SECTION("Once over")
+                {
+                    Vector2 point(100, 50);
+                    FRectangle rect(10, 10, 80, 80);
+                    REQUIRE(Math::Wrap(point, rect, { 10, 10 }) == Vector2(0, 50));
+                }
+                SECTION("Ten times over")
+                {
+                    Vector2 point(10000, 50);
+                    FRectangle rect(10, 10, 80, 80);
+                    REQUIRE(Math::Wrap(point, rect, { 10, 10 }) == Vector2(0, 50));
+                }
+                SECTION("One hundred times over")
+                {
+                    Vector2 point(10000, 50);
+                    FRectangle rect(10, 10, 80, 80);
+                    REQUIRE(Math::Wrap(point, rect, { 10, 10 }) == Vector2(0, 50));
+                }
+            }
+            SECTION("Left side")
+            {
+                SECTION("Once over")
+                {
+                    Vector2 point(-1, 50);
+                    FRectangle rect(10, 10, 80, 80);
+                    REQUIRE(Math::Wrap(point, rect, { 10, 10 }) == Vector2(99, 50));
+                }
+                SECTION("Ten times over")
+                {
+                    Vector2 point(-1001, 50);
+                    FRectangle rect(10, 10, 80, 80);
+                    REQUIRE(Math::Wrap(point, rect, { 10, 10 }) == Vector2(99, 50));
+                }
+                SECTION("One-hundred times over")
+                {
+                    Vector2 point(-10001, 50);
+                    FRectangle rect(10, 10, 80, 80);
+                    REQUIRE(Math::Wrap(point, rect, { 10, 10 }) == Vector2(99, 50));
+                }
+            }
+            SECTION("Bottom side")
+            {
+                SECTION("Once over")
+                {
+                    Vector2 point(50, 100);
+                    FRectangle rect(10, 10, 80, 80);
+                    REQUIRE(Math::Wrap(point, rect, { 10, 10 }) == Vector2(50, 0));
+                }
+                SECTION("Ten times over")
+                {
+                    Vector2 point(50, 1000);
+                    FRectangle rect(10, 10, 80, 80);
+                    REQUIRE(Math::Wrap(point, rect, { 10, 10 }) == Vector2(50, 0));
+                }
+                SECTION("One-hundred times over")
+                {
+                    Vector2 point(50, 10000);
+                    FRectangle rect(10, 10, 80, 80);
+                    REQUIRE(Math::Wrap(point, rect, { 10, 10 }) == Vector2(50, 0));
+                }
+            }
+            SECTION("Top side")
+            {
+                SECTION("Once over")
+                {
+                    Vector2 point(50, -1);
+                    FRectangle rect(10, 10, 80, 80);
+                    REQUIRE(Math::Wrap(point, rect, { 10, 10 }) == Vector2(50, 99));
+                }
+                SECTION("Ten times over")
+                {
+                    Vector2 point(50, -1001);
+                    FRectangle rect(10, 10, 80, 80);
+                    REQUIRE(Math::Wrap(point, rect, { 10, 10 }) == Vector2(50, 99));
+                }
+                SECTION("One hundred times over")
+                {
+                    Vector2 point(50, -10001);
+                    FRectangle rect(10, 10, 80, 80);
+                    REQUIRE(Math::Wrap(point, rect, { 10, 10 }) == Vector2(50, 99));
+                }
+            }
+        }
+
+        SECTION("Point inside of Rectangle")
+        {
+            SECTION("Transparent when inside limits")
+            {
+                Point point(50, 50);
+                Rectangle rect(0, 0, 100, 100);
+                REQUIRE(Math::Wrap(point, rect) == point);
+            }
+            SECTION("Right side")
+            {
+                SECTION("Once over")
+                {
+                    Point point(100, 50);
+                    Rectangle rect(0, 0, 100, 100);
+                    REQUIRE(Math::Wrap(point, rect) == Point(0, 50));
+                }
+                SECTION("Ten times over")
+                {
+                    Point point(10000, 50);
+                    Rectangle rect(0, 0, 100, 100);
+                    REQUIRE(Math::Wrap(point, rect) == Point(0, 50));
+                }
+                SECTION("One hundred times over")
+                {
+                    Point point(10000, 50);
+                    Rectangle rect(0, 0, 100, 100);
+                    REQUIRE(Math::Wrap(point, rect) == Point(0, 50));
+                }
+            }
+            SECTION("Left side")
+            {
+                SECTION("Once over")
+                {
+                    Point point(-1, 50);
+                    Rectangle rect(0, 0, 100, 100);
+                    REQUIRE(Math::Wrap(point, rect) == Point(99, 50));
+                }
+                SECTION("Ten times over")
+                {
+                    Point point(-1001, 50);
+                    Rectangle rect(0, 0, 100, 100);
+                    REQUIRE(Math::Wrap(point, rect) == Point(99, 50));
+                }
+                SECTION("One-hundred times over")
+                {
+                    Point point(-10001, 50);
+                    Rectangle rect(0, 0, 100, 100);
+                    REQUIRE(Math::Wrap(point, rect) == Point(99, 50));
+                }
+            }
+            SECTION("Bottom side")
+            {
+                SECTION("Once over")
+                {
+                    Point point(50, 100);
+                    Rectangle rect(0, 0, 100, 100);
+                    REQUIRE(Math::Wrap(point, rect) == Point(50, 0));
+                }
+                SECTION("Ten times over")
+                {
+                    Point point(50, 1000);
+                    Rectangle rect(0, 0, 100, 100);
+                    REQUIRE(Math::Wrap(point, rect) == Point(50, 0));
+                }
+                SECTION("One-hundred times over")
+                {
+                    Point point(50, 10000);
+                    Rectangle rect(0, 0, 100, 100);
+                    REQUIRE(Math::Wrap(point, rect) == Point(50, 0));
+                }
+            }
+            SECTION("Top side")
+            {
+                SECTION("Once over")
+                {
+                    Point point(50, -1);
+                    Rectangle rect(0, 0, 100, 100);
+                    REQUIRE(Math::Wrap(point, rect) == Point(50, 99));
+                }
+                SECTION("Ten times over")
+                {
+                    Point point(50, -1001);
+                    Rectangle rect(0, 0, 100, 100);
+                    REQUIRE(Math::Wrap(point, rect) == Point(50, 99));
+                }
+                SECTION("One hundred times over")
+                {
+                    Point point(50, -10001);
+                    Rectangle rect(0, 0, 100, 100);
+                    REQUIRE(Math::Wrap(point, rect) == Point(50, 99));
+                }
+            }
+        }
+
+        SECTION("Point inside of Rectangle + margin")
+        {
+            SECTION("Transparent when inside limits")
+            {
+                Point point(50, 50);
+                Rectangle rect(10, 10, 80, 80);
+                REQUIRE(Math::Wrap(point, rect, { 10, 10 }) == point);
+            }
+            SECTION("Right side")
+            {
+                SECTION("Once over")
+                {
+                    Point point(100, 50);
+                    Rectangle rect(10, 10, 80, 80);
+                    REQUIRE(Math::Wrap(point, rect, { 10, 10 }) == Point(0, 50));
+                }
+                SECTION("Ten times over")
+                {
+                    Point point(10000, 50);
+                    Rectangle rect(10, 10, 80, 80);
+                    REQUIRE(Math::Wrap(point, rect, { 10, 10 }) == Point(0, 50));
+                }
+                SECTION("One hundred times over")
+                {
+                    Point point(10000, 50);
+                    Rectangle rect(10, 10, 80, 80);
+                    REQUIRE(Math::Wrap(point, rect, { 10, 10 }) == Point(0, 50));
+                }
+            }
+            SECTION("Left side")
+            {
+                SECTION("Once over")
+                {
+                    Point point(-1, 50);
+                    Rectangle rect(10, 10, 80, 80);
+                    REQUIRE(Math::Wrap(point, rect, { 10, 10 }) == Point(99, 50));
+                }
+                SECTION("Ten times over")
+                {
+                    Point point(-1001, 50);
+                    Rectangle rect(10, 10, 80, 80);
+                    REQUIRE(Math::Wrap(point, rect, { 10, 10 }) == Point(99, 50));
+                }
+                SECTION("One-hundred times over")
+                {
+                    Point point(-10001, 50);
+                    Rectangle rect(10, 10, 80, 80);
+                    REQUIRE(Math::Wrap(point, rect, { 10, 10 }) == Point(99, 50));
+                }
+            }
+            SECTION("Bottom side")
+            {
+                SECTION("Once over")
+                {
+                    Point point(50, 100);
+                    Rectangle rect(10, 10, 80, 80);
+                    REQUIRE(Math::Wrap(point, rect, { 10, 10 }) == Point(50, 0));
+                }
+                SECTION("Ten times over")
+                {
+                    Point point(50, 1000);
+                    Rectangle rect(10, 10, 80, 80);
+                    REQUIRE(Math::Wrap(point, rect, { 10, 10 }) == Point(50, 0));
+                }
+                SECTION("One-hundred times over")
+                {
+                    Point point(50, 10000);
+                    Rectangle rect(10, 10, 80, 80);
+                    REQUIRE(Math::Wrap(point, rect, { 10, 10 }) == Point(50, 0));
+                }
+            }
+            SECTION("Top side")
+            {
+                SECTION("Once over")
+                {
+                    Point point(50, -1);
+                    Rectangle rect(10, 10, 80, 80);
+                    REQUIRE(Math::Wrap(point, rect, { 10, 10 }) == Point(50, 99));
+                }
+                SECTION("Ten times over")
+                {
+                    Point point(50, -1001);
+                    Rectangle rect(10, 10, 80, 80);
+                    REQUIRE(Math::Wrap(point, rect, { 10, 10 }) == Point(50, 99));
+                }
+                SECTION("One hundred times over")
+                {
+                    Point point(50, -10001);
+                    Rectangle rect(10, 10, 80, 80);
+                    REQUIRE(Math::Wrap(point, rect, { 10, 10 }) == Point(50, 99));
+                }
             }
         }
     }
@@ -551,9 +937,48 @@ TEST_CASE("Shape.h")
                 Math::RoundN(Vector2(1, 0), -5));
         }
     }
+}
 
-    
+TEST_CASE("Point Direction")
+{
+    SECTION("Vector2")
+    {
+        REQUIRE(Math::PointDirection(Vector2{ 0, 0 }, Vector2{ 1, 0 }) == 0);
+        REQUIRE(Math::PointDirection(Vector2{ 0, 0 }, Vector2{ 1, 1 }) == 315);
+        REQUIRE(Math::PointDirection(Vector2{ 0, 0 }, Vector2{ 0, 1 }) == 270);
+        REQUIRE(Math::PointDirection(Vector2{ 0, 0 }, Vector2{ -1, 1 }) == 225);
+        REQUIRE(Math::PointDirection(Vector2{ 0, 0 }, Vector2{ -1, 0 }) == 180);
+        REQUIRE(Math::PointDirection(Vector2{ 0, 0 }, Vector2{ -1, -1 }) == 135);
+        REQUIRE(Math::PointDirection(Vector2{ 0, 0 }, Vector2{ 0, -1 }) == 90);
+        REQUIRE(Math::PointDirection(Vector2{ 0, 0 }, Vector2{ 1, -1 }) == 45);
+    }
+    SECTION("Point")
+    {
+        REQUIRE(Math::PointDirection(Point{ 0, 0 }, Point{ 1, 0 }) == 0);
+        REQUIRE(Math::PointDirection(Point{ 0, 0 }, Point{ 1, 1 }) == 315);
+        REQUIRE(Math::PointDirection(Point{ 0, 0 }, Point{ 0, 1 }) == 270);
+        REQUIRE(Math::PointDirection(Point{ 0, 0 }, Point{ -1, 1 }) == 225);
+        REQUIRE(Math::PointDirection(Point{ 0, 0 }, Point{ -1, 0 }) == 180);
+        REQUIRE(Math::PointDirection(Point{ 0, 0 }, Point{ -1, -1 }) == 135);
+        REQUIRE(Math::PointDirection(Point{ 0, 0 }, Point{ 0, -1 }) == 90);
+        REQUIRE(Math::PointDirection(Point{ 0, 0 }, Point{ 1, -1 }) == 45);
+    }
+}
 
+TEST_CASE("Point Distance") // more extensive tests of underlying function in MathTests
+{
+    SECTION("Vector2")
+    {
+        REQUIRE(Math::PointDistance(Vector2{ 0, 0 }, Vector2{ 0, 0 }) == 0);
+        REQUIRE(Math::PointDistance(Vector2{ 0, 0 }, Vector2{ 1, 0 }) == 1);
+        REQUIRE(Math::PointDistance(Vector2{ 0, 0 }, Vector2{ 3, 4 }) == 5);
+    }
+    SECTION("Point")
+    {
+        REQUIRE(Math::PointDistance(Point{ 0, 0 }, Point{ 0, 0 }) == 0);
+        REQUIRE(Math::PointDistance(Point{ 0, 0 }, Point{ 1, 0 }) == 1);
+        REQUIRE(Math::PointDistance(Point{ 0, 0 }, Point{ 3, 4 }) == 5);
+    }
 }
 
 TEST_CASE("Intersects")

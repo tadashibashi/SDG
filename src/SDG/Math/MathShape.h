@@ -11,29 +11,51 @@
 namespace SDG::Math
 {
     /// Linear interpolation
-    /// @param val the Vec2 to work with
+    /// @param val initial Vector2
     /// @param dest the target destination
-    /// @param amt the amount to lerp by as a percentage (0 to 1.f)
+    /// @param amt - amount by which to affect (0 none, 1.0 full)
     Vector2 Lerp(Vector2 val, Vector2 dest, double amt);
+
+    /// Linear interpolation from one FRectangle to another
+    /// @param val - initial rectangle
+    /// @param dest - destination rectangle
+    /// @param amt - amount by which to affect (0 none, 1.0 full)
     FRectangle Lerp(FRectangle val, FRectangle dest, double amt);
+
+    /// Linear interpolation from one Circle to another
+    /// @param val - initial circle
+    /// @param dest - destination circle
+    /// @param amt - amount by which to affect (0 none, 1.0 full)
     Circle Lerp(Circle val, Circle dest, double amt);
 
+    /// Round each of a Vector2's members
     Vector2 Round(Vector2 v);
+    /// Round each of a Vector3's members
     Vector3 Round(Vector3 v);
+    /// Round each of an FRectangle's members
     FRectangle Round(FRectangle rect);
+    /// Round each of a Circle's members
     Circle Round(Circle c);
+
+    /// Round each of a Vector2's members to a place 10^n
     Vector2 RoundN(Vector2 v, int n);
+    /// Round each of a Vector3's members to a place 10^n
     Vector3 RoundN(Vector3 v, int n);
+    /// Round each of a FRectangle's members to a place 10^n
     FRectangle RoundN(FRectangle rect, int n);
+    /// Round each of a Circle's members to a place 10^n
     Circle RoundN(Circle c, int n);
 
+    /// Transform a position by a matrix
+    /// @param position - point to be transformed
+    /// @param mat - matrix to affect position by
+    /// @return - resulting position
     Vector2 Transform(Vector2 position, const Matrix4x4 &mat);
 
-    /**
-     * Get the resulting Vector from an angle and length..
-     * @param degrees
-     * @param length
-     */
+
+    /// Get the resulting Vector from a trajected angle and length
+    /// @param degrees - angle of the trajected vector
+    /// @param length - length of the trajected vector
     inline Vector2 Trajectory(float degrees, float length)
     {
         return Vector2(TrajectoryX(degrees, length),
@@ -84,11 +106,12 @@ namespace SDG::Math
                        WrapF(v.Y(), rect.Top(), rect.Bottom()));
     }
 
-    /// @brief Wraps a point inside of a rectangle with added margin
-    /// @param p - point to wrap
-    /// @param rect - rectangle to add margin to 
+    /// Wraps a point inside of a rectangle with added margin.
+    /// Lower limits are inclusive, higher limits are exclusive
+    /// @param v - point to wrap
+    /// @param rect - rectangle to add margin to
     /// @param margin - margin added to rectangle
-    /// @return resulting point
+    /// @returns resulting point
     inline Vector2 Wrap(Vector2 v, FRectangle rect, Vector2 margin)
     {
         return Wrap(v, FRectangle(rect.X() - margin.X(), rect.Y() - margin.Y(),
@@ -102,7 +125,7 @@ namespace SDG::Math
                        Wrap(p.Y(), rect.Top(), rect.Bottom()));
     }
 
-    /// @brief Wraps a point inside of a rectangle with added margin
+    /// Wraps a point inside of a rectangle with added margin
     /// @param p - point to wrap
     /// @param rect - rectangle to add margin to
     /// @param margin - margin added to rectangle
@@ -125,12 +148,14 @@ namespace SDG::Math
         return PointDirection(a.X(), a.Y(), b.X(), b.Y());
     }
 
+    /// Gets the distance between two points
     inline float PointDistance(Vector2 a, Vector2 b)
     {
         return PointDistance(a.X(), a.Y(),
                              b.X(), b.Y());
     }
 
+    /// Gets the distance between two points
     inline float PointDistance(Point a, Point b)
     {
         return PointDistance((float)a.X(), (float)a.Y(),

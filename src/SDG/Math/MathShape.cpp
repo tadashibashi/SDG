@@ -1,4 +1,5 @@
 #include "MathShape.h"
+#include <SDG/Debug/Assert.h>
 
 namespace SDG
 {
@@ -80,5 +81,18 @@ namespace SDG
     Math::RoundN(Circle c, int n)
     {
         return Circle(RoundN(c.X(), n), RoundN(c.Y(), n), RoundN(c.Radius(), n));
+    }
+
+    Circle
+    Math::Clamp(Circle circ, FRectangle rect)
+    {
+        SDG_Assert(circ.Diameter() <= rect.Width() && circ.Diameter() <= rect.Height());
+
+        Vector2 position =
+            Clamp(circ.Position(), FRectangle(
+                rect.X() + circ.Radius(), rect.Y() + circ.Radius(),
+                rect.Width() - circ.Diameter(), rect.Height() - circ.Diameter()));
+
+        return Circle(position, circ.Radius());
     }
 }

@@ -72,6 +72,11 @@ namespace SDG::Math
                 Clamp(value.Y(), bounds.Top(), bounds.Bottom())};
     }
 
+    /// Clamps a circle inside a rectangle
+    /// Please make sure that the rectangle's width and height are greater than
+    /// the circle's diameter.
+    Circle Clamp(Circle circ, FRectangle rect);
+
     /// Wraps a point inside of a rectangle
     inline Vector2 Wrap(Vector2 v, FRectangle rect)
     {

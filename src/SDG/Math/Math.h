@@ -93,10 +93,10 @@ namespace SDG::Math
     template <typename T>
     inline T Round(T n) { return (T)((int)(n + (n < 0 ? -0.5L : 0.5L))); }
 
-    /// Round to the 10^n's place. n == number of desired decimal places
+    /// Round to the 10^n's place.
     double RoundN(double x, int n);
 
-    /// Round to the 10^n's place. n == number of desired decimal places
+    /// Round to the 10^n's place.
     float RoundN(float x, int n);
 
     double Cos(double rad);

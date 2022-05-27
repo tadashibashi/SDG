@@ -10,6 +10,8 @@ namespace SDG
         Circle() : radius(), x(), y() { }
         Circle(float x, float y, float radius) :
             radius(radius), x(x), y(y) {}
+        Circle(Vector2 position, float radius) :
+            radius(radius), x(position.X()), y(position.Y()) { }
 
         Vector2 Position() const { return {x, y}; }
         float Area() const { return Math::Pi * radius * radius; }

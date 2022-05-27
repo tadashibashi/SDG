@@ -3,6 +3,7 @@
 #include <SDG/String.h>
 
 #include <cstddef>
+#include <SDG/Debug/LogImpl.h>
 
 namespace SDG
 {
@@ -11,9 +12,9 @@ namespace SDG
     public:
         /// Empty string
         StringView();
-        explicit StringView(const String &str);
-        explicit StringView(const std::string &str);
-        explicit StringView(const char *str);
+        StringView(const String &str);
+        StringView(const std::string &str);
+        StringView(const char *str);
         StringView(const char *str, size_t size);
 
         StringView &operator = (const StringView &str);
@@ -21,11 +22,16 @@ namespace SDG
         StringView &operator = (const std::string &str);
         StringView &operator = (const char *str);
 
-        size_t Length() const;
+        [[nodiscard]] size_t Length() const;
+        [[nodiscard]] bool Empty() const;
 
         /// Copies string to an SDG::String
         [[nodiscard]]
         String Str() const;
+
+        [[nodiscard]]
+        StringView Substr(size_t index, size_t count = String::NullPos) const;
+
         /// Gets the internal c-string
         [[nodiscard]]
         const char *Cstr() const;
@@ -53,6 +59,17 @@ namespace SDG
 
         [[nodiscard]]
         char operator [] (unsigned i) const;
+
+        template<typename Ostream>
+        friend Ostream &operator << (Ostream &os, const StringView &view)
+        {
+            for (const char *p = view.str_, *end = view.str_ + view.size_;
+                p != end; ++p)
+                os << *p;
+
+            return os;
+        }
+
     private:
         const char *str_;
         size_t size_;
@@ -85,6 +102,4 @@ namespace SDG
     bool operator != (const std::string &a, const StringView &b);
     [[nodiscard]]
     bool operator != (const char *a, const StringView &b);
-
-
 }

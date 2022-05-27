@@ -1,5 +1,6 @@
 #include "StringView.h"
 #include <SDG/Exceptions/OutOfRangeException.h>
+#include <SDG/Math/Math.h>
 
 namespace SDG
 {
@@ -26,18 +27,28 @@ namespace SDG
     StringView &StringView::operator=(const char *str)
     {
         str_ = str;
-        size_ = std::strlen(str);
+        size_ = str ? std::strlen(str) : 0;
         return *this;
     }
     StringView::StringView(const String &str) : str_(str.Cstr()), size_(str.Length()) { }
     StringView::StringView(const std::string &str) : str_(str.c_str()), size_(str.length()) { }
-    StringView::StringView(const char *str) : str_(str), size_(std::strlen(str)) { }
+    StringView::StringView(const char *str) : str_(str), size_(str ? std::strlen(str) : 0) { }
 
     size_t
     StringView::Length() const { return size_; }
 
+    bool
+    StringView::Empty() const { return size_ == 0; }
+
     String
     StringView::Str() const { return String(str_, size_); }
+
+    StringView
+    StringView::Substr(size_t index, size_t count) const 
+    {
+        index = Math::Min(size_ - 1, index);
+        return StringView(str_ + index, (count > size_ - index) ? size_ - index : count); 
+    }
 
     const char *
     StringView::Cstr() const { return str_; }

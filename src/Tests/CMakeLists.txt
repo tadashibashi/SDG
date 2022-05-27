@@ -29,7 +29,7 @@ add_executable(SDG_Tests
         src/MathTests.cpp
         src/RandTests.cpp
         src/AppTimeTests.cpp src/Vector2Tests.cpp src/Vector3Tests.cpp src/RectangleTests.cpp src/ColorTests.cpp src/FontTests.cpp src/TweenTests.cpp src/PoolTests.cpp src/FixedPoolTests.cpp src/FileSysTests.cpp src/StringTests.cpp src/TweenerTests.cpp src/ShapeFunctionTests.cpp src/BufferTests.cpp "src/Camera2DTests.cpp"
-        src/EndianTests.cpp)
+        src/EndianTests.cpp "src/StringViewTests.cpp")
 
 target_include_directories(SDG_Tests PRIVATE ${CMAKE_SOURCE_DIR}/src
         lib/Catch2/src)

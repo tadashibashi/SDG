@@ -235,4 +235,562 @@ TEST_CASE("StringView tests", "[StringView]")
         }
 
     }
+
+    SECTION("Swap")
+    {
+        String str1("Hello");
+        String str2("World");
+
+        StringView view1(str1);
+        StringView view2(str2);
+
+        // swap
+        view1.Swap(view2);
+        REQUIRE(strcmp(str1.Cstr(), view2.Cstr()) == 0);
+        REQUIRE(strcmp(str2.Cstr(), view1.Cstr()) == 0);
+
+        // swap back
+        view1.Swap(view2);
+        REQUIRE(strcmp(str1.Cstr(), view1.Cstr()) == 0);
+        REQUIRE(strcmp(str2.Cstr(), view2.Cstr()) == 0);
+    }
+
+    SECTION("FindFirstOf")
+    {
+        SECTION("When not found, it returns NullPos")
+        {
+            String str("testing");
+            StringView view(str);
+            REQUIRE(view.FindFirstOf('/') == view.NullPos);
+        }
+
+        SECTION("When not found in empty str, it returns NullPos")
+        {
+            String str("");
+            StringView view(str);
+            REQUIRE(view.FindFirstOf('/') == view.NullPos);
+        }
+
+        SECTION("Looking for terminator should return NullPos, not length")
+        {
+            String str("");
+            StringView view(str);
+            size_t pos = view.FindFirstOf('\0');
+            REQUIRE(pos == view.NullPos);
+        }
+
+        SECTION("Finds at end of string")
+        {
+            String str("path/");
+            StringView view(str);
+            size_t pos = view.FindFirstOf('/');
+            REQUIRE(pos == view.Length() - 1);
+        }
+
+        SECTION("Finds at beginning of string")
+        {
+            String str("/path");
+            StringView view(str);
+            size_t pos = view.FindFirstOf('/');
+            REQUIRE(pos == 0);
+        }
+
+        SECTION("Finds in middle of string")
+        {
+            String str("path/file.txt");
+            StringView view(str);
+            size_t pos = view.FindFirstOf('/');
+            REQUIRE(pos == 4);
+        }
+
+        SECTION("Finds first when there are two occurrences")
+        {
+            String str("path/to/file.txt");
+            StringView view(str);
+            size_t pos = view.FindFirstOf('/');
+            REQUIRE(pos == 4);
+        }
+    }
+
+    SECTION("FindLastOf: single char")
+    {
+        SECTION("When not found, it returns NullPos")
+        {
+            String str("testing");
+            StringView view(str);
+            REQUIRE(view.FindLastOf('/') == str.NullPos);
+        }
+
+        SECTION("When not found in empty str, it returns NullPos")
+        {
+            String str("");
+            StringView view(str);
+            REQUIRE(view.FindLastOf('/') == str.NullPos);
+        }
+
+        SECTION("Looking for terminator should return NullPos, not length")
+        {
+            String str("");
+            StringView view(str);
+            size_t pos = view.FindLastOf('\0');
+            REQUIRE(pos == view.NullPos);
+        }
+
+        SECTION("Finds at end of string")
+        {
+            String str("path/");
+            StringView view(str);
+            size_t pos = view.FindLastOf('/');
+            REQUIRE(pos == view.Length() - 1);
+        }
+
+        SECTION("Finds at beginning of string")
+        {
+            String str("/path");
+            StringView view(str);
+            size_t pos = view.FindLastOf('/');
+            REQUIRE(pos == 0);
+        }
+
+        SECTION("Finds in middle of string")
+        {
+            String str("path/file.txt");
+            StringView view(str);
+            size_t pos = view.FindLastOf('/');
+            REQUIRE(pos == 4);
+        }
+
+        SECTION("Finds first when there are two occurrences")
+        {
+            String str("path/to/file.txt");
+            StringView view(str);
+            size_t pos = view.FindLastOf('/');
+            REQUIRE(pos == 7);
+        }
+    }
+
+    SECTION("FindLastOf: multiple char")
+    {
+        SECTION("When not found, it returns NullPos: one char")
+        {
+            String str("testing");
+            StringView view(str);
+            REQUIRE(view.FindLastOf("/") == view.NullPos);
+        }
+        SECTION("When not found, it returns NullPos: multiple chars")
+        {
+            String str("testing");
+            StringView view(str);
+            REQUIRE(view.FindLastOf("/810w") == view.NullPos);
+        }
+
+        SECTION("When not found in empty str, it returns NullPos: one char")
+        {
+            String str("");
+            StringView view(str);
+            REQUIRE(view.FindLastOf("/") == view.NullPos);
+        }
+        SECTION("When not found in empty str, it returns NullPos: multiple chars")
+        {
+            String str("");
+            StringView view(str);
+            REQUIRE(view.FindLastOf("/sdf") == view.NullPos);
+        }
+
+        SECTION("Finds at end of string: one char")
+        {
+            String str("path/");
+            StringView view(str);
+            size_t pos = view.FindLastOf("/");
+            REQUIRE(pos == view.Length() - 1);
+        }
+        SECTION("Finds at end of string: multi char")
+        {
+            String str("path/");
+            StringView view(str);
+            size_t pos = view.FindLastOf("q/^");
+            REQUIRE(pos == view.Length() - 1);
+        }
+        SECTION("Finds at end of string: multi char, end of list")
+        {
+            String str("path/");
+            StringView view(str);
+            size_t pos = view.FindLastOf("q^/");
+            REQUIRE(pos == view.Length() - 1);
+        }
+
+        SECTION("Finds at beginning of string: one char")
+        {
+            String str("/path");
+            StringView view(str);
+            size_t pos = view.FindLastOf("/");
+            REQUIRE(pos == 0);
+        }
+        SECTION("Finds at beginning of string: multi char")
+        {
+            String str("/path");
+            StringView view(str);
+            size_t pos = view.FindLastOf("q/f");
+            REQUIRE(pos == 0);
+        }
+
+        SECTION("Finds in middle of string: one char")
+        {
+            String str("path/file.txt");
+            StringView view(str);
+            size_t pos = view.FindLastOf("/");
+            REQUIRE(pos == 4);
+        }
+        SECTION("Finds in middle of string: multi char")
+        {
+            String str("path/file.txt");
+            StringView view(str);
+            size_t pos = view.FindLastOf("*/!@#");
+            REQUIRE(pos == 4);
+        }
+
+        SECTION("Finds first when there are two occurrences")
+        {
+            String str("path/to/file.txt");
+            StringView view(str);
+            size_t pos = view.FindLastOf('/');
+            REQUIRE(pos == 7);
+        }
+    }
+
+    SECTION("== operator")
+    {
+        SECTION("StringView to StringView")
+        {
+            SECTION("Typical equality")
+            {
+                const char *str1 = "abcd";
+                const char *str2 = "abcd";
+
+                REQUIRE(StringView(str1) == StringView(str2));
+            }
+
+            SECTION("Nullptr string equal to empty")
+            {
+                const char *str1 = "";
+                const char *str2 = nullptr;
+
+                REQUIRE(StringView(str1) == StringView(str2));
+            }
+
+            SECTION("Nullptr string equal to nullptr")
+            {
+                REQUIRE(StringView(nullptr) == StringView(nullptr));
+            }
+
+            SECTION("Empty string equal to empty string")
+            {
+                const char *str1 = "";
+                const char *str2 = "";
+                REQUIRE(StringView(str1) == StringView(str2));
+            }
+
+            SECTION("Same strings but differing lengths unequal")
+            {
+                const char *str1 = "abc";
+                const char *str2 = "abcdefg";
+                REQUIRE(!(StringView(str1) == StringView(str2)));
+            }
+        }
+
+        SECTION("StringView to String")
+        {
+            SECTION("Typical equality")
+            {
+                const char *str1 = "abcd";
+                const char *str2 = "abcd";
+
+                REQUIRE(StringView(str1) == String(str2));
+            }
+
+            SECTION("Nullptr string equal to empty")
+            {
+                const char *str1 = "";
+                const char *str2 = nullptr;
+
+                REQUIRE(StringView(str1) == String(str2));
+            }
+
+            SECTION("Nullptr string equal to nullptr")
+            {
+                REQUIRE(StringView(nullptr) == String(nullptr));
+            }
+
+            SECTION("Empty string equal to empty string")
+            {
+                const char *str1 = "";
+                const char *str2 = "";
+                REQUIRE(StringView(str1) == String(str2));
+            }
+
+            SECTION("Same strings but differing lengths unequal")
+            {
+                const char *str1 = "abc";
+                const char *str2 = "abcdefg";
+                REQUIRE(!(StringView(str1) == String(str2)));
+            }
+        }
+
+        SECTION("StringView to std::string")
+        {
+            SECTION("Typical equality")
+            {
+                const char *str1 = "abcd";
+                const char *str2 = "abcd";
+
+                REQUIRE(StringView(str1) == std::string(str2));
+            }
+
+            SECTION("Empty string equal to empty string")
+            {
+                const char *str1 = "";
+                const char *str2 = "";
+                REQUIRE(StringView(str1) == std::string(str2));
+            }
+
+            SECTION("Same strings but differing lengths unequal")
+            {
+                const char *str1 = "abc";
+                const char *str2 = "abcdefg";
+                REQUIRE(!(StringView(str1) == std::string(str2)));
+            }
+        }
+
+        SECTION("StringView to c-string")
+        {
+            SECTION("Typical equality")
+            {
+                const char *str1 = "abcd";
+                const char *str2 = "abcd";
+
+                REQUIRE(StringView(str1) == str2);
+            }
+
+            SECTION("Nullptr string equal to empty")
+            {
+                const char *str1 = "";
+                const char *str2 = nullptr;
+
+                REQUIRE(StringView(str1) == str2);
+            }
+
+            SECTION("Nullptr string equal to nullptr")
+            {
+                REQUIRE(StringView(nullptr) == (const char *)nullptr);
+            }
+
+            SECTION("Empty string equal to empty string")
+            {
+                const char *str1 = "";
+                const char *str2 = "";
+                REQUIRE(StringView(str1) == str2);
+            }
+
+            SECTION("Same strings but differing lengths unequal")
+            {
+                const char *str1 = "abc";
+                const char *str2 = "abcdefg";
+                REQUIRE(!(StringView(str1) == str2));
+            }
+
+            SECTION("Same strings but differing lengths unequal, switch order")
+            {
+                const char *str1 = "abc";
+                const char *str2 = "abcdefg";
+                REQUIRE(!(StringView(str2) == str1));
+            }
+        }
+    }
+
+    SECTION("!= operator")
+    {
+        SECTION("StringView to StringView")
+        {
+            SECTION("Typical inequality")
+            {
+                const char *str1 = "dcba";
+                const char *str2 = "abcd";
+
+                REQUIRE(StringView(str1) != StringView(str2));
+            }
+
+            SECTION("Nullptr string equal to empty")
+            {
+                const char *str1 = "";
+                const char *str2 = nullptr;
+
+                REQUIRE( !(StringView(str1) != StringView(str2)) );
+            }
+
+            SECTION("Nullptr string equal to nullptr")
+            {
+                REQUIRE( !(StringView(nullptr) != StringView(nullptr)) );
+            }
+
+            SECTION("Empty string equal to empty string")
+            {
+                const char *str1 = "";
+                const char *str2 = "";
+                REQUIRE( !(StringView(str1) != StringView(str2)) );
+            }
+
+            SECTION("Same strings but differing lengths unequal")
+            {
+                const char *str1 = "abc";
+                const char *str2 = "abcdefg";
+                REQUIRE(StringView(str1) != StringView(str2));
+            }
+        }
+
+        SECTION("StringView to String")
+        {
+            SECTION("Typical inequality")
+            {
+                const char *str1 = "dcba";
+                const char *str2 = "abcd";
+
+                REQUIRE(StringView(str1) != String(str2));
+            }
+
+            SECTION("Nullptr string equal to empty")
+            {
+                const char *str1 = "";
+                const char *str2 = nullptr;
+
+                REQUIRE(!(StringView(str1) != String(str2)));
+            }
+
+            SECTION("Nullptr string equal to nullptr")
+            {
+                REQUIRE(!(StringView(nullptr) != String(nullptr)));
+            }
+
+            SECTION("Empty string equal to empty string")
+            {
+                const char *str1 = "";
+                const char *str2 = "";
+                REQUIRE(!(StringView(str1) != String(str2)));
+            }
+
+            SECTION("Same strings but differing lengths unequal")
+            {
+                const char *str1 = "abc";
+                const char *str2 = "abcdefg";
+                REQUIRE(StringView(str1) != String(str2));
+            }
+        }
+
+        SECTION("StringView to std::string")
+        {
+            SECTION("Typical inequality")
+            {
+                const char *str1 = "dcba";
+                const char *str2 = "abcd";
+
+                REQUIRE(StringView(str1) != std::string(str2));
+            }
+
+            SECTION("Empty string equal to empty string")
+            {
+                const char *str1 = "";
+                const char *str2 = "";
+                REQUIRE(!(StringView(str1) != std::string(str2)));
+            }
+
+            SECTION("Same strings but differing lengths unequal")
+            {
+                const char *str1 = "abc";
+                const char *str2 = "abcdefg";
+                REQUIRE(StringView(str1) != std::string(str2));
+            }
+        }
+
+        SECTION("StringView to c-string")
+        {
+            SECTION("Typical inequality")
+            {
+                const char *str1 = "dcba";
+                const char *str2 = "abcd";
+
+                REQUIRE(StringView(str1) != str2);
+            }
+
+            SECTION("Nullptr string equal to empty")
+            {
+                const char *str1 = "";
+                const char *str2 = nullptr;
+
+                REQUIRE(!(StringView(str1) != str2));
+            }
+
+            SECTION("Nullptr string equal to nullptr")
+            {
+                REQUIRE(!(StringView(nullptr) != (const char *)nullptr));
+            }
+
+            SECTION("Empty string equal to empty string")
+            {
+                const char *str1 = "";
+                const char *str2 = "";
+                REQUIRE(!(StringView(str1) != str2));
+            }
+
+            SECTION("Same strings but differing lengths unequal")
+            {
+                const char *str1 = "abc";
+                const char *str2 = "abcdefg";
+                REQUIRE(StringView(str1) != str2);
+            }
+
+            SECTION("Same strings but differing lengths unequal, swap order")
+            {
+                const char *str1 = "abc";
+                const char *str2 = "abcdefg";
+                REQUIRE(StringView(str2) != str1);
+            }
+        }
+    }
+
+    SECTION("operator []")
+    {
+        SECTION("Works within range")
+        {
+            const char *str = "012345";
+            StringView view(str);
+
+            REQUIRE(view[0] == '0');
+            REQUIRE(view[1] == '1');
+            REQUIRE(view[2] == '2');
+            REQUIRE(view[3] == '3');
+            REQUIRE(view[4] == '4');
+            REQUIRE(view[5] == '5');
+        }
+
+        SECTION("Throws outside of range")
+        {
+            const char *str = "012345";
+            StringView view(str);
+
+            bool didThrow = false;;
+            try {
+                char c = view[10];
+            }
+            catch (const OutOfRangeException &e)
+            {
+                didThrow = true;
+            }
+
+            REQUIRE(didThrow);
+        }
+    }
+
+    SECTION("operator +")
+    {
+
+    }
 }

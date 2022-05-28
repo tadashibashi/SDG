@@ -3,10 +3,10 @@
 #include <SDG/String.h>
 
 #include <cstddef>
-#include <SDG/Debug/LogImpl.h>
 
 namespace SDG
 {
+    /// Quickly peruse a string of chars
     class StringView
     {
     public:
@@ -14,13 +14,13 @@ namespace SDG
         StringView();
         StringView(const String &str);
         StringView(const std::string &str);
-        StringView(const char *str);
+        StringView(const char *cstr);
         StringView(const char *str, size_t size);
 
         StringView &operator = (const StringView &str);
         StringView &operator = (const String &str);
         StringView &operator = (const std::string &str);
-        StringView &operator = (const char *str);
+        StringView &operator = (const char *cstr);
 
         static const size_t NullPos;
 
@@ -65,8 +65,8 @@ namespace SDG
         bool operator != (const char *s) const;
 
         typedef const char *Iterator;
-        [[nodiscard]] Iterator begin();
-        [[nodiscard]] Iterator end();
+        [[nodiscard]] Iterator begin() const;
+        [[nodiscard]] Iterator end() const;
 
         [[nodiscard]]
         char operator [] (unsigned i) const;
@@ -74,9 +74,8 @@ namespace SDG
         template<typename Ostream>
         friend Ostream &operator << (Ostream &os, const StringView &view)
         {
-            for (const char *p = view.str_, *end = view.str_ + view.size_;
-                p != end; ++p)
-                os << *p;
+            for (char c : view)
+                os << c;
 
             return os;
         }

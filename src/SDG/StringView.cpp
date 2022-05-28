@@ -29,15 +29,15 @@ namespace SDG
         size_ = str.size();
         return *this;
     }
-    StringView &StringView::operator=(const char *str)
+    StringView &StringView::operator=(const char *cstr)
     {
-        str_ = str;
-        size_ = str ? std::strlen(str) : 0;
+        str_ = cstr;
+        size_ = cstr ? std::strlen(cstr) : 0;
         return *this;
     }
     StringView::StringView(const String &str) : str_(str.Cstr()), size_(str.Length()) { }
     StringView::StringView(const std::string &str) : str_(str.c_str()), size_(str.length()) { }
-    StringView::StringView(const char *str) : str_(str), size_(str ? std::strlen(str) : 0) { }
+    StringView::StringView(const char *cstr) : str_(cstr), size_(cstr ? std::strlen(cstr) : 0) { }
 
     size_t
     StringView::Length() const { return size_; }
@@ -159,10 +159,12 @@ namespace SDG
 
     const char *
     StringView::Cstr() const { return str_; }
+
     bool StringView::operator == (const StringView &s) const
     {
         return StrCmp(s.str_, s.size_);
     }
+
     bool StringView::operator != (const StringView &s) const
     {
         return !operator==(s);
@@ -178,26 +180,25 @@ namespace SDG
         return !operator==(s);
     }
 
-    bool StringView::operator==(const std::string &s) const
+    bool StringView::operator == (const std::string &s) const
     {
         return StrCmp(s.c_str(), s.length());
     }
 
-    bool StringView::operator!=(const std::string &s) const
+    bool StringView::operator != (const std::string &s) const
     {
         return !operator==(s);
     }
 
     bool
-    StringView::operator == (const char *s) const
+    StringView::operator == (const char *cstr) const
     {
-        for (const char *p = str_, *end = str_ + size_;
-            p != end;
-            ++p, ++s)
-        {
-            if (*s == '\0' || *p != *s)
-                return false;
-        }
+        if (!cstr) return Empty();
+
+        if (strlen(cstr) != Length()) return false;
+
+        for (char c : *this)
+            if (c != *cstr++) return false;
 
         return true;
     }
@@ -209,13 +210,13 @@ namespace SDG
     }
 
     StringView::Iterator
-    StringView::begin()
+    StringView::begin() const
     {
         return str_;
     }
 
     StringView::Iterator
-    StringView::end()
+    StringView::end() const
     {
         return str_ + size_;
     }
@@ -230,6 +231,9 @@ namespace SDG
 
     bool StringView::StrCmp(const char *s, size_t length) const
     {
+        if (!s)
+            return Empty();
+
         if (Length() != length)
             return false;
 

@@ -1,7 +1,8 @@
 #include "SDG_Tests.h"
 #include <SDG/StringView.h>
-
+#include <SDG/Debug/Performance.h>
 #include <sstream>
+#include <SDG/Exceptions/OutOfRangeException.h>
 
 TEST_CASE("StringView tests", "[StringView]")
 {
@@ -171,17 +172,67 @@ TEST_CASE("StringView tests", "[StringView]")
 
     SECTION("Output operator")
     {
-        std::stringstream ss;
-        String str = "ABCDEFG";
-        StringView view(str);
+        SECTION("Normal string")
+        {
+            std::stringstream ss;
+            String str = "ABCDEFG";
+            StringView view(str);
 
-        ss << view;
+            ss << view;
 
-        REQUIRE(strcmp(ss.str().c_str(), "ABCDEFG") == 0);
+            REQUIRE(strcmp(ss.str().c_str(), "ABCDEFG") == 0);
+        }
+        SECTION("Empty string")
+        {
+            std::stringstream ss;
+            String str;
+            StringView view(str);
+
+            ss << view;
+
+            REQUIRE(strcmp(ss.str().c_str(), "") == 0);
+        }
+        SECTION("Null string")
+        {
+            std::stringstream ss;
+            const char *str = nullptr;
+            StringView view(str);
+
+            ss << view;
+
+            REQUIRE(strcmp(ss.str().c_str(), "") == 0);
+        }
+
     }
 
-    SECTION("")
+    SECTION("Substr")
     {
+        SECTION("Typical use")
+        {
+            String str = "Hello world";
+            StringView view(str);
+
+            REQUIRE(view.Substr(0, 5) == "Hello");
+            REQUIRE(view.Substr(6, 5) == "world");
+        }
+
+        SECTION("Out of range exception")
+        {
+            String str = "Hello world";
+            StringView view(str);
+
+            bool didThrow;
+            try {
+                view = view.Substr(view.Length());
+                didThrow = false;
+            }
+            catch (const OutOfRangeException& e)
+            {
+                didThrow = true;
+            }
+
+            REQUIRE(didThrow);
+        }
 
     }
 }

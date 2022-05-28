@@ -1,9 +1,14 @@
 #include "StringView.h"
+#include <SDG/Debug/Assert.h>
 #include <SDG/Exceptions/OutOfRangeException.h>
 #include <SDG/Math/Math.h>
 
+#include <utility>
+
 namespace SDG
 {
+    const size_t StringView::NullPos = SIZE_MAX;
+
     StringView::StringView() : str_(""), size_() { }
     StringView::StringView(const char *str, size_t size) : str_(str), size_(size) { }
     StringView &StringView::operator = (const StringView &str)
@@ -46,8 +51,110 @@ namespace SDG
     StringView
     StringView::Substr(size_t index, size_t count) const 
     {
-        index = Math::Min(size_ - 1, index);
+        if (index >= size_)
+            throw OutOfRangeException(index, "Max range is: " + std::to_string(size_ - 1));
+
         return StringView(str_ + index, (count > size_ - index) ? size_ - index : count); 
+    }
+
+    size_t
+    StringView::FindFirstOf(char c, size_t startingAt) const
+    {
+        if (Empty()) return NullPos;
+
+        if (startingAt >= Length())
+            throw OutOfRangeException(startingAt, "String max index: " +
+                std::to_string(Length() - 1));
+
+        for (const char *p = str_ + startingAt, *ends = str_ + size_; p < ends; ++p)
+            if (*p == c)
+                return p - str_;
+
+        return NullPos;
+    }
+
+    size_t
+    StringView::FindFirstOf(const char *list, size_t startingAt) const
+    {
+        SDG_Assert(list && *list != '\0'); // list should have substance
+        if (Empty()) return NullPos;
+
+        if (startingAt >= Length())
+            throw OutOfRangeException(startingAt, "String max index: " +
+                std::to_string(Length() - 1));
+
+        for (const char *p = str_ + startingAt, *ends = str_ + size_; p < ends; ++p)
+            for (const char *q = list; *q != '\0'; ++q)
+                if (*p == *q)
+                    return p - str_;
+
+        return NullPos;
+    }
+
+    size_t
+    StringView::Find(const char *pattern, size_t startingAt) const
+    {
+        if (Empty()) return NullPos;
+
+        if (startingAt >= Length())
+            throw OutOfRangeException(startingAt, "String max index: " +
+                std::to_string(Length() - 1));
+
+        for (const char *p = str_ + startingAt, *find = pattern, *ret = str_, *ends = str_ + size_;
+            p < ends; ++p)
+        {
+            if (*p == *find)
+            {
+                if (find++ == pattern)
+                    ret = p;
+                if (*find == '\0')
+                    return ret - str_;
+            }
+            else
+                find = pattern;
+        }
+
+        return NullPos;
+    }
+
+    size_t
+    StringView::FindLastOf(char c, size_t startingAt) const
+    {
+        if (Empty()) return NullPos;
+
+        // Make sure we start at a valid index
+        startingAt = Math::Min(startingAt, Length() - 1);
+
+        for (const char *p = str_ + startingAt; p >= str_; --p)
+            if (*p == c)
+                return p - str_;
+
+        return NullPos;
+    }
+
+    size_t
+    StringView::FindLastOf(const char *list, size_t startingAt) const
+    {
+        SDG_Assert(list && *list != '\0'); // list should have substance
+        if (Empty()) return NullPos;
+
+        // Make sure we start at a valid index
+        startingAt = Math::Min(startingAt, Length() - 1);
+
+        for (const char *p = str_ + startingAt; p >= str_; --p)
+            for (const char *q = list; *q != '\0'; ++q)
+                if (*p == *q)
+                    return p - str_;
+
+        return NullPos;
+    }
+
+    StringView &
+    StringView::Swap(StringView &other)
+    {
+        std::swap(str_, other.str_);
+        std::swap(size_, other.size_);
+        return *this;
     }
 
     const char *
@@ -95,7 +202,8 @@ namespace SDG
         return true;
     }
 
-    bool StringView::operator != (const char *s) const
+    bool
+    StringView::operator != (const char *s) const
     {
         return !operator==(s);
     }
@@ -138,32 +246,37 @@ namespace SDG
 
     String operator + (const StringView &a, const StringView &b)
     {
-        return String(a.Cstr()) + b.Cstr();
+        return String(a.Cstr()).Append(b.Cstr(), b.Length());
     }
 
     String operator + (const StringView &a, const String &b)
     {
-        return String(a.Cstr()) + b.Cstr();
+        return String(a.Cstr()).Append(b.Cstr(), b.Length());
     }
 
     String operator + (const StringView &a, const std::string &b)
     {
-        return String(a.Cstr()) + b.c_str();
+        return String(a.Cstr()).Append(b.c_str(), b.length());
     }
 
     String operator + (const StringView &a, const char *b)
     {
-        return String(a.Cstr()) + b;
+        return String(a.Cstr()).Append(b);
+    }
+
+    String operator + (const char *a, const StringView &b)
+    {
+        return String(a).Append(b.Cstr(), b.Length());
     }
 
     String operator + (const String &a, const StringView &b)
     {
-        return String(a) + b.Cstr();
+        return String(a).Append(b.Cstr(), b.Length());
     }
 
     std::string operator + (const std::string &a, const StringView &b)
     {
-        return std::string(a) + b.Cstr();
+        return std::string(a).append(b.Cstr(), b.Length());
     }
 
     bool operator == (const String &a, const StringView &b)

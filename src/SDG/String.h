@@ -73,6 +73,8 @@ namespace SDG
         /// More efficient than checking Length() == 0
         [[nodiscard]] bool Empty() const;
 
+        String &Swap(String &other);
+
         /// Reserves the amount of characters inside the String to help prevent
         /// unnecessary reallocations. Expands the Capacity if greater, but
         /// will not affect the String if it is smaller than the Capacity.
@@ -81,6 +83,8 @@ namespace SDG
         String &Append(const std::string &str);
         String &Append(const char *str);
         String &Append(char c);
+        /// Appends a String to a c-string.
+        String &Append(const char *str, size_t size);
 
         /// Erases a character from the String at the specified index.
         String &Erase(size_t index);
@@ -144,8 +148,6 @@ namespace SDG
         }
 
     private:
-        /// Appends a String to a c-string.
-        void Append(const char *str, size_t size);
         /// Safely expands the String's internal capacity.
         void Expand(size_t size);
         /// Called privately to initialize String. Useful for data

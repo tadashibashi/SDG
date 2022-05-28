@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <ostream>
+#include <utility>
 
 // ===== C-string function helpers ============================================
 static char *StrMalloc(size_t size);
@@ -47,7 +48,7 @@ namespace SDG
         *end_ = '\0';
     }
 
-    void
+    String &
     String::Append(const char *str, size_t size)
     {
         // Expand first if necessary
@@ -59,11 +60,19 @@ namespace SDG
         memcpy(end_, str, size);
         end_ = str_ + fullLen;
         *end_ = '\0';
+
+        return *this;
     }
 
     size_t
     String::FindFirstOf(char c, size_t startingAt) const
     {
+        if (Empty()) return NullPos;
+
+        if (startingAt >= Length())
+            throw OutOfRangeException(startingAt, "String max index: " +
+                std::to_string(Length() - 1));
+
         for (char *p = str_ + startingAt; p < end_; ++p)
             if (*p == c)
                 return p - str_;
@@ -74,7 +83,12 @@ namespace SDG
     size_t
     String::FindFirstOf(const char *list, size_t startingAt) const
     {
+        if (Empty()) return NullPos;
+
         SDG_Assert(list && *list != '\0'); // list should have substance
+        if (startingAt >= Length())
+            throw OutOfRangeException(startingAt, "String max index: " +
+                std::to_string(Length() - 1));
 
         for (char *p = str_ + startingAt; p < end_; ++p)
             for (const char *q = list; *q != '\0'; ++q)
@@ -88,6 +102,12 @@ namespace SDG
     size_t
     String::Find(const char *str, size_t startingAt) const
     {
+        if (Empty()) return NullPos;
+
+        if (startingAt >= Length())
+            throw OutOfRangeException(startingAt, "String max index: " +
+                std::to_string(Length() - 1));
+
         for (const char *p = str_ + startingAt, *find = str, *ret = str_; p < end_; ++p)
         {
             if (*p == *find)
@@ -107,6 +127,8 @@ namespace SDG
     size_t
     String::FindLastOf(char c, size_t startingAt) const
     {
+        if (Empty()) return NullPos;
+
         // Make sure we start at a valid index
         startingAt = Math::Min(startingAt, Length() - 1);
 
@@ -121,6 +143,7 @@ namespace SDG
     String::FindLastOf(const char *list, size_t startingAt) const
     {
         SDG_Assert(list && *list != '\0'); // list should have substance
+        if (Empty()) return NullPos;
 
         // Make sure we start at a valid index
         startingAt = Math::Min(startingAt, Length() - 1);
@@ -212,6 +235,15 @@ namespace SDG
                                              std::to_string(Length() - 1));
 
         return str_[index];
+    }
+
+    String &
+    String::Swap(String &other)
+    {
+        std::swap(str_, other.str_);
+        std::swap(end_, other.end_);
+        std::swap(full_, other.full_);
+        return *this;
     }
 
     // Implementation from:
@@ -337,29 +369,25 @@ namespace SDG
     String &
     String::Append(const String &str)
     {
-        Append(str.Cstr(), str.Length());
-        return *this;
+        return Append(str.Cstr(), str.Length());
     }
 
     String &
     String::Append(const std::string &str)
     {
-        Append(str.c_str(), str.length());
-        return *this;
+        return Append(str.c_str(), str.length());
     }
 
     String &
     String::Append(const char *str)
     {
-        Append(str, str ? strlen(str) : 0);
-        return *this;
+        return Append(str, str ? strlen(str) : 0);
     }
 
     String &
     String::Append(char c)
     {
-        Append(&c, 1);
-        return *this;
+        return Append(&c, 1);
     }
 
     bool
@@ -401,13 +429,13 @@ namespace SDG
     String &
     String::operator+=(const String &other)
     {
-        return Append(other);
+        return Append(other.Cstr(), other.Length());
     }
 
     String &
     String::operator+=(const std::string &other)
     {
-        return Append(other);
+        return Append(other.c_str(), other.length());
     }
 
     String &
@@ -428,37 +456,37 @@ namespace SDG
 SDG::String
 SDG::operator + (const SDG::String &str1, const SDG::String &str2)
 {
-    return SDG::String(str1) += str2;
+    return SDG::String(str1).Append(str2.Cstr(), str2.Length());
 }
 
 SDG::String
 SDG::operator + (const SDG::String &str1, const std::string &str2)
 {
-    return SDG::String(str1) += str2;
+    return SDG::String(str1).Append(str2.c_str(), str2.length());
 }
 
 SDG::String
 SDG::operator + (const SDG::String &str1, const char *str2)
 {
-    return SDG::String(str1) += str2;
+    return SDG::String(str1).Append(str2);
 }
 
 std::string
 SDG::operator + (const std::string &str1, const SDG::String &str2)
 {
-    return std::string(str1) += str2.Cstr();
+    return std::string(str1).append(str2.Cstr(), str2.Length());
 }
 
 SDG::String
 SDG::operator + (const char *str1, const SDG::String &str2)
 {
-    return SDG::String(str1) + str2;
+    return SDG::String(str1).Append(str2.Cstr(), str2.Length());
 }
 
 SDG::String
 SDG::Strcat(const char *str1, const char *str2)
 {
-    return SDG::String(str1) += str2;
+    return SDG::String(str1).Append(str2);
 }
 
 bool

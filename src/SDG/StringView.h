@@ -22,6 +22,8 @@ namespace SDG
         StringView &operator = (const std::string &str);
         StringView &operator = (const char *str);
 
+        static const size_t NullPos;
+
         [[nodiscard]] size_t Length() const;
         [[nodiscard]] bool Empty() const;
 
@@ -29,12 +31,21 @@ namespace SDG
         [[nodiscard]]
         String Str() const;
 
+        [[nodiscard]] size_t Find(const char *pattern, size_t startingAt = 0) const;
+        [[nodiscard]] size_t FindFirstOf(char c, size_t startingAt = 0) const;
+        [[nodiscard]] size_t FindFirstOf(const char *list, size_t startingAt = 0) const;
+        [[nodiscard]] size_t FindLastOf(char c, size_t startingAt = NullPos) const;
+        [[nodiscard]] size_t FindLastOf(const char *list, size_t startingAt = NullPos) const;
+
         [[nodiscard]]
-        StringView Substr(size_t index, size_t count = String::NullPos) const;
+        StringView Substr(size_t index, size_t count = NullPos) const;
 
         /// Gets the internal c-string
         [[nodiscard]]
         const char *Cstr() const;
+
+        /// Swaps the internals of one StringView with another
+        StringView &Swap(StringView &other);
 
         [[nodiscard]]
         bool operator == (const StringView &s) const;
@@ -85,6 +96,8 @@ namespace SDG
     String operator + (const StringView &a, const std::string &b);
     [[nodiscard]]
     String operator + (const StringView &a, const char *b);
+    [[nodiscard]]
+    String operator + (const char *b, const StringView &a);
     [[nodiscard]]
     String operator + (const String &a, const StringView &b);
     [[nodiscard]]

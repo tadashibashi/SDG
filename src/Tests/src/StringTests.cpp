@@ -1056,8 +1056,17 @@ TEST_CASE("String tests", "[String]")
         SECTION("StartingAt too high index")
         {
             String str("abcabcd");
-            REQUIRE(str.Find("abc", 10) == str.NullPos);
-        }
 
+            bool didThrow;
+            try {
+                size_t pos = str.Find("abc", 10);
+                didThrow = false;
+            }
+            catch (const OutOfRangeException &e)
+            {
+                didThrow = true;
+            }
+            REQUIRE(didThrow);
+        }
     }
 }

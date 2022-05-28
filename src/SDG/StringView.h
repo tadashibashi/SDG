@@ -22,21 +22,48 @@ namespace SDG
         StringView &operator = (const std::string &str);
         StringView &operator = (const char *cstr);
 
+        /// Definition of a null position, used as a default or false
+        /// return  value in the Find* functions.
         static const size_t NullPos;
 
+        /// Length of the string
         [[nodiscard]] size_t Length() const;
+        /// Whether the string is empty
         [[nodiscard]] bool Empty() const;
 
         /// Copies string to an SDG::String
         [[nodiscard]]
         String Str() const;
 
+        /// Find a pattern within the string. Returns the position it was first found
+        /// or NullPos if it was not found
+        /// @param pattern - the pattern to search for
+        /// @param startingAt - the position to start searching from
         [[nodiscard]] size_t Find(const char *pattern, size_t startingAt = 0) const;
+        
+        /// Finds the first occurance of a character.
+        /// @param c - the character to find
+        /// @param startingAt - the position to start search from
         [[nodiscard]] size_t FindFirstOf(char c, size_t startingAt = 0) const;
+        
+        /// Finds the first occurance of any character in a list.
+        /// @param list - the list of characters to search for.
+        /// @param startingAt - the position to start search from
         [[nodiscard]] size_t FindFirstOf(const char *list, size_t startingAt = 0) const;
+        
+        /// Finds the last occurance of a character.
+        /// @param c - the character to find
+        /// @param startingAt - the position to start search from
         [[nodiscard]] size_t FindLastOf(char c, size_t startingAt = NullPos) const;
+        
+        /// Finds the last occurance of any character in a list.
+        /// @param list - the list of characters to search for.
+        /// @param startingAt - the position to start search from
         [[nodiscard]] size_t FindLastOf(const char *list, size_t startingAt = NullPos) const;
 
+        /// Makes a string from within the string. This operation is much
+        /// faster than a regular String, which must allocate memory
+        /// each time a substring is created. StringView does not allocate.
         [[nodiscard]]
         StringView Substr(size_t index, size_t count = NullPos) const;
 

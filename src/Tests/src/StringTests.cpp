@@ -1069,4 +1069,4 @@ TEST_CASE("String tests", "[String]")
             REQUIRE(didThrow);
         }
     }
-}
+} 

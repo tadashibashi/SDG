@@ -20,8 +20,10 @@ namespace SDG
         Back,
         Guide,
         Start,
-        LeftStick,
-        RightStick,
+        LeftStickX,
+        LeftStickY,
+        RightStickX,
+        RightStickY,
         LeftTrig,
         RightTrig,
         Up,          // d-pad Up

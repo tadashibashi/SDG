@@ -1,5 +1,9 @@
 #pragma once
 #include "InputComponent.h"
+#include "Button.h"
+
+#include <SDG/Templates/Delegate.h>
+
 #include <cstdint>
 
 namespace SDG
@@ -8,15 +12,22 @@ namespace SDG
     {
         struct Impl;
     public:
-        Gamepad();
+        Gamepad(int index);
         ~Gamepad();
     public:
-        bool Press(uint32_t input) const;
-        bool Release(uint32_t input) const;
-        bool Pressed(uint32_t input) const;
-        bool Released(uint32_t input) const;
-        float Axis(uint32_t input) const;
+        bool Press(Button button) const;
+        bool Release(Button button) const;
+        bool Pressed(Button button) const;
+        bool Released(Button button) const;
+        float Axis(Button button) const;
 
+        /// Gets the controller number
+        int Index() const;
+        bool IsOpen() const;
+
+        /// Invoked when the device is removed.
+        /// Callbacks receive the controller index (not id).
+        Delegate<int> OnRemove;
     private:
         bool InitializeImpl() override;
         void ProcessInputImpl(const SDL_Event &ev) override;

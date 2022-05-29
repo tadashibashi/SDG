@@ -78,7 +78,11 @@ namespace SDG
         Window &Hidden(bool hidden);
         /// Set the Window's minimum size
         Window &MinimumSize(Point size);
+        /// Set the Window's maximum size
         Window &MaximumSize(Point size);
+
+        /// Sets the Window's mouse grab mode. Mouse grab mode confines the
+        /// mouse cursor within the window.
         Window &MouseGrabbed(bool mouseGrab);
         Window &AlwaysOnTop(bool alwaysOnTop);
 

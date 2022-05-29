@@ -94,14 +94,14 @@ namespace SDG
         // State-leaving logic
         if (time_ >= tween.Duration())
         {
-            if (tween.Yoyo())  // reverse Tween
+            if (tween.Yoyo())  // reverse mode if yoyo
             {
                 state_ = State::Backward;
                 // Any time exceeding the duration gets reflected back
                 time_ = tween.Duration() -
                         (time_ - tween.Duration());
             }
-            else               // finished
+            else               // non-yoyo finished
             {
                 state_ = State::Standby;
                 time_ = tween.Duration(); // clamp time counter
@@ -110,7 +110,6 @@ namespace SDG
             }
         }
 
-        currentValue = tween.CalculateValue(time_);
         ApplyCurrentValue();
     }
 
@@ -130,13 +129,13 @@ namespace SDG
                 tween.onFinish_();
         }
 
-        currentValue = tween.CalculateValue(time_);
         ApplyCurrentValue();
     }
 
     void
     Tweener::ApplyCurrentValue()
     {
+        currentValue = tween.CalculateValue(time_);
         if (tween.onStep_)
             tween.onStep_(currentValue);
     }

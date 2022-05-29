@@ -102,6 +102,26 @@ TEST_CASE("Tweener tests", "[Tweener]")
             REQUIRE(testVal == 5.0f);
         }
 
+        SECTION("Play simply unpauses if paused, no reset")
+        {
+            t.Play();
+            t.Update(0);
+            t.Paused(true); // start Tweener in paused mode
+            REQUIRE(t.Paused());
+            t.Update(5.0f);
+            REQUIRE(t.CurrentValue() == 0);
+            REQUIRE(t.Time() == 0);
+            REQUIRE(testVal == 0);
+
+            // Now that it's unpaused, Tweener should update.
+            t.Play();
+            REQUIRE(!t.Paused());
+            t.Update(5.0f);
+            REQUIRE(t.CurrentValue() == .5f);
+            REQUIRE(t.Time() == 5.0f);
+            REQUIRE(testVal == 5.0f);
+        }
+
         SECTION("Stopping a Tween")
         {
             t.Play();

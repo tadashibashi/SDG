@@ -37,7 +37,7 @@ namespace SDG
         // ========== Playback controls ==========
 
         /// Starts the Tweener. Behavior is like pressing a play button in audio software.
-        /// Tween will restart if it was finished, and resume if it was paused_.
+        /// Tween will restart if it was finished, and resume if it was paused.
         /// Please use Restart for resetting the Tween.
         Tweener &Play();
 

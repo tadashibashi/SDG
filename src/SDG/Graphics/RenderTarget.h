@@ -12,6 +12,7 @@
 #include <SDG/Math/Rectangle.h>
 #include <SDG/Math/Vector2.h>
 #include <SDG/Ref.h>
+#include <SDG/Math/Circle.h>
 
 // forward declaration
 struct GPU_Target;
@@ -71,6 +72,7 @@ namespace SDG
         void DrawTexture(Ref<class Texture2D> texture, Rectangle src,
             FRectangle dest, float rotation, Vector2 anchor, Flip flip);
         void DrawRectangle(FRectangle rect);
+        void DrawCircle(Circle circle);
         /*!
          * Gets the internal GPU_Target. Please include SDL_gpu.h in
          * order to access the internals and functions.

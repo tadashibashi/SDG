@@ -129,6 +129,12 @@ namespace SDG
                        target->color);
     }
 
+    void RenderTarget::DrawCircle(Circle circle)
+    {
+        GPU_CircleFilled(target, circle.X(), circle.Y(), circle.Radius(),
+            target->color);
+    }
+
     void RenderTarget::MakeActiveTarget()
     {
         GPU_SetActiveTarget(target);

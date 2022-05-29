@@ -280,12 +280,12 @@ namespace SDG
     {
         if (size.X() < 1)
         {
-            SDG_Core_Warn("Window::MinimumSize size.X() must be > 0; setting it to 1");
+            //SDG_Core_Warn("Window::MinimumSize size.X() must be > 0; setting it to 1");
             size.X(1);
         }
         if (size.Y() < 1)
         {
-            SDG_Core_Warn("Window::MinimumSize size.Y() must be > 0; setting it to 1");
+            //SDG_Core_Warn("Window::MinimumSize size.Y() must be > 0; setting it to 1");
             size.Y(1);
         }
 

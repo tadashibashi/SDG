@@ -791,6 +791,53 @@ TEST_CASE("StringView tests", "[StringView]")
 
     SECTION("operator +")
     {
+        SECTION("StringView + StringView -> String")
+        {
+            const char *str1 = "abcd";
+            const char *str2 = "efgh";
+            REQUIRE(StringView(str1) + StringView(str2) == String("abcdefgh"));
+        }
 
+        SECTION("StringView + String -> String")
+        {
+            const char *str1 = "abcd";
+            const char *str2 = "efgh";
+            REQUIRE(StringView(str1) + String(str2) == String("abcdefgh"));
+        }
+
+        SECTION("StringView + std::string -> String")
+        {
+            const char *str1 = "abcd";
+            const char *str2 = "efgh";
+            REQUIRE(StringView(str1) + std::string(str2) == String("abcdefgh"));
+        }
+
+        SECTION("StringView + const char *-> String")
+        {
+            const char *str1 = "abcd";
+            const char *str2 = "efgh";
+            REQUIRE(StringView(str1) + str2 == String("abcdefgh"));
+        }
+
+        SECTION("const char * + StringView -> String")
+        {
+            const char *str1 = "abcd";
+            const char *str2 = "efgh";
+            REQUIRE(str1 + StringView(str2) == String("abcdefgh"));
+        }
+
+        SECTION("String + StringView -> String")
+        {
+            const char *str1 = "abcd";
+            const char *str2 = "efgh";
+            REQUIRE(String(str1) + StringView(str2) == String("abcdefgh"));
+        }
+
+        SECTION("std::string + StringView -> std::string")
+        {
+            const char *str1 = "abcd";
+            const char *str2 = "efgh";
+            REQUIRE(std::string(str1) + StringView(str2) == std::string("abcdefgh"));
+        }
     }
 }

@@ -8,7 +8,11 @@ Tests todo:
     - Texture2D
 
 - Tweener
-- StringView
+
+
+
+
+
 
 Finished:
 x Exceptions
@@ -34,3 +38,7 @@ x Tween
 x MathShape
 x Camera2D
 x Color
+x Pool
+x Buffer
+x String
+x StringView

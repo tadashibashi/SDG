@@ -81,9 +81,9 @@ namespace SDG
     void
     Tweener::ForwardState(float deltaSeconds)
     {
-        currentValue = tween.CalculateValue(deltaSeconds);
-        ApplyCurrentValue();
         UpdateTimeCounter(deltaSeconds);
+        currentValue = tween.CalculateValue(time_);
+        ApplyCurrentValue();
 
         // State-leaving logic
         if (time_ >= tween.Duration())
@@ -108,9 +108,9 @@ namespace SDG
     void
     Tweener::BackwardState(float deltaSeconds)
     {
-        currentValue = tween.CalculateValue(deltaSeconds);
+        UpdateTimeCounter(deltaSeconds);
+        currentValue = tween.CalculateValue(time_);
         ApplyCurrentValue();
-        UpdateTimeCounter(-deltaSeconds);
 
         // State-leaving logic
         if (time_ <= 0) // finished

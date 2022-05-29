@@ -30,6 +30,7 @@ namespace SDG
         Uint8 *lastState;
         int numKeys;
         bool stateChanged;
+        int id;
     };
     
     Keyboard::Keyboard() : impl(new Impl)

@@ -25,6 +25,10 @@ namespace SDG
         int Index() const;
         bool IsOpen() const;
 
+        /// Invoked when the device is connected.
+        /// Callbacks receive the controller index (not id).
+        Delegate<int> OnConnect;
+
         /// Invoked when the device is removed.
         /// Callbacks receive the controller index (not id).
         Delegate<int> OnRemove;

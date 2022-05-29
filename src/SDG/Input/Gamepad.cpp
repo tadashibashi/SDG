@@ -18,7 +18,7 @@ namespace SDG
 
     struct Gamepad::Impl
     {
-        Impl(int index) : 
+        Impl(int index) :
             control(),
             buttons(Malloc<Sint16>((uint8_t)Button::Max_)),
             lastButtons(Malloc<Sint16>((uint8_t)Button::Max_)),
@@ -27,7 +27,7 @@ namespace SDG
             wasChanged(true)
         { }
 
-        ~Impl() 
+        ~Impl()
         {
             Close();
             Free(buttons);
@@ -196,12 +196,20 @@ namespace SDG
                 }
             }
             break;
+        case SDL_CONTROLLERDEVICEADDED:
+            if (ev.cdevice.which == impl->index)
+            {
+                Initialize();
+                OnConnect.Invoke(impl->index);
+            }
+            break;
         case SDL_CONTROLLERDEVICEREMOVED:
             if (ev.cdevice.which == impl->id)
             {
-                impl->Close();
+                Close();
                 OnRemove.Invoke(impl->index);
             }
+            break;
         }
     }
 

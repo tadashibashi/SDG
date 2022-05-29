@@ -26,6 +26,8 @@ TEST_CASE("Tweener tests", "[Tweener]")
         {
             REQUIRE(t.State() == Tweener::State::Standby);
             t.Play();
+            REQUIRE(t.State() == Tweener::State::Starting);
+            t.Update(0); // first update sets it into forward
             REQUIRE(t.State() == Tweener::State::Forward);
             REQUIRE(testVal == 0);
             t.Update(5.0f);
@@ -42,6 +44,8 @@ TEST_CASE("Tweener tests", "[Tweener]")
             t.Tween().Yoyo(true);
             REQUIRE(t.State() == Tweener::State::Standby);
             t.Play();
+            REQUIRE(t.State() == Tweener::State::Starting);
+            t.Update(0);
             REQUIRE(t.State() == Tweener::State::Forward);
             REQUIRE(testVal == 0);
             t.Update(5.0f);
@@ -60,9 +64,28 @@ TEST_CASE("Tweener tests", "[Tweener]")
             REQUIRE(t.State() == Tweener::State::Standby);
         }
 
+        SECTION("Check values: yoyo: reflect back")
+        {
+            t.Tween().Yoyo(true);
+            REQUIRE(t.State() == Tweener::State::Standby);
+            t.Play();
+            REQUIRE(t.State() == Tweener::State::Starting);
+            t.Update(0);
+            REQUIRE(t.State() == Tweener::State::Forward);
+            REQUIRE(testVal == 0);
+            t.Update(5.0f);
+            REQUIRE(testVal == 5);
+            t.Update(2.5f);
+            REQUIRE(testVal == 7.5f);
+            t.Update(3.f);
+            REQUIRE(testVal == 9.5f);
+            REQUIRE(t.State() == Tweener::State::Backward);
+        }
+
         SECTION("Pause prevents update seconds")
         {
             t.Play();
+            t.Update(0);
             t.Paused(true); // start Tweener in paused mode
             REQUIRE(t.Paused());
             t.Update(5.0f);
@@ -77,6 +100,36 @@ TEST_CASE("Tweener tests", "[Tweener]")
             REQUIRE(t.CurrentValue() == .5f);
             REQUIRE(t.Time() == 5.0f);
             REQUIRE(testVal == 5.0f);
+        }
+
+        SECTION("Stopping a Tween")
+        {
+            t.Play();
+            REQUIRE(t.State() == Tweener::State::Starting);
+            t.Update(5.0f);
+            REQUIRE(t.State() == Tweener::State::Forward);
+            t.Update(5.0f);
+            REQUIRE(t.Time() == 5.0f);
+            t.Stop();
+            REQUIRE(t.State() == Tweener::State::Stopping);
+            REQUIRE(t.Time() == 5.0f);
+            t.Update(0);
+            REQUIRE(t.Time() == 0);
+            REQUIRE(t.State() == Tweener::State::Standby);
+        }
+
+        SECTION("Restart resets Tweener")
+        {
+            t.Play();
+            t.Update(5.0f); // starting
+            t.Update(5.0f); // moving forward
+            REQUIRE(t.Time() == 5.0f);
+            REQUIRE(t.CurrentValue() == .5f);
+            t.Restart();
+            t.Update(5.0f); // starting
+            REQUIRE(t.Time() == 0);
+            REQUIRE(t.CurrentValue() == 0);
+            REQUIRE(t.State() == Tweener::State::Forward);
         }
     }
 }

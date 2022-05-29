@@ -15,10 +15,7 @@ namespace SDG
         // If Tween was left in a finished state, restart it
         if (state_ == State::Standby)
         {
-            if (time_ == tween.Duration())
-                Restart();
-            else
-                state_ = State::Forward;
+            Restart();
         }
 
         paused_ = false;
@@ -29,20 +26,16 @@ namespace SDG
     Tweener &
     Tweener::Stop()
     {
-        time_ = 0;
-        state_ = State::Standby;
+        state_ = State::Stopping;
         paused_ = false;
-
         return *this;
     }
 
     Tweener &
     Tweener::Restart()
     {
-        time_ = 0;
-        state_ = State::Forward;
+        state_ = State::Starting;
         paused_ = false;
-
         return *this;
     }
 
@@ -73,17 +66,30 @@ namespace SDG
         switch(state_)
         {
             case State::Standby: break;
+            case State::Starting:
+                Reset();
+                state_ = State::Forward;
+                break;
+            case State::Stopping:
+                Reset();
+                state_ = State::Standby;
+                break;
             case State::Forward: ForwardState(deltaSeconds); break;
             case State::Backward: BackwardState(deltaSeconds); break;
         }
+    }
+
+    void Tweener::Reset()
+    {
+        time_ = 0;
+        currentValue = 0;
+        paused_ = false;
     }
 
     void
     Tweener::ForwardState(float deltaSeconds)
     {
         UpdateTimeCounter(deltaSeconds);
-        currentValue = tween.CalculateValue(time_);
-        ApplyCurrentValue();
 
         // State-leaving logic
         if (time_ >= tween.Duration())
@@ -103,14 +109,15 @@ namespace SDG
                     tween.onFinish_();
             }
         }
+
+        currentValue = tween.CalculateValue(time_);
+        ApplyCurrentValue();
     }
 
     void
     Tweener::BackwardState(float deltaSeconds)
     {
         UpdateTimeCounter(deltaSeconds);
-        currentValue = tween.CalculateValue(time_);
-        ApplyCurrentValue();
 
         // State-leaving logic
         if (time_ <= 0) // finished
@@ -122,6 +129,9 @@ namespace SDG
             if (tween.onFinish_)
                 tween.onFinish_();
         }
+
+        currentValue = tween.CalculateValue(time_);
+        ApplyCurrentValue();
     }
 
     void

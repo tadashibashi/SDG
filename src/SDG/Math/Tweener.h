@@ -20,6 +20,8 @@ namespace SDG
         enum class State {
             /// Finished / waiting for call to Play()
             Standby,
+            Starting,
+            Stopping,
             /// Playing forward
             Forward,
             /// Reversing
@@ -104,5 +106,6 @@ namespace SDG
 
         void ForwardState(float deltaSeconds);
         void BackwardState(float deltaSeconds);
+        void Reset();
     };
 }

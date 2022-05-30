@@ -249,7 +249,7 @@ namespace SDG
         case Button::Down: return SDL_CONTROLLER_BUTTON_DPAD_DOWN;
         case Button::Left: return SDL_CONTROLLER_BUTTON_DPAD_LEFT;
         case Button::Right: return SDL_CONTROLLER_BUTTON_DPAD_RIGHT;
-        case Button::Misc: return SDL_CONTROLLER_BUTTON_MISC1;
+        case Button::Misc1: return SDL_CONTROLLER_BUTTON_MISC1;
         case Button::Paddle1: return SDL_CONTROLLER_BUTTON_PADDLE1;
         case Button::Paddle2: return SDL_CONTROLLER_BUTTON_PADDLE2;
         case Button::Paddle3: return SDL_CONTROLLER_BUTTON_PADDLE3;
@@ -278,7 +278,7 @@ namespace SDG
         case SDL_CONTROLLER_BUTTON_DPAD_DOWN: return Button::Down;
         case SDL_CONTROLLER_BUTTON_DPAD_LEFT: return Button::Left;
         case SDL_CONTROLLER_BUTTON_DPAD_RIGHT: return Button::Right;
-        case SDL_CONTROLLER_BUTTON_MISC1: return Button::Misc;
+        case SDL_CONTROLLER_BUTTON_MISC1: return Button::Misc1;
         case SDL_CONTROLLER_BUTTON_PADDLE1: return Button::Paddle1;
         case SDL_CONTROLLER_BUTTON_PADDLE2: return Button::Paddle2;
         case SDL_CONTROLLER_BUTTON_PADDLE3: return Button::Paddle3;

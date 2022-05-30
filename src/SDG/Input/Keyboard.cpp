@@ -1,8 +1,11 @@
 #include "Keyboard.h"
+
+#include <SDG/Debug/Assert.h>
+#include <SDG/Debug/Log.h>
+#include <SDG/Memory.h>
+
 #include <SDL_events.h>
 #include <cstdlib>
-#include <SDG/Debug.hpp>
-#include <SDG/Memory.h>
 
 namespace SDG
 {
@@ -15,14 +18,15 @@ namespace SDG
     // https://blog.demofox.org/2016/09/26/is-code-faster-than-data-switch-statements-vs-arrays/
     static Uint16 Scancodes[(unsigned)Key::_MaxCount] = { 0 };
 
-    struct Keyboard::Impl {
+    struct Keyboard::Impl 
+    {
         Impl() : state(), lastState(), numKeys(), stateChanged() { }
 
         ~Impl()
         {
             if (lastState)
             {
-                free(lastState);
+                Free(lastState);
             }
         }
 
@@ -30,7 +34,6 @@ namespace SDG
         Uint8 *lastState;
         int numKeys;
         bool stateChanged;
-        int id;
     };
     
     Keyboard::Keyboard() : impl(new Impl)
@@ -38,25 +41,19 @@ namespace SDG
 
     }
 
-
-
-
     Keyboard::~Keyboard()
     {
         delete impl;
     }
 
-
-
-
     bool
-    Keyboard::InitializeImpl()
+        Keyboard::InitializeImpl()
     {
         if (!impl->state) // only initialize if it has not been yet
         {
             impl->state = SDL_GetKeyboardState(&impl->numKeys);
             impl->lastState = Malloc<Uint8>(impl->numKeys);
-            memcpy(impl->lastState, impl->state, impl->numKeys);
+            Memcpy(impl->lastState, impl->state, impl->numKeys);
 
             // Populate the scancodes array if it hasn't already been set
             if (Scancodes[(unsigned)Key::D] != KeyToScanCode(Key::D))
@@ -72,17 +69,11 @@ namespace SDG
         return true;
     }
 
-
-
-
     void
     Keyboard::ProcessInputImpl(const SDL_Event &ev)
     {
         impl->stateChanged = true;
     }
-
-
-
 
     bool
     Keyboard::Release(Key key) const
@@ -91,18 +82,12 @@ namespace SDG
         return !impl->state[Scancodes[(unsigned)key]];
     }
 
-
-
-
     bool
     Keyboard::Press(Key key) const
     {
         SDG_Assert(impl->lastState);
         return impl->state[Scancodes[(unsigned)key]];
     }
-
-
-
 
     bool
     Keyboard::Pressed(Key key) const
@@ -114,8 +99,6 @@ namespace SDG
                !impl->lastState[scancode];
     }
 
-
-
     bool
     Keyboard::Released(Key key) const
     {
@@ -124,8 +107,6 @@ namespace SDG
         return !impl->state[scancode] &&
                impl->lastState[scancode];
     }
-
-
 
     void
     Keyboard::UpdateLastStatesImpl()
@@ -137,8 +118,6 @@ namespace SDG
         }
     }
 
-
-
     void
     Keyboard::CloseImpl()
     {
@@ -149,15 +128,11 @@ namespace SDG
         }
     }
 
-
-
     const char *
     Keyboard::KeyName(Key key)
     {
         return SDL_GetKeyName(SDL_GetKeyFromScancode((SDL_Scancode)Scancodes[(int)key]));
     }
-
-
 
     // ====== Static Implementations ======
     // Used during initialization to populate the Scancodes array

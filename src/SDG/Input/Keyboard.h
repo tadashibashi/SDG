@@ -4,6 +4,7 @@
 
 namespace SDG
 {
+    /// Keyboard input processor. There is current support for one keyboard.
     class Keyboard : public InputComponent
     {
         struct Impl;

@@ -4,16 +4,19 @@
 ///
 #pragma once
 #include <SDG/Exceptions/RuntimeException.h>
+
 #include <cstdlib>
 
 namespace SDG
 {
-    /// Allocates space for n number of T objects. In other words an array
-    /// of T objects with n length is dynamically created.
+    /// Allocates memory for n objects of type T.
+    /// Please be aware that 'n' is the number of objects sizeof T, not bytes.
+    /// If raw bytes are needed, use "void" for the template parameter.
+    /// Also, make sure to call Free on the pointer, once the memory is no longer needed.
     /// Throws a RuntimeException if allocation fails.
     /// @param n number of objects of type T to fit in the memory
-    template<typename T = void>
-    inline T *Malloc(size_t n)
+    template <typename T = void>
+    [[nodiscard]] inline T *Malloc(size_t n)
     {
         T *temp = (T *)malloc(sizeof(T) > 0 ? sizeof(T) * n : n);
         if (!temp)
@@ -22,9 +25,18 @@ namespace SDG
         return temp;
     }
 
+    /// Copies n objects of type T from the source to the destination
+    /// Please be aware that 'n' is the number of objects of sizeof T, not bytes.
+    /// If raw bytes are needed, use "void" for the template parameter
+    template <typename T = void>
+    inline void Memcpy(T *dest, const T *src, size_t n)
+    {
+        memcpy(dest, src, sizeof(T) > 0 ? sizeof(T) * n : n);
+    }
+
     /// Safe Realloc function. Throws a RuntimeException when reallocation fails.
-    template<typename T = void>
-    inline T *Realloc(T *block, size_t size)
+    template <typename T = void>
+    [[nodiscard]] inline T *Realloc(T *block, size_t size)
     {
         T *temp = (T *)realloc(block, size);
         if (!temp)

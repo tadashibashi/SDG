@@ -1,6 +1,8 @@
 #pragma once
-#include "InputComponent.h"
 #include "Button.h"
+#include "GamepadType.h"
+#include "InputComponent.h"
+
 
 #include <SDG/Templates/Delegate.h>
 
@@ -24,6 +26,8 @@ namespace SDG
         /// Gets the controller number
         int Index() const;
         bool IsOpen() const;
+
+        GamepadType Type() const;
 
         /// Invoked when the device is connected.
         /// Callbacks receive the controller index (not id).

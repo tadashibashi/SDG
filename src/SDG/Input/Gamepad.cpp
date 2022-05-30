@@ -96,6 +96,25 @@ namespace SDG
         return impl->IsOpen();
     }
 
+    GamepadType Gamepad::Type() const
+    {
+        switch (SDL_GameControllerGetType(impl->control))
+        {
+        case SDL_CONTROLLER_TYPE_UNKNOWN: return GamepadType::Unknown;
+        case SDL_CONTROLLER_TYPE_VIRTUAL: return GamepadType::Virtual;
+        case SDL_CONTROLLER_TYPE_PS3: return GamepadType::PS3;
+        case SDL_CONTROLLER_TYPE_PS4: return GamepadType::PS4;
+        case SDL_CONTROLLER_TYPE_PS5: return GamepadType::PS5;
+        case SDL_CONTROLLER_TYPE_XBOX360: return GamepadType::Xbox360;
+        case SDL_CONTROLLER_TYPE_XBOXONE: return GamepadType::XboxOne;
+        case SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_PRO: return GamepadType::SwitchPro;
+        case SDL_CONTROLLER_TYPE_AMAZON_LUNA: return GamepadType::Luna;
+        case SDL_CONTROLLER_TYPE_GOOGLE_STADIA: return GamepadType::Stadia;
+        default:
+            return GamepadType::Unknown;
+        }
+    }
+
     bool Gamepad::InitializeImpl()
     {
         Close();

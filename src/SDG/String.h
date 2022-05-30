@@ -19,6 +19,7 @@ namespace SDG
     {
     public:
         String();
+        String(size_t initCap);
         String(const String &str);
         String(const std::string &str);
         String(const char *str);
@@ -153,6 +154,8 @@ namespace SDG
         /// Called privately to initialize String. Useful for data
         /// structures with quick length calculation.
         void Allocate(const char *str, size_t size);
+        /// Initializes an empty string with an initial reserved capacity
+        void Allocate(size_t cap);
         /// Sets a String that has already initialized.
         void Reallocate(const char *str, size_t size);
 

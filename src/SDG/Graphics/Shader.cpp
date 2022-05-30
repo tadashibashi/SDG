@@ -1,7 +1,11 @@
 #include "Shader.h"
-#include "SDG/Debug.hpp"
-#include "SDG/FileSys/File.h"
+
+#include <SDG/Debug/Log.h>
+#include <SDG/FileSys/File.h>
+#include <SDG/Memory.h>
+
 #include <SDL_gpu.h>
+
 
 // Prepends shader version data depending on OpenGL or GLES.
 // This is needed to support particular graphics cards that require this heading data.
@@ -9,10 +13,7 @@
 static uint32_t
 LoadShader(GPU_ShaderEnum shaderType, const SDG::Path &path)
 {
-    char *source;
     const char *header;
-    size_t headerSize;
-    uint32_t shader;
     GPU_Renderer *renderer = GPU_GetCurrentRenderer();
 
 
@@ -24,36 +25,25 @@ LoadShader(GPU_ShaderEnum shaderType, const SDG::Path &path)
         return 0;
     }
 
+    SDG::String source(64 + file.Size());
+
     // Create the version header to prepend
     switch (renderer->shader_language)
     {
         case GPU_LANGUAGE_GLSL:    // High precision for OpenGL shaders
-            header = "#version 100\nprecision highp int;\nprecision highp float;\n";
+            source.Append("#version 100\nprecision highp int;\nprecision highp float;\n");
             break;
         case GPU_LANGUAGE_GLSLES:  // Medium precision for OpenGLES shaders
-            header = "#version 100\nprecision mediump int;\nprecision mediump float;\n";
+            source.Append("#version 100\nprecision mediump int;\nprecision mediump float;\n");
             break;
         default:
             SDG_Core_Err("Shader language currently unsupported.");
             return 0;
     }
 
-    headerSize = strlen(header);
-
-    // Allocate shader source buffer
-    source = (char *)malloc(headerSize + file.Size() + 1);
-        // Prepend version header and write in shader file contents
-        memcpy(source, header, headerSize);
-        memcpy(source + headerSize, file.Data(), file.Size());
-        source[headerSize + file.Size()] = '\0'; // null terminate the str
-
-    // Compile shader
-    shader = GPU_CompileShader(shaderType, source);
-
-    // Clean up
-    free(source);
-
-    return shader;
+    source.Append(file.Cstr(), file.Size());
+    
+    return GPU_CompileShader(shaderType, source.Cstr());
 }
 
 struct SDG::Shader::Impl {

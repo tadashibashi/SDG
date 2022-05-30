@@ -38,6 +38,16 @@ namespace SDG
     }
 
     void
+    String::Allocate(size_t cap)
+    {
+        cap = std::max(cap, DefaultCap + 1);
+        str_ = StrMalloc(cap);
+        end_ = str_;
+        full_ = str_ + cap;
+        *end_ = '\0';
+    }
+
+    void
     String::Reallocate(const char *str, size_t size)
     {
         if (size > Capacity())
@@ -299,6 +309,11 @@ namespace SDG
     String::String() : str_(), end_(), full_()
     {
         Allocate(nullptr, 0);
+    }
+
+    String::String(size_t initCap) : str_(), end_(), full_()
+    {
+        Allocate(initCap);
     }
 
     String::String(const std::string &str) :

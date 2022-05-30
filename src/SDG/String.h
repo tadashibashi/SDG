@@ -8,10 +8,9 @@
 #pragma once
 #include <SDG/Debug/LogImpl.h>
 
-#include <string>
 #include <functional>
 #include <iterator>
-
+#include <string>
 
 namespace SDG
 {
@@ -65,15 +64,21 @@ namespace SDG
         [[nodiscard]] size_t FindLastOf(const char *list, size_t startingAt = NullPos) const;
 
         [[nodiscard]] const char *Cstr() const;
+
+        /// Helper to create an std::string copy
         [[nodiscard]] std::string Str() const;
 
+        /// Gets the character length of the String
         [[nodiscard]] size_t Length() const;
+
         /// Size of the internal memory.
         [[nodiscard]] size_t Capacity() const;
+
         /// Whether the String has any characters in it.
         /// More efficient than checking Length() == 0
         [[nodiscard]] bool Empty() const;
 
+        /// Swaps internals of this String with another
         String &Swap(String &other);
 
         /// Reserves the amount of characters inside the String to help prevent

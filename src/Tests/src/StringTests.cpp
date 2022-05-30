@@ -717,13 +717,40 @@ TEST_CASE("String tests", "[String]")
 
     SECTION("Indexer")
     {
-        SECTION("throws when out of range")
+        SECTION("Const indexer throws when out of range")
+        {
+            // Using a const function to force use of const indexer
+            struct StringIndexerTest
+            {
+                StringIndexerTest() : str("0123") { }
+                void TestConst() const
+                {
+                    bool didThrow = false;
+                    try {
+                        char c = str[4];
+                    }
+                    catch (const OutOfRangeException &e)
+                    {
+                        didThrow = true;
+                    }
+
+                    REQUIRE(didThrow);
+                }
+
+                String str;
+
+            } test{ };
+
+            test.TestConst();
+        }
+
+        SECTION("Non-const indexer throws when out of range")
         {
             String str("0123");
 
             bool didThrow;
             try {
-                char c = str[4];
+                str[4] = 'x';
                 didThrow = false;
             }
             catch (const OutOfRangeException &e)
@@ -733,7 +760,7 @@ TEST_CASE("String tests", "[String]")
 
             REQUIRE(didThrow);
         }
-        SECTION("Sets the index correctly")
+        SECTION("Sets the index correctly with non-const indexer")
         {
             String str("0123");
             REQUIRE((str == "0123"));
@@ -750,6 +777,7 @@ TEST_CASE("String tests", "[String]")
             str[3] = 'd';
             REQUIRE((str == "abcd"));
         }
+
         SECTION("Reads the indexes correctly")
         {
             String str("0123");
@@ -758,13 +786,12 @@ TEST_CASE("String tests", "[String]")
             REQUIRE(str[2] == '2');
             REQUIRE(str[3] == '3');
         }
-        SECTION("Iterate of each char")
+
+        SECTION("Iterate using range-based for loop")
         {
             String str("0123");
             for (char &c : str)
-            {
                 c += 1;
-            }
 
             REQUIRE((str == "1234"));
         }

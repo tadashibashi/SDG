@@ -8,7 +8,6 @@
 
 #include <algorithm>
 #include <cstdlib>
-#include <ostream>
 #include <utility>
 
 // ===== C-string function helpers ============================================
@@ -40,7 +39,7 @@ namespace SDG
     void
     String::Allocate(size_t cap)
     {
-        cap = std::max(cap, DefaultCap + 1);
+        cap = std::max(cap + 1, DefaultCap + 1);
         str_ = StrMalloc(cap);
         end_ = str_;
         full_ = str_ + cap;

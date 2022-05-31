@@ -1,13 +1,20 @@
 Tests todo:
 - Set up content copying for testing classes that load files.
-- Graphics
-    - RenderTarget
-    - Font
-    - Shader
-    - SpriteBatch
-    - Texture2D
 
-    Test Gamepad with a real gamepad, in Sandbox.
+- Test Gamepad with a real gamepad, in Sandbox.
+
+
+
+
+Sandbox tests:
+- Graphics
+    x RenderTarget
+    x Font
+    x Shader
+    x SpriteBatch
+    x Texture2D
+
+
 
 
 

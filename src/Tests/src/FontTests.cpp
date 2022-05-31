@@ -1,8 +1,9 @@
 #include "SDG_Tests.h"
-#include <SDG/Graphics/Font.h>
+#include <SDG/Graphics/TrueTypeFont.h>
 
-TEST_CASE("Font tests", "[Font]")
+TEST_CASE("TrueTypeFont tests", "[TrueTypeFont]")
 {
-    Font font;
+    TrueTypeFont font;
+    
 
 }

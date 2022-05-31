@@ -1,5 +1,5 @@
 /// SDG::Font implementation file
-#include "Font.h"
+#include "TrueTypeFont.h"
 #include "Private/Conversions.h"
 
 #include <SDG/Debug/Log.h>
@@ -17,7 +17,7 @@ namespace SDG
     SurfaceToTexture(Ref<Window> context, SDL_Surface *surf);
 
     // ===== Creation and closure =============================================
-    class Font::Impl
+    class TrueTypeFont::Impl
     {
     public:
         Impl() : pointSize(), path(), font() { }
@@ -26,19 +26,19 @@ namespace SDG
         TTF_Font *font;
     };
 
-    Font::Font() : impl(new Impl)
+    TrueTypeFont::TrueTypeFont() : impl(new Impl)
     {
 
     }
 
-    Font::~Font()
+    TrueTypeFont::~TrueTypeFont()
     {
         Close();
         delete impl;
     }
 
     bool
-    Font::Load(const Path &filepath, int pointSize)
+    TrueTypeFont::Load(const Path &filepath, int pointSize)
     {
         Close();              // unloads any font loaded in this object
         File file;  // open the file
@@ -76,7 +76,7 @@ namespace SDG
     }
 
     void
-    Font::Close()
+    TrueTypeFont::Close()
     {
         if (IsLoaded()) // safe to call if already unloaded
         {
@@ -89,37 +89,37 @@ namespace SDG
 
     // ===== Getters ==========================================================
     bool
-    Font::IsLoaded() const
+    TrueTypeFont::IsLoaded() const
     {
         return impl->font;
     }
 
     const SDG::Path &
-    Font::Filepath() const
+    TrueTypeFont::Filepath() const
     {
         return impl->path;
     }
 
     CRef<TTF_Font>
-    Font::InnerFont() const
+    TrueTypeFont::InnerFont() const
     {
         return CRef<TTF_Font>(impl->font);
     }
 
     int
-    Font::PointSize() const
+    TrueTypeFont::PointSize() const
     {
         return impl->pointSize;
     }
 
-    Font::operator bool()
+    TrueTypeFont::operator bool()
     {
         return impl->font;
     }
 
     // ===== Rendering ========================================================
     Texture2D *
-    Font::CreateTextBlended(Ref<Window> context, const String &text, 
+    TrueTypeFont::CreateTextBlended(Ref<Window> context, const String &text, 
         Color color, uint32_t wrapLength) const
     {
         // Make the text surface
@@ -133,7 +133,7 @@ namespace SDG
     }
 
     Texture2D *
-    Font::CreateTextShaded(Ref<Window> context, const String &text, 
+    TrueTypeFont::CreateTextShaded(Ref<Window> context, const String &text, 
         Color fgColor, Color bgColor, uint32_t wrapLength) const
     {
         SDL_Color fg = Conv::ToSDLColor(fgColor);
@@ -149,7 +149,7 @@ namespace SDG
     }
 
     Texture2D *
-    Font::CreateTextSolid(Ref<Window> context, const String &text, Color color,
+    TrueTypeFont::CreateTextSolid(Ref<Window> context, const String &text, Color color,
                           uint32_t wrapLength) const
     {
         // Make the text surface

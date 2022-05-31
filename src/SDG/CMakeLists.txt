@@ -50,7 +50,7 @@ set(Engine_Sources
         Graphics/Color.h Graphics/Color.cpp
         Graphics/SpriteBatch.cpp Graphics/SpriteBatch.h
         Graphics/Texture2D.h Graphics/Texture2D.cpp
-        Graphics/Font.cpp Graphics/Font.h
+        Graphics/TrueTypeFont.cpp Graphics/TrueTypeFont.h
         Graphics/RenderTarget.cpp Graphics/RenderTarget.h
 
         Input.hpp
@@ -98,7 +98,7 @@ set(Engine_Sources
         Templates/Private/PoolNullIndex.cpp 
         Templates/FixedPool.h
         String.h String.cpp
-        Time/TimeUnit.h Debug/LogImpl.h Templates/Swap.h Math/MathShape.h Math/MathShape.cpp Math/Intersection.h Math/Circle.h "StringView.h" "StringView.cpp" "Buffer.cpp" "Buffer.h" Math/Endian.cpp "Memory.h" "Position.h" Graphics/Sprite.h Graphics/Frame.h Exceptions/DivisionByZeroException.h "Input/Gamepad.h" "Input/Gamepad.cpp" "Input/Button.h" "Input/Button.cpp" "Input/GamepadType.h")
+        Time/TimeUnit.h Debug/LogImpl.h Templates/Swap.h Math/MathShape.h Math/MathShape.cpp Math/Intersection.h Math/Circle.h StringView.h StringView.cpp Buffer.cpp Buffer.h Math/Endian.cpp Memory.h Position.h Graphics/Sprite.h Graphics/Frame.h Exceptions/DivisionByZeroException.h Input/Gamepad.h Input/Gamepad.cpp Input/Button.h Input/Button.cpp Input/GamepadType.h Logic/DynamicState.h Logic/DynamicStateMachine.h Logic/DynamicState.cpp "Logic/DynamicStateMachine.cpp")
 
 # -----  Includes  ----------------------------------------------------
 set(Engine_Includes

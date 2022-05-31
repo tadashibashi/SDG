@@ -1,19 +1,9 @@
 TODO:
-- Input:
-    - Gamepad class creation and implementation.
-    - allow user to specify desired input types in the config.
-- Texture 
 - TTF font caching
 - Tiled Map loading
-- Create a minimal repro case of multi-Window close bug, and upstream to Github.
-- Test Camera2D
-    x screen-to-world
-    - world-to-screen
-    - world-bounds
-- Figure out cause of fullscreen/non-fullscreen matrix projection discrepancy.
-    There's an SDL function for controlling the behavior of resolution on new screen
-    I forgot what it is though...
-- Game system features (subclass of App)
+- Create a minimal repro case of multi-Window close bug, and upstream to Github. (doesn't affect Windows...)
+
+- Game system features (used in subclasses of App)
     - Entity
     - Entity Pooling
     - Sprite renderer, animation
@@ -21,10 +11,18 @@ TODO:
     - Make Asteroids Game as you assemble these systems
 
 Future:
+- allow user to specify desired input types in the config.
 - Gui app for creating and previewing animations from atlas
+
 
 Done:
 x Create Mouse object to capture mouse clicks and position
     (use old sdg-engine for ref)
 x Test Font in Sandbox
 x File Reading / Writing
+x Test Camera2D in action
+x Texture 
+- Figure out cause of fullscreen/non-fullscreen matrix projection discrepancy.
+    There's an SDL function for controlling the behavior of resolution on new screen
+    I forgot what it is though...
+    This fixed itself after cleaning up matrix functions. It may or may not pop up again since the problem wasn't diagnosed.

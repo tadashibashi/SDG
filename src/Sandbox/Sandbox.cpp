@@ -3,7 +3,7 @@
 // TODO: Create a OutFile class, and split InFile. File class should then control 
 // both interfaces
 #include <SDG/FileSys/Private/IO.h>
-#include <SDG/Graphics/Font.h>
+#include <SDG/Graphics/TrueTypeFont.h>
 
 
 
@@ -21,7 +21,7 @@ private:
     Texture2D *text;
     Shader shader;
     
-    Font font;
+    TrueTypeFont font;
     Camera2D camera;
     SpriteBatch spriteBatch;
 

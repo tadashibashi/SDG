@@ -1,13 +1,15 @@
 /*!
- * @file Font.h
+ * @file TrueTypeFont.h
  * @namespace SDG
  * @class Font
- * Represents a Font for use by other text rendering functions.
- * Currently supports TTF format.
+ * Represents a True Type Font (.ttf) for use by other text rendering functions.
+ * If other font types become supported, this class will eventually inherit
+ * from a base abstract Font class.
+ *
  */
 #pragma once
-#include "Texture2D.h"
 #include "Color.h"
+#include "Texture2D.h"
 
 #include <SDG/FileSys/Path.h>
 #include <SDG/Ref.h>
@@ -22,13 +24,12 @@ namespace SDG
 {
     /// A font class that currently supports loading and rendering .ttf fonts
     /// via SDL2_ttf backend.
-    class Font
+    class TrueTypeFont
     {
         class Impl;
     public:
-        Font();
-        ~Font();
-
+        TrueTypeFont();
+        ~TrueTypeFont();
 
         /// Loads a ttf font
         /// @param filepath path to the ttf font file, including .ttf extension

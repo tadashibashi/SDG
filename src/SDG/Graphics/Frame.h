@@ -37,18 +37,17 @@ namespace SDG
                     origRect.Height() - frameRect.Height());
         }
 
-        /// Gets whether the rectangle is rotated 90 degrees
-        bool Rotated() const noexcept { return rotated;  }
+        /// Gets the angle; either 0 or 90 degrees
+        float Angle() const noexcept { return rotated ? 90.f : 0;  }
+
+        Point Anchor() const noexcept { return anchor; }
 
         /// Gets the texture from which this frame originates
         CRef<class Texture2D> Texture() const noexcept { return texture; }
 
-        /// Gets the relative position from the top-left corner from
-        /// which rotation and the zero point will be located
-        const Point &Anchor() const noexcept { return anchor; }
-
         /// Gets the frame name
         const String &Name() const noexcept { return name; }
+
     private:
         Point anchor;
         Rectangle frameRect;

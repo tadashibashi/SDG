@@ -16,9 +16,9 @@ namespace SDG
 {
     // ===== BatchCall ============================================================================
     SpriteBatch::BatchCall::BatchCall(
-        SDG::Texture2D *texture, SDG::Rectangle src, SDG::FRectangle dest,
-        float rotation, SDG::Vector2 anchor, SDG::Flip flip,
-        SDG::Color color, float depth)
+        CRef<Texture2D> texture, Rectangle src, FRectangle dest,
+        float rotation, Vector2 anchor, Flip flip,
+        Color color, float depth)
             : texture(texture), src(std::move(src)), dest(std::move(dest)), rotation(rotation),
               anchor(anchor), flip(flip), color(std::move(color)), depth(depth) {}
 
@@ -72,7 +72,7 @@ namespace SDG
                 std::stable_sort(batch.begin(), batch.end(),
                                  [](const BatchCall &b1, const BatchCall &b2)
                                  {
-                                     return b1.texture < b2.texture;
+                                     return b1.texture.Get() < b2.texture.Get();
                                  });
                 break;
             case SortMode::FrontToBack:
@@ -93,19 +93,17 @@ namespace SDG
     }
 
     void
-    SpriteBatch::DrawTexture(SDG::Texture2D *texture, SDG::Rectangle src,
-                                       SDG::FRectangle dest, float rotation, SDG::Vector2 anchor,
-                                       SDG::Flip flip, SDG::Color color, float depth)
+    SpriteBatch::DrawTexture(CRef<Texture2D> texture, Rectangle src,
+        FRectangle dest, float rotation, Vector2 anchor, Flip flip, Color color, float depth)
     {
-        SDG_Assert(texture != nullptr); // please make sure to pass a non-null Texture2D
+        SDG_Assert(texture); // please make sure to pass a non-null Texture2D
         batch.emplace_back(texture, std::move(src), std::move(dest), rotation, anchor,
                            flip, std::move(color), depth);
     }
 
     void
-    SpriteBatch::DrawTexture(SDG::Texture2D *texture, SDG::Vector2 position,
-                                       SDG::Vector2 scale, SDG::Vector2 normAnchor,
-                                       float rotation, float depth, Color color)
+    SpriteBatch::DrawTexture(CRef<Texture2D> texture, Vector2 position,
+        Vector2 scale, Vector2 normAnchor, float rotation, float depth, Color color)
     {
         SDG_Assert(texture != nullptr); // please make sure to pass a non-null Texture2D
         batch.emplace_back(texture,

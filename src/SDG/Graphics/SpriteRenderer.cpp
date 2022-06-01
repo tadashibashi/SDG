@@ -1,6 +1,11 @@
 #include "SpriteRenderer.h"
 #include "Sprite.h"
 #include "SpriteBatch.h"
+#include <SDG/Math/Math.h>
+
+SDG::SpriteRenderer::SpriteRenderer() : sprite(), position(), scale(1.f, 1.f),
+flip(), angle(), fps(4.f), speed(1.f), paused(),
+index(), depth(), tint(Color::White()) { }
 
 // todo: fix this once atlas making has been set up with crunch
 void SDG::SpriteRenderer::Render(Ref<class SpriteBatch> spriteBatch) const
@@ -18,6 +23,20 @@ void SDG::SpriteRenderer::Update(float deltaSeconds)
 {
     if (!paused)
     {
-        index = fmodf(deltaSeconds * fps * speed + index, (float)sprite->Size());
+        index = fmodf(deltaSeconds * fps * speed + index, (float)sprite->Length());
     }
+}
+
+SDG::SpriteRenderer &
+SDG::SpriteRenderer::Angle(float angle) 
+{
+    this->angle = Math::WrapF(angle, 0.f, 360.f); 
+    return *this; 
+}
+
+SDG::SpriteRenderer &
+SDG::SpriteRenderer::Index(float index) 
+{ 
+    this->index = sprite ? Math::WrapF(index, 0.f, (float)sprite->Length()) : index; 
+    return *this; 
 }

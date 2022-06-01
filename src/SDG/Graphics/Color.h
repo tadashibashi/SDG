@@ -34,6 +34,8 @@ namespace SDG
         Color &B(uint8_t blue) { b = blue; return *this; }
         Color &A(uint8_t alpha) { a = alpha; return *this; }
 
+        bool operator == (const Color &other) const;
+
         // Defaults to White
         constexpr Color() : r(COLOR_MAX), g(COLOR_MAX), b(COLOR_MAX), a(COLOR_MAX) {}
         constexpr Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a = COLOR_MAX)

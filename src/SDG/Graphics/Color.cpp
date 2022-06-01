@@ -15,6 +15,12 @@ namespace SDG
         return *this;
     }
 
+    bool Color::operator==(const Color &other) const
+    {
+        return r == other.r && g == other.g &&
+            b == other.b && a == other.a;
+    }
+
     // Pre-made Colors
     // ===== REDS ===========
     Color Color::Amaranth(Uint8 alpha) {

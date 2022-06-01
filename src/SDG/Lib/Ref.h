@@ -44,9 +44,9 @@ namespace SDG
         [[nodiscard]] T *operator->() const;
         [[nodiscard]] T &operator *() const;
 
-        bool operator==(const Ref &other);
-        bool operator !=(const Ref &other);
-        operator bool() { return static_cast<bool>(ref); }
+        bool operator==(const Ref &other) const;
+        bool operator !=(const Ref &other) const;
+        operator bool() const { return static_cast<bool>(ref); }
 
         template <typename U>
         operator Ref<U>() {
@@ -72,9 +72,9 @@ namespace SDG
         const T *operator->() const;
         const T &operator *() const;
 
-        bool operator==(const CRef &other);
-        bool operator !=(const CRef &other);
-        operator bool() { return static_cast<bool>(ref); }
+        bool operator==(const CRef &other) const;
+        bool operator !=(const CRef &other) const;
+        operator bool() const { return static_cast<bool>(ref); }
     private:
         const T *ref;
     };
@@ -82,14 +82,14 @@ namespace SDG
 
     template<typename T>
     bool
-    Ref<T>::operator==(const Ref &other)
+    Ref<T>::operator==(const Ref &other) const
     {
         return ref == other.ref;
     }
 
     template<typename T>
     bool
-    Ref<T>::operator!=(const Ref &other)
+    Ref<T>::operator!=(const Ref &other) const
     {
         return ref != other.ref;
     }
@@ -132,14 +132,14 @@ namespace SDG
 
     template<typename T>
     bool
-    CRef<T>::operator==(const CRef &other)
+    CRef<T>::operator==(const CRef &other) const
     {
         return ref == other.ref;
     }
 
     template<typename T>
     bool
-    CRef<T>::operator!=(const CRef &other)
+    CRef<T>::operator!=(const CRef &other) const
     {
         return ref != other.ref;
     }

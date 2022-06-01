@@ -10,6 +10,9 @@ namespace SDG
 {
     class SpriteRenderer
     {
+    public:
+        SpriteRenderer();
+
         // Driver
 
         void Render(Ref<class SpriteBatch> spriteBatch) const;
@@ -25,10 +28,12 @@ namespace SDG
         const Vector2 &Position() const { return position; }
 
         SpriteRenderer &Scale(float x, float y) { scale.Set(x, y); return *this; }
-        SpriteRenderer &Scale(Vector2 position) { this->scale = scale; return *this; }
+        SpriteRenderer &Scale(Vector2 scale) { this->scale = scale; return *this; }
         const Vector2 &Scale() const { return scale; }
 
-        SpriteRenderer &Angle(float angle) { this->angle = angle; return *this; }
+        /// Angle in degrees to project the image
+        /// Automatically wrapped between 0 and 360 degrees
+        SpriteRenderer &Angle(float angle);
         float Angle() const { return angle; }
 
         SpriteRenderer &Speed(float speed) { this->speed = speed; return *this; }
@@ -40,7 +45,7 @@ namespace SDG
         SpriteRenderer &Flip(SDG::Flip flip) { this->flip = flip; return *this; }
         SDG::Flip Flip() const { return flip; }
 
-        SpriteRenderer &Index(float index) { this->index = index; return *this; }
+        SpriteRenderer &Index(float index);
         float Index() const { return index; }
 
         SpriteRenderer &Depth(float depth) { this->depth = depth; return *this; }
@@ -49,8 +54,11 @@ namespace SDG
         SpriteRenderer &Tint(Color tint) { this->tint = tint;  return *this; }
         Color Tint() const { return tint; }
 
+        SpriteRenderer &Sprite(CRef<class Sprite> sprite) { this->sprite = sprite; return *this; }
+        CRef<class Sprite> Sprite() const { return sprite; }
+
     private:
-        Ref<class Sprite> sprite;
+        CRef<class Sprite> sprite;
         Vector2 position;
         Vector2 scale;
         SDG::Flip flip;

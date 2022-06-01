@@ -1,9 +1,9 @@
 Tests todo:
-- Frame
+
 - Test Gamepad with a real gamepad, in Sandbox.
 - File tests (use base path for file reading/writing)
 - DynamicState and StateMachine tests
-- SpriteRenderer and Sprite
+- SpriteRenderer
     - How to load Sprites in a self-contained way?
         They need Frames, which depend on Texture references; use shared_ptr instead?
         This would enable resources to finally unload when there are no more references.
@@ -52,3 +52,5 @@ x Buffer
 x String
 x StringView
 x Tweener
+x Frame
+x Sprite

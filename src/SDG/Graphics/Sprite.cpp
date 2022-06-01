@@ -1,10 +1,15 @@
 #include "Sprite.h"
 #include <SDG/Exceptions/OutOfRangeException.h>
+
 namespace SDG
 {
-    Sprite::Sprite(const Array<Frame> &frames, 
+    Sprite::Sprite() : frames(), reel(), name()
+    {
+    }
+
+    Sprite::Sprite(const String &name, const Array<Frame> &frames,
         const Array<unsigned> &reel)
-        : frames(frames), reel(reel)
+        : frames(frames), reel(reel), name(name)
     {
         // Check that reel is within frame boundaries
         for (unsigned i : this->reel)
@@ -33,7 +38,7 @@ namespace SDG
         return frames[reel[index]];
     }
 
-    size_t Sprite::Size() const
+    size_t Sprite::Length() const
     {
         return reel.Size();
     }

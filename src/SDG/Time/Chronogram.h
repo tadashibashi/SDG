@@ -10,7 +10,7 @@ namespace SDG
     public:
         Chronogram() : marker() { }
 
-        /// Begin tracking time
+        /// Begin tracking time. App must be initialized before using.
         void Start();
         /// Get the time since Start was called
         double Check(TimeUnit units = TimeUnit::Milliseconds) const;

@@ -8,7 +8,8 @@ namespace SDG
         Milliseconds,
         Seconds,
         Minutes,
-        Hours
+        Hours,
+        Days
     };
 
     /// Convert millisecond "ticks" to another time unit

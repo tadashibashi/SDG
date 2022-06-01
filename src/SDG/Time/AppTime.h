@@ -10,6 +10,7 @@
  */
 #pragma once
 #include "TimeUnit.h"
+#include "Duration.h"
 
 #include <cstdint>
 
@@ -44,7 +45,7 @@ namespace SDG
         /// Returns the number of ticks at the moment this function is called.
         /// Use AppTime() to get the number of ticks passed since the beginning of
         /// this frame.
-        [[nodiscard]] uint64_t Now() const;
+        [[nodiscard]] Duration Now() const;
 
     private:
         uint64_t ticks_, deltaTicks_;

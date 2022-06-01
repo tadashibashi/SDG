@@ -24,7 +24,7 @@ TEST_CASE("AppTime tests", "[AppTime]")
 
         AppTime time;
 
-        REQUIRE(time.Now() >= 10);
+        REQUIRE(time.Now().Ticks() >= 10);
         time.Update();
         REQUIRE(time.Ticks() >= 10);
 

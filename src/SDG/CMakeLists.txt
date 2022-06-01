@@ -100,7 +100,7 @@ set(Engine_Sources
         Exceptions/RuntimeException.h 
 
         Lib/String.h Lib/String.cpp
-        Time/TimeUnit.h Debug/LogImpl.h Lib/Swap.h Math/MathShape.h Math/MathShape.cpp Math/Intersection.h Math/Circle.h Lib/StringView.h Lib/StringView.cpp Lib/Buffer.cpp Lib/Buffer.h "Lib/Endian.cpp" Lib/Memory.h Position.h Graphics/Sprite.h Graphics/Frame.h Exceptions/DivisionByZeroException.h Input/Gamepad.h Input/Gamepad.cpp Input/Button.h Input/Button.cpp Input/GamepadType.h Logic/DynamicState.h Logic/DynamicStateMachine.h Logic/DynamicState.cpp "Logic/DynamicStateMachine.cpp" "Graphics/Frame.cpp" "Graphics/Sprite.cpp" "Lib/Array.h" "Graphics/SpriteRenderer.h" "Graphics/SpriteRenderer.cpp" "Lib/Shared.h" "Time/Chronogram.h" "Time/Chronogram.cpp" "Time/TimeUnit.cpp")
+        Time/TimeUnit.h Debug/LogImpl.h Lib/Swap.h Math/MathShape.h Math/MathShape.cpp Math/Intersection.h Math/Circle.h Lib/StringView.h Lib/StringView.cpp Lib/Buffer.cpp Lib/Buffer.h "Lib/Endian.cpp" Lib/Memory.h Position.h Graphics/Sprite.h Graphics/Frame.h Exceptions/DivisionByZeroException.h Input/Gamepad.h Input/Gamepad.cpp Input/Button.h Input/Button.cpp Input/GamepadType.h Logic/DynamicState.h Logic/DynamicStateMachine.h Logic/DynamicState.cpp "Logic/DynamicStateMachine.cpp" "Graphics/Frame.cpp" "Graphics/Sprite.cpp" "Lib/Array.h" "Graphics/SpriteRenderer.h" "Graphics/SpriteRenderer.cpp" "Lib/Shared.h" "Time/Chronogram.h" "Time/Chronogram.cpp" "Time/TimeUnit.cpp" "Time/Timer.h" "Time/Timer.cpp" "Time/Time.h" "Time/Duration.cpp")
 
 # -----  Includes  ----------------------------------------------------
 set(Engine_Includes

@@ -8,7 +8,6 @@
 #include "Lib/Endian.h"
 #include "Lib/Ref.h"
 #include "Lib/String.h"
-#include "Lib/ServiceProvider.h"
 #include "Lib/Delegate.h"
 #include "Lib/FixedPool.h"
 #include "Lib/Pool.h"

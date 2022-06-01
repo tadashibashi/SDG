@@ -15,18 +15,26 @@ set(Engine_Sources
 
         # Debug
         Debug.hpp
-        Debug/Log.h
-        Debug/Log.cpp
         Debug/Assert.h
         Debug/Assert.cpp
+        Debug/Log.h
+        Debug/Log.cpp
+        Debug/LogImpl.h
+        Debug/Trace.h 
 
         EntryPoint.cpp
 
         # Exceptions
+        Exceptions.hpp
         Exceptions/AssertionException.h Exceptions/AssertionException.cpp
         Exceptions/XMLReaderException.h Exceptions/XMLReaderException.cpp
         Exceptions/NullReferenceException.h Exceptions/NullReferenceException.cpp
-        Exceptions/InvalidArgumentException.cpp Exceptions/InvalidArgumentException.h
+        Exceptions/InvalidArgumentException.cpp Exceptions/InvalidArgumentException.h   
+        Exceptions/DivisionByZeroException.h
+        Exceptions/Exception.h Exceptions/Exception.cpp 
+        Exceptions/ExceptionExample.h Exceptions/ExceptionExample.cpp
+        Exceptions/OutOfRangeException.h Exceptions/OutOfRangeException.cpp 
+        Exceptions/RuntimeException.h
 
         # FileSys
         FileSys.hpp
@@ -38,9 +46,9 @@ set(Engine_Sources
         FileSys/XMLReader.cpp FileSys/XMLReader.h
 
         Game/Entity.cpp Game/Entity.h
-        Time/AppTime.cpp Time/AppTime.h
         Game/ComponentList.cpp Game/ComponentList.h Game/Component.h
         Game/Scene.cpp Game/Scene.h
+        Game/ServiceProvider.h
 
         Graphics/Camera2D.cpp Graphics/Camera2D.h
         Graphics/WindowMgr.cpp Graphics/WindowMgr.h
@@ -52,6 +60,12 @@ set(Engine_Sources
         Graphics/Texture2D.h Graphics/Texture2D.cpp
         Graphics/TrueTypeFont.cpp Graphics/TrueTypeFont.h
         Graphics/RenderTarget.cpp Graphics/RenderTarget.h
+        Graphics/Flip.h Graphics/Flip.cpp 
+        Graphics/Private/TranslateFlip.h Graphics/Private/TranslateFlip.cpp
+        Graphics/Private/Conversions.h
+        Graphics/Sprite.h Graphics/Sprite.cpp 
+        Graphics/Frame.h Graphics/Frame.cpp
+        Graphics/SpriteRenderer.h Graphics/SpriteRenderer.cpp
 
         Input.hpp
         Input/Input.cpp Input/Input.h
@@ -59,48 +73,54 @@ set(Engine_Sources
         Input/Keyboard.h Input/Keyboard.cpp
         Input/InputComponent.h
         Input/Mouse.cpp Input/Mouse.h Input/MButton.h
+        Input/Gamepad.h Input/Gamepad.cpp 
+        Input/Button.h Input/Button.cpp 
+        Input/GamepadType.h
 
+        Math.hpp 
         Math/Rand.cpp Math/Rand.h
-        Math/Math.h
-        Math.hpp
+        Math/Math.h Math/Math.cpp
         Math/Vector2.h
+        Math/Vector3.h
         Math/Tween.cpp Math/Tween.h Math/TweenFunctions.cpp Math/TweenFunctions.h
-        "Lib/Endian.h"
         Math/Matrix4x4.cpp Math/Matrix4x4.h
         Math/Rectangle.h
-        Math/Vector3.h
-        Math/Math.cpp
+        Math/MathConstants.h 
+        Math/MathShape.h Math/MathShape.cpp
+        Math/Private/Conversions.h
+        Math/Tweener.cpp Math/Tweener.h
+        Math/Intersection.h Math/Circle.h
 
         Platform.h
 
-        Lib/Ref.h
-
-        "Game/ServiceProvider.h"
-
+        Lib/Array.h
+        Lib/Buffer.cpp Lib/Buffer.h
         Lib/Delegate.h
+        Lib/Endian.h Lib/Endian.cpp
+        Lib/FixedPool.h 
+        Lib/Memory.h
         Lib/Pool.h
         Lib/PoolID.h 
         Lib/Private/PoolNullIndex.h 
         Lib/Private/PoolNullIndex.cpp 
-        Lib/FixedPool.h 
-        Exceptions.hpp Exceptions/Exception.h 
-        Exceptions/Exception.cpp Exceptions/ExceptionExample.h 
-        Exceptions/ExceptionExample.cpp 
-        
-        Math/MathConstants.h 
-        Exceptions/OutOfRangeException.h 
-        Exceptions/OutOfRangeException.cpp 
-        Lib/Unique.h 
-        Graphics/Flip.h 
-        Graphics/Flip.cpp 
-        Graphics/Private/TranslateFlip.h Graphics/Private/TranslateFlip.cpp 
-        Math/Private/Conversions.h Graphics/Private/Conversions.h 
-        Math/Tweener.cpp Math/Tweener.h 
-        Debug/Trace.h 
-        Exceptions/RuntimeException.h 
-
+        Lib/Ref.h
+        Lib/Shared.h 
         Lib/String.h Lib/String.cpp
-        Time/TimeUnit.h Debug/LogImpl.h Lib/Swap.h Math/MathShape.h Math/MathShape.cpp Math/Intersection.h Math/Circle.h Lib/StringView.h Lib/StringView.cpp Lib/Buffer.cpp Lib/Buffer.h "Lib/Endian.cpp" Lib/Memory.h Position.h Graphics/Sprite.h Graphics/Frame.h Exceptions/DivisionByZeroException.h Input/Gamepad.h Input/Gamepad.cpp Input/Button.h Input/Button.cpp Input/GamepadType.h Logic/DynamicState.h Logic/DynamicStateMachine.h Logic/DynamicState.cpp "Logic/DynamicStateMachine.cpp" "Graphics/Frame.cpp" "Graphics/Sprite.cpp" "Lib/Array.h" "Graphics/SpriteRenderer.h" "Graphics/SpriteRenderer.cpp" "Lib/Shared.h" "Time/Chronogram.h" "Time/Chronogram.cpp" "Time/TimeUnit.cpp" "Time/Timer.h" "Time/Timer.cpp" "Time/Time.h" "Time/Duration.cpp")
+        Lib/StringView.h Lib/StringView.cpp
+        Lib/Swap.h
+        Lib/Unique.h
+
+        Logic/DynamicState.h Logic/DynamicStateMachine.h Logic/DynamicState.cpp Logic/DynamicStateMachine.cpp
+
+        Position.h
+
+        Time/AppTime.cpp Time/AppTime.h
+        Time/Chronogram.h Time/Chronogram.cpp 
+        Time/TimeUnit.h Time/TimeUnit.cpp 
+        Time/Timer.h Time/Timer.cpp 
+        Time/Duration.h Time/Duration.cpp
+        
+)
 
 # -----  Includes  ----------------------------------------------------
 set(Engine_Includes

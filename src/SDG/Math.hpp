@@ -1,6 +1,5 @@
 /// Contains the includes relevant to math functions and data structures.
 #pragma once
-#include <SDG/Math/Endian.h>
 #include <SDG/Math/Math.h>
 #include <SDG/Math/MathShape.h>
 #include <SDG/Math/Matrix4x4.h>

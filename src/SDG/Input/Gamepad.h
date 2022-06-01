@@ -4,7 +4,7 @@
 #include "InputComponent.h"
 
 
-#include <SDG/Templates/Delegate.h>
+#include <SDG/Lib/Delegate.h>
 
 #include <cstdint>
 

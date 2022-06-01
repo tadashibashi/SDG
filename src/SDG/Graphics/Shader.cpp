@@ -2,7 +2,7 @@
 
 #include <SDG/Debug/Log.h>
 #include <SDG/FileSys/File.h>
-#include <SDG/Memory.h>
+#include <SDG/Lib/Memory.h>
 
 #include <SDL_gpu.h>
 

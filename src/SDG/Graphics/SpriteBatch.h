@@ -12,10 +12,9 @@
 #include "Texture2D.h"
 #include "Window.h"
 
-#include <SDG/ClassMacros.h>
+#include <SDG/Lib/ClassMacros.h>
+#include <SDG/Lib/Ref.h>
 #include <SDG/Math/Rectangle.h>
-#include <SDG/Ref.h>
-
 
 namespace SDG
 {

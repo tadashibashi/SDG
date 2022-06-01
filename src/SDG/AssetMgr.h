@@ -9,11 +9,11 @@
  */
 #pragma once
 
-#include <string>
-#include <map>
-#include <SDG/Graphics/Texture2D.h>
 #include <SDG/FileSys/Path.h>
-#include <SDG/Ref.h>
+#include <SDG/Graphics/Texture2D.h>
+#include <SDG/Lib/Ref.h>
+
+#include <map>
 
 namespace SDG
 {

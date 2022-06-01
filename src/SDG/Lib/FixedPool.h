@@ -9,7 +9,7 @@
 #include <SDG/Debug/Assert.h>
 #include <SDG/Exceptions/OutOfRangeException.h>
 #include <SDG/Exceptions/InvalidArgumentException.h>
-#include <SDG/Ref.h>
+#include <SDG/Lib/Ref.h>
 
 namespace SDG
 {

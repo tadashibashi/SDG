@@ -5,8 +5,8 @@
  *
  */
 #pragma once
-#include <SDG/ClassMacros.h>
 #include <SDG/Exceptions/InvalidArgumentException.h>
+#include <SDG/Lib/ClassMacros.h>
 
 #include <any>
 #include <functional>

@@ -12,21 +12,17 @@
 #include "Color.h"
 
 #include <SDG/Math/Vector2.h>
-#include <SDG/Templates/Delegate.h>
-#include <SDG/Ref.h>
-#include <SDG/ClassMacros.h>
+#include <SDG/Lib/ClassMacros.h>
+#include <SDG/Lib/Delegate.h>
+#include <SDG/Lib/Ref.h>
+#include <SDG/Lib/String.h>
 #include <SDG/Math/Rectangle.h>
-#include "RenderTarget.h"
-#include <string>
 
 // forward declaration
 struct SDL_WindowEvent;
 
 namespace SDG
 {
-    // forward declaration
-    class Texture2D;
-
     /// Manages one application window.
     class Window
     {
@@ -71,7 +67,7 @@ namespace SDG
         Window &Resizable(bool resizable);
         Window &Position(Point position);
         Window &Minimized(bool minimized);
-        Window &Icon(CRef<Texture2D> texture);
+        Window &Icon(CRef<class Texture2D> texture);
 
         /// Hide or show window
         /// @param hidden true: hide window; false: show window
@@ -90,7 +86,7 @@ namespace SDG
 
         // === Getters ===
         bool IsOpen() const;
-        std::string Title() const;
+        String Title() const;
         Point Size() const;
 
         /// Underlying Window size
@@ -106,11 +102,11 @@ namespace SDG
         Point MaximumSize() const;
         bool MouseGrabbed() const;
         bool AlwaysOnTop() const;
-        CRef<Texture2D> Icon() const;
+        CRef<class Texture2D> Icon() const;
 
         uint32_t Flags() const;
         Rectangle Viewport() const;
-        Ref<RenderTarget> Target() const;
+        Ref<class RenderTarget> Target() const;
 
         static size_t Count() { return windowCount; }
 

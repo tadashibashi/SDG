@@ -4,8 +4,8 @@
  * @class Buffer
  */
 #pragma once
-#include <SDG/String.h>
-#include <SDG/Math/Endian.h>
+#include <SDG/Lib/String.h>
+#include <SDG/Lib/Endian.h>
 #include <SDG/Position.h>
 
 namespace SDG

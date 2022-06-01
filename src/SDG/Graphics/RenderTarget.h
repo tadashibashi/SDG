@@ -11,7 +11,7 @@
 
 #include <SDG/Math/Rectangle.h>
 #include <SDG/Math/Vector2.h>
-#include <SDG/Ref.h>
+#include <SDG/Lib/Ref.h>
 #include <SDG/Math/Circle.h>
 
 // forward declaration

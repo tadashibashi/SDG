@@ -1,6 +1,6 @@
 #include "SDG_Tests.h"
 #include "SDG/Debug/Log.h"
-#include <SDG/Templates/Pool.h>
+#include <SDG/Lib/Pool.h>
 
 TEST_CASE("Pool tests", "[Pool]")
 {

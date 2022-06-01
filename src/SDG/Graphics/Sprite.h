@@ -7,7 +7,7 @@
  */
 #pragma once
 #include "Frame.h"
-#include <SDG/Templates/Array.h>
+#include <SDG/Lib/Array.h>
 
 namespace SDG
 {

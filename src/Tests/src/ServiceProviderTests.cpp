@@ -1,5 +1,5 @@
-#include <catch2/catch_test_macros.hpp>
-#include <SDG/ServiceProvider.h>
+#include "SDG_Tests.h"
+#include <SDG/Game/ServiceProvider.h>
 
 using namespace SDG;
 

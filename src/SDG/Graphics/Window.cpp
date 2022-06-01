@@ -1,5 +1,6 @@
 #include "Window.h"
 #include "Private/RendererType.h"
+#include "RenderTarget.h"
 #include "Texture2D.h"
 
 #include <SDG/Debug/Log.h>
@@ -20,7 +21,7 @@ namespace SDG
     struct Window::Impl {
         Impl() : target(), title(), icon() {}
         RenderTarget    target;
-        std::string     title;
+        String          title;
         CRef<Texture2D> icon;
     };
 
@@ -213,7 +214,7 @@ namespace SDG
             title = "";
 
         impl->title = title;
-        SDL_SetWindowTitle(GetWindow(impl->target), impl->title.c_str());
+        SDL_SetWindowTitle(GetWindow(impl->target), impl->title.Cstr());
         return *this;
     }
 
@@ -373,7 +374,7 @@ namespace SDG
 
     // ========= Getters ======================================================
 
-    std::string
+    String
     Window::Title() const
     {
         return impl->title;

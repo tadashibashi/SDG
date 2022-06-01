@@ -8,8 +8,8 @@
 #pragma once
 #include <SDG/FileSys/Path.h>
 #include <SDG/Platform.h>
-#include <SDG/Ref.h>
-#include <SDG/String.h>
+#include <SDG/Lib/Ref.h>
+#include <SDG/Lib/String.h>
 #include "SDG/Time/AppTime.h"
 
 namespace SDG

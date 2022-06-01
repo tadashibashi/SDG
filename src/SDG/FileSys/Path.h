@@ -9,8 +9,8 @@
  */
 #pragma once
 #include <SDG/Debug/Log.h>
-#include <SDG/Ref.h>
-#include <SDG/String.h>
+#include <SDG/Lib/Ref.h>
+#include <SDG/Lib/String.h>
 
 #include <stack>
 

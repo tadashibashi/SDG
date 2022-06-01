@@ -1,4 +1,4 @@
-#include "SDG/Templates/Delegate.h"
+#include <SDG/Lib/Delegate.h>
 #include "SDG_Tests.h"
 
 static Delegate<int> delegate;

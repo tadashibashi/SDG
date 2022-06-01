@@ -9,7 +9,7 @@
 #include "Vector3.h"
 #include "Rectangle.h"
 
-#include <SDG/String.h>
+#include <SDG/Lib/String.h>
 
 namespace SDG
 {

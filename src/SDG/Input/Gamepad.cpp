@@ -1,6 +1,6 @@
 #include "Gamepad.h"
 #include <SDL_events.h>
-#include <SDG/Memory.h>
+#include <SDG/Lib/Memory.h>
 #include <SDG/Debug/Log.h>
 
 namespace SDG

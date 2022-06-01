@@ -1,6 +1,6 @@
 #pragma once
 #include <SDG/Debug/LogImpl.h>
-#include <SDG/String.h>
+#include <SDG/Lib/String.h>
 
 #include <cstddef>
 

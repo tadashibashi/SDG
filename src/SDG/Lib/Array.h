@@ -1,6 +1,6 @@
 #pragma once
 #include <SDG/Exceptions/OutOfRangeException.h>
-#include <SDG/Memory.h>
+#include <SDG/Lib/Memory.h>
 #include <cstddef>
 
 namespace SDG

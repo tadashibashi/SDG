@@ -7,7 +7,7 @@
 #pragma once
 #include "MathConstants.h"
 
-#include <SDG/Templates/Swap.h>
+#include <SDG/Lib/Swap.h>
 
 #include <initializer_list>
 #include <type_traits>

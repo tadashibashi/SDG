@@ -1,6 +1,6 @@
 #pragma once
-#include <SDG/Ref.h>
-#include <SDG/ClassMacros.h>
+#include <SDG/Lib/Ref.h>
+#include <SDG/Lib/ClassMacros.h>
 #include <SDG/Exceptions/NullReferenceException.h>
 namespace SDG
 {

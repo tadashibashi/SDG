@@ -1,5 +1,5 @@
 #include "SDG_Tests.h"
-#include <SDG/Ref.h>
+#include <SDG/Lib/Ref.h>
 #include <string>
 
 TEST_CASE("Ref tests", "[Ref]")

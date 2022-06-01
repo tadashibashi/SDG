@@ -78,6 +78,18 @@ They should include each relevant header file within that "module" or section
 of the library.
 One master header, "SDG.hpp" will include each of these super header files.
 
+Super headers:
+Debug - logging and assertion
+Exceptions - contains all SDG engine exceptions
+FileSys - file and file system-related classes
+Game - High-level classes that bring the others together for gameplay-related use
+Graphics - mid and high level rendering library-related classes
+Input - input management
+Lib - contains frequently used low level utility functions, classes and templates
+Logic - Useful lower-level logic/AI functions and algorithms for gameplay
+Time - Used for tracking time in-app
+
+
 ===== Implementation ==========================================================
 Use pImpl idiom to keep the dependency library headers out of the SDG headers.
 - Make sure to initialize variables in the Impl struct in the constructor.

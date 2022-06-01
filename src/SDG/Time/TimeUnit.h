@@ -1,4 +1,5 @@
 #pragma once
+#include <cstdint>
 
 namespace SDG
 {
@@ -9,4 +10,7 @@ namespace SDG
         Minutes,
         Hours
     };
+
+    /// Convert millisecond "ticks" to another time unit
+    double TimeAs(uint64_t ms, TimeUnit unit);
 }

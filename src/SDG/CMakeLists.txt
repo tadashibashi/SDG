@@ -11,12 +11,12 @@ set(Engine_Sources
         App.cpp App.h
         AssetMgr.cpp AssetMgr.h
 
-        ClassMacros.h
+        Lib/ClassMacros.h
 
         # Debug
         Debug.hpp
         Debug/Log.h
-        "Debug/Log.cpp"
+        Debug/Log.cpp
         Debug/Assert.h
         Debug/Assert.cpp
 
@@ -65,7 +65,7 @@ set(Engine_Sources
         Math.hpp
         Math/Vector2.h
         Math/Tween.cpp Math/Tween.h Math/TweenFunctions.cpp Math/TweenFunctions.h
-        Math/Endian.h
+        "Lib/Endian.h"
         Math/Matrix4x4.cpp Math/Matrix4x4.h
         Math/Rectangle.h
         Math/Vector3.h
@@ -73,19 +73,24 @@ set(Engine_Sources
 
         Platform.h
 
-        Ref.h
+        Lib/Ref.h
 
-        ServiceProvider.h
+        "Game/ServiceProvider.h"
 
-        Templates/Delegate.h
+        Lib/Delegate.h
+        Lib/Pool.h
+        Lib/PoolID.h 
+        Lib/Private/PoolNullIndex.h 
+        Lib/Private/PoolNullIndex.cpp 
+        Lib/FixedPool.h 
         Exceptions.hpp Exceptions/Exception.h 
         Exceptions/Exception.cpp Exceptions/ExceptionExample.h 
         Exceptions/ExceptionExample.cpp 
-        Templates/Pool.h 
+        
         Math/MathConstants.h 
         Exceptions/OutOfRangeException.h 
         Exceptions/OutOfRangeException.cpp 
-        Unique.h 
+        Lib/Unique.h 
         Graphics/Flip.h 
         Graphics/Flip.cpp 
         Graphics/Private/TranslateFlip.h Graphics/Private/TranslateFlip.cpp 
@@ -93,12 +98,9 @@ set(Engine_Sources
         Math/Tweener.cpp Math/Tweener.h 
         Debug/Trace.h 
         Exceptions/RuntimeException.h 
-        Templates/PoolID.h 
-        Templates/Private/PoolNullIndex.h 
-        Templates/Private/PoolNullIndex.cpp 
-        Templates/FixedPool.h
-        String.h String.cpp
-        Time/TimeUnit.h Debug/LogImpl.h Templates/Swap.h Math/MathShape.h Math/MathShape.cpp Math/Intersection.h Math/Circle.h StringView.h StringView.cpp Buffer.cpp Buffer.h Math/Endian.cpp Memory.h Position.h Graphics/Sprite.h Graphics/Frame.h Exceptions/DivisionByZeroException.h Input/Gamepad.h Input/Gamepad.cpp Input/Button.h Input/Button.cpp Input/GamepadType.h Logic/DynamicState.h Logic/DynamicStateMachine.h Logic/DynamicState.cpp "Logic/DynamicStateMachine.cpp" "Graphics/Frame.cpp" "Graphics/Sprite.cpp" "Templates/Array.h" "Graphics/SpriteRenderer.h" "Graphics/SpriteRenderer.cpp")
+
+        Lib/String.h Lib/String.cpp
+        Time/TimeUnit.h Debug/LogImpl.h Lib/Swap.h Math/MathShape.h Math/MathShape.cpp Math/Intersection.h Math/Circle.h Lib/StringView.h Lib/StringView.cpp Lib/Buffer.cpp Lib/Buffer.h "Lib/Endian.cpp" Lib/Memory.h Position.h Graphics/Sprite.h Graphics/Frame.h Exceptions/DivisionByZeroException.h Input/Gamepad.h Input/Gamepad.cpp Input/Button.h Input/Button.cpp Input/GamepadType.h Logic/DynamicState.h Logic/DynamicStateMachine.h Logic/DynamicState.cpp "Logic/DynamicStateMachine.cpp" "Graphics/Frame.cpp" "Graphics/Sprite.cpp" "Lib/Array.h" "Graphics/SpriteRenderer.h" "Graphics/SpriteRenderer.cpp" "Lib/Shared.h" "Time/Chronogram.h" "Time/Chronogram.cpp" "Time/TimeUnit.cpp")
 
 # -----  Includes  ----------------------------------------------------
 set(Engine_Includes

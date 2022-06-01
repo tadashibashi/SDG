@@ -11,8 +11,9 @@
  */
 #pragma once
 #include "Vector2.h"
-#include <SDG/String.h>
+
 #include <SDG/Debug/LogImpl.h>
+#include <SDG/Lib/String.h>
 
 namespace SDG
 {

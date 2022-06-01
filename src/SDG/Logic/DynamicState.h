@@ -1,5 +1,5 @@
 #pragma once
-#include <SDG/ClassMacros.h>
+#include <SDG/Lib/ClassMacros.h>
 
 #include <functional>
 

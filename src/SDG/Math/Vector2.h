@@ -4,7 +4,7 @@
 #include <SDG/Debug/LogImpl.h>
 #include <SDG/Exceptions/DivisionByZeroException.h>
 #include <SDG/Exceptions/OutOfRangeException.h>
-#include <SDG/String.h>
+#include <SDG/Lib/String.h>
 
 #include <type_traits>
 

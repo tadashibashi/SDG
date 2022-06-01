@@ -2,7 +2,7 @@
 #include <SDG/Debug/Assert.h>
 #include <SDG/Exceptions/OutOfRangeException.h>
 #include <SDG/Math/Math.h>
-#include <SDG/Memory.h>
+#include <SDG/Lib/Memory.h>
 #include <SDG/Platform.h>
 
 #include <cstring>

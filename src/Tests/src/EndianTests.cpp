@@ -1,5 +1,5 @@
 #include "SDG_Tests.h"
-#include <SDG/Math/Endian.h>
+#include <SDG/Lib/Endian.h>
 
 TEST_CASE("SwapEndian buffer")
 {

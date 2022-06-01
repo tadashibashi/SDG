@@ -3,7 +3,7 @@
 // SDG_Engine
 //
 #pragma once
-#include <SDG/String.h>
+#include <SDG/Lib/String.h>
 
 namespace SDG
 {

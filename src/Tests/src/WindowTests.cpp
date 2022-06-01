@@ -98,7 +98,7 @@ TEST_CASE("Window tests", "[Window]")
             SECTION("Nullptr results in blank title")
             {
                 REQUIRE(&window == &window.Title(nullptr));
-                REQUIRE(window.Title().empty());
+                REQUIRE(window.Title().Empty());
             }
 
             SECTION("Title with chars sets correctly")
@@ -110,7 +110,7 @@ TEST_CASE("Window tests", "[Window]")
             SECTION("Empty string results in empty string title")
             {
                 REQUIRE(&window == &window.Title(""));
-                REQUIRE(window.Title().empty());
+                REQUIRE(window.Title().Empty());
             }
         }
 

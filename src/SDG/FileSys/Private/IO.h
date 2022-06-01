@@ -8,7 +8,7 @@
 #ifndef SDG_IO_hpp
 #define SDG_IO_hpp
 
-#include <SDG/String.h>
+#include <SDG/Lib/String.h>
 
 #include <cstddef>
 #include <vector>

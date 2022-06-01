@@ -4,7 +4,7 @@
 //
 #include "File.h"
 #include <SDG/FileSys/Private/IO.h>
-#include <SDG/Buffer.h>
+#include <SDG/Lib/Buffer.h>
 namespace SDG
 {
     /// Private implementation class data

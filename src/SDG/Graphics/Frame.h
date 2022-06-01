@@ -6,10 +6,10 @@
  * 
  */
 #pragma once
-#include <SDG/Math/Vector2.h>
+#include <SDG/Lib/Ref.h>
+#include <SDG/Lib/String.h>
 #include <SDG/Math/Rectangle.h>
-#include <SDG/Ref.h>
-#include <SDG/String.h>
+#include <SDG/Math/Vector2.h>
 
 namespace SDG
 {

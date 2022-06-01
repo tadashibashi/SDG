@@ -2,14 +2,13 @@
 
 #include <SDG/Debug/Assert.h>
 #include <SDG/Debug/Log.h>
-#include <SDG/Memory.h>
+#include <SDG/Lib/Memory.h>
 
 #include <SDL_events.h>
 #include <cstdlib>
 
 namespace SDG
 {
-
     /// Translates Key to corresponding SDL_SCANCODE_*
     static Uint16 KeyToScanCode(Key key);
 

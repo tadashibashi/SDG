@@ -1,8 +1,9 @@
 #include "SDG_Tests.h"
-#include <SDG/StringView.h>
 #include <SDG/Debug/Performance.h>
-#include <sstream>
 #include <SDG/Exceptions/OutOfRangeException.h>
+#include <SDG/Lib/StringView.h>
+
+#include <sstream>
 
 TEST_CASE("StringView tests", "[StringView]")
 {

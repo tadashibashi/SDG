@@ -11,7 +11,7 @@
 #include <SDG/FileSys/Path.h>
 #include <SDG/Math/Vector2.h>
 
-#include <SDG/Ref.h>
+#include <SDG/Lib/Ref.h>
 
 struct GPU_Image;
 struct SDL_Surface;

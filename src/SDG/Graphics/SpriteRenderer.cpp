@@ -23,7 +23,7 @@ void SDG::SpriteRenderer::Update(float deltaSeconds)
 {
     if (!paused)
     {
-        index = fmodf(deltaSeconds * fps * speed + index, (float)sprite->Length());
+        index = Math::WrapF(deltaSeconds * fps * speed + index, 0.f, (float)sprite->Length());
     }
 }
 

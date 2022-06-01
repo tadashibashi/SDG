@@ -129,4 +129,101 @@ TEST_CASE("SpriteRenderer tests", "[SpriteRenderer]")
         spr.Tint(Color::SeaBlue());
         REQUIRE(spr.Tint() == Color::SeaBlue());
     }
+
+    SECTION("Drive index updates")
+    {
+        Sprite s("player-run", { {}, {} }, { 0, 0, 1, 1 });
+        spr.Sprite(s).Fps(1.f);
+        spr.Update(1.f);
+        REQUIRE(spr.Index() == 1.f);
+        spr.Update(1.f);
+        REQUIRE(spr.Index() == 2.f);
+        spr.Update(1.f);
+        REQUIRE(spr.Index() == 3.f);
+        spr.Update(1.f);
+        REQUIRE(spr.Index() == 0.f);
+    }
+
+    SECTION("Speed affects frame rate")
+    {
+        Sprite s("player-run", { {}, {} }, { 0, 0, 1, 1 });
+        spr.Sprite(s).Fps(1.f).Speed(2.f);
+        spr.Update(1.f);
+        REQUIRE(spr.Index() == 2.f);
+        spr.Update(1.f);
+        REQUIRE(spr.Index() == 0.f);
+    }
+
+    SECTION("Reverse speed")
+    {
+        Sprite s("player-run", { {}, {} }, { 0, 0, 1, 1 });
+        spr.Sprite(s).Fps(1.f).Speed(-1.f);
+        spr.Update(1.f);
+        REQUIRE(spr.Index() == 3.f);
+        spr.Update(1.f);
+        REQUIRE(spr.Index() == 2.f);
+        spr.Update(1.f);
+        REQUIRE(spr.Index() == 1.f);
+        spr.Update(1.f);
+        REQUIRE(spr.Index() == 0.f);
+    }
+
+    SECTION("Fps affects frame rate speed")
+    {
+        Sprite s("player-run", { {}, {} }, { 0, 0, 1, 1 });
+        spr.Sprite(s).Fps(4.f).Speed(1.f);
+        spr.Update(.25f);
+        REQUIRE(spr.Index() == 1.f);
+        spr.Update(.25f);
+        REQUIRE(spr.Index() == 2.f);
+        spr.Update(.25f);
+        REQUIRE(spr.Index() == 3.f);
+        spr.Update(.25f);
+        REQUIRE(spr.Index() == 0.f);
+    }
+
+    SECTION("Negative FPS")
+    {
+        Sprite s("player-run", { {}, {} }, { 0, 0, 1, 1 });
+        spr.Sprite(s).Fps(-4.f).Speed(1.f);
+        spr.Update(.25f);
+        REQUIRE(spr.Index() == 3.f);
+        spr.Update(.25f);
+        REQUIRE(spr.Index() == 2.f);
+        spr.Update(.25f);
+        REQUIRE(spr.Index() == 1.f);
+        spr.Update(.25f);
+        REQUIRE(spr.Index() == 0.f);
+    }
+
+    SECTION("Zero FPS")
+    {
+        Sprite s("player-run", { {}, {} }, { 0, 0, 1, 1 });
+        spr.Sprite(s).Fps(0).Speed(1.f);
+        spr.Update(.25f);
+        REQUIRE(spr.Index() == 0);
+        spr.Update(.25f);
+        REQUIRE(spr.Index() == 0);
+    }
+
+    SECTION("Zero speed")
+    {
+        Sprite s("player-run", { {}, {} }, { 0, 0, 1, 1 });
+        spr.Sprite(s).Fps(4.f).Speed(0);
+        spr.Update(.25f);
+        REQUIRE(spr.Index() == 0);
+        spr.Update(.25f);
+        REQUIRE(spr.Index() == 0);
+    }
+
+    SECTION("Paused does not allow update")
+    {
+        Sprite s("player-run", { {}, {} }, { 0, 0, 1, 1 });
+        spr.Sprite(s).Fps(4.f).Speed(1.f);
+        spr.Paused(true);
+        spr.Update(.25f);
+        REQUIRE(spr.Index() == 0);
+        spr.Update(.25f);
+        REQUIRE(spr.Index() == 0);
+    }
 }

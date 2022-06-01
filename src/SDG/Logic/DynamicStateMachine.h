@@ -32,9 +32,9 @@ namespace SDG
         /// @param replaceCurrent - true: ends the current state;
         ///                         false: pauses the current state
         template <typename KeyType>
-        void StartState(KeyType key, bool replaceCurrent = true)
+        void Start(KeyType key, bool replaceCurrent = true)
         {
-            nextState = states[key];
+            nextState = states[(size_t)key];
             isReplacing = replaceCurrent;
         }
 
@@ -48,15 +48,7 @@ namespace SDG
         // ========== State driver ==========
 
         /// Drives the state machine
-        void Update(float deltaSeconds)
-        {
-            stateTime += deltaSeconds;
-            ProcessChanges();
-
-            if (!stack.empty() && stack.top()->update)
-                stack.top()->update(stateTime);
-
-        }
+        void Update(float deltaSeconds);
 
 
         // ========== State access ==========
@@ -67,10 +59,10 @@ namespace SDG
 
         /// const indexer
         template <typename KeyType>
-        const DynamicState &operator[] (KeyType key) const { return states[(int)key]; }
+        [[nodiscard]] const DynamicState &operator[] (KeyType key) const { return states[(int)key]; }
     private:
         // storage-related members
-        std::map<int, DynamicState> states;
+        std::map<size_t, DynamicState> states;
 
         // driver-related members
         std::stack<Ref<DynamicState>> stack;

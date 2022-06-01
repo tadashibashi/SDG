@@ -42,8 +42,8 @@ namespace SDG
 
         /// Sets the resume callback
         /// @param callback - called when state resumes
-        /// Callback receives total seconds passed in this state when 
-        /// initially paused. (It is not the time since pause was called.)
+        /// Callback receives total seconds of the last state before resuming.
+        /// State time is reset.
         DynamicState &OnResume(std::function<void(float)> callback);
         bool HasResume() const { return static_cast<bool>(resume); }
         

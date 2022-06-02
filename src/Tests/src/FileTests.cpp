@@ -6,7 +6,7 @@
 
 TEST_CASE("File tests", "[SDG::File]")
 {
-    FileSys fileSys("SDG Tests", "SDG");
+    FileSys fileSys("SDG Tests", "SDG"); // this object must always remain in scope
     SECTION("Setup")
     {
         Path::PushFileSys(fileSys);

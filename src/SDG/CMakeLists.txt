@@ -120,7 +120,7 @@ set(Engine_Sources
         Time/Timer.h Time/Timer.cpp 
         Time/Duration.h Time/Duration.cpp
         
-)
+ "Graphics/FontCache.h")
 
 # -----  Includes  ----------------------------------------------------
 set(Engine_Includes

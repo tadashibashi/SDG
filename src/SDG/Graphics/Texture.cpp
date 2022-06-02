@@ -72,29 +72,29 @@ namespace SDG
         impl->Free();
     }
 
-    Texture::Snap Texture::SnapMode() const
+    TexSnap Texture::SnapMode() const
     {
         GPU_SnapEnum snap = GPU_GetSnapMode(impl->image);
         switch (snap)
         {
-        case GPU_SNAP_NONE: return Snap::None;
-        case GPU_SNAP_POSITION: return Snap::Position;
-        case GPU_SNAP_DIMENSIONS: return Snap::Dimensions;
-        case GPU_SNAP_POSITION_AND_DIMENSIONS: return Snap::Both;
+        case GPU_SNAP_NONE: return TexSnap::None;
+        case GPU_SNAP_POSITION: return TexSnap::Position;
+        case GPU_SNAP_DIMENSIONS: return TexSnap::Dimensions;
+        case GPU_SNAP_POSITION_AND_DIMENSIONS: return TexSnap::Both;
         default: // in case GPU updates add new ones
             throw RuntimeException("Unknown GPU_SnapEnum argument");
         }
     }
 
-    Texture &Texture::SnapMode(Snap snapMode)
+    Texture &Texture::SnapMode(TexSnap snapMode)
     {
         GPU_SnapEnum snapEnum;
         switch (snapMode)
         {
-        case Snap::None: snapEnum = GPU_SNAP_NONE; break;
-        case Snap::Position: snapEnum = GPU_SNAP_POSITION; break;
-        case Snap::Dimensions: snapEnum = GPU_SNAP_DIMENSIONS; break;
-        case Snap::Both: snapEnum = GPU_SNAP_POSITION_AND_DIMENSIONS; break;
+        case TexSnap::None: snapEnum = GPU_SNAP_NONE; break;
+        case TexSnap::Position: snapEnum = GPU_SNAP_POSITION; break;
+        case TexSnap::Dimensions: snapEnum = GPU_SNAP_DIMENSIONS; break;
+        case TexSnap::Both: snapEnum = GPU_SNAP_POSITION_AND_DIMENSIONS; break;
         default:
             throw InvalidArgumentException("Texture::SnapMode(SDG::SnapMode mode)", "mode");
         }
@@ -116,14 +116,14 @@ namespace SDG
         return GPU_GetBlending(impl->image);
     }
 
-    Texture &Texture::FilterMode(Filter mode)
+    Texture &Texture::FilterMode(TexFilter mode)
     {
         GPU_FilterEnum gpuMode;
         switch (mode)
         {
-        case Filter::Linear: gpuMode = GPU_FILTER_LINEAR; break;
-        case Filter::LinearMipMap: gpuMode = GPU_FILTER_LINEAR_MIPMAP; break;
-        case Filter::Nearest: gpuMode = GPU_FILTER_NEAREST; break;
+        case TexFilter::Linear: gpuMode = GPU_FILTER_LINEAR; break;
+        case TexFilter::LinearMipMap: gpuMode = GPU_FILTER_LINEAR_MIPMAP; break;
+        case TexFilter::Nearest: gpuMode = GPU_FILTER_NEAREST; break;
         default:
             throw InvalidArgumentException("Texture::FilterMode(Filter mode)", "mode");
         }
@@ -133,13 +133,13 @@ namespace SDG
         return *this;
     }
 
-    Texture::Filter Texture::FilterMode() const
+    TexFilter Texture::FilterMode() const
     {
         switch (impl->image->filter_mode)
         {
-        case GPU_FILTER_LINEAR: return Filter::Linear;
-        case GPU_FILTER_LINEAR_MIPMAP: return Filter::LinearMipMap;
-        case GPU_FILTER_NEAREST: return Filter::Nearest;
+        case GPU_FILTER_LINEAR: return TexFilter::Linear;
+        case GPU_FILTER_LINEAR_MIPMAP: return TexFilter::LinearMipMap;
+        case GPU_FILTER_NEAREST: return TexFilter::Nearest;
         default:
             throw RuntimeException("GPU_FilterEnum value not anticipated by SDG_Engine, internal error");
         }
@@ -212,15 +212,15 @@ namespace SDG
         return true;
     }
 
-    bool Texture::SaveAs(const Path &filepath, Format format)
+    bool Texture::SaveAs(const Path &filepath, TexFormat format)
     {
         GPU_FileFormatEnum gpuFormat;
         switch (format)
         {
-        case Format::Auto: gpuFormat = GPU_FILE_AUTO; break;
-        case Format::Png: gpuFormat = GPU_FILE_PNG; break;
-        case Format::Tga: gpuFormat = GPU_FILE_TGA; break;
-        case Format::Bmp: gpuFormat = GPU_FILE_BMP; break;
+        case TexFormat::Auto: gpuFormat = GPU_FILE_AUTO; break;
+        case TexFormat::Png: gpuFormat = GPU_FILE_PNG; break;
+        case TexFormat::Tga: gpuFormat = GPU_FILE_TGA; break;
+        case TexFormat::Bmp: gpuFormat = GPU_FILE_BMP; break;
         default:
             throw InvalidArgumentException("Texture::SaveAs(const Path &filepath, Format format)", "format");
         }

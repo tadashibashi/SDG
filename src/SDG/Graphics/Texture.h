@@ -17,7 +17,27 @@ struct SDL_Surface;
 
 namespace SDG
 {
+    enum class TexFormat {
+        Auto,
+        Png,
+        Tga,
+        Bmp
+    };
 
+    enum class TexSnap
+    {
+        None,
+        Position,
+        Dimensions,
+        Both
+    };
+
+    enum class TexFilter
+    {
+        Linear,
+        LinearMipMap,
+        Nearest
+    };
     /// Texture class automatically frees texture when this object goes out
     /// of scope. Please be aware of this, as the object will become
     /// invalidated if the destructor is called.
@@ -25,27 +45,7 @@ namespace SDG
     {
         struct Impl;
     public:
-        enum class Format {
-            Auto,
-            Png,
-            Tga,
-            Bmp
-        };
 
-        enum class Snap
-        {
-            None,
-            Position,
-            Dimensions,
-            Both
-        };
-
-        enum class Filter
-        {
-            Linear,
-            LinearMipMap,
-            Nearest
-        };
 
         // ========== Initialization and Destruction ==========
         /// Initializes an unloaded Texture
@@ -73,19 +73,19 @@ namespace SDG
         /// Free the internal texture, and resets container for reuse.
         void Free();
 
-        bool SaveAs(const Path &filepath, Format format = Format::Auto);
+        bool SaveAs(const Path &filepath, TexFormat format = TexFormat::Auto);
 
 
         // ========== Getters/ Setters ==========
 
-        Snap SnapMode() const;
-        Texture &SnapMode(Snap snapMode);
+        TexSnap SnapMode() const;
+        Texture &SnapMode(TexSnap snapMode);
 
         bool Blending() const;
         Texture &Blending(bool blending);
 
-        Filter FilterMode() const;
-        Texture &FilterMode(Filter mode);
+        TexFilter FilterMode() const;
+        Texture &FilterMode(TexFilter mode);
 
         /// Gets the dimensions of the texture in pixels.
         Point Size() const;

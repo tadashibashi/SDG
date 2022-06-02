@@ -73,6 +73,9 @@ ReadFileStrImpl(const char *path, uint8_t **data, size_t *size, bool appendNull)
         return false;
     }
 
+    if (size)
+        *size = fileSize;
+
     *data = mem;
     errorStr = SDG::String("No errors.");
     return true;

@@ -20,7 +20,7 @@ namespace SDG
     {
         T *temp = (T *)malloc(sizeof(T) > 0 ? sizeof(T) * n : n);
         if (!temp)
-            throw RuntimeException("Malloc: Out of Memory.");
+            throw RuntimeException("Malloc: Out of memory.");
         
         return temp;
     }
@@ -28,7 +28,7 @@ namespace SDG
     /// Copies n objects of type T from the source to the destination
     /// Please be aware that 'n' is the number of objects of sizeof T, not bytes.
     /// If raw bytes are needed, use "void" for the template parameter
-    template <typename T = void>
+    template <typename T>
     inline void Memcpy(T *dest, const T *src, size_t n)
     {
         memcpy(dest, src, sizeof(T) > 0 ? sizeof(T) * n : n);
@@ -40,8 +40,8 @@ namespace SDG
     {
         T *temp = (T *)realloc(block, size);
         if (!temp)
-            throw RuntimeException("Realloc: Out of Memory.");
-
+            throw RuntimeException("SDG::Realloc: Out of memory or pointer "
+                "access violation.");
         return temp;
     }
 

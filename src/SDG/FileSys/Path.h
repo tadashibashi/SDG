@@ -16,7 +16,6 @@
 
 namespace SDG
 {
-    class FileSys;
 
      /// Wrapper around a string, representing a full filepath.
      /// User can specify path base to stem from. More info in enum class Path::Base.
@@ -82,7 +81,7 @@ namespace SDG
         /// evaluate a different String() once the FileSys has changed.
         /// In this way, multiple FileSys objects are supported, but one should be careful
         /// to return the FileSys to the original expected system by calling PopFileSys() afterward.
-        static void PushFileSys(Ref<FileSys> system);
+        static void PushFileSys(Ref<class FileSys> system);
 
         /// Removes the last FileSys that was pushed.
         static void PopFileSys();
@@ -96,13 +95,14 @@ namespace SDG
     private:
         String subpath;
         BaseDir base;
-        static std::stack<Ref<FileSys>> fileSys;
+        static std::stack<Ref<class FileSys>> fileSys;
     };
 
     /// Helper: creates a path stemming from the app personal preference directory (read/write)
     Path PrefPath(const String &subpath = String());
     /// Helper: creates a path stemming from the app's base working directory (read only)
     Path BasePath(const String &subpath = String());
+    /// Helper: creates a path stemming from the OS's root directory (currently supported: Desktop platforms)
     Path RootPath(const String &subpath = String());
 
     Path operator + (const Path &path, const String &str);

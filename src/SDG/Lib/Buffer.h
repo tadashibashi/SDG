@@ -6,7 +6,6 @@
 #pragma once
 #include <SDG/Lib/String.h>
 #include <SDG/Lib/Endian.h>
-#include <SDG/Position.h>
 
 namespace SDG
 {
@@ -14,6 +13,12 @@ namespace SDG
     class Buffer
     {
     public:
+        enum Origin {
+            Start,
+            End,
+            Relative
+        };
+
         /// Default buffer capacity when not specified by the user in the ctor.
         static const size_t DefaultInitCap;
 
@@ -120,7 +125,7 @@ namespace SDG
         [[nodiscard]] Endian Endianness() const noexcept { return endian_; }
 
         /// Moves the Buffer's current read position
-        void Seek(int64_t bytes, Position origin = Position::Start) const;
+        void Seek(int64_t bytes, Origin origin = Start) const;
 
         /// Resets the Buffer's internal data.
         void Clear() noexcept { end_ = buf_; head_ = buf_; }
@@ -138,6 +143,7 @@ namespace SDG
         [[nodiscard]] Iterator end() { return end_; }
         [[nodiscard]] ConstIterator cbegin() { return buf_; }
         [[nodiscard]] ConstIterator cend() { return end_; }
+
     private:
         uint8_t *buf_, *end_, *cap_;
         mutable uint8_t *head_;
@@ -145,7 +151,7 @@ namespace SDG
 
         /// Gets pointer position from Position enum and byte position
         /// Parameter "bytes" may be negative or positive.
-        [[nodiscard]] uint8_t *GetPosition(int64_t bytes, Position origin) const;
+        [[nodiscard]] uint8_t *GetPosition(int64_t bytes, Origin origin) const;
         void Expand(size_t size);
         void CheckBoundsWrite(uint8_t *ptr);
         void CheckBoundsRead(uint8_t *ptr) const;

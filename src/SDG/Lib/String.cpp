@@ -516,10 +516,7 @@ StrMalloc(size_t size)
 {
     char *m = (char *)malloc(size);
     if (!m)
-    {
-        SDG_Core_Err("String allocation failed: out of memory.");
-        exit(-1);
-    }
+        throw SDG::RuntimeException("String allocation failed: out of memory.");
 
     return m;
 }
@@ -535,10 +532,7 @@ StrRealloc(char *str, size_t size)
 {
     char *m = (char *)realloc(str, size);
     if (!m)
-    {
-        SDG_Core_Err("String reallocation failed: out of memory.");
-        exit(-1);
-    }
+        throw SDG::RuntimeException("String reallocation failed: out of memory.");
 
     return m;
 }

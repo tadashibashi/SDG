@@ -3,8 +3,11 @@
 //  SDG_Engine
 //
 #include "File.h"
+#include <SDG/Exceptions/InvalidArgumentException.h>
+#include <SDG/Exceptions/RuntimeException.h>
 #include <SDG/FileSys/Private/IO.h>
 #include <SDG/Lib/Buffer.h>
+
 namespace SDG
 {
     /// Private implementation class data
@@ -60,6 +63,12 @@ namespace SDG
     File::Size() const
     {
         return impl->buf.Size();
+    }
+
+    int64_t
+    File::Capacity() const
+    {
+        return impl->buf.Capacity();
     }
 
     const char *
@@ -127,13 +136,7 @@ namespace SDG
     }
 
     bool
-    File::IsLoaded() const
-    {
-        return impl->isOpen;
-    }
-
-    bool
-    File::Save(const Path &path) const
+    File::SaveAs(const Path &path) const
     {
         if (path.Extension() == "sdgc")
             return IO::WriteEncryptedFile(path.Str().Cstr(),
@@ -147,9 +150,14 @@ namespace SDG
     File::Save() const
     {
         if (IsOpen())
-            return Save(impl->path);
+        {
+            return SaveAs(impl->path);
+        } 
         else
-            return false;
+        {
+            throw RuntimeException("File::Save: failed to save because "
+                "there was no previously opened file.");
+        }  
     }
 
     size_t
@@ -188,9 +196,20 @@ namespace SDG
     }
 
     File &
-    File::Seek(int64_t bytes, Position origin)
+    File::Seek(int64_t bytes, Origin origin)
     {
-        impl->buf.Seek(bytes, origin);
+        Buffer::Origin bOrigin;
+        switch (origin)
+        {
+        case Origin::Start: bOrigin = Buffer::Start; break;
+        case Origin::End: bOrigin = Buffer::End; break;
+        case Origin::Relative: bOrigin = Buffer::Relative; break;
+        default: // for potential invalid enum casts
+            throw InvalidArgumentException("File::Seek(int64_t bytes, Origin origin)", "origin");
+        }
+
+
+        impl->buf.Seek(bytes, bOrigin);
         return *this;
     }
 

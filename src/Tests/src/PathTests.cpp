@@ -3,20 +3,26 @@
 #include <SDG/FileSys/Path.h>
 #include <SDG/Platform.h>
 
+#include <SDL.h>
+
 TEST_CASE("Path", "[path]")
 {
-    // Set the root path for testing depending on platform
-#if SDG_TARGET_WINDOWS
+// Set the root path for testing depending on platform
+#if (SDG_TARGET_WINDOWS)
     String root = "C:\\";
 #else // unix-based systems. What about WEBGL? Nintendo Switch?
     String root = "/";
 #endif
-
-    // Set up file system
     FileSys fileSys("SDG Tests", "SDG");
-    Path::PushFileSys(Ref(fileSys));         // gives Path class access to these paths.
-                                            // Changable if you want to use a different
-                                            // set of folders.
+    SECTION("Setup")
+    {
+        // Set up file system
+        Path::PushFileSys(fileSys);        // gives Path class access to these paths.
+                                                // Changable if you want to use a different
+                                                // set of folders.
+    }
+
+
 
     SECTION("Path Constructor Tests")
     {
@@ -459,6 +465,11 @@ TEST_CASE("Path", "[path]")
 
         REQUIRE(prefPath2 != prefPath1);
         REQUIRE(prefPath1 == prefPath3);
+    }
+
+    SECTION("Cleanup")
+    {
+        Path::PopFileSys();
     }
 
 } /* End TEST_CASE for class Path */

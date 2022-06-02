@@ -50,7 +50,7 @@ TEST_CASE("Buffer tests", "[Buffer]")
         {
             bool didThrow;
             try {
-                buf.Seek(1, Position::End);
+                buf.Seek(1, Buffer::End);
                 didThrow = false;
             }
             catch (const OutOfRangeException &e)
@@ -77,21 +77,21 @@ TEST_CASE("Buffer tests", "[Buffer]")
 
         SECTION("Seek from end")
         {
-            buf.Seek(-(int)sizeof(int), Position::End);
+            buf.Seek(-(int)sizeof(int), Buffer::End);
             REQUIRE(buf.Tell() == sizeof(int));
-            buf.Seek(-(int)sizeof(int) * 2, Position::End);
+            buf.Seek(-(int)sizeof(int) * 2, Buffer::End);
             REQUIRE(buf.Tell() == 0);
         }
 
         SECTION("Seek relatively")
         {
-            buf.Seek(2, Position::Relative);
+            buf.Seek(2, Buffer::Relative);
             REQUIRE(buf.Tell() == 2);
-            buf.Seek(2, Position::Relative);
+            buf.Seek(2, Buffer::Relative);
             REQUIRE(buf.Tell() == 4);
-            buf.Seek(4, Position::Relative);
+            buf.Seek(4, Buffer::Relative);
             REQUIRE(buf.Tell() == 8);
-            buf.Seek(-8, Position::Relative);
+            buf.Seek(-8, Buffer::Relative);
             REQUIRE(buf.Tell() == 0);
         }
     }

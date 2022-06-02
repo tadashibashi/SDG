@@ -47,7 +47,13 @@ add_executable(SDG_Tests
         "src/StringViewTests.cpp" 
         "src/DynamicStateTests.cpp" 
         "src/SharedPtrTests.cpp" 
-        src/FrameTests.cpp "src/SpriteTests.cpp" "src/ArrayTests.cpp" "src/SpriteRendererTests.cpp" "src/DynamicStateMachineTests.cpp")
+        src/FrameTests.cpp 
+        "src/SpriteTests.cpp" 
+        "src/ArrayTests.cpp" 
+        "src/SpriteRendererTests.cpp" 
+        "src/DynamicStateMachineTests.cpp"
+        src/FileTests.cpp
+        )
 
 target_include_directories(SDG_Tests PRIVATE ${CMAKE_SOURCE_DIR}/src
         lib/Catch2/src)

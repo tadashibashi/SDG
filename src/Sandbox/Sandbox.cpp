@@ -83,7 +83,7 @@ private:
             File file;
             file.Write("My saved game!");
             file.Write(Time()->As(TimeUnit::Seconds));
-            file.Save(PrefPath("game1.sdgc"));
+            file.SaveAs(PrefPath("game1.sdgc"));
         }
 
         if (Input::KeyPressed(Key::L) && Input::KeyPress(Key::V))

@@ -112,7 +112,7 @@ set(Engine_Sources
 
         Logic/DynamicState.h Logic/DynamicStateMachine.h Logic/DynamicState.cpp Logic/DynamicStateMachine.cpp
 
-        Position.h
+        "Lib/Position.h"
 
         Time/AppTime.cpp Time/AppTime.h
         Time/Chronogram.h Time/Chronogram.cpp 

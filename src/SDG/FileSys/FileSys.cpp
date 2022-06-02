@@ -34,7 +34,7 @@ SDG::FileSys::BasePath() const
         if (!temp)
         {
             throw RuntimeException(
-                    std::string("Problem retrieving BasePath: ") +
+                    String("Problem retrieving BasePath: ") +
                     SDL_GetError());
         }
         basePath = temp;
@@ -56,7 +56,8 @@ SDG::FileSys::PrefPath() const
         if (!tPrefPath)
         {
             throw RuntimeException(
-                    std::string("Problem retrieving PrefPath: ") +
+                    String("Problem retrieving PrefPath with org name \"") + 
+                    orgName + String(", and app name \"" + appName + "\"") +
                     SDL_GetError());
         }
 

@@ -147,7 +147,7 @@ namespace SDG
     }
 
     void
-    Buffer::Seek(int64_t bytes, Position origin) const
+    Buffer::Seek(int64_t bytes, Origin origin) const
     {
         uint8_t *position = GetPosition(bytes, origin);
         CheckBoundsRead(position);
@@ -155,15 +155,15 @@ namespace SDG
     }
 
     uint8_t *
-    Buffer::GetPosition(int64_t bytes, Position origin) const
+    Buffer::GetPosition(int64_t bytes, Origin origin) const
     {
         switch (origin)
         {
-        case Position::Start:
+        case Origin::Start:
             return buf_ + bytes;
-        case Position::End:
+        case Origin::End:
             return end_ + bytes;
-        case Position::Relative:
+        case Origin::Relative:
             return head_ + bytes;
         default:
             return nullptr;

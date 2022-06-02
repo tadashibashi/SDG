@@ -7,7 +7,6 @@
  */
 #pragma once
 #include "Path.h"
-#include <SDG/Position.h>
 
 namespace SDG
 {
@@ -17,6 +16,11 @@ namespace SDG
 class File {
     class Impl;
 public:
+    enum Origin {
+        Start,
+        End,
+        Relative
+    };
     // ========== Initialization and Destruction ==========
     /// Initializes an unloaded file.
     File();
@@ -53,33 +57,36 @@ public:
     [[nodiscard]]
     int64_t Size() const;
 
+    [[nodiscard]]
+    int64_t Capacity() const;
+
     /// Checks whether file is opened or not.
-    /// It may or may not have data loaded into memory. Use IsLoaded() to check
+    /// It may or may not have data loaded into memory. Use IsOpen() to check
     /// for this check.
     [[nodiscard]]
     bool IsOpen() const;
 
-    /// Checks if data has been loaded into memory or not.
-    [[nodiscard]]
-    bool IsLoaded() const;
-
     /// Saves the data into a file at the indicated path.
     /// Returns true
-    bool Save(const Path &path) const;
+    bool SaveAs(const Path &path) const;
 
-    /// Overwrites the file at the path that the file was previously opened at.
-    /// It will fail to save if the File did not previously load successfully.
+    /// Overwrites the file at the path that this File was previously successfully
+    /// opened at. Throws a RuntimeException if the File did not previously load
+    /// successfully. Please check IsLoaded() before calling this function.
+    /// @returns whether the file saved successfully
     bool Save() const;
-
+     
     template<typename T>
     size_t Write(const T &obj)
     {
         return Write(&obj, sizeof(T));
     }
 
-    size_t Write(const void *ptr, size_t size);
     size_t Write(const String &str);
     size_t Write(const char *str);
+    size_t Write(const void *ptr, size_t size);
+
+
 
     template<typename T>
     size_t Read(T &obj)
@@ -87,16 +94,25 @@ public:
         return Read(&obj, sizeof(T));
     }
 
+    template<typename T>
+    [[nodiscard]] T Read()
+    {
+        T obj;
+        Read(&obj, sizeof(T));
+
+        return obj;
+    }
+
     size_t Read(void *ptr, size_t size);
     size_t Read(String &str, size_t length);
     size_t Read(char *str, size_t length);
 
-    File &Seek(int64_t bytes, Position origin = Position::Start);
-    size_t Tell() const;
+    File &Seek(int64_t bytes, Origin origin = Origin::Start);
+    [[nodiscard]] size_t Tell() const;
 
     File &Reserve(size_t bytes);
 
-    const Path &Filepath() const;
+    [[nodiscard]] const Path &Filepath() const;
 
 private:
     /// Loads data found in the file at path into the File class.

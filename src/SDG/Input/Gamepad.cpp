@@ -20,8 +20,8 @@ namespace SDG
     {
         Impl(int index) :
             control(),
-            buttons(Malloc<Sint16>((uint8_t)Button::Max_)),
-            lastButtons(Malloc<Sint16>((uint8_t)Button::Max_)),
+            buttons(Calloc<Sint16>((uint8_t)Button::Max_)),
+            lastButtons(Calloc<Sint16>((uint8_t)Button::Max_)),
             index(index),
             id(-1),
             wasChanged(true)

@@ -51,7 +51,7 @@ namespace SDG
         if (!impl->state) // only initialize if it has not been yet
         {
             impl->state = SDL_GetKeyboardState(&impl->numKeys);
-            impl->lastState = Malloc<Uint8>(impl->numKeys);
+            impl->lastState = Calloc<Uint8>(impl->numKeys);
             Memcpy(impl->lastState, impl->state, impl->numKeys);
 
             // Populate the scancodes array if it hasn't already been set

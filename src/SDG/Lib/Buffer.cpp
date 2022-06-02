@@ -35,7 +35,7 @@ namespace SDG
     const size_t Buffer::DefaultInitCap = 32;
 
     Buffer::Buffer(size_t initCap, Endian endian) :
-        buf_(Malloc<uint8_t>(initCap)), head_(buf_), end_(buf_), 
+        buf_(Calloc<uint8_t>(initCap)), head_(buf_), end_(buf_), 
         endian_(endian == Endian::Unknown ? SystemEndian() : endian), 
         cap_(buf_ + initCap)
     {
@@ -50,7 +50,7 @@ namespace SDG
     }
 
     Buffer::Buffer(const Buffer &buffer) :
-        buf_(Malloc<uint8_t>(buffer.Capacity())), head_(buf_), 
+        buf_(Calloc<uint8_t>(buffer.Capacity())), head_(buf_), 
         end_(buf_ + buffer.Size()), endian_(buffer.Endianness()),
         cap_(buf_ + buffer.Capacity())
     {

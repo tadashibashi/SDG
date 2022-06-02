@@ -9,25 +9,23 @@
 
 namespace SDG
 {
-    /// Allocates memory for n objects of type T.
-    /// Please be aware that 'n' is the number of objects sizeof T, not bytes.
-    /// If raw bytes are needed, use "void" for the template parameter.
+    /// Allocates memory for a number of objects of type T.
+    /// Please be aware that "count" is the number of objects sizeof T, not bytes.
     /// Also, make sure to call Free on the pointer, once the memory is no longer needed.
     /// Throws a RuntimeException if allocation fails.
     /// @param n number of objects of type T to fit in the memory
-    template <typename T = void>
-    [[nodiscard]] inline T *Malloc(size_t n)
+    template <typename T>
+    [[nodiscard]] inline T *Calloc(size_t count)
     {
-        T *temp = (T *)malloc(sizeof(T) > 0 ? sizeof(T) * n : n);
+        T *temp = (T *)malloc(sizeof(T) * count);
         if (!temp)
-            throw RuntimeException("Malloc: Out of memory.");
+            throw RuntimeException("Calloc: Out of memory.");
         
         return temp;
     }
 
     /// Copies n objects of type T from the source to the destination
     /// Please be aware that 'n' is the number of objects of sizeof T, not bytes.
-    /// If raw bytes are needed, use "void" for the template parameter
     template <typename T>
     inline void Memcpy(T *dest, const T *src, size_t n)
     {
@@ -45,7 +43,7 @@ namespace SDG
         return temp;
     }
 
-    /// Frees a block of data allocated with SDG::Malloc/SDG::Realloc
+    /// Frees a block of data allocated with SDG::Calloc/SDG::Realloc
     inline void Free(void *block)
     {
         free(block);

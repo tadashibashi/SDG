@@ -15,14 +15,14 @@ namespace SDG
     public:
         /// Copy constructor
         Array(const Array &other) :
-            arr((other.size > 0) ? Malloc<T>(other.size) : nullptr),
+            arr((other.size > 0) ? Calloc<T>(other.size) : nullptr),
             size(other.size)
         {
             Memcpy(arr, other.arr, other.size);
         }
 
         /// Default constructs "size" number of objects of type T
-        Array(size_t size = 0) : arr( (size > 0) ? Malloc<T>(size) : nullptr), size(size)
+        Array(size_t size = 0) : arr( (size > 0) ? Calloc<T>(size) : nullptr), size(size)
         {
             for (T &obj : *this)
             {
@@ -33,7 +33,7 @@ namespace SDG
 
         /// Copies an initializer list into the Array
         Array(const std::initializer_list<T> &list) :
-            arr(list.size() > 0 ? Malloc<T>(list.size()) : nullptr), size(list.size())
+            arr(list.size() > 0 ? Calloc<T>(list.size()) : nullptr), size(list.size())
         {
             if (arr)
             {
@@ -56,7 +56,7 @@ namespace SDG
             }
 
             // Allocate memory
-            arr = (count > 0) ? Malloc<T>(count) : nullptr;
+            arr = (count > 0) ? Calloc<T>(count) : nullptr;
             size = count;
 
             // Copy data

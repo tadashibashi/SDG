@@ -57,7 +57,7 @@ set(Engine_Sources
         Graphics/Shader.cpp Graphics/Shader.h
         Graphics/Color.h Graphics/Color.cpp
         Graphics/SpriteBatch.cpp Graphics/SpriteBatch.h
-        Graphics/Texture2D.h Graphics/Texture2D.cpp
+        Graphics/Texture.h Graphics/Texture.cpp
         Graphics/TrueTypeFont.cpp Graphics/TrueTypeFont.h
         Graphics/RenderTarget.cpp Graphics/RenderTarget.h
         Graphics/Flip.h Graphics/Flip.cpp 

@@ -1,13 +1,12 @@
 /*!
- * @file Texture2D.h
+ * @file Texture.h
  * @namespace SDG
- * @class Texture2D
- * Texture2D loads and frees a texture file that can be used with SDG_Engine
+ * @class Texture
+ * Texture loads and frees a texture file that can be used with SDG_Engine
  * image drawing functions. It supports .png, .bmp, and .tga file formats.
  *
  */
 #pragma once
-#include <string>
 #include <SDG/FileSys/Path.h>
 #include <SDG/Math/Vector2.h>
 
@@ -18,31 +17,54 @@ struct SDL_Surface;
 
 namespace SDG
 {
-    /// Texture2D class automatically frees texture when this object goes out
+
+    /// Texture class automatically frees texture when this object goes out
     /// of scope. Please be aware of this, as the object will become
     /// invalidated if the destructor is called.
-    class Texture2D
+    class Texture
     {
         struct Impl;
     public:
+        enum class Format {
+            Auto,
+            Png,
+            Tga,
+            Bmp
+        };
+
+        enum class Snap
+        {
+            None,
+            Position,
+            Dimensions,
+            Both
+        };
+
+        enum class Filter
+        {
+            Linear,
+            LinearMipMap,
+            Nearest
+        };
+
         // ========== Initialization and Destruction ==========
         /// Initializes an unloaded Texture
-        Texture2D();
+        Texture();
         /// Initializes a texture loaded from the given path.
-        Texture2D(Ref<class Window> context, const Path &path);
+        Texture(Ref<class Window> context, const Path &path);
 
-        Texture2D(Ref<class Window> context, SDL_Surface *surf, const Path &path = Path());
+        Texture(Ref<class Window> context, SDL_Surface *surf, const Path &path = Path());
 
         /// Automatically frees the internal texture if one was loaded.
-        ~Texture2D();
+        ~Texture();
 
         // ========== Loading and unloading ==========
-        /// Load an image into the Texture2D.
+        /// Load an image into the Texture.
         /// @param path path to the image file. Must be in png, tga, or bmp format.
         /// @param context context to create texture with - it will only render in this context.
         bool Load(Ref<class Window> context, const Path &path);
 
-        /// Load an image from a surface. Ownership of surface is passed to the Texture2D.
+        /// Load an image from a surface. Ownership of surface is passed to the Texture.
         /// @param surf the surface to load
         /// @param context context to create texture with - it will only render in this context.
         /// @param path path that the surface was loaded from. Made optional since there is not always one.
@@ -51,7 +73,20 @@ namespace SDG
         /// Free the internal texture, and resets container for reuse.
         void Free();
 
-        // ========== Getters ==========
+        bool SaveAs(const Path &filepath, Format format = Format::Auto);
+
+
+        // ========== Getters/ Setters ==========
+
+        Snap SnapMode() const;
+        Texture &SnapMode(Snap snapMode);
+
+        bool Blending() const;
+        Texture &Blending(bool blending);
+
+        Filter FilterMode() const;
+        Texture &FilterMode(Filter mode);
+
         /// Gets the dimensions of the texture in pixels.
         Point Size() const;
 

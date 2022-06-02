@@ -17,7 +17,7 @@ Sandbox tests:
     x Font
     x Shader
     x SpriteBatch
-    x Texture2D
+    x Texture
 
 
 

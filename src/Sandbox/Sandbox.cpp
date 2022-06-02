@@ -15,9 +15,9 @@ public:
 private:
     // Test objects / members
     Ref<Window> window2;
-    Texture2D kirby;
-    Texture2D kirby2;
-    Texture2D *text{};
+    Texture kirby;
+    Texture kirby2;
+    Texture *text{};
     Shader shader;
     
     TrueTypeFont font;

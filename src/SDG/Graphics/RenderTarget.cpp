@@ -3,7 +3,7 @@
 
 #include "Private/TranslateFlip.h"
 #include "Private/Conversions.h"
-#include "Texture2D.h"
+#include "Texture.h"
 
 #include <SDG/Math/Private/Conversions.h>
 
@@ -109,7 +109,7 @@ namespace SDG
     }
 
     void
-    RenderTarget::DrawTexture(Ref<Texture2D> texture, Rectangle src, FRectangle dest,
+    RenderTarget::DrawTexture(Ref<Texture> texture, Rectangle src, FRectangle dest,
                               float rotation, Vector2 anchor, Flip flip)
     {
         // Create rects

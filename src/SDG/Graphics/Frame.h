@@ -20,7 +20,7 @@ namespace SDG
             texture() { }
         Frame(const Rectangle &frame, const Rectangle &origRect, bool rotated,
               const Point &anchor, const String &name,
-              CRef<class Texture2D> texture) :
+              CRef<class Texture> texture) :
                       frameRect(frame), origRect(origRect), rotated(rotated),
                       anchor(anchor), name(name), texture(texture) { }
 
@@ -45,7 +45,7 @@ namespace SDG
         Point Anchor() const noexcept { return anchor; }
 
         /// Gets the texture from which this frame originates
-        CRef<class Texture2D> Texture() const noexcept { return texture; }
+        CRef<class Texture> Texture() const noexcept { return texture; }
 
         /// Gets the frame name
         const String &Name() const noexcept { return name; }
@@ -55,7 +55,7 @@ namespace SDG
         Rectangle frameRect;
         Rectangle origRect;
         bool rotated;
-        CRef<class Texture2D> texture;
+        CRef<class Texture> texture;
         String name;
     };
 }

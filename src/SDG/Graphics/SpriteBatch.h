@@ -9,7 +9,7 @@
 #pragma once
 
 #include "Flip.h"
-#include "Texture2D.h"
+#include "Texture.h"
 #include "Window.h"
 
 #include <SDG/Lib/ClassMacros.h>
@@ -40,10 +40,10 @@ namespace SDG
             CRef<class Matrix4x4> transformMatrix = CRef<class Matrix4x4>{}, 
             SortMode sort = SortMode::FrontToBack);
         void End();
-        void DrawTexture(CRef<Texture2D> texture, Rectangle src, FRectangle dest, float rotation, Vector2 anchor, Flip flip, Color color, float depth);
+        void DrawTexture(CRef<Texture> texture, Rectangle src, FRectangle dest, float rotation, Vector2 anchor, Flip flip, Color color, float depth);
 
         /// Quick and easy draw
-        void DrawTexture(CRef<Texture2D> texture, Vector2 position, Vector2 scale = Vector2(1.f, 1.f),
+        void DrawTexture(CRef<Texture> texture, Vector2 position, Vector2 scale = Vector2(1.f, 1.f),
                          Vector2 normAnchor = Vector2(.5f, .5f),
                          float rotation = 0, float depth = 0, Color color = Color::White());
     private:
@@ -59,9 +59,9 @@ namespace SDG
 
     struct SpriteBatch::BatchCall 
     {
-        BatchCall(CRef<Texture2D> texture, Rectangle src, FRectangle dest, float rotation,
+        BatchCall(CRef<Texture> texture, Rectangle src, FRectangle dest, float rotation,
                     Vector2 anchor, Flip flip, Color color, float depth);
-        CRef<Texture2D> texture;
+        CRef<Texture> texture;
         Rectangle  src;
         FRectangle dest;
         float      rotation;

@@ -1,7 +1,7 @@
 #include "Window.h"
 #include "Private/RendererType.h"
 #include "RenderTarget.h"
-#include "Texture2D.h"
+#include "Texture.h"
 
 #include <SDG/Debug/Log.h>
 
@@ -22,7 +22,7 @@ namespace SDG
         Impl() : target(), title(), icon() {}
         RenderTarget    target;
         String          title;
-        CRef<Texture2D> icon;
+        CRef<Texture> icon;
     };
 
     // ===== Window static variables ==========================================
@@ -353,10 +353,10 @@ namespace SDG
     }
 
     Window &
-    Window::Icon(CRef<Texture2D> texture)
+    Window::Icon(CRef<Texture> texture)
     {
         if (!texture)
-            throw NullReferenceException("Texture2D");
+            throw NullReferenceException("Texture");
 
         SDL_Surface *surf = GPU_CopySurfaceFromImage(texture->Image().Get());
         if (!surf)
@@ -407,7 +407,7 @@ namespace SDG
     bool
     Window::Resizable() const
     {
-        return (Flags() & SDL_WINDOW_RESIZABLE) == SDL_WINDOW_RESIZABLE;
+        return (Flags() & SDL_WINDOW_RESIZABLE);
     }
 
     Point
@@ -430,13 +430,13 @@ namespace SDG
     bool
     Window::Minimized() const
     {
-        return (Flags() & SDL_WINDOW_MINIMIZED) == SDL_WINDOW_MINIMIZED;
+        return (Flags() & SDL_WINDOW_MINIMIZED);
     }
 
     bool
     Window::Hidden() const
     {
-        return (Flags() & SDL_WINDOW_HIDDEN) == SDL_WINDOW_HIDDEN;
+        return (Flags() & SDL_WINDOW_HIDDEN);
     }
 
     uint32_t
@@ -481,16 +481,16 @@ namespace SDG
     bool
     Window::MouseGrabbed() const
     {
-        return (Flags() & SDL_WINDOW_MOUSE_GRABBED) == SDL_WINDOW_MOUSE_GRABBED;
+        return (Flags() & SDL_WINDOW_MOUSE_GRABBED);
     }
 
     bool
     Window::AlwaysOnTop() const
     {
-        return (Flags() & SDL_WINDOW_ALWAYS_ON_TOP) == SDL_WINDOW_ALWAYS_ON_TOP;
+        return (Flags() & SDL_WINDOW_ALWAYS_ON_TOP);
     }
 
-    CRef<Texture2D>
+    CRef<Texture>
     Window::Icon() const
     {
         return impl->icon;

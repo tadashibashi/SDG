@@ -4,7 +4,7 @@
 
 TEST_CASE("Frame tests", "[Frame]")
 {
-    Texture2D *tex = nullptr;
+    Texture *tex = nullptr;
 
     Frame frame(Rectangle(0, 0, 32, 32), Rectangle(0, 0, 64, 64), true,
         Point(16, 16), "TestFrame", CRef(tex));

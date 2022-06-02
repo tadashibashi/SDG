@@ -6,7 +6,7 @@
  */
 #pragma once
 #include "Color.h"
-#include "Texture2D.h"
+#include "Texture.h"
 #include "Window.h"
 
 #include <SDG/Math/Rectangle.h>

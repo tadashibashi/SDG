@@ -9,7 +9,7 @@
  */
 #pragma once
 #include "Color.h"
-#include "Texture2D.h"
+#include "Texture.h"
 
 #include <SDG/FileSys/Path.h>
 #include <SDG/Lib/Ref.h>
@@ -38,36 +38,36 @@ namespace SDG
         /// @return false: TTF Font failed to load, check error stream for message.
         bool Load(const Path &filepath, int pointSize);
 
-        /// Renders solid text to a Texture2D
+        /// Renders solid text to a Texture
         /// @param text - the text to draw
         /// @param color - the color to draw the text with
         /// @param wrapped - whether the text should wrap around a specified length
         /// @param wrapLength - length to wrap text in pixels, only applicable if "wrapped" is true.
-        /// @return new Texture2D pointer. It becomes the user's responsibility, so please make sure to free it
+        /// @return new Texture pointer. It becomes the user's responsibility, so please make sure to free it
         /// when it is no longer needed.
          [[nodiscard]]
-         Texture2D *CreateTextSolid(Ref<class Window> target, const String &text, Color color = Color::Black(), uint32_t wrapLength = 0) const;
+         Texture *CreateTextSolid(Ref<class Window> target, const String &text, Color color = Color::Black(), uint32_t wrapLength = 0) const;
 
-        /// Renders shaded text to a Texture2D
+        /// Renders shaded text to a Texture
         /// @param text - the text to draw
         /// @param fgColor - the color to draw the text with
         /// @param bgColor - the color to shade the text with
         /// @param wrapped - whether the text should wrap around a specified length
         /// @param wrapLength - length to wrap text in pixels, only applicable if "wrapped" is true.
-        /// @return new Texture2D pointer. It becomes the user's responsibility, so please make sure to free it
+        /// @return new Texture pointer. It becomes the user's responsibility, so please make sure to free it
         /// when it is no longer needed.
         [[nodiscard]]
-        Texture2D *CreateTextShaded(Ref<class Window> target, const String &text, Color fgColor, Color bgColor, uint32_t wrapLength = 0) const;
+        Texture *CreateTextShaded(Ref<class Window> target, const String &text, Color fgColor, Color bgColor, uint32_t wrapLength = 0) const;
 
-        /// Renders Blended text to a Texture2D
+        /// Renders Blended text to a Texture
         /// @param text - the text to draw
         /// @param color - the color to draw the text with
         /// @param wrapped - whether the text should wrap around a specified length
         /// @param wrapLength - length to wrap text in pixels, only applicable if "wrapped" is true.
-        /// @return new Texture2D pointer. It becomes the user's responsibility, so please make sure to free it
+        /// @return new Texture pointer. It becomes the user's responsibility, so please make sure to free it
         /// when it is no longer needed.
         [[nodiscard]]
-        Texture2D *CreateTextBlended(Ref<class Window> target, const String &text, Color color, uint32_t wrapLength = 0) const;
+        Texture *CreateTextBlended(Ref<class Window> target, const String &text, Color color, uint32_t wrapLength = 0) const;
 
         /// Unloads the font, cleaning this object for reuse.
         /// Safe to call on an unloaded Font, and automatically called during object destruction.

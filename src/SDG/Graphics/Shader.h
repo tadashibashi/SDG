@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 #include <cstdint>
-#include "Texture2D.h"
+#include "Texture.h"
 #include <SDG/FileSys/Path.h>
 
 
@@ -17,7 +17,7 @@ namespace SDG
         Shader();
         ~Shader();
         Shader &SetUniform(const std::string &varId, float value);
-        Shader &SetImage(const std::string &varId, Texture2D texture);
+        Shader &SetImage(const std::string &varId, Texture texture);
 
         /// EmplaceTarget a vector of floats to a shader uniform value
         Shader &SetUniform(const std::string &varId, std::vector<float> values, int elementsPerValue);

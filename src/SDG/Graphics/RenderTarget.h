@@ -69,7 +69,7 @@ namespace SDG
         /// Sets the rendering color. Cumulative effect with image color.
         RenderTarget &DrawColor(Color color);
 
-        void DrawTexture(Ref<class Texture2D> texture, Rectangle src,
+        void DrawTexture(Ref<class Texture> texture, Rectangle src,
             FRectangle dest, float rotation, Vector2 anchor, Flip flip);
         void DrawRectangle(FRectangle rect);
         void DrawCircle(Circle circle);

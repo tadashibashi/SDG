@@ -10,7 +10,7 @@
 #pragma once
 
 #include <SDG/FileSys/Path.h>
-#include <SDG/Graphics/Texture2D.h>
+#include <SDG/Graphics/Texture.h>
 #include <SDG/Lib/Ref.h>
 
 #include <map>
@@ -33,25 +33,25 @@ namespace SDG
          * @param path
          * @return
          */
-        CRef<Texture2D> LoadTexture(const Path &path);
+        CRef<Texture> LoadTexture(const Path &path);
 
         /**
-         * Unloads the Texture2D from memory. Unloaded texture ptr/references are valid for the
+         * Unloads the Texture from memory. Unloaded texture ptr/references are valid for the
          * the lifecycle of the app, but only the inner ptr will be freed and null.
          * @param path
          */
         void UnloadTexture(const Path &path);
 
         /**
-         * Unloads the Texture2D from memory. Unloaded texture ptr/references are valid for the
+         * Unloads the Texture from memory. Unloaded texture ptr/references are valid for the
          * the lifecycle of the app, but only the inner ptr will be freed and null.
          * @param path
          */
-        void UnloadTexture(Ref<Texture2D> texture);
+        void UnloadTexture(Ref<Texture> texture);
 
 
         /**
-         * Unloads every Texture2D currently cached in the AssetMgr.
+         * Unloads every Texture currently cached in the AssetMgr.
          * All pointers are invalidated, so any object attempting to
          * use them will experience undefined behavior.
          */
@@ -63,7 +63,7 @@ namespace SDG
          */
         void UnloadAll();
     private:
-        std::map<uint64_t, Texture2D *> textures;
+        std::map<uint64_t, Texture *> textures;
         Ref<Window> context;
     };
 }

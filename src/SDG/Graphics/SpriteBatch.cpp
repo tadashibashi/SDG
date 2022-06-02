@@ -16,7 +16,7 @@ namespace SDG
 {
     // ===== BatchCall ============================================================================
     SpriteBatch::BatchCall::BatchCall(
-        CRef<Texture2D> texture, Rectangle src, FRectangle dest,
+        CRef<Texture> texture, Rectangle src, FRectangle dest,
         float rotation, Vector2 anchor, Flip flip,
         Color color, float depth)
             : texture(texture), src(std::move(src)), dest(std::move(dest)), rotation(rotation),
@@ -93,19 +93,19 @@ namespace SDG
     }
 
     void
-    SpriteBatch::DrawTexture(CRef<Texture2D> texture, Rectangle src,
+    SpriteBatch::DrawTexture(CRef<Texture> texture, Rectangle src,
         FRectangle dest, float rotation, Vector2 anchor, Flip flip, Color color, float depth)
     {
-        SDG_Assert(texture); // please make sure to pass a non-null Texture2D
+        SDG_Assert(texture); // please make sure to pass a non-null Texture
         batch.emplace_back(texture, std::move(src), std::move(dest), rotation, anchor,
                            flip, std::move(color), depth);
     }
 
     void
-    SpriteBatch::DrawTexture(CRef<Texture2D> texture, Vector2 position,
+    SpriteBatch::DrawTexture(CRef<Texture> texture, Vector2 position,
         Vector2 scale, Vector2 normAnchor, float rotation, float depth, Color color)
     {
-        SDG_Assert(texture != nullptr); // please make sure to pass a non-null Texture2D
+        SDG_Assert(texture != nullptr); // please make sure to pass a non-null Texture
         batch.emplace_back(texture,
                            Rectangle{0, 0, (int)texture->Image()->base_w, (int)texture->Image()->base_h},
                            FRectangle{position.X(), position.Y(), texture->Image()->base_w * scale.W(), texture->Image()->base_h * scale.H()},

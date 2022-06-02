@@ -67,7 +67,7 @@ namespace SDG
         Window &Resizable(bool resizable);
         Window &Position(Point position);
         Window &Minimized(bool minimized);
-        Window &Icon(CRef<class Texture2D> texture);
+        Window &Icon(CRef<class Texture> texture);
 
         /// Hide or show window
         /// @param hidden true: hide window; false: show window
@@ -102,7 +102,7 @@ namespace SDG
         Point MaximumSize() const;
         bool MouseGrabbed() const;
         bool AlwaysOnTop() const;
-        CRef<class Texture2D> Icon() const;
+        CRef<class Texture> Icon() const;
 
         uint32_t Flags() const;
         Rectangle Viewport() const;

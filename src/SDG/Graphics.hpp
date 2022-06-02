@@ -9,6 +9,6 @@
 #include <SDG/Graphics/RenderTarget.h>
 #include <SDG/Graphics/Shader.h>
 #include <SDG/Graphics/SpriteBatch.h>
-#include <SDG/Graphics/Texture2D.h>
+#include <SDG/Graphics/Texture.h>
 #include <SDG/Graphics/Window.h>
 #include <SDG/Graphics/WindowMgr.h>

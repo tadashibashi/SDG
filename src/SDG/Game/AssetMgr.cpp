@@ -28,7 +28,7 @@ namespace SDG
         // add other unloading stuff here.
     }
 
-    CRef<Texture2D>
+    CRef<Texture>
     AssetMgr::LoadTexture(const Path &path)
     {
         SDG_Assert(context); // Please make sure to set the context via Initialize() before loading textures.
@@ -40,7 +40,7 @@ namespace SDG
             return CRef{it->second};
         else
         {
-            auto tex = new Texture2D;
+            auto tex = new Texture;
             if (tex->Load(context, path))
             {
                 textures[hash] = tex;
@@ -49,7 +49,7 @@ namespace SDG
             else
             {
                 delete tex;
-                return CRef<Texture2D>{}; // nullptr
+                return CRef<Texture>{}; // nullptr
             }
         }
     }
@@ -66,7 +66,7 @@ namespace SDG
     }
 
     void 
-    AssetMgr::UnloadTexture(Ref<Texture2D> texture)
+    AssetMgr::UnloadTexture(Ref<Texture> texture)
     {
         SDG_Assert(texture);
         UnloadTexture(texture->Filepath());

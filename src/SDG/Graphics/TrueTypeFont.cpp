@@ -11,9 +11,9 @@
 
 namespace SDG
 {
-    /// Converts an SDL_Surface to a Texture2D. Handles surface's
+    /// Converts an SDL_Surface to a Texture. Handles surface's
     /// memory management, so the user is no longer responsible.
-    static Texture2D *
+    static Texture *
     SurfaceToTexture(Ref<Window> context, SDL_Surface *surf);
 
     // ===== Creation and closure =============================================
@@ -118,7 +118,7 @@ namespace SDG
     }
 
     // ===== Rendering ========================================================
-    Texture2D *
+    Texture *
     TrueTypeFont::CreateTextBlended(Ref<Window> context, const String &text, 
         Color color, uint32_t wrapLength) const
     {
@@ -132,7 +132,7 @@ namespace SDG
         return SurfaceToTexture(context, surf);
     }
 
-    Texture2D *
+    Texture *
     TrueTypeFont::CreateTextShaded(Ref<Window> context, const String &text, 
         Color fgColor, Color bgColor, uint32_t wrapLength) const
     {
@@ -148,7 +148,7 @@ namespace SDG
         return SurfaceToTexture(context, surf);
     }
 
-    Texture2D *
+    Texture *
     TrueTypeFont::CreateTextSolid(Ref<Window> context, const String &text, Color color,
                           uint32_t wrapLength) const
     {
@@ -162,7 +162,7 @@ namespace SDG
         return SurfaceToTexture(context, surf);
     }
 
-    Texture2D *
+    Texture *
     SurfaceToTexture(Ref<Window> context, SDL_Surface *surf)
     {
         if (!surf) // if null, the function that created the surface prior to this failed.
@@ -171,7 +171,7 @@ namespace SDG
             return nullptr;
         }
 
-        return new Texture2D(context, surf);
+        return new Texture(context, surf);
     }
 
 }

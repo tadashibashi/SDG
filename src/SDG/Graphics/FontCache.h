@@ -1,6 +1,6 @@
 #pragma once
 #include <SDG/FileSys/Path.h>
-#include <SDG/Graphics/Texture2D.h>
+#include <SDG/Graphics/Texture.h>
 
 #include <map>
 
@@ -33,7 +33,7 @@ namespace SDG
         void RenderShaded(Ref<class RenderTarget>, const String &text, Vector2 position, Vector2 scale, float angle, float depth, Color fgColor, Color bgColor, uint32_t wrapLength = 0);
         void RenderBlended(Ref<class RenderTarget>, const String &text, Vector2 position, Vector2 scale, float angle, float depth, Color color, uint32_t wrapLength = 0);
     private:
-        std::map<char, Texture2D> textures;
+        std::map<char, Texture> textures;
         class TrueTypeFont *font;
     };
 }

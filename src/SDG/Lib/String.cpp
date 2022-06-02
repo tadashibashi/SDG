@@ -355,21 +355,24 @@ namespace SDG
     String &
     String::operator = (const String &str)
     {
-        Reallocate(str.Cstr(), str.Length());
+        StrFree(str_);
+        Allocate(str.Cstr(), str.Length());
         return *this;
     }
 
     String &
     String::operator = (const std::string &str)
     {
-        Reallocate(str.c_str(), str.length());
+        StrFree(str_);
+        Allocate(str.c_str(), str.length());
         return *this;
     }
 
     String &
     String::operator = (const char *str)
     {
-        Reallocate(str, str ? strlen(str) : 0);
+        StrFree(str_);
+        Allocate(str, str ? strlen(str) : 0);
         return *this;
     }
 

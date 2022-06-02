@@ -7,28 +7,47 @@
 
 namespace SDG
 {
+    /// Contains a contiguous array of objects. Elements must be copy-constructible and swappable.
     template <typename T>
     class Array
     {
-        static_assert(std::is_default_constructible_v<T>,
+        static_assert(std::is_copy_constructible_v<T>,
             "Array<T>: T must be default constructible");
+        static_assert(std::is_swappable_v<T>,
+            "Array<T>: T must be swappable");
     public:
         /// Copy constructor
-        Array(const Array &other) :
+        Array(const Array<T> &other) :
             arr((other.size > 0) ? Calloc<T>(other.size) : nullptr),
             size(other.size)
         {
-            Memcpy(arr, other.arr, other.size);
+            if (size > 0)
+            {
+                memset(arr, 0, sizeof(T) * size); // sets everything value to 0/null
+
+                T *p = arr;
+                for (Array<T>::ConstIterator it = other.cbegin(), end = other.cend(); it != end; ++it)
+                {
+                    T temp(*it);
+                    std::swap(temp, *p++);
+                }
+            }
+
         }
 
         /// Default constructs "size" number of objects of type T
         Array(size_t size = 0) : arr( (size > 0) ? Calloc<T>(size) : nullptr), size(size)
         {
-            for (T &obj : *this)
+            if (arr)
             {
-                T t;
-                Memcpy(&obj, &t, 1);
-            }     
+                memset(arr, 0, sizeof(T) * size);
+                for (T &obj : *this)
+                {
+                    T t{};
+                    std::swap(t, obj);
+                }
+            }
+  
         }
 
         /// Copies an initializer list into the Array
@@ -37,9 +56,14 @@ namespace SDG
         {
             if (arr)
             {
+                memset(arr, 0, size * sizeof(T));
+
                 T *p = arr;
                 for (const T &t : list)
-                    Memcpy(p++, &t, 1);
+                {
+                    T temp(t);
+                    std::swap(temp, *p++);
+                }   
             }
 
         }
@@ -51,9 +75,7 @@ namespace SDG
             // Get count
             size_t count = 0;
             for (FwdIt it = _begin; it != _end; ++it)
-            {
                 ++count;
-            }
 
             // Allocate memory
             arr = (count > 0) ? Calloc<T>(count) : nullptr;
@@ -63,7 +85,8 @@ namespace SDG
             T *ptr = arr;
             for (FwdIt it = _begin; it != _end; ++it)
             {
-                Memcpy(ptr++, &(*it), 1);
+                T temp(*it);
+                std::swap(temp, *ptr++);
             }
         }
 

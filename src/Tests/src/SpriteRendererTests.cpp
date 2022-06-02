@@ -85,7 +85,7 @@ TEST_CASE("SpriteRenderer tests", "[SpriteRenderer]")
 
     SECTION("Sprite")
     {
-        REQUIRE(!spr.Sprite());
+        REQUIRE(!spr.Sprite()); // no sprite set
         Sprite s("player-run", { {}, {} }, { 0, 0, 1, 1 });
         spr.Sprite(s);
         REQUIRE(spr.Sprite());

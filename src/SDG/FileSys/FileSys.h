@@ -30,7 +30,7 @@ namespace SDG
         [[nodiscard]]
         String OrgName() const { return orgName; }
 
-        /// Sets the data for the app in order to retrieve its Pref path.
+        /// Sets the data for the app in order to retrieve its Pref path
         void Initialize(const String &pAppName, const String &pOrgName);
 
     private:

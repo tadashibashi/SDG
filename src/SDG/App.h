@@ -7,19 +7,23 @@
  */
 #pragma once
 #include <SDG/FileSys/Path.h>
-#include <SDG/Platform.h>
+#include <SDG/FileSys/Structs/GameConfig.h>
 #include <SDG/Lib/Ref.h>
 #include <SDG/Lib/String.h>
 #include "SDG/Time/AppTime.h"
 
+
 namespace SDG
 {
+    /// Provides the basic ammenities to run an app
     class App 
     {
         struct Impl;
     public:
         App(const String &appName, const String &orgName,
             const Path &configPath = BasePath("assets/config.sdgc"));
+        App(const String &appName, const String &orgName,
+            const GameConfig &config);
         virtual ~App();
 
         /// Executes one game frame. Intended for use by platforms that require the

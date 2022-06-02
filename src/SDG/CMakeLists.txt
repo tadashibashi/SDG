@@ -8,8 +8,8 @@ set(Engine_Sources
         ${TinyXML2_Sources}
         SDG.hpp
 
-        App.cpp App.h
-        AssetMgr.cpp AssetMgr.h
+        "App.cpp" "App.h"
+        Game/AssetMgr.cpp Game/AssetMgr.h
 
         Lib/ClassMacros.h
 

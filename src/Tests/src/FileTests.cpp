@@ -151,6 +151,15 @@ TEST_CASE("File tests", "[SDG::File]")
         REQUIRE(strcmp(buf, "hello") == 0);
     }
 
+    SECTION("File constructor with Path param opens file")
+    {
+        File file;
+        file.Write(5);
+        file.Write('z');
+
+        file.SaveAs(BasePath("file.bin"));
+    }
+
     SECTION("Breakdown")
     {
         Path::PopFileSys();

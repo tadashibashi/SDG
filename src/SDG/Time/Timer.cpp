@@ -1,43 +1,48 @@
 #include "Timer.h"
 
-SDG::Timer::Timer() : state(State::Standby), timeLeft(-1.f), paused(false)
+namespace SDG
 {
-
-}
-
-// Drives the Timer countdown by deltaTime seconds. Intended to be called
-// every frame, but this is not a necessity.
-void SDG::Timer::Update(float deltaTime)
-{
-    if (paused) return;
-
-    if (state == State::Countdown)
+    Timer::Timer() : state(State::Standby), timeLeft(-1.f), paused(false)
     {
-        timeLeft -= deltaTime;
 
-        if (timeLeft <= 0)
+    }
+
+    // Drives the Timer countdown by deltaTime seconds. Intended to be called
+    // every frame, but this is not a necessity.
+    void Timer::Update(float deltaTime)
+    {
+        if (paused) return;
+
+        if (state == State::Countdown)
         {
-            timeLeft = -1.f;
-            state = State::Standby;
-            OnAlarm.Invoke();
+            timeLeft -= deltaTime;
+
+            if (timeLeft <= 0)
+            {
+                timeLeft = -1.f;
+                state = State::Standby;
+                OnAlarm.Invoke();
+            }
         }
     }
-}
 
-// ===== Controls =============================================================
+    // ===== Controls =============================================================
 
-// Set and start the timer 
-void SDG::Timer::Start(float seconds) 
-{ 
-    timeLeft = seconds; 
-    state = State::Countdown; 
-    paused = false; 
-}
+    // Set and start the timer 
+    void Timer::Start(float seconds) 
+    { 
+        timeLeft = seconds; 
+        state = State::Countdown; 
+        paused = false; 
+    }
 
-// Stops the timer
-void SDG::Timer::Stop() 
-{ 
-    timeLeft == -1.f; 
-    state == State::Standby; 
-    paused = false; 
-}
+    // Stops the timer
+    void Timer::Stop() 
+    { 
+        timeLeft = -1.f; 
+        state = State::Standby; 
+        paused = false; 
+    }
+    
+} /* end namespace SDG */
+

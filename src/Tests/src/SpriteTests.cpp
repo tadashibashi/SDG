@@ -16,8 +16,12 @@ TEST_CASE("Sprite tests", "[Sprite]")
         Frame fr3({ 0, 0, 16, 16 }, { 0, 0, 16, 16 }, true, { 0, 0 }, "frame3", nullptr);
         Sprite spr("sprite", { fr1, fr2, fr3 }, {0, 1, 2});
 
-        REQUIRE(!spr.Empty());
-        REQUIRE(spr.Length() == 3);
+        SECTION("Sprite has correct length")
+        {
+            REQUIRE(!spr.Empty());
+            REQUIRE(spr.Length() == 3);
+        }
+
         SECTION("Indexer reads correct frames")
         {
             REQUIRE(spr[0].Name() == "frame1");

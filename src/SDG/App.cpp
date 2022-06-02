@@ -1,11 +1,13 @@
 /// App implementation file
 #include "App.h"
 #include <SDG/Exceptions/AssertionException.h>
-#include "Debug.hpp"
-#include "Input.hpp"
+#include <SDG/Debug/Assert.h>
+#include <SDG/Debug/Log.h>
+#include <SDG/Input/Input.h>
 #include <SDG/FileSys/FileSys.h>
 #include <SDG/FileSys/XMLReader.h>
 #include <SDG/Graphics/WindowMgr.h>
+#include <SDG/Platform.h>
 
 #include <SDL.h>
 

@@ -38,6 +38,8 @@ public:
     /// This is automatically called when the File object goes out of scope.
     void Close();
 
+    static bool Delete(const Path &filepath);
+
     // ============= Getters =================================================
 
     /// Gets the pointer to the file data.

@@ -2,6 +2,7 @@
 
 #include <SDG/Debug/Assert.h>
 #include <SDG/Exceptions/RuntimeException.h>
+#include <SDG/FileSys/Path.h>
 
 #include <SDL_error.h>
 #include <SDL_filesystem.h>
@@ -9,7 +10,7 @@
 SDG::FileSys::FileSys(const String &pAppName, const String &pOrgName)
     : appName(pAppName), orgName(pOrgName), basePath(), prefPath()
 {
-
+    
 }
 
 SDG::FileSys::FileSys()

@@ -41,6 +41,16 @@ namespace SDG
         delete impl;
     }
 
+    /// Delete a file at the path
+    /// Returns whether or not the file was deleted
+    bool
+    File::Delete(const Path &filepath)
+    {
+        return (filepath.FileExists()) ?
+            (std::remove(filepath.Str().Cstr()) == 0) :
+            false;
+    }
+
     const uint8_t *
     File::Data() const
     {

@@ -12,6 +12,8 @@
 #include <iterator>
 #include <string>
 
+using std::swap;
+
 namespace SDG
 {
     class String
@@ -181,5 +183,7 @@ namespace SDG
     bool operator != (const std::string &str1, const String &str2);
 }
 
-
-
+inline void swap(SDG::String &a, SDG::String &b)
+{
+    a.Swap(b);
+}

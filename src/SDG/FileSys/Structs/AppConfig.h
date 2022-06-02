@@ -2,14 +2,14 @@
 // Created by Aaron Ishibashi on 4/30/22.
 //
 #pragma once
-#include <string>
+#include <SDG/Lib/String.h>
 
 namespace SDG
 {
-    struct GameConfig
+    struct AppConfig
     {
         int width, height;
         bool fullscreen;
-        std::string title;
+        String title, appName, orgName;
     };
 }

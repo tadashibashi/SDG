@@ -38,7 +38,7 @@ set(Engine_Sources
 
         # FileSys
         FileSys.hpp
-        FileSys/Structs/GameConfig.h
+        "FileSys/Structs/AppConfig.h"
         FileSys/FileSys.cpp FileSys/FileSys.h
         FileSys/Private/IO.cpp FileSys/Private/IO.h
         FileSys/File.cpp Filesys/File.h

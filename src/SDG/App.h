@@ -7,10 +7,10 @@
  */
 #pragma once
 #include <SDG/FileSys/Path.h>
-#include <SDG/FileSys/Structs/GameConfig.h>
+#include <SDG/FileSys/Structs/AppConfig.h>
 #include <SDG/Lib/Ref.h>
 #include <SDG/Lib/String.h>
-#include "SDG/Time/AppTime.h"
+#include <SDG/Time/AppTime.h>
 
 
 namespace SDG
@@ -20,10 +20,13 @@ namespace SDG
     {
         struct Impl;
     public:
-        App(const String &appName, const String &orgName,
-            const Path &configPath = BasePath("assets/config.sdgc"));
-        App(const String &appName, const String &orgName,
-            const GameConfig &config);
+        /// @param appName - name of the app
+        /// @param orgName - company / organization name
+        /// @param configPath - path relative to the base executable directory
+        explicit App(const String &configPath);
+        /// @param appName - name of the app
+        /// @param 
+        explicit App(const AppConfig &config);
         virtual ~App();
 
         /// Executes one game frame. Intended for use by platforms that require the

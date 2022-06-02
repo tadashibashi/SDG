@@ -112,7 +112,6 @@ namespace SDG
     String Path::Str() const
     {
         // FileSys must have been set
-        SDG_Assert(!fileSys.empty());
         switch(base)
         {
             case BaseDir::None: return subpath;
@@ -124,8 +123,10 @@ namespace SDG
 #endif
             subpath;
 
-            case BaseDir::Base: return fileSys.top()->BasePath() + subpath;
-            case BaseDir::Pref: return fileSys.top()->PrefPath() + subpath;
+            case BaseDir::Base: return FileSys::BasePath() + subpath;
+            case BaseDir::Pref: 
+                SDG_Assert(!fileSys.empty());
+                return fileSys.top()->PrefPath() + subpath;
         }
 
         throw std::runtime_error("SDG::Path::base member value not recognized.");

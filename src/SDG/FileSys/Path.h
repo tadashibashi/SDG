@@ -31,6 +31,7 @@ namespace SDG
             /// User specifies subpath relative from the App executable's base working directory.
             /// This directory is intended as read-only, although some platforms allow writing.
             /// Content such as audio and images are usually stored here.
+            /// May use Paths with BaseDir::Root before
             Base,
             /// User specifies subpath relative from the App's personal preference directory.
             /// This directory is granted to the App for reading and writing files,
@@ -99,10 +100,13 @@ namespace SDG
     };
 
     /// Helper: creates a path stemming from the app personal preference directory (read/write)
+    /// Must have a FileSys object available via Path::PushFileSys() before using this function.
     Path PrefPath(const String &subpath = String());
     /// Helper: creates a path stemming from the app's base working directory (read only)
+    /// Callable before Path::PushFileSys() is called
     Path BasePath(const String &subpath = String());
     /// Helper: creates a path stemming from the OS's root directory (currently supported: Desktop platforms)
+    /// Callable before Path::PushFileSys() is called
     Path RootPath(const String &subpath = String());
 
     Path operator + (const Path &path, const String &str);

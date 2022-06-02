@@ -18,7 +18,7 @@ namespace SDG
         /// e.g. "path/to/root/".
         /// On Mac, this points to the app's Resource folder.
         [[nodiscard]]
-        String BasePath() const;
+        static String BasePath();
 
         /// Gets the path to this app title's writable file location.
         [[nodiscard]]
@@ -37,7 +37,6 @@ namespace SDG
         String appName;
         String orgName;
         // cached for quick access
-        mutable String basePath;
         mutable String prefPath;
     };
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <config>
+    <app name="SDG Engine Test" org="SDG"/>
     <window width="640" height="480" title="SDG Engine Test" fullscreen="false"/>
     <content root="assets"/>
     <scenes>

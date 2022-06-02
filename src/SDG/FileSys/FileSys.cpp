@@ -7,14 +7,16 @@
 #include <SDL_error.h>
 #include <SDL_filesystem.h>
 
+static SDG::String basePath;
+
 SDG::FileSys::FileSys(const String &pAppName, const String &pOrgName)
-    : appName(pAppName), orgName(pOrgName), basePath(), prefPath()
+    : appName(pAppName), orgName(pOrgName), prefPath()
 {
     
 }
 
 SDG::FileSys::FileSys()
-    : appName(), orgName(), basePath(), prefPath()
+    : appName(), orgName(), prefPath()
 {
 
 }
@@ -27,7 +29,7 @@ SDG::FileSys::Initialize(const String &pAppName, const String &pOrgName)
 }
 
 SDG::String
-SDG::FileSys::BasePath() const
+SDG::FileSys::BasePath()
 {
     if (basePath.Empty())
     {

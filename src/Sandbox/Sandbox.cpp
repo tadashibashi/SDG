@@ -1,24 +1,23 @@
 #include <SDG/SDG.hpp>
-
-// TODO: Create a OutFile class, and split InFile. File class should then control 
-// both interfaces
-#include <SDG/FileSys/Private/IO.h>
 #include <SDG/Graphics/TrueTypeFont.h>
-
-
 
 using namespace SDG;
 
 class Sandbox : public App 
 {
 public:
-    Sandbox() : App("SDG Engine Test", "aaronishibashi") { }
+    Sandbox() : App(
+        //{640, 480, true,
+        //"SDG Engine Test",
+        //"SDG Engine Test", "aaronishibashi"}
+        "assets/config.sdgc"
+    ) { }
 private:
     // Test objects / members
     Ref<Window> window2;
     Texture2D kirby;
     Texture2D kirby2;
-    Texture2D *text;
+    Texture2D *text{};
     Shader shader;
     
     TrueTypeFont font;
@@ -40,7 +39,7 @@ private:
 
     void LoadContent()
     {
-        /*if (font.Load(BasePath("assets/fonts/CourierPrimeCode.sdgc"), 32))
+        if (font.Load(BasePath("assets/fonts/CourierPrimeCode.sdgc"), 32))
         {
             text = font.CreateTextSolid(MainWindow(), "Hello", Color::MediumPurple());
             if (text)
@@ -51,9 +50,9 @@ private:
         else
         {
             SDG_Core_Warn("Failed to load font!\n");
-        }*/
+        }
         camera.PivotPoint({320, 240});
-        kirby.Load(MainWindow(), BasePath("assets/textures/DawSession.sdgc"));
+        kirby.Load(MainWindow(), BasePath("assets/textures/kirby.sdgc"));
         //kirby2.Load(window2, BasePath("assets/textures/DawSession.sdgc"));
 
         shader.Compile(BasePath("assets/shaders/v1.sdgc"), BasePath("assets/shaders/f1.sdgc"));
@@ -172,7 +171,7 @@ private:
 
             spriteBatch.Begin(window->Target(), camera.Matrix());
             Point imgSize = kirby.Size();
-            //spriteBatch.DrawTexture(text, {109.f, 109.f}, {1.f, 1.f}, {0, 0}, 0, 0);
+            spriteBatch.DrawTexture(text, {109.f, 109.f}, {1.f, 1.f}, {0, 0}, 0, 0);
             spriteBatch.DrawTexture(&kirby, {0, 0, (int)imgSize.X(), (int)imgSize.Y()},
                                     {10.f, 10.f, (float) imgSize.X() / 100.f, (float) imgSize.Y() / 100.f},
                                     100, Vector2(0, 0), Flip::Both, Color::White(), 1.f);

@@ -20,7 +20,7 @@ static void
 OpenXML(const SDG::Path &path, tinyxml2::XMLDocument *outDoc);
 
 bool
-SDG::XMLReader::ParseGameConfig(const Path &path, GameConfig *config)
+SDG::XMLReader::ParseGameConfig(const Path &path, AppConfig *config)
 {
     if (!config)
     {
@@ -29,7 +29,7 @@ SDG::XMLReader::ParseGameConfig(const Path &path, GameConfig *config)
     }
 
     // Retrieve the window element
-    tinyxml2::XMLDocument doc; XMLElement *win;
+    tinyxml2::XMLDocument doc; XMLElement *win, *app;
     {
         XMLElement *root;
         OpenXML(path, &doc);
@@ -41,12 +41,25 @@ SDG::XMLReader::ParseGameConfig(const Path &path, GameConfig *config)
             return false;
         }
 
+        app = root->FirstChildElement("app");
+        if (!app)
+        {
+            SDG_Core_Err("Could not parse game config file. It's missing a required app element.");
+            return false;
+        }
+
         win = root->FirstChildElement("window");
         if (!win)
         {
             SDG_Core_Err("Could not parse game config file. It's missing a window element.");
             return false;
         }
+    }
+
+    const char *tAppName, *tOrgName;
+    {
+        CheckResult(app->QueryAttribute("name", &tAppName), "querying app name");
+        CheckResult(app->QueryAttribute("org", &tOrgName), "querying org name");
     }
 
     // Get the attributes
@@ -62,6 +75,8 @@ SDG::XMLReader::ParseGameConfig(const Path &path, GameConfig *config)
     config->width = tWidth;
     config->height = tHeight;
     config->fullscreen = tFullscreen;
+    config->appName = tAppName;
+    config->orgName = tOrgName;
     return true;
 }
 

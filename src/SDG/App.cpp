@@ -6,6 +6,7 @@
 #include <SDG/Input/Input.h>
 #include <SDG/FileSys/FileSys.h>
 #include <SDG/FileSys/XMLReader.h>
+
 #include <SDG/Graphics/WindowMgr.h>
 #include <SDG/Platform.h>
 
@@ -23,35 +24,50 @@ namespace SDG
     // ===== App Implementation ===============================================
     struct App::Impl 
     {
-        Impl(const String &appName, const String &orgName) 
+        Impl() 
             : windows(), mainWindow(), isRunning(), time(), 
-            fileSys(appName, orgName) {}
+            fileSys() {}
+        void Initialize(const AppConfig &config) 
+        { 
+            this->config = config;
+            SDG_Assert(!config.appName.Empty());
+            SDG_Assert(!config.orgName.Empty());
+            fileSys.Initialize(config.appName, config.orgName);
+            Path::PushFileSys(fileSys);
+        }
+
+        ~Impl()
+        {
+            Path::PopFileSys();
+        }
 
         WindowMgr   windows;
         Ref<Window> mainWindow;
         bool        isRunning;
-        class AppTime  time;
+        AppTime     time;
         FileSys     fileSys;
-        GameConfig  config;
+        AppConfig   config;
     };
 
 
-    App::App(const String &appName, const String &orgName, 
-        const Path &configPath) : impl(new Impl(appName, orgName))
+    App::App(const String &configPath) : impl(new Impl)
     {
-        // Make our app's FileSys current
-        Path::PushFileSys(Ref(impl->fileSys));
 
         // Get game settings from config file
-        GameConfig config;
+        AppConfig config;
         try {
-            XMLReader::ParseGameConfig(configPath.Str(), &config);
-            impl->config = config;
+            XMLReader::ParseGameConfig(BasePath(configPath).Str(), &config);
+            impl->Initialize(config);
         }
         catch(const std::exception &e)
         {
-            SDG_Core_Err("Failed to parse game config.");
+            SDG_Core_Err("Failed to parse game config: {}", e.what());
         }
+    }
+
+    App::App(const AppConfig &config) : impl(new Impl)
+    {
+        impl->Initialize(config);
     }
 
 
@@ -65,11 +81,11 @@ namespace SDG
     int
     App::Initialize_()
     {
-        SDG_Core_Log("Game initializing.");
-        GameConfig &config = impl->config;
+        SDG_Core_Log("App initializing.");
+        AppConfig &config = impl->config;
         Ref<Window> window;
         if (impl->windows.CreateWindow(config.width, config.height, 
-            config.title.c_str(), 0, &window) >= 0)
+            config.title.Cstr(), 0, &window) >= 0)
         {
             impl->mainWindow = window;
             impl->mainWindow->Fullscreen(config.fullscreen);
@@ -128,8 +144,9 @@ namespace SDG
     {
         Close(); // Child class clean up
         InputDriver::Close();
+        Path::PopFileSys();
         impl->windows.Close();
-        SDG_Core_Log("Game shut down complete.");
+        SDG_Core_Log("App shutdown complete.");
     }
 
 

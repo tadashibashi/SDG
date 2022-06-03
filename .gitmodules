@@ -22,3 +22,6 @@
 [submodule "lib/crunch"]
 	path = lib/crunch
 	url = https://github.com/ChevyRay/crunch
+[submodule "lib/nfont"]
+	path = lib/nfont
+	url = https://github.com/grimfang4/nfont

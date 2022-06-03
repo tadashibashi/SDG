@@ -8,6 +8,8 @@
 #pragma once
 #include "Path.h"
 
+struct SDL_RWops;
+
 namespace SDG
 {
 
@@ -32,6 +34,8 @@ public:
     /// Loads data found in the file at path into the File class.
     /// @param path path to the file
     bool Open(const Path &path);
+
+    bool LoadFromRW(SDL_RWops *io);
     
     /// Closes the file, freeing it of internally loaded data.
     /// After a call to Free() you may safely re-use this object to open another file.

@@ -3,7 +3,7 @@
 #include "Mouse.h"
 
 #include <SDG/Debug/Assert.h>
-#include <SDG/Platform.h>
+#include <SDG/Lib/Platform.h>
 #include <SDG/Lib/Ref.h>
 
 #include <SDL_events.h>

@@ -8,9 +8,12 @@
 #pragma once
 #include <SDG/Debug/LogImpl.h>
 
+#include <SDG/Lib/Private/Fmt.h>
+
 #include <functional>
 #include <iterator>
 #include <string>
+#include <utility>
 
 using std::swap;
 
@@ -105,6 +108,7 @@ namespace SDG
         /// one at a time, in which the return value determines whether the
         /// char will remain in the String. Return true to indicate erasure,
         /// and false to keep it.
+        
         String &EraseIf(const std::function<bool(char)> &func);
         
         /// Creates a substring from the String
@@ -116,6 +120,15 @@ namespace SDG
         String Substr(size_t index, size_t count = NullPos) const;
 
         String &Clear();
+
+        template <typename...Args>
+        static String Format(const char *format, Args &&...args)
+        {
+            auto out = fmt::memory_buffer();
+            fmt::format_to(std::back_inserter(out), format, 
+                std::forward<Args>(args)...);
+            return { out.data(), out.size()};
+        }
 
         /// Default position value
         static const size_t NullPos;

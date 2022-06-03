@@ -1,11 +1,17 @@
 # [ SDG_Engine ] ====================================================
 # ----- Sources -----------------------------------------------------
+set(Engine_PrecompiledHeaders Lib/Private/Pch.h)
 set(TinyXML2_Sources
         ${CMAKE_SOURCE_DIR}/lib/tinyxml2/tinyxml2.h
         ${CMAKE_SOURCE_DIR}/lib/tinyxml2/tinyxml2.cpp)
-
+set(Nfont_Sources
+    ${CMAKE_SOURCE_DIR}/lib/nfont/NFont/NFont.cpp
+    ${CMAKE_SOURCE_DIR}/lib/nfont/NFont/NFont.h
+    ${CMAKE_SOURCE_DIR}/lib/nfont/SDL_FontCache/SDL_FontCache.c
+    ${CMAKE_SOURCE_DIR}/lib/nfont/SDL_FontCache/SDL_FontCache.h)
 set(Engine_Sources
         ${TinyXML2_Sources}
+        ${Nfont_Sources}
         SDG.hpp
 
         "App.cpp" "App.h"
@@ -91,7 +97,7 @@ set(Engine_Sources
         Math/Tweener.cpp Math/Tweener.h
         Math/Intersection.h Math/Circle.h
 
-        Platform.h
+        "Lib/Platform.h"
 
         Lib/Array.h
         Lib/Buffer.cpp Lib/Buffer.h
@@ -102,7 +108,7 @@ set(Engine_Sources
         Lib/Pool.h
         Lib/PoolID.h 
         Lib/Private/PoolNullIndex.h 
-        Lib/Private/PoolNullIndex.cpp 
+        Lib/Private/PoolNullIndex.cpp
         Lib/Ref.h
         Lib/Shared.h 
         Lib/String.h Lib/String.cpp
@@ -120,7 +126,7 @@ set(Engine_Sources
         Time/Timer.h Time/Timer.cpp 
         Time/Duration.h Time/Duration.cpp
         
- "Graphics/FontCache.h")
+ "Graphics/FontCache.h" "Graphics/Font.h" "Graphics/Font.cpp" "Lib/Enum.h" "Lib/Private/Fmt.h")
 
 # -----  Includes  ----------------------------------------------------
 set(Engine_Includes
@@ -130,7 +136,10 @@ set(Engine_Includes
         ${CMAKE_SOURCE_DIR}/lib/sdl-gpu/include
         ${CMAKE_SOURCE_DIR}/lib/tinyxml2
         ${CMAKE_SOURCE_DIR}/lib/glm
-        ${CMAKE_SOURCE_DIR}/lib/bundled/include)
+        ${CMAKE_SOURCE_DIR}/lib/bundled/include
+        ${CMAKE_SOURCE_DIR}/lib/nfont/NFont
+        ${CMAKE_SOURCE_DIR}/lib/nfont/SDL_FontCache
+)
 
 
 
@@ -204,9 +213,10 @@ set (Engine_Libraries
         ${PLATFORM_Libraries}
         SDL_gpu)
 
-
 # ----- Commit the Settings ----------------------------------------
 add_library                (SDG_Engine STATIC ${Engine_Sources})
 target_include_directories (SDG_Engine PUBLIC ${Engine_Includes})
+target_precompile_headers  (SDG_Engine PRIVATE 
+    "$<$<COMPILE_LANGUAGE:CXX>:${CMAKE_SOURCE_DIR}/src/SDG/Lib/Private/Pch.h>")
 target_link_libraries      (SDG_Engine PUBLIC ${Engine_Libraries})
-target_compile_definitions (SDG_Engine PUBLIC ${Engine_CompileDefs})
+target_compile_definitions (SDG_Engine PUBLIC ${Engine_CompileDefs} "FC_USE_SDL_GPU")

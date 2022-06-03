@@ -1,7 +1,7 @@
 /// Contains the includes relevant to application graphic rendering
 /// and graphics library classes and functions.
 #pragma once
-#include <SDG/Platform.h>
+#include <SDG/Lib/Platform.h>
 #include <SDG/Graphics/Camera2D.h>
 #include <SDG/Graphics/Color.h>
 #include <SDG/Graphics/TrueTypeFont.h>

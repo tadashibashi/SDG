@@ -4,8 +4,9 @@
  * 
  */
 #pragma once
-#include <SDG/Platform.h>
+#include <SDG/Lib/Platform.h>
 #include <SDG/Exceptions/AssertionException.h> // for convenience
+#include <SDG/Lib/String.h>
 
 #if (SDG_DEBUG)
 

@@ -66,6 +66,7 @@ namespace SDG
         CRef() : ref() { }
         CRef(T *ref) : ref(ref) { }
         CRef(T &ref) : ref(&ref) { }
+        CRef(Ref<T> ref) : ref(ref.Get()) { }
 
         /// Get internal ptr
         const T *Get() const { return ref; }

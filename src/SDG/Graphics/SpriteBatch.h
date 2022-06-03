@@ -36,6 +36,7 @@ namespace SDG
         SpriteBatch();
         ~SpriteBatch() = default;
 
+        bool Initialize(Ref<Window> context);
         void Begin(Ref<class RenderTarget> target, 
             CRef<class Matrix4x4> transformMatrix = CRef<class Matrix4x4>{}, 
             SortMode sort = SortMode::FrontToBack);
@@ -46,8 +47,10 @@ namespace SDG
         void DrawTexture(CRef<Texture> texture, Vector2 position, Vector2 scale = Vector2(1.f, 1.f),
                          Vector2 normAnchor = Vector2(.5f, .5f),
                          float rotation = 0, float depth = 0, Color color = Color::White());
-    private:
+        void DrawRectangle(FRectangle rect, Vector2 anchor, Color color, float rotation = 0, float depth = 0);
+    private:    
         struct BatchCall;
+
         void RenderBatches();
         void SortBatches();
         
@@ -55,19 +58,26 @@ namespace SDG
         SortMode                 sortMode;
         Ref <class RenderTarget> target;
         CRef<class Matrix4x4>    matrix;
+        Texture                  pixel;
+
     };
+
+
 
     struct SpriteBatch::BatchCall 
     {
         BatchCall(CRef<Texture> texture, Rectangle src, FRectangle dest, float rotation,
                     Vector2 anchor, Flip flip, Color color, float depth);
         CRef<Texture> texture;
-        Rectangle  src;
+        Rectangle src;
         FRectangle dest;
         float      rotation;
         Vector2    anchor;
-        Flip       flip;
         Color      color;
+        Flip       flip;
         float      depth;
     };
+
+
+
 }

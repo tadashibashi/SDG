@@ -2,7 +2,6 @@
 
 #include "App.h"
 #include "Game/AssetMgr.h"
-#include "Platform.h"
 
 // Todo: make a Lib super header
 #include "Lib/Endian.h"
@@ -11,6 +10,7 @@
 #include "Lib/Delegate.h"
 #include "Lib/FixedPool.h"
 #include "Lib/Pool.h"
+#include "Lib/Platform.h"
 #include "Lib/Memory.h"
 #include "Lib/Swap.h"
 #include "Lib/StringView.h"

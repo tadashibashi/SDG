@@ -4,7 +4,7 @@
  *
  */
 #pragma once
-#include <SDG/Platform.h>
+#include <SDG/Lib/Platform.h>
 
 #if (SDG_DEBUG)
 

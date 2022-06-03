@@ -3,7 +3,7 @@
 #include <SDG/Exceptions/OutOfRangeException.h>
 #include <SDG/Math/Math.h>
 #include <SDG/Lib/Memory.h>
-#include <SDG/Platform.h>
+#include <SDG/Lib/Platform.h>
 
 #include <cstring>
 
@@ -42,6 +42,7 @@ namespace SDG
 
     }
 
+    /// Gains ownership of data allocated via SDG::Malloc or SDG::Calloc
     Buffer::Buffer(void *data, size_t size, Endian endian) :
         buf_((uint8_t *)data), head_(buf_), end_(buf_ + size),
         endian_(endian), cap_(buf_ + size)
@@ -152,6 +153,15 @@ namespace SDG
         uint8_t *position = GetPosition(bytes, origin);
         CheckBoundsRead(position);
         head_ = position;
+    }
+
+    void Buffer::Swap(Buffer &buf)
+    {
+        std::swap(buf_, buf.buf_);
+        std::swap(end_, buf.end_);
+        std::swap(cap_, buf.cap_);
+        std::swap(head_, buf.head_);
+        std::swap(endian_, buf.endian_);
     }
 
     uint8_t *

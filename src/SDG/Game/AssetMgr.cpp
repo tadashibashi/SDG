@@ -16,7 +16,7 @@ namespace SDG
         {
             for (auto &[k, v] : textures)
             {
-                v->Free();
+                v->Close();
             }
         }
     }

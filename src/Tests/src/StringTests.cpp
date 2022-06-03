@@ -1096,4 +1096,14 @@ TEST_CASE("String tests", "[String]")
             REQUIRE(didThrow);
         }
     }
+
+    SECTION("Format")
+    {
+        REQUIRE(String::Format("Hello") == "Hello");
+        REQUIRE(String::Format("Hello {}", "World") == "Hello World");
+        REQUIRE(String::Format("Hello {} {}", 10, "Worlds") == "Hello 10 Worlds");
+        REQUIRE(String::Format("Hello {} {}{}", 10, "Worlds", '!') == "Hello 10 Worlds!");
+        REQUIRE(String::Format("Hello {} {}{} {}", 10, "Worlds", '!', String("String")) == 
+            "Hello 10 Worlds! String");
+    }
 } 

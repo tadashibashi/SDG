@@ -24,9 +24,19 @@ namespace SDG
 
     // ===== SpriteBatch ==========================================================================
     SpriteBatch::SpriteBatch() :
-            matrix(), sortMode(SortMode::FrontToBack), batch()
+            matrix(), sortMode(SortMode::FrontToBack), batch(), pixel()
     {
+    }
 
+    bool
+    SpriteBatch::Initialize(Ref<Window> context)
+    {
+        const uint8_t data[4]{ UINT8_MAX, UINT8_MAX, UINT8_MAX, UINT8_MAX };
+        bool didLoad = pixel.LoadPixels(context, 1, 1, data);
+
+        pixel.FilterMode(TexFilter::Nearest);
+
+        return didLoad;
     }
 
     void
@@ -49,9 +59,9 @@ namespace SDG
             // Create rects
             GPU_Rect src {(float)b.src.X(), (float)b.src.Y(), (float) b.src.Width(), (float) b.src.Height()};
             GPU_Rect dest {b.dest.X(), b.dest.Y(), b.dest.Width(), b.dest.Height()};
-
+            
             // Blit to the current target
-            GPU_SetColor(b.texture->Image().Get(), {b.color.R(), b.color.G(), b.color.B(), b.color.A()});
+            GPU_SetTargetColor(gpuTarget, {b.color.R(), b.color.G(), b.color.B(), b.color.A()});
             GPU_BlitRectX(b.texture->Image().Get(), &src, gpuTarget, &dest, b.rotation, b.anchor.X(), b.anchor.Y(),
                           TranslateFlip[(int)b.flip]);
         }
@@ -112,6 +122,12 @@ namespace SDG
                            rotation,
                            Vector2{(float)texture->Image()->base_w * normAnchor.W(), (float)texture->Image()->base_h * normAnchor.H()},
                            Flip::None, color, depth);
+    }
+
+    void 
+    SpriteBatch::DrawRectangle(FRectangle rect, Vector2 anchor, Color color, float rotation, float depth)
+    {
+        batch.emplace_back(CRef(pixel), Rectangle{ 0, 0, 1, 1 }, rect, rotation, anchor, Flip::None, color, depth);
     }
 
     void

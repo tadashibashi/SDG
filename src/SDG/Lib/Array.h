@@ -72,6 +72,9 @@ namespace SDG
         template <typename FwdIt>
         Array(FwdIt _begin, FwdIt _end)
         {
+            static_assert(std::is_same_v<T, std::decay_t<decltype(*_begin)>>,
+                "ForwardIterator must contain Array's type T");
+
             // Get count
             size_t count = 0;
             for (FwdIt it = _begin; it != _end; ++it)

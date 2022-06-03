@@ -2,7 +2,7 @@
 /// for SDG_Engine.
 #pragma once
 #include <catch2/catch_test_macros.hpp>
-#include <SDG/Platform.h>
+#include <SDG/Lib/Platform.h>
 
 namespace SDG::Tests
 {

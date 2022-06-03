@@ -6,11 +6,14 @@
 #include <SDG/Debug/Trace.h>
 
 #include <SDG/Exceptions/RuntimeException.h>
+#include <SDG/Exceptions/NullReferenceException.h>
 
 #include <SDG/FileSys/File.h>
 #include <SDG/Graphics/Window.h>
 
 #include <SDL_gpu.h>
+
+#include <utility>
 
 
 // Prevent Windows API macro clashes
@@ -25,6 +28,37 @@
 
 namespace SDG
 {
+    static TexFilter defFilterMode = TexFilter::Linear;
+    static TexSnap defSnapMode = TexSnap::Position;
+    static Vector2 defAnchor = Vector2(0, 0);
+
+    void Texture::DefaultFilterMode(TexFilter mode)
+    {
+        defFilterMode = mode;
+    }
+
+    void Texture::DefaultSnapMode(TexSnap mode)
+    {
+        defSnapMode = mode;
+    }
+
+    TexFilter Texture::DefaultFilterMode()
+    {
+        return defFilterMode;
+    }
+
+    TexSnap Texture::DefaultSnapMode()
+    {
+        return defSnapMode;
+    }
+
+    void Texture::DefaultAnchor(Vector2 anchor)
+    {
+        defAnchor = anchor;
+    }
+
+    Vector2 Texture::DefaultAnchor() { return defAnchor; }
+
     /// ========= Implementation class for Texture 2D =========================
     struct Texture::Impl {
         Impl() : image(), path() {}
@@ -60,16 +94,64 @@ namespace SDG
         LoadFromSurface(context, surf, path);
     }
 
+    Texture::Texture(GPU_Image *image) : impl(new Impl)
+    {
+        impl->image = image;
+    }
+
+
+    Texture::Texture(const Texture &tex) : impl(new Impl)
+    {
+        if (tex.IsLoaded())
+        {
+            GPU_Image *image = GPU_CopyImage(tex.Image().Get());
+            if (!image)
+            {
+                throw RuntimeException("Texture: failed to copy GPU_Image"
+                    "during copy construction");
+            }
+
+            impl->image = image;
+            impl->path = tex.impl->path;
+        }
+    }
+
+
+    Texture &Texture::operator = (const Texture &tex)
+    {
+        Close();
+
+        if (tex.IsLoaded())
+        {
+            GPU_Image *image = GPU_CopyImage(tex.Image().Get());
+            if (!image)
+            {
+                throw RuntimeException("Texture: failed to copy GPU_Image "
+                    "during copy assignment");
+            }
+
+            impl->image = image;
+            impl->path = tex.impl->path;
+        }
+
+        return *this;
+    }
+
     Texture::~Texture()
     {
-        impl->Free();
+        Close();
         delete impl;
     }
 
     void
-    Texture::Free()
+    Texture::Close()
     {
         impl->Free();
+    }
+
+    void Texture::Swap(Texture &tex)
+    {
+        std::swap(impl, tex.impl);
     }
 
     TexSnap Texture::SnapMode() const
@@ -80,9 +162,9 @@ namespace SDG
         case GPU_SNAP_NONE: return TexSnap::None;
         case GPU_SNAP_POSITION: return TexSnap::Position;
         case GPU_SNAP_DIMENSIONS: return TexSnap::Dimensions;
-        case GPU_SNAP_POSITION_AND_DIMENSIONS: return TexSnap::Both;
-        default: // in case GPU updates add new ones
-            throw RuntimeException("Unknown GPU_SnapEnum argument");
+        case GPU_SNAP_POSITION_AND_DIMENSIONS: return TexSnap::PositionAndDimensions;
+        default: // in case GPU updates new values
+            throw RuntimeException("Internal error: unknown GPU_SnapEnum argument");
         }
     }
 
@@ -94,9 +176,9 @@ namespace SDG
         case TexSnap::None: snapEnum = GPU_SNAP_NONE; break;
         case TexSnap::Position: snapEnum = GPU_SNAP_POSITION; break;
         case TexSnap::Dimensions: snapEnum = GPU_SNAP_DIMENSIONS; break;
-        case TexSnap::Both: snapEnum = GPU_SNAP_POSITION_AND_DIMENSIONS; break;
+        case TexSnap::PositionAndDimensions: snapEnum = GPU_SNAP_POSITION_AND_DIMENSIONS; break;
         default:
-            throw InvalidArgumentException("Texture::SnapMode(SDG::SnapMode mode)", "mode");
+            throw InvalidArgumentException("Texture::SnapMode(TexSnap mode)", "mode");
         }
 
         GPU_SetSnapMode(impl->image, snapEnum);
@@ -145,6 +227,20 @@ namespace SDG
         }
     }
 
+    Vector2 Texture::Anchor() const
+    {
+        float x, y;
+        GPU_GetAnchor(impl->image, &x, &y);
+
+        return { x, y };
+    }
+
+    Texture &Texture::Anchor(Vector2 anchor)
+    {
+        GPU_SetAnchor(impl->image, anchor.X(), anchor.Y());
+        return *this;
+    }
+
     bool
     Texture::LoadFromSurface(Ref<Window> context, SDL_Surface *surf, const Path &path)
     {
@@ -152,7 +248,7 @@ namespace SDG
         SDG_Assert(surf != nullptr); // if surface is null, the function that
                                      // created the surface  probably failed.
         // Make sure the texture is clean before loading
-        Free();
+        Close();
 
         // Textures will load from this context
         context->MakeCurrent();
@@ -171,6 +267,38 @@ namespace SDG
         // Conversion was successful, commit changes
         impl->image = image;
         impl->path = path;
+
+        FilterMode(defFilterMode); // pixel art style
+        SnapMode(defSnapMode);
+        Anchor(defAnchor);
+        return true;
+    }
+
+    bool 
+    Texture::LoadPixels(Ref<class Window> context, uint32_t width, uint32_t height, const uint8_t *rgbaPixels)
+    {
+        if (!context)
+            throw NullReferenceException();
+
+        Close();
+        
+        context->MakeCurrent();
+        GPU_Image *img = GPU_CreateImage(width, height, GPU_FORMAT_RGBA);
+        if (!img)
+        {
+            throw RuntimeException(String::Format("SpriteBatch: failed to "
+                "create GPU_Image pixel: {}", GPU_PopErrorCode().details));
+        }
+
+        img->bytes_per_pixel = 4; // one byte per channel
+        
+        GPU_Rect rect{ 0, 0, static_cast<float>(width), static_cast<float>(height) };
+        GPU_UpdateImageBytes(img, &rect, rgbaPixels, 4 * width);
+        
+        impl->image = img;
+        FilterMode(defFilterMode);
+        SnapMode(defSnapMode);
+        Anchor(defAnchor);
         return true;
     }
 
@@ -180,7 +308,7 @@ namespace SDG
     {
         SDG_Assert(context); // context must not be null
 
-        Free(); // make sure the texture is clean before loading
+        Close(); // make sure the texture is clean before loading
 
         File file;
         if (!file.Open(path))
@@ -208,13 +336,17 @@ namespace SDG
         // Finished without errors, set internals
         impl->image = tempImage;
         impl->path = path;
-
+        FilterMode(defFilterMode);
+        SnapMode(defSnapMode);
+        Anchor(defAnchor);
         return true;
     }
 
     bool Texture::SaveAs(const Path &filepath, TexFormat format)
     {
         GPU_FileFormatEnum gpuFormat;
+        String path = filepath.Str();
+
         switch (format)
         {
         case TexFormat::Auto: gpuFormat = GPU_FILE_AUTO; break;
@@ -222,10 +354,25 @@ namespace SDG
         case TexFormat::Tga: gpuFormat = GPU_FILE_TGA; break;
         case TexFormat::Bmp: gpuFormat = GPU_FILE_BMP; break;
         default:
-            throw InvalidArgumentException("Texture::SaveAs(const Path &filepath, Format format)", "format");
+            throw InvalidArgumentException(
+                "Texture::SaveAs(const Path &filepath, Format format)", 
+                "format");
         }
 
-        return GPU_SaveImage(impl->image, filepath.Str().Cstr(), gpuFormat);
+        SDL_RWops * io = SDL_RWFromFile(path.Cstr(), "r+");
+        if (!io)
+        {
+            throw RuntimeException(String::Format("Texture::SaveAs: failed to "
+                "create file at {}: {}. Does the program have adequate write "
+                "permissions here?", filepath.Str(), SDL_GetError()));
+        }
+
+        if (!GPU_SaveImage_RW(impl->image, io, true, gpuFormat))
+        {
+            throw RuntimeException("Texture::SaveAs: failure during GPU_SaveImage_RW");
+        }
+
+        return true;
     }
 
     // ========= Getters ======================================================

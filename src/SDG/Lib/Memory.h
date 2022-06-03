@@ -19,8 +19,17 @@ namespace SDG
     {
         T *temp = (T *)malloc(sizeof(T) * count);
         if (!temp)
-            throw RuntimeException("Calloc: Out of memory.");
+            throw RuntimeException("SDG::Calloc: Out of memory");
         
+        return temp;
+    }
+
+    [[nodiscard]] inline void *Malloc(size_t bytes)
+    {
+        void *temp = malloc(bytes);
+        if (!temp)
+            throw RuntimeException("SDG::Malloc: Out of memory");
+
         return temp;
     }
 

@@ -2,7 +2,7 @@
 #include "Path.h"
 #include <SDG/Debug/Assert.h>
 #include <SDG/FileSys/FileSys.h>
-#include <SDG/Platform.h>
+#include <SDG/Lib/Platform.h>
 
 #include <SDL_rwops.h>
 

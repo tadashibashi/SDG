@@ -6,6 +6,10 @@
 #pragma once
 #include <SDG/Lib/Endian.h>
 #include <SDG/Lib/String.h>
+#include <utility>
+
+using std::swap;
+
 
 namespace SDG
 {
@@ -130,6 +134,8 @@ namespace SDG
         /// Resets the Buffer's internal data.
         void Clear() noexcept { end_ = buf_; head_ = buf_; }
 
+        void Swap(Buffer &buf);
+
         /// Gets the internal byte array. Please be aware that the pointer
         /// retrieved by this function may become invalidated as soon as the
         /// internal capacity is increased by Write or Reserve.
@@ -158,4 +164,9 @@ namespace SDG
         size_t ReadImpl(void *buf, size_t size, bool useEndian, bool moveHead) const;
         size_t WriteImpl(const void *buf, size_t size, bool useEndian);
     };
+}
+
+inline void swap(SDG::Buffer &a, SDG::Buffer &b)
+{
+    a.Swap(b);
 }

@@ -1,6 +1,5 @@
 #include <SDG/SDG.hpp>
-#include <SDG/Graphics/TrueTypeFont.h>
-
+#include <SDG/Graphics/Font.h>
 using namespace SDG;
 
 class Sandbox : public App 
@@ -11,16 +10,18 @@ public:
         //"SDG Engine Test",
         //"SDG Engine Test", "aaronishibashi"}
         "assets/config.sdgc"
-    ) { }
+    )
+    {
+        Texture::DefaultFilterMode(TexFilter::Nearest);
+    }
 private:
     // Test objects / members
     Ref<Window> window2;
     Texture kirby;
     Texture kirby2;
-    Texture *text{};
+    Texture pixels;
     Shader shader;
-    
-    TrueTypeFont font;
+    Font font;
     Camera2D camera;
     SpriteBatch spriteBatch;
 
@@ -31,7 +32,7 @@ private:
     int Initialize() override
     {
         //Windows()->CreateWindow(300, 300, "Window2", 0, &window2);
-
+        spriteBatch.Initialize(MainWindow());
         LoadContent();
         return 0;
     }
@@ -39,18 +40,28 @@ private:
 
     void LoadContent()
     {
-        if (font.Load(BasePath("assets/fonts/CourierPrimeCode.sdgc"), 32))
-        {
-            text = font.CreateTextSolid(MainWindow(), "Hello", Color::MediumPurple());
-            if (text)
-            {
-                SDG_Core_Log("Loaded texture: dimensions: {}", text->Size());
-            }
-        }
-        else
-        {
-            SDG_Core_Warn("Failed to load font!\n");
-        }
+        //if (font.Load(BasePath("assets/fonts/CourierPrimeCode.sdgc"), 32))
+        //{
+        //    text = font.CreateTextSolid(MainWindow(), "Hello", Color::MediumPurple());
+        //    if (text)
+        //    {
+        //        SDG_Core_Log("Loaded texture: dimensions: {}", text->Size());
+        //        text->FilterMode(TexFilter::Linear).Blending(true).SnapMode(TexSnap::PositionAndDimensions);
+        //    }
+        //}
+        //else
+        //{
+        //    SDG_Core_Warn("Failed to load font!\n");
+        //}
+        uint8_t pixs[] = {
+            255, 255, 255, 255,
+            0, 255, 0, 255,
+            255, 0, 0, 255,
+            0, 255, 255, 255
+        };
+
+        pixels.LoadPixels(MainWindow(), 2, 2, pixs);
+        font.Load(MainWindow(), BasePath("assets/fonts/CourierPrimeCode.sdgc"), 32, FontStyle::Bold | FontStyle::Italic);
         camera.PivotPoint({320, 240});
         kirby.Load(MainWindow(), BasePath("assets/textures/kirby.sdgc"));
         //kirby2.Load(window2, BasePath("assets/textures/DawSession.sdgc"));
@@ -64,11 +75,11 @@ private:
         if (Input::KeyPressed(Key::Escape))
             Exit();
 
-       /* if (window2->IsOpen())
+        if (MainWindow()->IsOpen())
         {
             Vector2 mouseWorld = camera.ScreenToWorld((Vector2)Input::MousePosition());
-            window2->Title(mouseWorld.Str().Cstr());
-        }*/
+            MainWindow()->Title(mouseWorld.Str().Cstr());
+        }
 
 
         if (Input::KeyPressed(Key::Space))
@@ -171,17 +182,25 @@ private:
 
             spriteBatch.Begin(window->Target(), camera.Matrix());
             Point imgSize = kirby.Size();
-            spriteBatch.DrawTexture(text, {109.f, 109.f}, {1.f, 1.f}, {0, 0}, 0, 0);
-            spriteBatch.DrawTexture(&kirby, {0, 0, (int)imgSize.X(), (int)imgSize.Y()},
-                                    {10.f, 10.f, (float) imgSize.X() / 100.f, (float) imgSize.Y() / 100.f},
-                                    100, Vector2(0, 0), Flip::Both, Color::White(), 1.f);
-            spriteBatch.DrawTexture(&kirby, {0, 0, (int)imgSize.X(), (int)imgSize.Y()},
+            
+           
+            spriteBatch.DrawTexture(kirby, {0, 0, (int)imgSize.X(), (int)imgSize.Y()},
+                                    {0.f, 0.f, (float) imgSize.X() / 100.f, (float) imgSize.Y() / 100.f},
+                                    0, Vector2(110, 110), Flip::None, Color::White(), 1.f);
+
+            spriteBatch.DrawTexture(pixels, { 100, 100 });
+            spriteBatch.DrawTexture(pixels, { 102, 100 });
+            spriteBatch.DrawTexture(kirby, {0, 0, (int)imgSize.X(), (int)imgSize.Y()},
                                     {100.f, 100.f, (float)imgSize.X() / 100.f, (float)imgSize.Y() / 100.f},
                                     angle, Vector2(imgSize.X() / 2.f, imgSize.Y() / 2.f), Flip::None, Color::White(), 1.f);
-            spriteBatch.DrawTexture(&kirby,  Math::Transform(pos, mat), Vector2::One(),
+            spriteBatch.DrawTexture(kirby,  Math::Transform(pos, mat), Vector2::One(),
                                     {.5f,.5f}, angle*2, angle, Color{(uint8_t)(angle/360.f * 255.f), 255});
+            spriteBatch.DrawRectangle(FRectangle{ 0, 0, 100, 100 }, Vector2{ .5f, .5f }, Color(Math::ModF(angle, 255.f), 0, 128, 255), angle, 0);
 
             spriteBatch.End();
+            font.Draw(window->Target(), { 10, 20 }, { 1.f, 1.f }, FontAlign::Center, Color::MonarchOrange(128),
+                "Mouse position: {} {}", Input::MousePosition().Y(), Input::MousePosition().X());
+
         }
 
         //if (window2->IsOpen())
@@ -200,10 +219,9 @@ private:
 
     void Close() override
     {
-        kirby.Free();
-        kirby2.Free();
+        kirby.Close();
+        kirby2.Close();
         shader.Close();
-        delete text;
     }
 };
 

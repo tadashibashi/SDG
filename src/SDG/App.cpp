@@ -8,7 +8,7 @@
 #include <SDG/FileSys/XMLReader.h>
 
 #include <SDG/Graphics/WindowMgr.h>
-#include <SDG/Platform.h>
+#include <SDG/Lib/Platform.h>
 
 #include <SDL.h>
 

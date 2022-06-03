@@ -1,7 +1,7 @@
 #include "SDG_Tests.h"
 #include "SDG/FileSys/FileSys.h"
 #include <SDG/FileSys/Path.h>
-#include <SDG/Platform.h>
+#include <SDG/Lib/Platform.h>
 
 #include <SDL.h>
 

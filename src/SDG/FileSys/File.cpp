@@ -3,10 +3,17 @@
 //  SDG_Engine
 //
 #include "File.h"
+#include <SDG/Debug/Log.h>
+
 #include <SDG/Exceptions/InvalidArgumentException.h>
 #include <SDG/Exceptions/RuntimeException.h>
+
 #include <SDG/FileSys/Private/IO.h>
+
 #include <SDG/Lib/Buffer.h>
+#include <SDG/Lib/Memory.h>
+
+#include <SDL_rwops.h>
 
 namespace SDG
 {
@@ -39,6 +46,37 @@ namespace SDG
         // Automatically close the file when it goes out of scope.
         Close();
         delete impl;
+    }
+
+    bool File::LoadFromRW(SDL_RWops *io)
+    {
+        Close();
+
+        if (!io)
+        {
+            impl->error = "File::LoadFromRW: SDL_RWops parameter was null";
+            return false;
+        }
+        
+        size_t size = SDL_RWsize(io);
+        uint8_t *data = static_cast<uint8_t *>(Malloc(size));
+        try {
+            if (SDL_RWread(io, data, size, 1) != 1)
+            {
+                Free(data);
+                impl->error = String::Format("File::LoadFromRW: error "
+                    "during SDL_RWread: {}", SDL_GetError());
+                return false;
+            }
+        }
+        catch (...)
+        {
+            Free(data);
+            throw;
+        }
+
+        impl->buf.Swap(Buffer(data, size));
+        return impl->isOpen = true;
     }
 
     /// Delete a file at the path
@@ -91,6 +129,7 @@ namespace SDG
     bool
     File::Open(const Path &path)
     {
+        Close();
         return (path.Extension() == "sdgc") ?
                OpenEncryptedImpl(path) :
                OpenImpl(path);
@@ -140,9 +179,12 @@ namespace SDG
     void
     File::Close()
     {
-        impl->buf.Clear();
-        impl->isOpen = false;
-        impl->path = Path();
+        if (impl->isOpen)
+        {
+            impl->buf.Clear();
+            impl->isOpen = false;
+            impl->path = Path();
+        }
     }
 
     bool

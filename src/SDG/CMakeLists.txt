@@ -126,7 +126,7 @@ set(Engine_Sources
         Time/Timer.h Time/Timer.cpp 
         Time/Duration.h Time/Duration.cpp
         
- "Graphics/FontCache.h" "Graphics/Font.h" "Graphics/Font.cpp" "Lib/Enum.h" "Lib/Private/Fmt.h" "Exceptions/UncaughtCaseException.h")
+  "Graphics/Font.h" "Graphics/Font.cpp" "Lib/Enum.h" "Lib/Private/Fmt.h" "Exceptions/UncaughtCaseException.h")
 
 # -----  Includes  ----------------------------------------------------
 set(Engine_Includes
@@ -159,9 +159,9 @@ if (DEBUG)                                                 # Debug
 else()
     set(Engine_CompileDefs DEBUG=0)                        # Release
     if (WIN32)
-        set(CONFIG_Libraries SDL2 SDL2main)
+        set(CONFIG_Libraries SDL2 SDL2main spdlog)
     else()
-        set(CONFIG_Libraries SDL2)
+        set(CONFIG_Libraries SDL2 spdlog)
     endif()
 endif()
 

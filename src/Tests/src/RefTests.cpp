@@ -172,7 +172,7 @@ TEST_CASE("CRef tests", "[CRef]")
         bool didThrow = false;
         try
         {
-            *ref;
+            std::string temp = *ref;
         }
         catch (const NullReferenceException &e)
         {

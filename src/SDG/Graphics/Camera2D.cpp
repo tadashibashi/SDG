@@ -15,7 +15,7 @@ namespace SDG
 {
     struct Camera2D::Impl {
         Impl() : wasChanged(true), mat(1), ortho(1), inverse(), position(), size(),
-            scale(1, 1), angle()
+            scale(1, 1), anchor(), angle()
         {}
 
         mutable bool wasChanged;

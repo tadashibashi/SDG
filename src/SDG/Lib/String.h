@@ -7,7 +7,6 @@
  */
 #pragma once
 #include <SDG/Debug/LogImpl.h>
-
 #include <SDG/Lib/Private/Fmt.h>
 
 #include <functional>

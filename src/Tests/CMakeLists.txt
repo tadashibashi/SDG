@@ -52,9 +52,9 @@ add_executable(SDG_Tests
         "src/ArrayTests.cpp" 
         "src/SpriteRendererTests.cpp" 
         "src/DynamicStateMachineTests.cpp"
-        src/FileTests.cpp
-        )
+        src/FileTests.cpp)
 
 target_include_directories(SDG_Tests PRIVATE ${CMAKE_SOURCE_DIR}/src
         lib/Catch2/src)
 target_link_libraries(SDG_Tests PRIVATE SDG_Engine Catch2)
+target_precompile_headers(SDG_Tests PRIVATE src/Pch.h)

@@ -944,24 +944,24 @@ TEST_CASE("Point Direction")
     SECTION("Vector2")
     {
         REQUIRE(Math::PointDirection(Vector2{ 0, 0 }, Vector2{ 1, 0 }) == 0);
-        REQUIRE(Math::PointDirection(Vector2{ 0, 0 }, Vector2{ 1, 1 }) == 315);
-        REQUIRE(Math::PointDirection(Vector2{ 0, 0 }, Vector2{ 0, 1 }) == 270);
-        REQUIRE(Math::PointDirection(Vector2{ 0, 0 }, Vector2{ -1, 1 }) == 225);
+        REQUIRE(Math::PointDirection(Vector2{ 0, 0 }, Vector2{ 1, 1 }) == 45);
+        REQUIRE(Math::PointDirection(Vector2{ 0, 0 }, Vector2{ 0, 1 }) == 90);
+        REQUIRE(Math::PointDirection(Vector2{ 0, 0 }, Vector2{ -1, 1 }) == 135);
         REQUIRE(Math::PointDirection(Vector2{ 0, 0 }, Vector2{ -1, 0 }) == 180);
-        REQUIRE(Math::PointDirection(Vector2{ 0, 0 }, Vector2{ -1, -1 }) == 135);
-        REQUIRE(Math::PointDirection(Vector2{ 0, 0 }, Vector2{ 0, -1 }) == 90);
-        REQUIRE(Math::PointDirection(Vector2{ 0, 0 }, Vector2{ 1, -1 }) == 45);
+        REQUIRE(Math::PointDirection(Vector2{ 0, 0 }, Vector2{ -1, -1 }) == 225);
+        REQUIRE(Math::PointDirection(Vector2{ 0, 0 }, Vector2{ 0, -1 }) == 270);
+        REQUIRE(Math::PointDirection(Vector2{ 0, 0 }, Vector2{ 1, -1 }) == 315);
     }
     SECTION("Point")
     {
         REQUIRE(Math::PointDirection(Point{ 0, 0 }, Point{ 1, 0 }) == 0);
-        REQUIRE(Math::PointDirection(Point{ 0, 0 }, Point{ 1, 1 }) == 315);
-        REQUIRE(Math::PointDirection(Point{ 0, 0 }, Point{ 0, 1 }) == 270);
-        REQUIRE(Math::PointDirection(Point{ 0, 0 }, Point{ -1, 1 }) == 225);
+        REQUIRE(Math::PointDirection(Point{ 0, 0 }, Point{ 1, 1 }) == 45);
+        REQUIRE(Math::PointDirection(Point{ 0, 0 }, Point{ 0, 1 }) == 90);
+        REQUIRE(Math::PointDirection(Point{ 0, 0 }, Point{ -1, 1 }) == 135);
         REQUIRE(Math::PointDirection(Point{ 0, 0 }, Point{ -1, 0 }) == 180);
-        REQUIRE(Math::PointDirection(Point{ 0, 0 }, Point{ -1, -1 }) == 135);
-        REQUIRE(Math::PointDirection(Point{ 0, 0 }, Point{ 0, -1 }) == 90);
-        REQUIRE(Math::PointDirection(Point{ 0, 0 }, Point{ 1, -1 }) == 45);
+        REQUIRE(Math::PointDirection(Point{ 0, 0 }, Point{ -1, -1 }) == 225);
+        REQUIRE(Math::PointDirection(Point{ 0, 0 }, Point{ 0, -1 }) == 270);
+        REQUIRE(Math::PointDirection(Point{ 0, 0 }, Point{ 1, -1 }) == 315);
     }
 }
 

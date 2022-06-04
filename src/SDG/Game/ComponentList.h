@@ -1,6 +1,3 @@
-//
-// Created by Aaron Ishibashi on 5/5/22.
-//
 #pragma once
 #include <utility>
 #include <map>
@@ -21,9 +18,12 @@ namespace SDG
         template <typename T, typename ...Args>
         T &AddComponent(Args&&...args)
         {
+            static_assert(std::is_base_of_v<Component>, 
+                "Type T must derive from Component class");
+
             T *newComp = new T(std::forward<Args>(args)...);
             if (wasInit)
-                newComp->CreateWindow();
+                newComp->Initialize();
 
             typeMap[typeid(T)].emplace_back(newComp);
             components.emplace_back((Component *)newComp);

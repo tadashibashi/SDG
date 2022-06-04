@@ -12,7 +12,6 @@
 
 namespace SDG
 {
-    /// Class that
     class Camera2D
     {
         struct Impl;
@@ -20,13 +19,21 @@ namespace SDG
         Camera2D();
         ~Camera2D();
 
-    public: // Driver functions
-        /// Begins camera transformation on the current target
+    public: 
+        // ===== Driver functions =============================================
+
+        /// Begins camera transformation on the current RenderTarget. 
+        /// Please make sure the correct target has been made current, and also
+        /// to call End() when finished using this camera's transformations.
         void Begin();
-        /// Ends effects of camera transformation and restores the last one
+
+        /// Ends effects of camera transformation and restores the last one.
+        /// Called sometime after Begin() when the effects of the camera are no
+        /// longer needed.
         void End();
 
-    public: // Setters and Getters
+        // ===== Setters / Getters ============================================
+
         /// Converts a world position to a screen position
         Vector2 WorldToScreen(Vector2 worldPos) const;
         /// Converts a screen position to a world position

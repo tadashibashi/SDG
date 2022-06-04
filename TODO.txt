@@ -10,7 +10,7 @@ TODO:
     - Make Asteroids Game as you assemble these systems
 
 Notes:
-Plan is to create basic useful components to be used by Component objects
+Plan is to create basic useful components to be inherited by Component objects
 
 Future:
 - allow user to specify desired input types in the config.

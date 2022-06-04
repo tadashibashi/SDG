@@ -44,8 +44,8 @@ namespace SDG
         [[nodiscard]] T *operator->() const;
         [[nodiscard]] T &operator *() const;
 
-        bool operator==(const Ref &other) const;
-        bool operator !=(const Ref &other) const;
+        [[nodiscard]] bool operator==(const Ref &other) const;
+        [[nodiscard]] bool operator !=(const Ref &other) const;
         operator bool() const { return static_cast<bool>(ref); }
 
         template <typename U>
@@ -69,12 +69,12 @@ namespace SDG
         CRef(Ref<T> ref) : ref(ref.Get()) { }
 
         /// Get internal ptr
-        const T *Get() const { return ref; }
-        const T *operator->() const;
-        const T &operator *() const;
+        [[nodiscard]] const T *Get() const { return ref; }
+        [[nodiscard]] const T *operator->() const;
+        [[nodiscard]] const T &operator *() const;
 
-        bool operator==(const CRef &other) const;
-        bool operator !=(const CRef &other) const;
+        [[nodiscard]] bool operator==(const CRef &other) const;
+        [[nodiscard]] bool operator !=(const CRef &other) const;
         operator bool() const { return static_cast<bool>(ref); }
     private:
         const T *ref;

@@ -12,7 +12,7 @@ public:
         "assets/config.sdgc"
     )
     {
-        Texture::DefaultFilterMode(TexFilter::Nearest);
+        Texture::DefaultFilterMode(Texture::Filter::Nearest);
     }
 private:
     // Test objects / members
@@ -196,6 +196,8 @@ private:
             spriteBatch.DrawTexture(kirby,  Math::Transform(pos, mat), Vector2::One(),
                                     {.5f,.5f}, angle*2, angle, Color{(uint8_t)(angle/360.f * 255.f), 255});
             spriteBatch.DrawRectangle(FRectangle{ 0, 0, 100, 100 }, Vector2{ .5f, .5f }, Color(Math::ModF(angle, 255.f), 0, 128, 255), angle, 0);
+            spriteBatch.DrawLines({ {0, 0}, {2.f, 4.f}, {100.f, 100.f}, {350.f, 10.f}, {0, 0} }, 10, Color::HalloweenOrange(), 0);
+            spriteBatch.DrawLine(Vector2{ 300.f, 300.f }, 100, angle, 3, Color( Math::Sin(Math::RadsPerDeg*angle) * 255, 255, 128, 255 ), 0);
 
             spriteBatch.End();
             font.Draw(window->Target(), { 10, 20 }, { 1.f, 1.f }, FontAlign::Center, Color::MonarchOrange(128),

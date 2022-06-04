@@ -16,6 +16,8 @@
 #include <SDG/Lib/Ref.h>
 #include <SDG/Math/Rectangle.h>
 
+#include <vector>
+
 namespace SDG
 {
     /// SpriteBatch depth sort mode.
@@ -39,7 +41,7 @@ namespace SDG
         bool Initialize(Ref<Window> context);
         void Begin(Ref<class RenderTarget> target, 
             CRef<class Matrix4x4> transformMatrix = CRef<class Matrix4x4>{}, 
-            SortMode sort = SortMode::FrontToBack);
+            SortMode sortMode = SortMode::FrontToBack);
         void End();
         void DrawTexture(CRef<Texture> texture, Rectangle src, FRectangle dest, float rotation, Vector2 anchor, Flip flip, Color color, float depth);
 
@@ -48,6 +50,9 @@ namespace SDG
                          Vector2 normAnchor = Vector2(.5f, .5f),
                          float rotation = 0, float depth = 0, Color color = Color::White());
         void DrawRectangle(FRectangle rect, Vector2 anchor, Color color, float rotation = 0, float depth = 0);
+        void DrawLine(Vector2 a, Vector2 b, float thickness, Color color, float depth);
+        void DrawLine(Vector2 base, float length, float angle, float thickness, Color color, float depth);
+        void DrawLines(std::vector<Vector2> points, float thickness, Color color, float depth);
     private:    
         struct BatchCall;
 

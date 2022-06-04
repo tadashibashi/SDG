@@ -13,13 +13,16 @@
 
 namespace SDG
 {
+    /// Contains the necessary information to display a source rectangle of a 
+    /// Texture image
     class Frame
     {
     public:
         Frame() : frameRect(), origRect(), rotated(), anchor(), name(), 
             texture() { }
         Frame(const Rectangle &frame, const Rectangle &origRect, bool rotated,
-              const Point &anchor, const String &name,
+       
+            const Point &anchor, const String &name,
               CRef<class Texture> texture) :
                       frameRect(frame), origRect(origRect), rotated(rotated),
                       anchor(anchor), name(name), texture(texture) { }

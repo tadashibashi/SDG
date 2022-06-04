@@ -14,6 +14,7 @@
 
 #include <SDG/Debug/LogImpl.h>
 #include <SDG/Lib/String.h>
+#include <SDG/Math/Math.h>
 
 namespace SDG
 {
@@ -29,7 +30,10 @@ namespace SDG
             x(x), y(y), w(width), h(height) { }
         Rect_(Vec2_<T> pos, Vec2_<T> size) noexcept :
             x(pos.X()), y(pos.Y()), w(size.X()), h(size.Y()) { }
-
+        Rect_(Vec2_<T> pos, T width, T height) noexcept :
+            x(pos.X()), y(pos.Y()), w(width), h(height) { }
+        Rect_(T x, T y, Vec2_<T> size) noexcept :
+            x(x), y(y), w(size.X()), h(size.Y()) { }
 
         /// Gets the horizontal position of the rectangle.
         [[nodiscard]] T X() const noexcept { return x; }
@@ -64,6 +68,9 @@ namespace SDG
         Rect_ &Size(Vec2_<T> size) noexcept { w = size.X(); h = size.Y(); return *this; }
         /// Gets the area of the rectangle (width x height)
         [[nodiscard]] T Area() const noexcept { return w * h; }
+
+        /// Gets the length of the diagonal distance from one opposite corner to another
+        [[nodiscard]] double Diagonal() const noexcept { return Math::Sqrt(double(w * w + h * h)); }
 
         /// Gets the horizontal position of the rectangle's left side.
         [[nodiscard]] T Left() const noexcept { return x; }

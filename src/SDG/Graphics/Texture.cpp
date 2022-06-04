@@ -7,6 +7,7 @@
 
 #include <SDG/Exceptions/RuntimeException.h>
 #include <SDG/Exceptions/NullReferenceException.h>
+#include <SDG/Exceptions/UncaughtCaseException.h>
 
 #include <SDG/FileSys/File.h>
 #include <SDG/Graphics/Window.h>
@@ -28,26 +29,26 @@
 
 namespace SDG
 {
-    static TexFilter defFilterMode = TexFilter::Linear;
-    static TexSnap defSnapMode = TexSnap::Position;
+    static Texture::Filter defFilterMode = Texture::Filter::Linear;
+    static Texture::Snap defSnapMode = Texture::Snap::Position;
     static Vector2 defAnchor = Vector2(0, 0);
 
-    void Texture::DefaultFilterMode(TexFilter mode)
+    void Texture::DefaultFilterMode(Filter mode)
     {
         defFilterMode = mode;
     }
 
-    void Texture::DefaultSnapMode(TexSnap mode)
+    void Texture::DefaultSnapMode(Snap mode)
     {
         defSnapMode = mode;
     }
 
-    TexFilter Texture::DefaultFilterMode()
+    Texture::Filter Texture::DefaultFilterMode()
     {
         return defFilterMode;
     }
 
-    TexSnap Texture::DefaultSnapMode()
+    Texture::Snap Texture::DefaultSnapMode()
     {
         return defSnapMode;
     }
@@ -154,29 +155,29 @@ namespace SDG
         std::swap(impl, tex.impl);
     }
 
-    TexSnap Texture::SnapMode() const
+    Texture::Snap Texture::SnapMode() const
     {
         GPU_SnapEnum snap = GPU_GetSnapMode(impl->image);
         switch (snap)
         {
-        case GPU_SNAP_NONE: return TexSnap::None;
-        case GPU_SNAP_POSITION: return TexSnap::Position;
-        case GPU_SNAP_DIMENSIONS: return TexSnap::Dimensions;
-        case GPU_SNAP_POSITION_AND_DIMENSIONS: return TexSnap::PositionAndDimensions;
+        case GPU_SNAP_NONE: return Texture::Snap::None;
+        case GPU_SNAP_POSITION: return Texture::Snap::Position;
+        case GPU_SNAP_DIMENSIONS: return Texture::Snap::Dimensions;
+        case GPU_SNAP_POSITION_AND_DIMENSIONS: return Texture::Snap::PositionAndDimensions;
         default: // in case GPU updates new values
             throw RuntimeException("Internal error: unknown GPU_SnapEnum argument");
         }
     }
 
-    Texture &Texture::SnapMode(TexSnap snapMode)
+    Texture &Texture::SnapMode(Texture::Snap snapMode)
     {
         GPU_SnapEnum snapEnum;
         switch (snapMode)
         {
-        case TexSnap::None: snapEnum = GPU_SNAP_NONE; break;
-        case TexSnap::Position: snapEnum = GPU_SNAP_POSITION; break;
-        case TexSnap::Dimensions: snapEnum = GPU_SNAP_DIMENSIONS; break;
-        case TexSnap::PositionAndDimensions: snapEnum = GPU_SNAP_POSITION_AND_DIMENSIONS; break;
+        case Texture::Snap::None: snapEnum = GPU_SNAP_NONE; break;
+        case Texture::Snap::Position: snapEnum = GPU_SNAP_POSITION; break;
+        case Texture::Snap::Dimensions: snapEnum = GPU_SNAP_DIMENSIONS; break;
+        case Texture::Snap::PositionAndDimensions: snapEnum = GPU_SNAP_POSITION_AND_DIMENSIONS; break;
         default:
             throw InvalidArgumentException("Texture::SnapMode(TexSnap mode)", "mode");
         }
@@ -198,14 +199,14 @@ namespace SDG
         return GPU_GetBlending(impl->image);
     }
 
-    Texture &Texture::FilterMode(TexFilter mode)
+    Texture &Texture::FilterMode(Filter mode)
     {
         GPU_FilterEnum gpuMode;
         switch (mode)
         {
-        case TexFilter::Linear: gpuMode = GPU_FILTER_LINEAR; break;
-        case TexFilter::LinearMipMap: gpuMode = GPU_FILTER_LINEAR_MIPMAP; break;
-        case TexFilter::Nearest: gpuMode = GPU_FILTER_NEAREST; break;
+        case Filter::Linear: gpuMode = GPU_FILTER_LINEAR; break;
+        case Filter::LinearMipMap: gpuMode = GPU_FILTER_LINEAR_MIPMAP; break;
+        case Filter::Nearest: gpuMode = GPU_FILTER_NEAREST; break;
         default:
             throw InvalidArgumentException("Texture::FilterMode(Filter mode)", "mode");
         }
@@ -215,13 +216,13 @@ namespace SDG
         return *this;
     }
 
-    TexFilter Texture::FilterMode() const
+    Texture::Filter Texture::FilterMode() const
     {
         switch (impl->image->filter_mode)
         {
-        case GPU_FILTER_LINEAR: return TexFilter::Linear;
-        case GPU_FILTER_LINEAR_MIPMAP: return TexFilter::LinearMipMap;
-        case GPU_FILTER_NEAREST: return TexFilter::Nearest;
+        case GPU_FILTER_LINEAR: return Filter::Linear;
+        case GPU_FILTER_LINEAR_MIPMAP: return Filter::LinearMipMap;
+        case GPU_FILTER_NEAREST: return Filter::Nearest;
         default:
             throw RuntimeException("GPU_FilterEnum value not anticipated by SDG_Engine, internal error");
         }
@@ -238,6 +239,50 @@ namespace SDG
     Texture &Texture::Anchor(Vector2 anchor)
     {
         GPU_SetAnchor(impl->image, anchor.X(), anchor.Y());
+        return *this;
+    }
+
+    static Texture::Wrap ToTextureWrap(GPU_WrapEnum gpuWrap)
+    {
+        switch (gpuWrap)
+        {
+        case GPU_WRAP_NONE: return Texture::Wrap::None;
+        case GPU_WRAP_REPEAT: return Texture::Wrap::Repeat;
+        case GPU_WRAP_MIRRORED: return Texture::Wrap::Mirror;
+        default:
+            throw UncaughtCaseException("missing GPU_WRAP_* enum conversion case");
+        }
+    }
+
+    namespace Conv
+    {
+        static GPU_WrapEnum ToGPUWrap(Texture::Wrap mode)
+        {
+            switch (mode)
+            {
+            case Texture::Wrap::None: return GPU_WRAP_NONE;
+            case Texture::Wrap::Repeat: return GPU_WRAP_REPEAT;
+            case Texture::Wrap::Mirror: return GPU_WRAP_MIRRORED;
+            default:
+                throw InvalidArgumentException("Private ToGPUWrapEnum(Texture::Wrap mode)", "mode");
+            }
+        }
+    }
+
+
+    Texture::Wrap Texture::WrapModeX() const
+    {
+        return ToTextureWrap(impl->image->wrap_mode_x);
+    }
+
+    Texture::Wrap Texture::WrapModeY() const
+    {
+        return ToTextureWrap(impl->image->wrap_mode_y);
+    }
+
+    Texture &Texture::WrapMode(Texture::Wrap x, Texture::Wrap y)
+    {
+        GPU_SetWrapMode(impl->image, Conv::ToGPUWrap(x), Conv::ToGPUWrap(y));
         return *this;
     }
 
@@ -342,17 +387,17 @@ namespace SDG
         return true;
     }
 
-    bool Texture::SaveAs(const Path &filepath, TexFormat format)
+    bool Texture::SaveAs(const Path &filepath, FileFormat format)
     {
         GPU_FileFormatEnum gpuFormat;
         String path = filepath.Str();
 
         switch (format)
         {
-        case TexFormat::Auto: gpuFormat = GPU_FILE_AUTO; break;
-        case TexFormat::Png: gpuFormat = GPU_FILE_PNG; break;
-        case TexFormat::Tga: gpuFormat = GPU_FILE_TGA; break;
-        case TexFormat::Bmp: gpuFormat = GPU_FILE_BMP; break;
+        case FileFormat::Auto: gpuFormat = GPU_FILE_AUTO; break;
+        case FileFormat::Png: gpuFormat = GPU_FILE_PNG; break;
+        case FileFormat::Tga: gpuFormat = GPU_FILE_TGA; break;
+        case FileFormat::Bmp: gpuFormat = GPU_FILE_BMP; break;
         default:
             throw InvalidArgumentException(
                 "Texture::SaveAs(const Path &filepath, Format format)", 

@@ -17,28 +17,6 @@ struct SDL_Surface;
 
 namespace SDG
 {
-    enum class TexFormat 
-    {
-        Auto,
-        Png,
-        Tga,
-        Bmp
-    };
-
-    enum class TexSnap
-    {
-        None,
-        Position,
-        Dimensions,
-        PositionAndDimensions
-    };
-
-    enum class TexFilter
-    {
-        Linear,
-        LinearMipMap,
-        Nearest
-    };
     /// Texture class automatically frees texture when this object goes out
     /// of scope. Please be aware of this, as the object will become
     /// invalidated if the destructor is called.
@@ -63,7 +41,12 @@ namespace SDG
         /// Automatically frees the internal texture if one was loaded.
         ~Texture();
 
-    public:
+    public:    
+        enum class FileFormat { Auto, Png, Tga, Bmp };
+        enum class Snap { None, Position, Dimensions, PositionAndDimensions };    
+        enum class Filter { Nearest, Linear, LinearMipMap };
+        enum class Wrap { None, Repeat, Mirror };
+
         // ========== Resource Management ==========
 
         /// Load an image into the Texture.
@@ -80,7 +63,7 @@ namespace SDG
         bool LoadPixels(Ref<class Window> context, uint32_t width, uint32_t height, const uint8_t *rgbaPixels);
 
         /// Saves the file in a certain format
-        bool SaveAs(const Path &filepath, TexFormat format = TexFormat::Png);
+        bool SaveAs(const Path &filepath, FileFormat format = FileFormat::Png);
 
         /// Free the internal texture, and resets container for reuse.
         void Close();
@@ -91,30 +74,45 @@ namespace SDG
         /// Creates an alias of this Texture to another. All setters/getters
         /// and even Close will not affect the original's data.
         /// In practice, this can be used to quickly load various preset modes.
-        bool MakeAlias(Texture *alias);
+        bool CreateAlias(Texture *alias);
 
         // ========== Getters/ Setters ==========
         // Static -------------------------------
 
-        static void DefaultFilterMode(TexFilter mode);
-        static TexFilter DefaultFilterMode();
-        static void DefaultSnapMode(TexSnap mode);
-        static TexSnap DefaultSnapMode();
+        static void DefaultFilterMode(Filter mode);
+        static Filter DefaultFilterMode();
+        static void DefaultSnapMode(Snap mode);
+        static Snap DefaultSnapMode();
         static void DefaultAnchor(Vector2 anchor);
         static Vector2 DefaultAnchor();
-        TexSnap SnapMode() const;
-        Texture &SnapMode(TexSnap snapMode);
 
         // Member functions ----------------------
+        Vector2 Anchor() const;
+        Texture &Anchor(Vector2 anchor);
 
         bool Blending() const;
         Texture &Blending(bool blending);
 
-        TexFilter FilterMode() const;
-        Texture &FilterMode(TexFilter mode);
+        Filter FilterMode() const;
+        Texture &FilterMode(Filter mode);
 
-        Vector2 Anchor() const;
-        Texture &Anchor(Vector2 anchor);
+        Snap SnapMode() const;
+        Texture &SnapMode(Snap mode);
+
+        /// Gets the Wrap behavior for this Texture on the X axis.
+        /// Wrap mode takes effect during rendering functions, when source
+        /// rectangle is larger than the the source dimensions.
+        Wrap WrapModeX() const;
+
+        /// Gets the Wrap behavior for this Texture on the Y axis.
+        /// Wrap mode takes effect during rendering functions, when source 
+        /// rectangle is larger than the the source dimensions.
+        Wrap WrapModeY() const;
+
+        /// Sets the Wrap behavior for this Texture.
+        /// This takes effect during rendering functions, when source rectangle
+        /// is larger than the the source dimensions.
+        Texture &WrapMode(Wrap x, Wrap y);
 
         /// Gets the dimensions of the texture in pixels.
         Point Size() const;

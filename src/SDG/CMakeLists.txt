@@ -126,7 +126,7 @@ set(Engine_Sources
         Time/Timer.h Time/Timer.cpp 
         Time/Duration.h Time/Duration.cpp
         
- "Graphics/FontCache.h" "Graphics/Font.h" "Graphics/Font.cpp" "Lib/Enum.h" "Lib/Private/Fmt.h")
+ "Graphics/FontCache.h" "Graphics/Font.h" "Graphics/Font.cpp" "Lib/Enum.h" "Lib/Private/Fmt.h" "Exceptions/UncaughtCaseException.h")
 
 # -----  Includes  ----------------------------------------------------
 set(Engine_Includes

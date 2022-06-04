@@ -7,6 +7,7 @@
 
 #include <SDG/Debug/Assert.h>
 #include <SDG/Math/Matrix4x4.h>
+#include <SDG/Math/MathShape.h>
 
 #include <SDL_gpu.h>
 #include <algorithm>
@@ -34,7 +35,7 @@ namespace SDG
         const uint8_t data[4]{ UINT8_MAX, UINT8_MAX, UINT8_MAX, UINT8_MAX };
         bool didLoad = pixel.LoadPixels(context, 1, 1, data);
 
-        pixel.FilterMode(TexFilter::Nearest);
+        pixel.FilterMode(Texture::Filter::Nearest);
 
         return didLoad;
     }
@@ -130,19 +131,37 @@ namespace SDG
         batch.emplace_back(CRef(pixel), Rectangle{ 0, 0, 1, 1 }, rect, rotation, anchor, Flip::None, color, depth);
     }
 
-    void
-    SpriteBatch::Begin(Ref<RenderTarget> target, CRef<Matrix4x4> transformMatrix, SortMode sort)
+    void SpriteBatch::DrawLine(Vector2 a, Vector2 b, float thickness, Color color, float depth)
     {
-        sortMode = sort;
-        batch.clear();
+        float distance = Math::PointDistance(a, b);
+        float angle = Math::PointDirection(a, b);
+
+        batch.emplace_back(CRef{ pixel }, Rectangle{ 0, 0, 1, 1 }, FRectangle{ a.X(), a.Y() - thickness * 0.5f, distance, thickness },
+            angle, Vector2{ 0, 0.5f }, Flip::None, color, depth);
+    }
+
+    void SpriteBatch::DrawLine(Vector2 position, float length, float angle, float thickness, Color color, float depth)
+    {
+        batch.emplace_back(CRef{ pixel }, Rectangle{ 0, 0, 1, 1 }, 
+            FRectangle{ position.X(), position.Y() - thickness * 0.5f, length, thickness },
+            angle, Vector2{ 0, 0.5f }, Flip::None, color, depth);
+    }
+
+    void SpriteBatch::DrawLines(std::vector<Vector2> points, float thickness, Color color, float depth)
+    {
+        for (size_t i = 0; i < points.size() - 1; ++i)
+            DrawLine(points[i], points[i + 1], thickness, color, depth);
+    }
+
+    void
+    SpriteBatch::Begin(Ref<RenderTarget> target, CRef<Matrix4x4> transformMatrix, SortMode sortMode)
+    {
+        this->sortMode = sortMode;
         this->target = target;
+        batch.clear();
 
         static Matrix4x4 identityMat = Matrix4x4::Identity();
-
-        if (transformMatrix)
-            matrix = transformMatrix;
-        else
-            matrix = CRef(identityMat);
+        matrix = (transformMatrix) ? transformMatrix : CRef(identityMat);
     }
 
     void

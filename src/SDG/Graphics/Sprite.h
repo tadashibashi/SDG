@@ -12,12 +12,16 @@
 
 namespace SDG
 {
+    /// A series of Frames that forms an animation
     class Sprite
     {
     public:
+        /// Creates an empty Sprite
         Sprite();
         Sprite(const String &name, const Array<Frame> &frames, 
             const Array<unsigned> &reel);
+
+        /// Only const indexers are available, fixed
         const Frame &operator [] (unsigned index) const;
         const Frame &At(unsigned index) const;
 

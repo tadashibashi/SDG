@@ -53,4 +53,6 @@ SDG::XmlLoadable::Load(const SDG::Xml::XmlDocument &doc)
         SDG_Core_Err("Unknown error while loading {}", name);
         return false;
     }
+
+    return false;
 }

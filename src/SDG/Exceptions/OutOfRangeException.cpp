@@ -1,12 +1,6 @@
 #include "OutOfRangeException.h"
-#include <ostream>
 
-SDG::OutOfRangeException::OutOfRangeException(int64_t value, const String &info)
-        : value(value), info(info)
-{}
-
-void SDG::OutOfRangeException::What(std::ostream &stream) const
-{
-    stream << "Out-of-range error with value " <<
-           value << ": " << info;
-}
+SDG::OutOfRangeException::OutOfRangeException(int64_t value, const String &info) :
+    RuntimeException(String::Format("OutOfRangeException: index [{}] was out of range", value)
+        + (info.Empty() ? "" : ":" + info))
+{ }

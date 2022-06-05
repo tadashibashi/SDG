@@ -1,5 +1,6 @@
 #include "StringView.h"
 #include <SDG/Debug/Assert.h>
+#include <SDG/Debug/LogImpl.h>
 #include <SDG/Exceptions/OutOfRangeException.h>
 #include <SDG/Math/Math.h>
 
@@ -158,11 +159,20 @@ namespace SDG
     }
 
     const char *
-    StringView::Cstr() const { return str_; }
+    StringView::Data() const { return str_; }
 
     bool StringView::operator == (const StringView &s) const
     {
         return StrCmp(s.str_, s.size_);
+    }
+
+
+    std::ostream &operator << (std::ostream &os, const StringView &view)
+    {
+        for (char c : view)
+            os << c;
+
+        return os;
     }
 
     bool StringView::operator != (const StringView &s) const
@@ -250,37 +260,37 @@ namespace SDG
 
     String operator + (const StringView &a, const StringView &b)
     {
-        return String(a.Cstr()).Append(b.Cstr(), b.Length());
+        return String(a.Data()).Append(b.Data(), b.Length());
     }
 
     String operator + (const StringView &a, const String &b)
     {
-        return String(a.Cstr()).Append(b.Cstr(), b.Length());
+        return String(a.Data()).Append(b.Cstr(), b.Length());
     }
 
     String operator + (const StringView &a, const std::string &b)
     {
-        return String(a.Cstr()).Append(b.c_str(), b.length());
+        return String(a.Data()).Append(b.c_str(), b.length());
     }
 
     String operator + (const StringView &a, const char *b)
     {
-        return String(a.Cstr()).Append(b);
+        return String(a.Data()).Append(b);
     }
 
     String operator + (const char *a, const StringView &b)
     {
-        return String(a).Append(b.Cstr(), b.Length());
+        return String(a).Append(b.Data(), b.Length());
     }
 
     String operator + (const String &a, const StringView &b)
     {
-        return String(a).Append(b.Cstr(), b.Length());
+        return String(a).Append(b.Data(), b.Length());
     }
 
     std::string operator + (const std::string &a, const StringView &b)
     {
-        return std::string(a).append(b.Cstr(), b.Length());
+        return std::string(a).append(b.Data(), b.Length());
     }
 
     bool operator == (const String &a, const StringView &b)

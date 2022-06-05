@@ -7,10 +7,7 @@ namespace SDG
     {
     public:
         /// @param message arbitrary arg to store in the Exception for the message.
-        RuntimeException(const String &message) : Exception(message)
+        RuntimeException(const String &message = String()) : Exception(message)
         { }
-
-        /// Please override What() to specify the message
-        RuntimeException() { }
     };
 }

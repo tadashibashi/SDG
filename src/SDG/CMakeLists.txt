@@ -34,22 +34,22 @@ set(Engine_Sources
         Exceptions.hpp
         Exceptions/AssertionException.h Exceptions/AssertionException.cpp
         Exceptions/XMLReaderException.h Exceptions/XMLReaderException.cpp
-        Exceptions/NullReferenceException.h Exceptions/NullReferenceException.cpp
+        Exceptions/NullReferenceException.h 
         Exceptions/InvalidArgumentException.cpp Exceptions/InvalidArgumentException.h   
         Exceptions/DivisionByZeroException.h
         Exceptions/Exception.h Exceptions/Exception.cpp 
-        Exceptions/ExceptionExample.h Exceptions/ExceptionExample.cpp
+         
         Exceptions/OutOfRangeException.h Exceptions/OutOfRangeException.cpp 
         Exceptions/RuntimeException.h
 
         # FileSys
         FileSys.hpp
-        "FileSys/Structs/AppConfig.h"
+        "Game/AppConfig.h"
         FileSys/FileSys.cpp FileSys/FileSys.h
         FileSys/Private/IO.cpp FileSys/Private/IO.h
         FileSys/File.cpp Filesys/File.h
         FileSys/Path.cpp FileSys/Path.h
-        FileSys/XMLReader.cpp FileSys/XMLReader.h
+        "FileSys/XmlLoadable.cpp" "FileSys/XmlLoadable.h"
 
         Game/Entity.cpp Game/Entity.h
         Game/ComponentList.cpp Game/ComponentList.h Game/Component.h
@@ -126,7 +126,7 @@ set(Engine_Sources
         Time/Timer.h Time/Timer.cpp 
         Time/Duration.h Time/Duration.cpp
         
-  "Graphics/Font.h" "Graphics/Font.cpp" "Lib/Enum.h" "Lib/Private/Fmt.h" "Exceptions/UncaughtCaseException.h")
+  "Graphics/Font.h" "Graphics/Font.cpp" "Lib/Enum.h" "Lib/Private/Fmt.h" "Exceptions/UncaughtCaseException.h" "Lib/Ref.inl" "Lib/Array.inl" "Lib/Delegate.inl" "FileSys/XmlElement.h" "FileSys/XmlElement.cpp" "FileSys/XmlAttribute.h" "FileSys/XmlAttribute.cpp" "FileSys/XmlDocument.h" "FileSys/XmlDocument.cpp" "FileSys/Private/XmlDocument_Impl.h"  "Exceptions/XmlValidationException.h" "FileSys/XmlValidation.h" "Exceptions/XmlValidationException.cpp" "Game/AppConfig.cpp" "Exceptions/XmlFormattingException.h")
 
 # -----  Includes  ----------------------------------------------------
 set(Engine_Includes

@@ -147,9 +147,9 @@ namespace SDG
     }
 
     Camera2D &
-    Camera2D::PivotPoint(Vector2 anchor) noexcept
+    Camera2D::PivotPoint(Vector2 anchor, Vector2 normalized) noexcept
     {
-        impl->anchor = std::move(anchor);
+        impl->anchor = anchor * normalized;
         impl->wasChanged = true;
         return *this;
     }

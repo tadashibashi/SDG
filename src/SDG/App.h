@@ -7,7 +7,7 @@
  */
 #pragma once
 #include <SDG/FileSys/Path.h>
-#include <SDG/FileSys/Structs/AppConfig.h>
+#include <SDG/Game/AppConfig.h>
 #include <SDG/Lib/Ref.h>
 #include <SDG/Lib/String.h>
 #include <SDG/Time/AppTime.h>
@@ -38,6 +38,8 @@ namespace SDG
 
         /// Shuts down the game before the next frame.
         void Exit();
+
+        const String &Name() const;
 
         CRef<AppTime> Time();
     protected:

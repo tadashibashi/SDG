@@ -1,8 +1,10 @@
 /// String implementation file
 #include "String.h"
-
+#include "StringView.h"
 #include <SDG/Debug/Assert.h>
 #include <SDG/Debug/Log.h>
+#include <SDG/Debug/LogImpl.h>
+
 #include <SDG/Exceptions/OutOfRangeException.h>
 #include <SDG/Math/Math.h>
 
@@ -328,9 +330,15 @@ namespace SDG
     }
 
     String::String(const char *str, size_t count) :
-            str_(), end_(), full_()
+        str_(), end_(), full_()
     {
         Allocate(str, count);
+    }
+
+    String::String(const StringView &view) :
+        str_(), end_(), full_()
+    {
+        Allocate(view.Data(), view.Length());
     }
 
     String::~String()
@@ -405,6 +413,11 @@ namespace SDG
     String::Append(char c)
     {
         return Append(&c, 1);
+    }
+
+    std::ostream &operator << (std::ostream &os, const String &str)
+    {
+        return os << str.Cstr();
     }
 
     bool
@@ -535,7 +548,7 @@ StrRealloc(char *str, size_t size)
 {
     char *m = (char *)realloc(str, size);
     if (!m)
-        throw SDG::RuntimeException("String reallocation failed: out of memory.");
+        throw SDG::RuntimeException("String reallocation failed");
 
     return m;
 }

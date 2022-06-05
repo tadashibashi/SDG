@@ -1,8 +1,8 @@
 #pragma once
-#include <SDG/Debug/LogImpl.h>
 #include <SDG/Lib/String.h>
 
 #include <cstddef>
+#include <iosfwd>
 
 namespace SDG
 {
@@ -69,7 +69,7 @@ namespace SDG
 
         /// Gets the internal c-string
         [[nodiscard]]
-        const char *Cstr() const;
+        const char *Data() const;
 
         /// Swaps the internals of one StringView with another
         StringView &Swap(StringView &other);
@@ -98,21 +98,14 @@ namespace SDG
         [[nodiscard]]
         char operator [] (unsigned i) const;
 
-        template<typename Ostream>
-        friend Ostream &operator << (Ostream &os, const StringView &view)
-        {
-            for (char c : view)
-                os << c;
-
-            return os;
-        }
-
     private:
         const char *str_;
         size_t size_;
 
         bool StrCmp(const char *s, size_t length) const;
     };
+
+    std::ostream &operator << (std::ostream &os, const StringView &view);
 
     [[nodiscard]]
     String operator + (const StringView &a, const StringView &b);

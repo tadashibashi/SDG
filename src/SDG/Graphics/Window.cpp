@@ -53,7 +53,7 @@ namespace SDG
             target = GPU_InitRenderer(RendererType,
                      width,
                      height,
-                     flags);
+                     0);
         }
         else
         {
@@ -82,6 +82,14 @@ namespace SDG
         impl->target.EmplaceTarget(Ref{target});
         if (title)
             Title(title);
+
+        // TODO: add the rest of the flags here or see why SDL_gpu sets a weird fullscreen when setting flags directly
+        if (flags & SDL_WINDOW_FULLSCREEN || flags & SDL_WINDOW_FULLSCREEN_DESKTOP)
+            Fullscreen(true);
+        if (flags & SDL_WINDOW_BORDERLESS)
+            Bordered(false);
+        if (flags & SDL_WINDOW_HIDDEN)
+            Hidden(true);
 
         ++windowCount;
         return true;

@@ -7,7 +7,7 @@ namespace SDG
     {
     public:
         /// @param arg arbitrary arg to store in the Exception for the message.
-        UncaughtCaseException(const String &message) : Exception(message)
+        UncaughtCaseException(const String &message = String()) : Exception(message)
         { }
     };
 }

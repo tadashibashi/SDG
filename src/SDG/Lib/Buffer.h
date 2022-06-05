@@ -43,10 +43,7 @@ namespace SDG
         /// for padding/alignment of data in classes and structs.
         /// Buffer read/write head moves forward by sizeof(T).
         template<typename T>
-        size_t Read(T &a) const
-        {
-            return Read(&a, sizeof(T));
-        }
+        size_t Read(T &a) const { return Read(&a, sizeof(T)); }
         
         /// Reads memory into a buffer. Endianness of the data read is
         /// affected by the Buffer's target data endianness.
@@ -66,10 +63,7 @@ namespace SDG
 
         /// Same as Read, but does not move the Buffer's read/write head
         template<typename T>
-        size_t Peek(T &a) const
-        {
-            return Peek(&a, sizeof(T));
-        }
+        size_t Peek(T &a) const { return Peek(&a, sizeof(T)); }
 
         /// Same as Read, but does not move the Buffer's read/write head
         size_t Peek(void *buffer, size_t size) const;
@@ -85,10 +79,7 @@ namespace SDG
         /// for padding/alignment of data in classes and structs.
         /// Buffer read/write head moves forward by sizeof(T).
         template<typename T>
-        size_t Write(const T &a)
-        {
-            return Write(&a, sizeof(a));
-        }
+        size_t Write(const T &a) { return Write(&a, sizeof(a)); }
 
         /// Writes an SDG::String into the Buffer.
         /// Will always write string in big-endian.
@@ -134,6 +125,7 @@ namespace SDG
         /// Resets the Buffer's internal data.
         void Clear() noexcept { end_ = buf_; head_ = buf_; }
 
+        /// Swaps the buffer's internals with another
         void Swap(Buffer &buf);
 
         /// Gets the internal byte array. Please be aware that the pointer
@@ -166,7 +158,5 @@ namespace SDG
     };
 }
 
-inline void swap(SDG::Buffer &a, SDG::Buffer &b)
-{
-    a.Swap(b);
-}
+// Conformance with the standard library swap
+inline void swap(SDG::Buffer &a, SDG::Buffer &b) { a.Swap(b); }

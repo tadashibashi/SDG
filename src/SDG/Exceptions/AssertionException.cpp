@@ -3,9 +3,6 @@
 
 #include <SDG/FileSys/Path.h>
 
-void
-SDG::AssertionException::What(std::ostream &stream) const
-{
-    stream << Path(file).Filename() << ":" << std::to_string(line) << ": "
-        << func << ": \"" << statement << "\" assertion failed!";
-}
+SDG::AssertionException::AssertionException(const SDG::String &statement, const char *file, int line, const char *func)
+    : Exception(String::Format("{}:{}:{} \"{}\" assertion failed!", SDG::Path(file).Filename(), line, func, statement))
+{ }

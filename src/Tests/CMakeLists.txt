@@ -23,7 +23,7 @@ add_executable(SDG_Tests
         src/RefTests.cpp
         src/ServiceProviderTests.cpp
         src/WindowTests.cpp src/SDG_Tests.cpp
-        src/ExceptionTests.cpp
+        
         src/SDG_Tests.h
         src/KeyboardTests.cpp
         src/MathTests.cpp

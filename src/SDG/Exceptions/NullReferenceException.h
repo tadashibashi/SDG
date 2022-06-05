@@ -3,18 +3,16 @@
 //
 #pragma once
 #include "Exception.h"
-#include <string>
 
 namespace SDG
 {
     class NullReferenceException : public Exception
     {
     public:
-        NullReferenceException() : message() { }
-        explicit NullReferenceException(const String &message)
-            : message(message) { }
-    private:
-        void What(std::ostream &stream) const override;
-        String message;
+        NullReferenceException() :
+            Exception("NullReferenceException") { }
+
+        NullReferenceException(const String &message) : 
+            Exception("NullReferenceException: " + message) { }
     };
 }

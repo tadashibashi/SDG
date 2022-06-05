@@ -1,10 +1,7 @@
 #include "XMLReaderException.h"
 #include <tinyxml2.h>
-#include <ostream>
 
-void
-SDG::XMLReaderException::What(std::ostream &stream) const
-{
-    stream << "XMLReaderException occured while " << doing <<
-    ": " << tinyxml2::XMLDocument::ErrorIDToName((tinyxml2::XMLError)error);
-}
+SDG::XMLReaderException::XMLReaderException(const String &doing, int error) :
+    Exception(String::Format("XMLReaderException: task: {}: {}", doing, 
+        tinyxml2::XMLDocument::ErrorIDToName((tinyxml2::XMLError)error)))
+{ }

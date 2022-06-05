@@ -8,11 +8,5 @@ namespace SDG
     {
     public:
         OutOfRangeException(int64_t value, const String &info);
-
-    private:
-        void What(std::ostream &stream) const override;
-
-        int64_t value;
-        String info;
     };
 }

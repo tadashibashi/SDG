@@ -7,6 +7,6 @@ namespace SDG
     {
     public:
         DivisionByZeroException(const String &str = String()) : RuntimeException(
-                "Division by zero error" + (str.Empty() ? "" : ": " + str)) { }
+            String("Division by zero error") + (str.Empty() ? "" : ": " + str)) { }
     };
 }

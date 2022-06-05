@@ -1,8 +1,5 @@
 #pragma once
 
-#include <SDG/Exceptions/NullReferenceException.h>
-#include <SDG/Lib/Memory.h>
-
 namespace SDG
 {
     template<typename T>
@@ -13,96 +10,37 @@ namespace SDG
         Shared() : ptr(), count() { }
 
         // Must be called with a dynamically allocated object
-        explicit Shared(T *newPtr) : ptr(newPtr), count(new size_t(1))
-        {}
+        explicit Shared(T *newPtr) : ptr(newPtr), count(new size_t(1)) { }
+        Shared(const Shared &other);
+        ~Shared() { Destroy(); }
+        Shared &operator=(const Shared &other);
+    public:
+        /// Gets the raw pointer
+        [[nodiscard]] T *Get() const { return ptr; }
 
-        Shared(const Shared &other) : 
-            ptr(other.ptr), count(other.count)
-        {
-            if (count) ++(*count);
-        }
-
-        ~Shared()
-        {
-            Destroy();
-        }
-
-        Shared &operator=(const Shared &other)
-        {
-            if (ptr != other.ptr) // only perform operation if differing ptrs
-            {
-                Destroy();                      // destroy current
-                ptr = other.ptr;
-                count = other.count;
-
-                if (count) ++(*count);
-            }
-
-            return *this;
-        }
-
-        [[nodiscard]] const T *Get() const { return ptr; }
+        /// Gets the number of live references of Shared ptr
         [[nodiscard]] size_t Count() const { return (count) ? *count : 0; }
-        [[nodiscard]] void Reset() { Destroy(); ptr = nullptr; count = nullptr; }
-        [[nodiscard]] T *operator->();
-        [[nodiscard]] T &operator *();
 
+        /// Resets this pointer, setting it to null. If it was the last live
+        /// reference, delete will be called on it.
+        [[nodiscard]] void Reset() { Destroy(); ptr = nullptr; count = nullptr; }
+
+        /// Member access. Throws a NullReferenceException if null.
+        [[nodiscard]] T *operator->() const;
+        /// Gets raw reference. Throws a NullReferenceException if null.
+        [[nodiscard]] T &operator *() const;
+
+        /// Compare two shared ptr
         [[nodiscard]] bool operator ==(const Shared &other) const;
         [[nodiscard]] bool operator !=(const Shared &other) const;
 
-        [[nodiscard]] operator bool() const;
+        /// Resolves to bool, checking if reference is null
+        [[nodiscard]] explicit operator bool() const;
     private:
         void Destroy();
         T *ptr;
         size_t *count;
     };
-
-
-    template<typename T>
-    inline T *Shared<T>::operator->()
-    {
-        if (!ptr) // prevent undefined behavior by throwing
-            throw NullReferenceException();
-        return ptr;
-    }
-
-    template<typename T>
-    inline T &Shared<T>::operator*()
-    {
-        if (!ptr) // prevent undefined behavior by throwing
-            throw NullReferenceException();
-        return *ptr;
-    }
-
-    template<typename T>
-    inline bool Shared<T>::operator==(const Shared &other) const
-    {
-        return ptr == other.ptr;
-    }
-
-    template<typename T>
-    inline bool Shared<T>::operator!=(const Shared &other) const
-    {
-        return ptr != other.ptr;
-    }
-
-    template<typename T>
-    inline void Shared<T>::Destroy()
-    {
-        if (count && --(*count) <= 0)
-        {
-            delete ptr;
-            delete count;
-
-            // Don't need since usage is during destruction-like scenarios
-            // ptr = nullptr; 
-            // count = nullptr;
-        }
-    }
-
-    template<typename T>
-    inline Shared<T>::operator bool() const
-    {
-        return static_cast<bool>(ptr);
-    }
 }
+
+#include "Shared.inl"

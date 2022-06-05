@@ -5,7 +5,7 @@
 #include <SDG/Debug/Log.h>
 #include <SDG/Input/Input.h>
 #include <SDG/FileSys/FileSys.h>
-#include <SDG/FileSys/XMLReader.h>
+#include <SDG/Game/AppConfig.h>
 
 #include <SDG/Graphics/WindowMgr.h>
 #include <SDG/Lib/Platform.h>
@@ -55,14 +55,8 @@ namespace SDG
 
         // Get game settings from config file
         AppConfig config;
-        try {
-            XMLReader::ParseGameConfig(BasePath(configPath).Str(), &config);
-            impl->Initialize(config);
-        }
-        catch(const std::exception &e)
-        {
-            SDG_Core_Err("Failed to parse game config: {}", e.what());
-        }
+        config.Load(BasePath(configPath));
+        impl->Initialize(config);
     }
 
     App::App(const AppConfig &config) : impl(new Impl)
@@ -85,10 +79,9 @@ namespace SDG
         AppConfig &config = impl->config;
         Ref<Window> window;
         if (impl->windows.CreateWindow(config.width, config.height, 
-            config.title.Cstr(), 0, &window) >= 0)
+            config.title.Cstr(), impl->config.winFlags, &window) >= 0)
         {
             impl->mainWindow = window;
-            impl->mainWindow->Fullscreen(config.fullscreen);
         }
 
         // TODO: game config can specify input types through an array?
@@ -208,6 +201,12 @@ namespace SDG
     App::Time()
     {
         return CRef(impl->time);
+    }
+
+    const String &
+    SDG::App::Name() const
+    {
+        return impl->config.appName;
     }
 }
 

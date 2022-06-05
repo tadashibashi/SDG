@@ -32,7 +32,7 @@ namespace SDG
 
         [[nodiscard]] Ref<T> MakeRef() const { return Ref{ptr}; }
         [[nodiscard]] CRef<T> MakeCRef() const { return CRef{ptr}; }
-        [[nodiscard]] operator bool() { return static_cast<bool>(ptr); }
+        [[nodiscard]] explicit operator bool() const { return static_cast<bool>(ptr); }
 
         [[nodiscard]] bool operator==(const Ref<T> &other) { return ptr == other.Get(); }
         [[nodiscard]] bool operator !=(const Ref<T> &other) { return ptr != other.Get(); }

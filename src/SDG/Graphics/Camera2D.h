@@ -40,7 +40,11 @@ namespace SDG
         Vector2 ScreenToWorld(Vector2 screenPos) const;
 
         /// Sets the pivot point about which the camera rotates
-        Camera2D &PivotPoint(Vector2 point) noexcept;
+        /// @param point - position
+        /// @param normalizer - multiplied to the position, default is (1, 1). 
+        /// This allows use where param "point" can represent e.g. screen size, and scalar
+        /// normalizes it.
+        Camera2D &PivotPoint(Vector2 point, Vector2 normalizer = Vector2::One()) noexcept;
         /// Sets the pivot point about which the camera rotates
         Camera2D &PivotPoint(float pointX, float pointY) noexcept;
         /// Gets the pivot point about which the camera rotates

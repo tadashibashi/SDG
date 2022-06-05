@@ -1,14 +1,14 @@
 #include "InvalidArgumentException.h"
-#include <ostream>
 
 namespace SDG
 {
-    void
-    InvalidArgumentException::What(std::ostream &stream) const
-    {
-        stream << "Invalid argument passed to " << func <<
-        ". Arg name: " << arg;
-        if (!info.Empty())
-            stream << ": " << info;
-    }
+    InvalidArgumentException::InvalidArgumentException(const String &func, const String &arg) : 
+        Exception(String::Format("InvalidArgumentException: in function: {}, arg: {}", func, arg))
+    { }
+
+    InvalidArgumentException::InvalidArgumentException(const String &func, const String &arg, 
+        const String &info) :
+        Exception(String::Format("InvalidArgumentException: in function: {}, arg: {}:", 
+            func, arg, info))
+    { }
 }

@@ -6,13 +6,9 @@
  * 
  */
 #pragma once
-#include <SDG/Debug/LogImpl.h>
-#include <SDG/Lib/Private/Fmt.h>
-
+#include <iosfwd>
 #include <functional>
-#include <iterator>
 #include <string>
-#include <utility>
 
 using std::swap;
 
@@ -22,11 +18,12 @@ namespace SDG
     {
     public:
         String();
-        String(size_t initCap);
+        explicit String(size_t initCap);
         String(const String &str);
         String(const std::string &str);
         String(const char *str);
         String(const char *str, size_t count);
+        String(const class StringView &view);
         ~String();
 
         typedef char *Iterator;
@@ -36,6 +33,10 @@ namespace SDG
         String &operator = (const String &str);
         String &operator = (const std::string &str);
         String &operator = (const char *cstr);
+
+        template <typename T>
+        static String Parse(const T &t);
+        
 
         /// Finds first occurance of a char.
         /// @param c - the char to search for
@@ -121,13 +122,7 @@ namespace SDG
         String &Clear();
 
         template <typename...Args>
-        static String Format(const char *format, Args &&...args)
-        {
-            auto out = fmt::memory_buffer();
-            fmt::format_to(std::back_inserter(out), format, 
-                std::forward<Args>(args)...);
-            return { out.data(), out.size()};
-        }
+        static String Format(const char *format, Args &&...args);
 
         /// Default position value
         static const size_t NullPos;
@@ -160,13 +155,6 @@ namespace SDG
         ConstIterator cbegin() { return str_; }
         ConstIterator cend()   { return end_; }
 
-        template <typename Ostream>
-        friend Ostream &operator << (Ostream &os, const String &str)
-        {
-            os << str.Cstr();
-            return os;
-        }
-
     private:
         /// Safely expands the String's internal capacity.
         void Expand(size_t size);
@@ -182,6 +170,7 @@ namespace SDG
         char *str_, *end_, *full_;
     };
 
+    std::ostream &operator << (std::ostream &os, const String &str);
     String operator + (const String &str1, const String &str2);
     String operator + (const String &str1, const std::string &str2);
     String operator + (const String &str1, const char *str2);
@@ -195,7 +184,6 @@ namespace SDG
     bool operator != (const std::string &str1, const String &str2);
 }
 
-inline void swap(SDG::String &a, SDG::String &b)
-{
-    a.Swap(b);
-}
+inline void swap(SDG::String &a, SDG::String &b) { a.Swap(b); }
+
+#include "String.inl"

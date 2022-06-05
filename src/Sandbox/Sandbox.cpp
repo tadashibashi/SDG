@@ -63,7 +63,7 @@ private:
         pixels.LoadPixels(MainWindow(), 2, 2, pixs);
         font.Load(MainWindow(), BasePath("assets/fonts/CourierPrimeCode.sdgc"), 32, FontStyle::Bold | FontStyle::Italic);
         camera.PivotPoint({320, 240});
-        kirby.Load(MainWindow(), BasePath("assets/textures/kirby.sdgc"));
+        kirby.Load(MainWindow(), BasePath("assets/textures/DawSession.sdgc"));
         //kirby2.Load(window2, BasePath("assets/textures/DawSession.sdgc"));
 
         shader.Compile(BasePath("assets/shaders/v1.sdgc"), BasePath("assets/shaders/f1.sdgc"));
@@ -197,7 +197,7 @@ private:
                                     {.5f,.5f}, angle*2, angle, Color{(uint8_t)(angle/360.f * 255.f), 255});
             spriteBatch.DrawRectangle(FRectangle{ 0, 0, 100, 100 }, Vector2{ .5f, .5f }, Color(Math::ModF(angle, 255.f), 0, 128, 255), angle, 0);
             spriteBatch.DrawLines({ {0, 0}, {2.f, 4.f}, {100.f, 100.f}, {350.f, 10.f}, {0, 0} }, 10, Color::HalloweenOrange(), 0);
-            spriteBatch.DrawLine(Vector2{ 300.f, 300.f }, 100, angle, 3, Color( Math::Sin(Math::RadsPerDeg*angle) * 255, 255, 128, 255 ), 0);
+            spriteBatch.DrawLine(Vector2{ 300.f, 300.f }, 100, angle, 3, Color( ((Math::Sin(Math::RadsPerDeg*angle) + 1.0) * .5) * 255, 255, 128, 255 ), 0);
 
             spriteBatch.End();
             font.Draw(window->Target(), { 10, 20 }, { 1.f, 1.f }, FontAlign::Center, Color::MonarchOrange(128),

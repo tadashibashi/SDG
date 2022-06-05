@@ -22,7 +22,7 @@ TEST_CASE("StringView tests", "[StringView]")
             String str = "ABCDEFG";
             StringView view(str);
             REQUIRE(str.Length() == view.Length());
-            REQUIRE(strcmp(view.Cstr(), "ABCDEFG") == 0);
+            REQUIRE(strcmp(view.Data(), "ABCDEFG") == 0);
         }
 
         SECTION("Construct from std::string")
@@ -30,7 +30,7 @@ TEST_CASE("StringView tests", "[StringView]")
             std::string str = "ABCDEFG";
             StringView view(str);
             REQUIRE(view.Length() == strlen(str.c_str()));
-            REQUIRE(strcmp(view.Cstr(), "ABCDEFG") == 0);
+            REQUIRE(strcmp(view.Data(), "ABCDEFG") == 0);
         }
 
         SECTION("Construct from c-string")
@@ -38,7 +38,7 @@ TEST_CASE("StringView tests", "[StringView]")
             const char *str = "ABCDEFG";
             StringView view(str);
             REQUIRE(view.Length() == strlen(str));
-            REQUIRE(strcmp(view.Cstr(), "ABCDEFG") == 0);
+            REQUIRE(strcmp(view.Data(), "ABCDEFG") == 0);
         }
 
         SECTION("Construct from c-string with size")
@@ -46,7 +46,7 @@ TEST_CASE("StringView tests", "[StringView]")
             const char *str = "ABCDEFG";
             StringView view(str, 7);
             REQUIRE(view.Length() == strlen(str));
-            REQUIRE(strcmp(view.Cstr(), "ABCDEFG") == 0);
+            REQUIRE(strcmp(view.Data(), "ABCDEFG") == 0);
         }
 
         SECTION("Construct from null c-string")
@@ -65,7 +65,7 @@ TEST_CASE("StringView tests", "[StringView]")
             StringView view2;
             view2 = view1;
             REQUIRE(view1.Length() == view2.Length());
-            REQUIRE(strcmp(view1.Cstr(), view2.Cstr()) == 0);
+            REQUIRE(strcmp(view1.Data(), view2.Data()) == 0);
         }
 
         SECTION("Assign from String")
@@ -74,7 +74,7 @@ TEST_CASE("StringView tests", "[StringView]")
             StringView view; 
             view = str;
             REQUIRE(str.Length() == view.Length());
-            REQUIRE(strcmp(view.Cstr(), "ABCDEFG") == 0);
+            REQUIRE(strcmp(view.Data(), "ABCDEFG") == 0);
         }
 
         SECTION("Assign from std::string")
@@ -83,7 +83,7 @@ TEST_CASE("StringView tests", "[StringView]")
             StringView view;
             view = str;
             REQUIRE(view.Length() == strlen(str.c_str()));
-            REQUIRE(strcmp(view.Cstr(), "ABCDEFG") == 0);
+            REQUIRE(strcmp(view.Data(), "ABCDEFG") == 0);
         }
 
         SECTION("Assign from c-string")
@@ -92,7 +92,7 @@ TEST_CASE("StringView tests", "[StringView]")
             StringView view;
             view = str;
             REQUIRE(view.Length() == strlen(str));
-            REQUIRE(strcmp(view.Cstr(), "ABCDEFG") == 0);
+            REQUIRE(strcmp(view.Data(), "ABCDEFG") == 0);
         }
 
         SECTION("Assign from null c-string")
@@ -101,7 +101,7 @@ TEST_CASE("StringView tests", "[StringView]")
             StringView view;
             view = str;
             REQUIRE(view.Empty());
-            REQUIRE(view.Cstr() == nullptr);
+            REQUIRE(view.Data() == nullptr);
         }
     }
 
@@ -247,13 +247,13 @@ TEST_CASE("StringView tests", "[StringView]")
 
         // swap
         view1.Swap(view2);
-        REQUIRE(strcmp(str1.Cstr(), view2.Cstr()) == 0);
-        REQUIRE(strcmp(str2.Cstr(), view1.Cstr()) == 0);
+        REQUIRE(strcmp(str1.Cstr(), view2.Data()) == 0);
+        REQUIRE(strcmp(str2.Cstr(), view1.Data()) == 0);
 
         // swap back
         view1.Swap(view2);
-        REQUIRE(strcmp(str1.Cstr(), view1.Cstr()) == 0);
-        REQUIRE(strcmp(str2.Cstr(), view2.Cstr()) == 0);
+        REQUIRE(strcmp(str1.Cstr(), view1.Data()) == 0);
+        REQUIRE(strcmp(str2.Cstr(), view2.Data()) == 0);
     }
 
     SECTION("FindFirstOf")

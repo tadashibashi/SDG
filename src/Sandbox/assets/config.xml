@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <config>
     <app name="SDG Engine Test" org="SDG"/>
-    <window width="640" height="480" title="SDG Engine Test" fullscreen="false"/>
+    <window width="640" height="480" title="SDG Engine Test" borderless="true"/>
     <content root="assets"/>
     <scenes>
         <scene name="Level 1" map="tilemaps/level1.tmx"/>

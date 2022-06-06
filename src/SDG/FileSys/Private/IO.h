@@ -1,12 +1,9 @@
-//
-//  IO.hpp
-//  OpenGL_Test
-//
-//  Low-level functions to read and write files.
-//
+/* ====================================================================================================================
+ * File: IO.h
+ * Contains low-level functions for file reading and writing, using SDL2 as a backend for cross-platform 
+ * functionality
+ * ================================================================================================================== */
 #pragma once
-#ifndef SDG_IO_hpp
-#define SDG_IO_hpp
 
 #include <SDG/Lib/String.h>
 
@@ -16,7 +13,7 @@
 namespace SDG::IO
 {
     /// Get the last error that occured in one of the IO functions. Not thread safe...
-    SDG::String GetError();
+    String GetError();
 
     /// Reads data from a file into a null-terminated c-string. Same as ReadFile, but with a null terminator.
     /// @param path the filepath
@@ -53,5 +50,3 @@ namespace SDG::IO
     bool WriteEncryptedFile(const char *path, const uint8_t *mem, size_t size);
     bool WriteFile(const char *path, const uint8_t *mem, size_t size);
 }
-
-#endif /* SDG_IO_hpp */

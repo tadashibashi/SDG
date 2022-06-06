@@ -1,7 +1,8 @@
 #pragma once
 #include "Exception.h"
-#include <SDG/FileSys/XmlElement.h>
-#include <SDG/FileSys/XmlAttribute.h>
+#include <SDG/FileSys/Xml/XmlElement.h>
+#include <SDG/FileSys/Xml/XmlAttribute.h>
+#include <SDG/FileSys/Xml/XmlDocument.h>
 #include <cstddef>
 
 namespace SDG
@@ -17,7 +18,8 @@ namespace SDG
 
         enum class NodeRelation
         {
-            Next
+            Next,
+            Parent
         };
     }
     
@@ -25,8 +27,10 @@ namespace SDG
     {
     public:
         XmlValidationException(const Xml::XmlElement &parent, size_t targetIndex, Xml::NodeType targetType);
+        XmlValidationException(const Xml::XmlDocument &parent, size_t targetIndex, Xml::NodeType targetType);
         XmlValidationException(const Xml::XmlElement &element, Xml::NodeRelation targetRelation);
         XmlValidationException(const Xml::XmlAttribute &attr, Xml::NodeRelation targetRelation);
         XmlValidationException(const Xml::XmlElement &parent, const String &targetName, Xml::NodeType targetType);
+        XmlValidationException(const Xml::XmlDocument &parent, const String &targetName, Xml::NodeType targetType);
     };
 }

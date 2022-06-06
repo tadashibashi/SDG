@@ -23,6 +23,8 @@ namespace SDG
     /// SpriteBatch depth sort mode.
     enum class SortMode
     {
+        /// No sorting. Depth results from the order of calls to SpriteBatch rendering
+        None,
         /// Sort by texture ptr
         Texture,
         /// Uses depth parameter to sort. Lower depth values in front; higher in back.
@@ -40,7 +42,7 @@ namespace SDG
 
         bool Initialize(Ref<Window> context);
         void Begin(Ref<class RenderTarget> target, 
-            CRef<class Matrix4x4> transformMatrix = CRef<class Matrix4x4>{}, 
+            CRef<class Matrix4x4> transformMatrix = nullptr, 
             SortMode sortMode = SortMode::FrontToBack);
         void End();
         void DrawTexture(CRef<Texture> texture, Rectangle src, FRectangle dest, float rotation, Vector2 anchor, Flip flip, Color color, float depth);

@@ -18,7 +18,7 @@ namespace SDG
         template <typename T, typename ...Args>
         T &AddComponent(Args&&...args)
         {
-            static_assert(std::is_base_of_v<Component>, 
+            static_assert(std::is_base_of_v<Component, T>, 
                 "Type T must derive from Component class");
 
             T *newComp = new T(std::forward<Args>(args)...);

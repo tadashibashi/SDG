@@ -12,7 +12,11 @@ namespace SDG::Debug
     CoreLogger()
     {
         if (!coreLogger.get())
+        {
             coreLogger = spdlog::stdout_color_mt("SDG Engine");
+            coreLogger->set_pattern("[%n][%l] %v");
+        }
+            
         return coreLogger.get();
     }
 
@@ -20,7 +24,11 @@ namespace SDG::Debug
     ClientLogger()
     {
         if (!clientLogger.get())
+        {
             clientLogger = spdlog::stdout_color_mt("Client");
+            clientLogger->set_pattern("[%n][%l] %v");
+        }
+            
         return clientLogger.get();
     }
 }

@@ -24,8 +24,10 @@ namespace SDG
         return SDG_INPUTTYPE_KEYBOARD | SDG_INPUTTYPE_MOUSE | SDG_INPUTTYPE_GAMEPAD;
     #elif (SDG_TARGET_MOBILE)
         return SDG_INPUTTYPE_KEYBOARD | SDG_INPUTTYPE_TOUCH;
-    #elif (SDG_TARGET_WEB)
+    #elif (SDG_TARGET_WEBGL)
         return SDG_INPUTTYPE_KEYBOARD | SDG_INPUTTYPE_MOUSE | SDG_INPUTTYPE_GAMEPAD;
+    #else
+        return 0;
     #endif
     }
 

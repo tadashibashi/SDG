@@ -1,7 +1,6 @@
 TODO:
-- Add requirements to Doc functions
-- Perhaps unify in an interface? XmlNodeType is a member of the node.
 - Tiled Map loading
+- Static (blit to a texture target once) and dynamic tile maps (blits every time a change occurs)
 - Create a minimal repro case of multi-Window close bug, and upstream to Github. (doesn't affect Windows...)
 - Finish Window initialization flags manual set, or see why SDL_gpu sets a weird fullscreen when setting flags directly
 - Game system features (used in subclasses of App)

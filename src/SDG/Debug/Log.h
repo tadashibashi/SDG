@@ -8,11 +8,7 @@
 
 #if (SDG_DEBUG)
 
-// Use the spdlog static lib only
-#ifdef SPDLOG_HEADER_ONLY
-    #undef SPDLOG_HEADER_ONLY
-#endif
-#include <spdlog/logger.h>
+#include "Private/spdlog.h"
 
 namespace SDG::Debug
 {
@@ -21,6 +17,7 @@ namespace SDG::Debug
     // Available for use by the end user
     spdlog::logger *ClientLogger();
 }
+
 // Engine logging
 #define SDG_Core_Log(...) SDG::Debug::CoreLogger()->info(__VA_ARGS__)
 #define SDG_Core_Warn(...) SDG::Debug::CoreLogger()->warn(__VA_ARGS__)

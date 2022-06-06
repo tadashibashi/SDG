@@ -3,4 +3,4 @@
 #include <SDG/FileSys/File.h>
 #include <SDG/FileSys/FileSys.h>
 #include <SDG/FileSys/Path.h>
-#include <SDG/FileSys/XmlLoadable.h>
+#include <SDG/FileSys/Xml.hpp>

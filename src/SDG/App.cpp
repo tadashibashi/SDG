@@ -5,7 +5,7 @@
 #include <SDG/Debug/Log.h>
 #include <SDG/Input/Input.h>
 #include <SDG/FileSys/FileSys.h>
-#include <SDG/Game/AppConfig.h>
+#include <SDG/Game/Datatypes/AppConfig.h>
 
 #include <SDG/Graphics/WindowMgr.h>
 #include <SDG/Lib/Platform.h>
@@ -26,7 +26,7 @@ namespace SDG
     {
         Impl() 
             : windows(), mainWindow(), isRunning(), time(), 
-            fileSys() {}
+            fileSys(), version(SDG_VERSION_MAJOR, SDG_VERSION_MINOR, SDG_VERSION_PATCH) {}
         void Initialize(const AppConfig &config) 
         { 
             this->config = config;
@@ -34,6 +34,15 @@ namespace SDG
             SDG_Assert(!config.orgName.Empty());
             fileSys.Initialize(config.appName, config.orgName);
             Path::PushFileSys(fileSys);
+
+            SDG_Core_Log("\n"
+            "*===========================================================================*\n"
+            "  SDG Engine v{}\n"
+            "    Platform:   {}: {}\n"
+            "    Debug mode: {}\n"
+            "\n"
+            "*===========================================================================*",
+                version, TargetPlatformName(), SIZEOF_VOIDP == 8 ? "64-bit" : "32-bit", SDG_DEBUG ? "ON" : "OFF");
         }
 
         ~Impl()
@@ -47,6 +56,7 @@ namespace SDG
         AppTime     time;
         FileSys     fileSys;
         AppConfig   config;
+        Version     version;
     };
 
 
@@ -75,17 +85,25 @@ namespace SDG
     int
     App::Initialize_()
     {
-        SDG_Core_Log("App initializing.");
         AppConfig &config = impl->config;
+        SDG_Core_Log("Initializing {}", config.appName);
+        
         Ref<Window> window;
         if (impl->windows.CreateWindow(config.width, config.height, 
             config.title.Cstr(), impl->config.winFlags, &window) >= 0)
         {
             impl->mainWindow = window;
+            SDG_Core_Log("- graphics library and window. ok.");
+        }
+        else
+        {
+            SDG_Core_Err("- graphics library and window. failed!");
+            return -1;
         }
 
         // TODO: game config can specify input types through an array?
         InputDriver::Initialize(SDG_INPUTTYPE_DEFAULT);
+        SDG_Core_Log("- input driver. ok.");
 
         impl->isRunning = true;
         return Initialize(); // Child class initialization;
@@ -151,6 +169,7 @@ namespace SDG
             SDG_Core_Err("App failed to initialize: error code: {}", err);
             return;
         }
+        SDG_Core_Log("Initialization complete! Entering application loop.");
 
     #if (SDG_TARGET_WEBGL)
         emscripten_set_main_loop_arg(EmMainLoop, this, -1, true);
@@ -201,6 +220,11 @@ namespace SDG
     App::Time()
     {
         return CRef(impl->time);
+    }
+
+    const Version &App::EngineVersion() const
+    {
+        return impl->version;
     }
 
     const String &

@@ -1,4 +1,5 @@
 #include "XmlAttribute.h"
+#include <SDG/Exceptions/NullReferenceException.h>
 #include <SDG/Exceptions/XmlFormattingException.h>
 #include <tinyxml2.h>
 

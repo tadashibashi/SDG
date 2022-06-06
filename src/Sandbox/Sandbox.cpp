@@ -6,10 +6,10 @@ class Sandbox : public App
 {
 public:
     Sandbox() : App(
-        //{640, 480, true,
-        //"SDG Engine Test",
-        //"SDG Engine Test", "aaronishibashi"}
-        "assets/config.sdgc"
+        AppConfig { 640, 480, (uint32_t)0,
+        "SDG Engine Test",
+        "SDG Engine Test", "aaronishibashi" }
+        //"assets/config.sdgc"
     )
     {
         Texture::DefaultFilterMode(Texture::Filter::Nearest);

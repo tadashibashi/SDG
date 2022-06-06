@@ -12,7 +12,7 @@ if (EMSCRIPTEN)
     # Exceptions https://emscripten.org/docs/porting/exceptions.html
     # Asyncify runs Emscripten in a thread separate from browser input
 
-    set(CMAKE_CXX_FLAGS "-Os -fexceptions -sUSE_SDL=2 -sUSE_SDL_TTF=2 ${CMAKE_CXX_FLAGS}")
+    set(CMAKE_CXX_FLAGS "-O1 -fexceptions -sUSE_SDL=2 -sUSE_SDL_TTF=2 ${CMAKE_CXX_FLAGS}")
     set(CMAKE_EXE_LINKER_FLAGS  "${EmscriptenLinkerFlags} ${CMAKE_EXE_LINKER_FLAGS}")
     set(CMAKE_EXECUTABLE_SUFFIX .html)
 endif()
@@ -33,7 +33,7 @@ add_executable(SDG_Tests
         src/Vector3Tests.cpp 
         src/RectangleTests.cpp 
         src/ColorTests.cpp 
-        src/FontTests.cpp 
+         
         src/TweenTests.cpp 
         src/PoolTests.cpp 
         src/FixedPoolTests.cpp 
@@ -57,4 +57,7 @@ add_executable(SDG_Tests
 target_include_directories(SDG_Tests PRIVATE ${CMAKE_SOURCE_DIR}/src
         lib/Catch2/src)
 target_link_libraries(SDG_Tests PRIVATE SDG_Engine Catch2)
-target_precompile_headers(SDG_Tests PRIVATE src/Pch.h)
+
+if (NOT EMSCRIPTEN)
+    target_precompile_headers(SDG_Tests PRIVATE src/Pch.h)
+endif()

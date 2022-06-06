@@ -55,11 +55,11 @@ namespace SDG
 
         /// non-const indexer
         template <typename KeyType>
-        DynamicState &operator[] (KeyType key)  { return states[(int)key]; }
+        DynamicState &operator[] (KeyType key)  { return states[(size_t)key]; }
 
         /// const indexer
         template <typename KeyType>
-        [[nodiscard]] const DynamicState &operator[] (KeyType key) const { return states[(int)key]; }
+        [[nodiscard]] const DynamicState &operator[] (KeyType key) const { return states.at((size_t)key); }
     private:
         // storage-related members
         std::map<size_t, DynamicState> states;

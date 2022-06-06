@@ -1,5 +1,7 @@
 #ifndef SDG_NO_ENTRYPOINT
 #include <SDG/App.h>
+#include <SDG/Debug/Log.h>
+#include <SDG/Exceptions/AssertionException.h>
 
 using SDG::App;
 

@@ -4,7 +4,7 @@
 #include <SDG/Lib/Platform.h>
 #include <SDG/Graphics/Camera2D.h>
 #include <SDG/Graphics/Color.h>
-#include <SDG/Graphics/TrueTypeFont.h>
+#include <SDG/Graphics/Font.h>
 #include <SDG/Graphics/Flip.h>
 #include <SDG/Graphics/RenderTarget.h>
 #include <SDG/Graphics/Shader.h>

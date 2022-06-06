@@ -1,6 +1,7 @@
 #include "XmlDocument.h"
 #include "Private/XmlDocument_Impl.h"
 #include <SDG/FileSys/File.h>
+#include <SDG/Exceptions/XmlValidationException.h>
 
 namespace SDG::Xml
 {
@@ -29,12 +30,11 @@ namespace SDG::Xml
             SDG_Core_Err("Failed to open xml document ({}): {}", filepath.Filename(), file.GetError());
             return false;
         }
-            
         
         if (impl->doc.Parse(file.Cstr(), file.Size()) != tinyxml2::XML_SUCCESS)
         {
-            SDG_Core_Err("Xml data parsing error occurred ({}): {}", 
-                filepath.Filename(), impl->doc.ErrorStr());
+            SDG_Core_Err("Xml data parsing error occurred ({}:{}): {}", 
+                filepath.Filename(), impl->doc.ErrorLineNum(), impl->doc.ErrorStr());
             return false;
         }
 
@@ -70,28 +70,43 @@ namespace SDG::Xml
         return impl->doc.NoChildren();
     }
 
-    XmlElement XmlDocument::Root() const
+    XmlElement XmlDocument::Root(Validation check) const
     {
-        return FirstChild();
+        XmlElement e = impl->doc.FirstChildElement();
+        if (!e && check == Validation::Required)
+            throw XmlValidationException(*this, 0, NodeType::Element);
+        return e;
     }
 
-    XmlElement XmlDocument::FirstChild() const
+    XmlElement XmlDocument::FirstChild(Validation check) const
     {
-        return impl->doc.RootElement();
+        XmlElement e = impl->doc.FirstChildElement();
+        if (!e && check == Validation::Required)
+            throw XmlValidationException(*this, 0, NodeType::Element);
+        return e;
     }
 
-    XmlElement XmlDocument::FirstChild(const String &name)
+    XmlElement XmlDocument::FirstChild(const String &name, Validation check) const
     {
-        return impl->doc.FirstChildElement(name.Cstr());
+        XmlElement e = impl->doc.FirstChildElement(name.Cstr());
+
+        if (!e && check == Validation::Required)
+            throw XmlValidationException(*this, name, NodeType::Element);
+        return e;
     }
 
-    XmlElement XmlDocument::ChildAt(size_t index) const
+    XmlElement XmlDocument::ChildAt(size_t index, Validation check) const
     {
         XmlElement e = impl->doc.RootElement();
         for (size_t i = 0; i < index; ++i)
         {
-            if (!e++) throw OutOfRangeException(index,
-                "XmlDocument::ChildAt: child index out of bounds");
+            if (!e++)
+            {
+                if (check == Required)
+                    throw XmlValidationException(*this, index, NodeType::Element);
+                else
+                    return nullptr;
+            }  
         }
 
         return e;
@@ -99,11 +114,7 @@ namespace SDG::Xml
 
     XmlElement XmlDocument::operator[](size_t index) const
     {
-        XmlElement e = impl->doc.RootElement();
-        for (size_t i = 0; i < index; ++i)
-            if (!e++) return nullptr;
-
-        return e;
+        return ChildAt(index, Validation::Required);
     }
 
     const Path &XmlDocument::Filepath() const

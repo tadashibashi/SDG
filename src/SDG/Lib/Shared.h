@@ -10,9 +10,10 @@ namespace SDG
         Shared() : ptr(), count() { }
 
         // Must be called with a dynamically allocated object
-        explicit Shared(T *newPtr) : ptr(newPtr), count(new size_t(1)) { }
+        template <typename... Args>
+        explicit Shared(Args &&...args);
         Shared(const Shared &other);
-        ~Shared() { Destroy(); }
+        ~Shared();
         Shared &operator=(const Shared &other);
     public:
         /// Gets the raw pointer
@@ -23,7 +24,7 @@ namespace SDG
 
         /// Resets this pointer, setting it to null. If it was the last live
         /// reference, delete will be called on it.
-        [[nodiscard]] void Reset() { Destroy(); ptr = nullptr; count = nullptr; }
+        void Reset() { Destroy(); ptr = nullptr; count = nullptr; }
 
         /// Member access. Throws a NullReferenceException if null.
         [[nodiscard]] T *operator->() const;
@@ -37,6 +38,7 @@ namespace SDG
         /// Resolves to bool, checking if reference is null
         [[nodiscard]] explicit operator bool() const;
     private:
+        /// Removes reference count, calling destructor on ptr when it reaches zero
         void Destroy();
         T *ptr;
         size_t *count;

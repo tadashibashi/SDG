@@ -22,6 +22,11 @@
  */
 #pragma once
 
+/// SDG Version
+#define SDG_VERSION_MAJOR 0
+#define SDG_VERSION_MINOR 0
+#define SDG_VERSION_PATCH 1
+
 // HTML5/WebGL
 #if   defined(__EMSCRIPTEN__)
     #include <emscripten.h>
@@ -31,7 +36,7 @@
 #endif
 
 // Apple
-#if defined(__APPLE__)
+#if defined(__APPLE__) && !defined(__EMSCRIPTEN__)
     #include <TargetConditionals.h>
 
     // Mac
@@ -65,7 +70,7 @@
 #endif
 
 // Windows
-#if defined(_WIN32)
+#if defined(_WIN32) && !defined(__EMSCRIPTEN__)
     #if !defined(_WIN64)
     #error Windows 32-bit not supported!
     #endif
@@ -82,7 +87,7 @@
 #endif
 
 // Linux Desktop
-#if defined(__linux__) && !defined(__ANDROID__)
+#if defined(__linux__) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
     #define SDG_TARGET_LINUX 1
 #else
     #define SDG_TARGET_LINUX 0
@@ -119,3 +124,9 @@
     // Also it may just be better to just use memcpy
     #define strcpy_s(dest, dsize, src) strcpy(dest, src)
 #endif
+
+namespace SDG
+{
+    const char *TargetPlatformName();
+}
+

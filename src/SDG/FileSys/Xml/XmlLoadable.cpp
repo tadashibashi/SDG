@@ -1,13 +1,10 @@
-//
-// Created by Aaron Ishibashi on 4/15/22.
-//
 #include "XmlLoadable.h"
-#include "File.h"
 
-#include <SDG/Debug.hpp>
+#include <SDG/Debug/Log.h>
 #include <SDG/Exceptions/XMLReaderException.h>
 #include <SDG/Exceptions/XmlValidationException.h>
 #include <SDG/Exceptions/XmlFormattingException.h>
+#include <SDG/FileSys/File.h>
 
 using namespace SDG::Xml;
 

@@ -12,11 +12,11 @@ namespace SDG::Xml
     {
     public:
         XmlAttribute(const tinyxml2::XMLAttribute *attr = nullptr);
-        StringView Name() const;
-        StringView Value() const;
+        [[nodiscard]] StringView Name() const;
+        [[nodiscard]] StringView Value() const;
 
         /// Gets the next Attribute in the same element
-        XmlAttribute Next() const;
+        [[nodiscard]] XmlAttribute Next() const;
 
         bool Query(bool &b) const;
         bool Query(int &i) const;
@@ -26,19 +26,19 @@ namespace SDG::Xml
         bool Query(float &f) const;
         bool Query(double &d) const;
 
-        bool      BoolValue() const;
-        int       IntValue() const;
-        int64_t   Int64Value() const;
-        unsigned  UintValue() const;
-        uint64_t  Uint64Value() const;
-        float     FloatValue() const;
-        double    DoubleValue() const;
+        [[nodiscard]] bool      BoolValue() const;
+        [[nodiscard]] int       IntValue() const;
+        [[nodiscard]] int64_t   Int64Value() const;
+        [[nodiscard]] unsigned  UintValue() const;
+        [[nodiscard]] uint64_t  Uint64Value() const;
+        [[nodiscard]] float     FloatValue() const;
+        [[nodiscard]] double    DoubleValue() const;
 
         /// Gets the line number this attribute is on, if the associated 
         /// document was loaded from a file. 
         /// Returns -1 if inner attribute is null.
-        int LineNumber() const;
-        explicit operator bool() const;
+        [[nodiscard]] int LineNumber() const;
+        [[nodiscard]] explicit operator bool() const;
         XmlAttribute &operator ++();
         XmlAttribute operator ++(int);
     private:

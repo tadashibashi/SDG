@@ -15,6 +15,9 @@ namespace SDG
         Big
     };
 
+    /// Reverses the byte order of a buffer of bytes
+    void ReverseEndian(uint8_t *ptr, size_t size);
+
     /// Reverses the byte order of the type passed into it
     /// Please only use primitive types, since various compilers have
     /// implementation-specific ways of padding bytes in classes/structs.
@@ -23,9 +26,6 @@ namespace SDG
     {
         ReverseEndian((uint8_t *)&u, sizeof(T));
     }
-
-    /// Reverses the byte order of a buffer of bytes
-    void ReverseEndian(uint8_t *ptr, size_t size);
 
     /// Gets the endianness of the current operating system
     Endian SystemEndian();

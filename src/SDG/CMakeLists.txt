@@ -44,12 +44,12 @@ set(Engine_Sources
 
         # FileSys
         FileSys.hpp
-        "Game/AppConfig.h"
+        "Game/Datatypes/AppConfig.h"
         FileSys/FileSys.cpp FileSys/FileSys.h
         FileSys/Private/IO.cpp FileSys/Private/IO.h
         FileSys/File.cpp Filesys/File.h
         FileSys/Path.cpp FileSys/Path.h
-        "FileSys/XmlLoadable.cpp" "FileSys/XmlLoadable.h"
+        "FileSys/Xml/XmlLoadable.cpp" "FileSys/Xml/XmlLoadable.h"
 
         Game/Entity.cpp Game/Entity.h
         Game/ComponentList.cpp Game/ComponentList.h Game/Component.h
@@ -64,7 +64,7 @@ set(Engine_Sources
         Graphics/Color.h Graphics/Color.cpp
         Graphics/SpriteBatch.cpp Graphics/SpriteBatch.h
         Graphics/Texture.h Graphics/Texture.cpp
-        Graphics/TrueTypeFont.cpp Graphics/TrueTypeFont.h
+         
         Graphics/RenderTarget.cpp Graphics/RenderTarget.h
         Graphics/Flip.h Graphics/Flip.cpp 
         Graphics/Private/TranslateFlip.h Graphics/Private/TranslateFlip.cpp
@@ -126,7 +126,8 @@ set(Engine_Sources
         Time/Timer.h Time/Timer.cpp 
         Time/Duration.h Time/Duration.cpp
         
-  "Graphics/Font.h" "Graphics/Font.cpp" "Lib/Enum.h" "Lib/Private/Fmt.h" "Exceptions/UncaughtCaseException.h" "Lib/Ref.inl" "Lib/Array.inl" "Lib/Delegate.inl" "FileSys/XmlElement.h" "FileSys/XmlElement.cpp" "FileSys/XmlAttribute.h" "FileSys/XmlAttribute.cpp" "FileSys/XmlDocument.h" "FileSys/XmlDocument.cpp" "FileSys/Private/XmlDocument_Impl.h"  "Exceptions/XmlValidationException.h" "FileSys/XmlValidation.h" "Exceptions/XmlValidationException.cpp" "Game/AppConfig.cpp" "Exceptions/XmlFormattingException.h")
+  "Graphics/Font.h" "Graphics/Font.cpp" "Lib/Enum.h" "Lib/Private/Fmt.h" "Exceptions/UncaughtCaseException.h" "Lib/Ref.inl" "Lib/Array.inl" "Lib/Delegate.inl" "FileSys/Xml/XmlElement.h" "FileSys/Xml/XmlElement.cpp" "FileSys/Xml/XmlAttribute.h" "FileSys/Xml/XmlAttribute.cpp" "FileSys/Xml/XmlDocument.h" "FileSys/Xml/XmlDocument.cpp" "FileSys/Xml/Private/XmlDocument_Impl.h"  "Exceptions/XmlValidationException.h" "FileSys/Xml/XmlValidation.h" "Exceptions/XmlValidationException.cpp" "Game/Datatypes/AppConfig.cpp" "Exceptions/XmlFormattingException.h" "Graphics/Private/NFont.h" 
+  "Game/Datatypes/Tiled/Template.h" "Game/Datatypes/Tiled/Object.h" "Game/Datatypes/Tiled/Layer.h" "Game/Datatypes/Tiled/Tileset.h" "Game/Datatypes/Tiled/Image.h" "Game/Datatypes/Tiled/Tile.h" "Game/Datatypes/Tiled/Property.h" "Game/Datatypes/Tiled/Class.h" "Game/Datatypes/Tiled/Class.cpp" "Game/Datatypes/Tiled/Property.cpp" "Game/Datatypes/Tiled/Tiled.h" "Lib/Version.h" "Lib/Version.cpp" "Lib/Platform.cpp" "Debug/Private/spdlog.h")
 
 # -----  Includes  ----------------------------------------------------
 set(Engine_Includes
@@ -163,7 +164,7 @@ else()
     else()
         set(CONFIG_Libraries SDL2 spdlog)
     endif()
-endif()
+endif() 
 
 if     (APPLE)                                              # Mac
     # Universal binary
@@ -177,8 +178,8 @@ elseif (LINUX)                                              # Linux
     set(PLATFORM_Libraries GL)
 
 elseif (EMSCRIPTEN)                                         # HTML5
-    set(CMAKE_CXX_FLAGS "-Os -sUSE_SDL=2 -sUSE_SDL_TTF=2")
-    set(CMAKE_EXE_LINKER_FLAGS "-sUSE_WEBGL2=1 -sWASM=2")
+    set(CMAKE_CXX_FLAGS "-O1 -sUSE_SDL=2 -sUSE_SDL_TTF=2 -fexceptions")
+    set(CMAKE_EXE_LINKER_FLAGS "-sASSERTIONS -sASYNCIFY -sUSE_WEBGL2=1 -sWASM=2 -sMAX_WEBGL_VERSION=2 -LLD_REPORT_UNDEFINED -sNO_DISABLE_EXCEPTION_CATCHING")
 endif()
 
 
@@ -216,7 +217,9 @@ set (Engine_Libraries
 # ----- Commit the Settings ----------------------------------------
 add_library                (SDG_Engine STATIC ${Engine_Sources})
 target_include_directories (SDG_Engine PUBLIC ${Engine_Includes})
-target_precompile_headers  (SDG_Engine PRIVATE 
-    "$<$<COMPILE_LANGUAGE:CXX>:${CMAKE_SOURCE_DIR}/src/SDG/Lib/Private/Pch.h>")
+if (NOT EMSCRIPTEN)
+    target_precompile_headers  (SDG_Engine PRIVATE 
+        "$<$<COMPILE_LANGUAGE:CXX>:${CMAKE_SOURCE_DIR}/src/SDG/Lib/Private/Pch.h>")
+endif()
 target_link_libraries      (SDG_Engine PUBLIC ${Engine_Libraries})
 target_compile_definitions (SDG_Engine PUBLIC ${Engine_CompileDefs} "FC_USE_SDL_GPU")

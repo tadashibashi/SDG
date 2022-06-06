@@ -1,9 +1,9 @@
 #include "Font.h"
+#include "Private/NFont.h"
+
 #include <SDG/FileSys/File.h>
 #include <SDG/Graphics/Window.h>
 #include <SDG/Graphics/RenderTarget.h>
-
-#include <NFont_gpu.h>
 
 #include <cstdarg>
 

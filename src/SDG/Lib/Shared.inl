@@ -3,6 +3,8 @@
 #include <SDG/Exceptions/NullReferenceException.h>
 #include <SDG/Lib/Memory.h>
 
+#include <utility>
+
 namespace SDG
 {
     template<typename T>
@@ -10,6 +12,16 @@ namespace SDG
         ptr(other.ptr), count(other.count)
     {
         if (count) ++(*count);
+    }
+
+    template <typename T>
+    template <typename... Args>
+    inline Shared<T>::Shared(Args &&...args) : ptr(new T(std::forward<Args>(args)...)), count(new size_t(1)) { }
+
+    template<typename T>
+    inline Shared<T>::~Shared()
+    {
+        Destroy();
     }
 
     template<typename T>

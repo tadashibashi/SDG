@@ -27,7 +27,7 @@ namespace SDG
         template <typename FwdIt>
         Array(FwdIt _begin, FwdIt _end);
 
-        ~Array() { Free(arr); }
+        ~Array();
 
     public:
         /// Number of elements in this array

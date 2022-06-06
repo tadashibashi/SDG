@@ -4,13 +4,14 @@ if (EMSCRIPTEN)
     set(EmscriptenLinkerFlags "-sASSERTIONS -sASYNCIFY \
             -sINITIAL_MEMORY=268435456 -sALLOW_MEMORY_GROWTH \
             -sUSE_WEBGL2=1 -sWASM=2 -sMAX_WEBGL_VERSION=2 \
-            -sLLD_REPORT_UNDEFINED -sNO_DISABLE_EXCEPTION_CATCHING")
+            -sLLD_REPORT_UNDEFINED -sNO_DISABLE_EXCEPTION_CATCHING \
+            -sUSE_SDL=2 -sUSE_SDL_TTF=2")
 
     # Emscripten flag feature research:
     # Exceptions https://emscripten.org/docs/porting/exceptions.html
     # Asyncify runs Emscripten in a thread separate from browser input
 
-    set(CMAKE_CXX_FLAGS "-fexceptions" ${CMAKE_CXX_FLAGS})
+    set(CMAKE_CXX_FLAGS "-fexceptions -O1 ${CMAKE_CXX_FLAGS}")
     set(CMAKE_EXE_LINKER_FLAGS  "${EmscriptenLinkerFlags} ${CMAKE_EXE_LINKER_FLAGS}")
     set(CMAKE_EXECUTABLE_SUFFIX .html)
 endif()

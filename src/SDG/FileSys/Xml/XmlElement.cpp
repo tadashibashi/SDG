@@ -28,7 +28,30 @@ namespace SDG::Xml
 
     XmlElement::XmlElement(tinyxml2::XMLElement *element) : element(element) { }
 
-    
+    XmlElement XmlElement::Parent(Validation check) const
+    {
+        if (!element) throw NullReferenceException();
+        tinyxml2::XMLNode *pNode = element->Parent();
+
+        if (!pNode)
+        {
+            if (check == Required)
+                throw XmlValidationException(*this, NodeRelation::Parent);
+            else
+                return nullptr;
+        }
+
+        XmlElement e = pNode->ToElement();
+        if (!e)
+        {
+            if (check == Required)
+                throw XmlValidationException(*this, NodeRelation::Parent);
+            else
+                return nullptr;
+        }
+
+        return e;
+    }
 
     XmlElement XmlElement::NextSibling(const String &name, Validation check) const
     {
@@ -64,15 +87,18 @@ namespace SDG::Xml
         return element ? element->NoChildren() : throw NullReferenceException();
     }
 
-    XmlElement XmlElement::ChildAt(size_t index, Validation check)
+    XmlElement XmlElement::ChildAt(size_t index, Validation check) const
     {
         XmlElement e = FirstChild();
         for (size_t i = 0; i < index; ++i)
             if (!e++)
+            {
                 if (check == Required)
                     throw XmlValidationException(*this, index, Xml::NodeType::Element);
                 else
                     return nullptr;
+            }
+
         return e;
     }
 

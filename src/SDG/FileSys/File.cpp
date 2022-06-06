@@ -75,7 +75,8 @@ namespace SDG
             throw;
         }
 
-        impl->buf.Swap(Buffer(data, size));
+        Buffer buf(data, size);
+        impl->buf.Swap(buf);
         return impl->isOpen = true;
     }
 

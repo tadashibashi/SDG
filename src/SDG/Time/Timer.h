@@ -23,7 +23,7 @@ namespace SDG
         /// Stops the timer (pause set to false)
         void Stop();
 
-        /// Sets the paused state
+        /// Sets the paused state. When paused, the effects of Update are ignored.
         void Paused(bool paused) { this->paused = paused; }
 
         // ===== Getters ======================================================
@@ -31,7 +31,7 @@ namespace SDG
         /// Gets number of seconds left since the last call to Update.
         float TimeLeft() const { return timeLeft; }
 
-        /// Gets the paused state.
+        /// Gets the paused state. When paused, the effects of Update are ignored.
         bool Paused() const { return paused; }
 
         /// Gets whether the state is actively counting down.

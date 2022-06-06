@@ -7,6 +7,9 @@
 namespace SDG
 {
     template<typename T>
+    Array<T>::~Array() { Free(arr); }
+
+    template<typename T>
     Array<T>::Array(const Array<T> &other) :
         arr((other.size > 0) ? Calloc<T>(other.size) : nullptr),
         size(other.size)

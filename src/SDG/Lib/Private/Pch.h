@@ -14,5 +14,8 @@
 
 #include <spdlog/spdlog.h>
 
-#include <vector>
+#include <cstdint>
+#include <cstddef>
 #include <map>
+#include <vector>
+

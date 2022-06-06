@@ -6,8 +6,10 @@
 #include "Private/TranslateFlip.h"
 
 #include <SDG/Debug/Assert.h>
+
 #include <SDG/Math/Matrix4x4.h>
 #include <SDG/Math/MathShape.h>
+#include <SDG/Math/Private/Conversions.h>
 
 #include <SDL_gpu.h>
 #include <algorithm>
@@ -79,27 +81,29 @@ namespace SDG
     {
         switch (sortMode)
         {
-            case SortMode::Texture:
-                std::stable_sort(batch.begin(), batch.end(),
-                                 [](const BatchCall &b1, const BatchCall &b2)
-                                 {
-                                     return b1.texture.Get() < b2.texture.Get();
-                                 });
-                break;
-            case SortMode::FrontToBack:
-                std::stable_sort(batch.begin(), batch.end(),
-                                 [](const BatchCall &b1, const BatchCall &b2)
-                                 {
-                                     return b1.depth < b2.depth;
-                                 });
-                break;
-            case SortMode::BackToFront:
-                std::stable_sort(batch.begin(), batch.end(),
-                                 [](const BatchCall &b1, const BatchCall &b2)
-                                 {
-                                     return b1.depth > b2.depth;
-                                 });
-                break;
+        case SortMode::None:
+            break;
+        case SortMode::Texture:
+            std::stable_sort(batch.begin(), batch.end(),
+                                [](const BatchCall &b1, const BatchCall &b2)
+                                {
+                                    return b1.texture.Get() < b2.texture.Get();
+                                });
+            break;
+        case SortMode::FrontToBack:
+            std::stable_sort(batch.begin(), batch.end(),
+                                [](const BatchCall &b1, const BatchCall &b2)
+                                {
+                                    return b1.depth < b2.depth;
+                                });
+            break;
+        case SortMode::BackToFront:
+            std::stable_sort(batch.begin(), batch.end(),
+                                [](const BatchCall &b1, const BatchCall &b2)
+                                {
+                                    return b1.depth > b2.depth;
+                                });
+            break;
         }
     }
 

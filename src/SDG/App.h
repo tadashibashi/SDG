@@ -7,11 +7,11 @@
  */
 #pragma once
 #include <SDG/FileSys/Path.h>
-#include <SDG/Game/AppConfig.h>
+#include <SDG/Game/Datatypes/AppConfig.h>
 #include <SDG/Lib/Ref.h>
 #include <SDG/Lib/String.h>
+#include <SDG/Lib/Version.h>
 #include <SDG/Time/AppTime.h>
-
 
 namespace SDG
 {
@@ -42,6 +42,8 @@ namespace SDG
         const String &Name() const;
 
         CRef<AppTime> Time();
+
+        const Version &EngineVersion() const;
     protected:
         // Access for base classes
         Ref<class Window> MainWindow();

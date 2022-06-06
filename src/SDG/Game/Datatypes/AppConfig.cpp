@@ -7,7 +7,7 @@ bool SDG::AppConfig::LoadImpl(const Xml::XmlDocument &doc)
     uint32_t tWinFlags = 0;
     int tWidth, tHeight;
 
-    auto config = doc.FirstChild(); // add requirements to doc
+    auto config = doc.FirstChild("config", Xml::Required); // add requirements to doc
 
     auto app = config.FirstChild("app", Xml::Required);
     tName = app.Attribute("name", Xml::Required).Value();

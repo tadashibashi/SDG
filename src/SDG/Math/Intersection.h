@@ -9,13 +9,6 @@
 
 namespace SDG::Math
 {
-    /// Function to check intersection between shapes
-    template <typename ShapeA, typename ShapeB>
-    [[nodiscard]] inline bool Intersects(ShapeA a, ShapeB b)
-    {
-        return Intersection::Impl_(a, b);
-    }
-
     // Intended for private implementation
     namespace Intersection
     {
@@ -90,4 +83,10 @@ namespace SDG::Math
         }
     }
 
+    /// Function to check intersection between shapes
+    template <typename ShapeA, typename ShapeB>
+    [[nodiscard]] inline bool Intersects(ShapeA a, ShapeB b)
+    {
+        return Intersection::Impl_(a, b);
+    }
 }

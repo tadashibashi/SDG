@@ -1,16 +1,16 @@
 #ifndef SDG_NO_ENTRYPOINT
-#include <SDG/App.h>
+#include <SDG/Engine.h>
 #include <SDG/Debug/Log.h>
 #include <SDG/Exceptions/AssertionException.h>
 
-using SDG::App;
+using SDG::Engine;
 
 /// To be defined by the user in which they must return their own subclass of Game.
-App *CreateApp();
+Engine *CreateApp();
 
 int main(int argc, char *argv[])
 {
-    App *app;
+    Engine *app;
     try {
         app = CreateApp();
     }

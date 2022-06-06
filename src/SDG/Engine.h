@@ -1,7 +1,7 @@
 /*!
- * @file App.h
+ * @file Engine.h
  * @namespace SDG
- * @class App
+ * @class Engine
  * Main application object base class
  * 
  */
@@ -16,18 +16,18 @@
 namespace SDG
 {
     /// Provides the basic ammenities to run an app
-    class App 
+    class Engine 
     {
         struct Impl;
     public:
         /// @param appName - name of the app
         /// @param orgName - company / organization name
         /// @param configPath - path relative to the base executable directory
-        explicit App(const String &configPath);
+        explicit Engine(const String &configPath);
         /// @param appName - name of the app
         /// @param 
-        explicit App(const AppConfig &config);
-        virtual ~App();
+        explicit Engine(const AppConfig &config);
+        virtual ~Engine();
 
         /// Executes one game frame. Intended for use by platforms that require the
         /// use of the main loop, such as Emscripten-WebGL.
@@ -43,7 +43,7 @@ namespace SDG
 
         CRef<AppTime> Time();
 
-        const Version &EngineVersion() const;
+        static Version Version();
     protected:
         // Access for base classes
         Ref<class Window> MainWindow();

@@ -53,7 +53,7 @@ namespace SDG
     // For now, only available for App to control.
     class InputDriver
     {
-        friend class App;
+        friend class Engine;
     public:
         InputDriver() = delete;
         ~InputDriver() = delete;

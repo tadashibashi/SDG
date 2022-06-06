@@ -14,7 +14,10 @@ namespace SDG::Debug
         if (!coreLogger.get())
         {
             coreLogger = spdlog::stdout_color_mt("SDG Engine");
-            coreLogger->set_pattern("[%n][%l] %v");
+            coreLogger->set_pattern("[%n][%^%l%$] %v");
+
+            // for more on custom formatting: 
+            // https://spdlog.docsforge.com/v1.x/3.custom-formatting/#pattern-flags
         }
             
         return coreLogger.get();
@@ -26,7 +29,7 @@ namespace SDG::Debug
         if (!clientLogger.get())
         {
             clientLogger = spdlog::stdout_color_mt("Client");
-            clientLogger->set_pattern("[%n][%l] %v");
+            clientLogger->set_pattern("[%n][%^%l%$] %v");
         }
             
         return clientLogger.get();

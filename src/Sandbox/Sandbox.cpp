@@ -2,10 +2,10 @@
 #include <SDG/Graphics/Font.h>
 using namespace SDG;
 
-class Sandbox : public App 
+class Sandbox : public Engine 
 {
 public:
-    Sandbox() : App(
+    Sandbox() : Engine(
         AppConfig { 640, 480, (uint32_t)0,
         "SDG Engine Test",
         "SDG Engine Test", "aaronishibashi" }
@@ -228,7 +228,7 @@ private:
 };
 
 /// Entry-point
-App *CreateApp()
+Engine *CreateApp()
 {
     return new Sandbox;
 }

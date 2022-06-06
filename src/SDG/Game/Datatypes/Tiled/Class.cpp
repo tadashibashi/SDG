@@ -2,16 +2,27 @@
 
 namespace SDG::Tiled
 {
-    Class::Class(size_t id, const String &name, const Array<Property> &props) : id(id), name(name), props()
+    Class::Class() : id(), name(), props()
     {
-        for (auto it = props.cbegin(), end = props.cend(); it != end; ++it)
-        {
-            this->props[it->Name().Hash()] = *it;
-        }
+    }
+
+    Class::Class(size_t id, const String &name, const Array<Property> &props) : id(id), name(name), props(props)
+    {
+        
+    }
+
+    void Class::Initialize(size_t id, const String &name, const Array<Property> &props)
+    {
+        this->id = id; this->name = name; this->props.Initialize(props);
     }
 
     const Property &Class::operator[](const String &str)
     {
         return props[str.Hash()];
+    }
+
+    const Property &Class::operator[](uint64_t keyhash)
+    {
+        return props[keyhash];
     }
 }

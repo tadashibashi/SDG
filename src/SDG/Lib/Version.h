@@ -29,6 +29,7 @@ namespace SDG
         unsigned long long Hash() const;
     private:
         unsigned major, minor, patch;
+        static Version engineVersion;
     };
 
     std::ostream &operator << (std::ostream &os, const Version &v);

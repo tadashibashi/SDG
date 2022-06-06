@@ -54,6 +54,12 @@ namespace SDG
                      width,
                      height,
                      0);
+            if (!target)
+            {
+                SDG_Core_Err("SDL_gpu GPU_Target initialization failed: {}",
+                    GPU_GetErrorString(GPU_PopErrorCode().error));
+                return -1;
+            }
         }
         else
         {
@@ -64,26 +70,28 @@ namespace SDG
                       flags | SDL_WINDOW_OPENGL);
             if (!window)
             {
-                SDG_Core_Err("Failed to create window with error: {}", SDL_GetError());
-                return false;
+                SDG_Core_Err("SDL_Window initialization failed: {}", SDL_GetError());
+                return -1;
             }
 
             target = GPU_CreateTargetFromWindow(SDL_GetWindowID(window));
-        }
-
-
-        if (!target)
-        {
-            SDG_Core_Err("Failed to initialize SDL_gpu GPU_Target: {}",
+            if (!target)
+            {
+                SDG_Core_Err("SDL_gpu GPU_Target init from SDL_Window failed: {}",
                     GPU_GetErrorString(GPU_PopErrorCode().error));
-            return false;
+                return -1;
+            }
         }
+
+
+
 
         impl->target.EmplaceTarget(Ref{target});
         if (title)
             Title(title);
 
-        // TODO: add the rest of the flags here or see why SDL_gpu sets a weird fullscreen when setting flags directly
+        // TODO: add the rest of the flags here or see why SDL_gpu sets a weird fullscreen when setting flags directly.
+        // Currently emscripten's fullscreen zooms in, strangely.
         if (flags & SDL_WINDOW_FULLSCREEN || flags & SDL_WINDOW_FULLSCREEN_DESKTOP)
             Fullscreen(true);
         if (flags & SDL_WINDOW_BORDERLESS)

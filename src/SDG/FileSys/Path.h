@@ -28,13 +28,13 @@ namespace SDG
             None,
             /// Stems from OS root. On Mac/Linux it's "/", while on Windows it's "C:\\"
             Root,
-            /// User specifies subpath relative from the App executable's base working directory.
+            /// User specifies subpath relative from the Engine executable's base working directory.
             /// This directory is intended as read-only, although some platforms allow writing.
             /// Content such as audio and images are usually stored here.
             /// May use Paths with BaseDir::Root before
             Base,
-            /// User specifies subpath relative from the App's personal preference directory.
-            /// This directory is granted to the App for reading and writing files,
+            /// User specifies subpath relative from the Engine's personal preference directory.
+            /// This directory is granted to the Engine for reading and writing files,
             /// intended for save data, user preferences, etc.
             Pref
         };

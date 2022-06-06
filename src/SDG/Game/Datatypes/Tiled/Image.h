@@ -18,7 +18,7 @@ namespace SDG::Tiled
 
         /// Defines a specific color that is treated as transparent (example value: "#FF00FF" for magenta)
         /// Including the "#" is optional and Tiled leaves it out for compatibility reasons.
-        String trans;
+        Color transparent;
 
         /// The image width in pixels (optional, used for tile index correction when the image changes)
         int width;

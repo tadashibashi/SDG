@@ -1,5 +1,7 @@
 #include "Version.h"
+#include <SDG/Lib/Platform.h>
 #include <SDG/Debug/LogImpl.h>
+   
 
 SDG::Version::Version() : major(), minor(), patch()
 {

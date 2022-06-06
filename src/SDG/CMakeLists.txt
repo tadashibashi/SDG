@@ -14,7 +14,7 @@ set(Engine_Sources
         ${Nfont_Sources}
         SDG.hpp
 
-        "App.cpp" "App.h"
+        "Engine.cpp" "Engine.h"
         Game/AssetMgr.cpp Game/AssetMgr.h
 
         Lib/ClassMacros.h
@@ -127,7 +127,7 @@ set(Engine_Sources
         Time/Duration.h Time/Duration.cpp
         
   "Graphics/Font.h" "Graphics/Font.cpp" "Lib/Enum.h" "Lib/Private/Fmt.h" "Exceptions/UncaughtCaseException.h" "Lib/Ref.inl" "Lib/Array.inl" "Lib/Delegate.inl" "FileSys/Xml/XmlElement.h" "FileSys/Xml/XmlElement.cpp" "FileSys/Xml/XmlAttribute.h" "FileSys/Xml/XmlAttribute.cpp" "FileSys/Xml/XmlDocument.h" "FileSys/Xml/XmlDocument.cpp" "FileSys/Xml/Private/XmlDocument_Impl.h"  "Exceptions/XmlValidationException.h" "FileSys/Xml/XmlValidation.h" "Exceptions/XmlValidationException.cpp" "Game/Datatypes/AppConfig.cpp" "Exceptions/XmlFormattingException.h" "Graphics/Private/NFont.h" 
-  "Game/Datatypes/Tiled/Template.h" "Game/Datatypes/Tiled/Object.h" "Game/Datatypes/Tiled/Layer.h" "Game/Datatypes/Tiled/Tileset.h" "Game/Datatypes/Tiled/Image.h" "Game/Datatypes/Tiled/Tile.h" "Game/Datatypes/Tiled/Property.h" "Game/Datatypes/Tiled/Class.h" "Game/Datatypes/Tiled/Class.cpp" "Game/Datatypes/Tiled/Property.cpp" "Game/Datatypes/Tiled/Tiled.h" "Lib/Version.h" "Lib/Version.cpp" "Lib/Platform.cpp" "Debug/Private/spdlog.h")
+  "Game/Datatypes/Tiled/Template.h" "Game/Datatypes/Tiled/Object.h" "Game/Datatypes/Tiled/Layer.h" "Game/Datatypes/Tiled/Tileset.h" "Game/Datatypes/Tiled/Image.h" "Game/Datatypes/Tiled/Tile.h" "Game/Datatypes/Tiled/Property.h" "Game/Datatypes/Tiled/Class.h" "Game/Datatypes/Tiled/Class.cpp" "Game/Datatypes/Tiled/Property.cpp" "Game/Datatypes/Tiled/Tiled.h" "Lib/Version.h" "Lib/Version.cpp" "Lib/Platform.cpp" "Debug/Private/spdlog.h" "Game/Datatypes/Tiled/Properties.h" "Game/Datatypes/Tiled/Properties.cpp" "Game/Datatypes/Tiled/TmxObject.h" "Game/Datatypes/Tiled/TmxObject.cpp" "Game/Datatypes/Tiled/Tile.cpp")
 
 # -----  Includes  ----------------------------------------------------
 set(Engine_Includes

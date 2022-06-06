@@ -1,5 +1,5 @@
 /// App implementation file
-#include "App.h"
+#include "Engine.h"
 #include <SDG/Exceptions/AssertionException.h>
 #include <SDG/Debug/Assert.h>
 #include <SDG/Debug/Log.h>
@@ -22,33 +22,14 @@ static void EmMainLoop(void *arg)
 namespace SDG
 {
     // ===== App Implementation ===============================================
-    struct App::Impl 
+    struct Engine::Impl 
     {
         Impl() 
             : windows(), mainWindow(), isRunning(), time(), 
-            fileSys(), version(SDG_VERSION_MAJOR, SDG_VERSION_MINOR, SDG_VERSION_PATCH) {}
-        void Initialize(const AppConfig &config) 
-        { 
-            this->config = config;
-            SDG_Assert(!config.appName.Empty());
-            SDG_Assert(!config.orgName.Empty());
-            fileSys.Initialize(config.appName, config.orgName);
-            Path::PushFileSys(fileSys);
+            fileSys(), config() {}
+        ~Impl();
 
-            SDG_Core_Log("\n"
-            "*===========================================================================*\n"
-            "  SDG Engine v{}\n"
-            "    Platform:   {}: {}\n"
-            "    Debug mode: {}\n"
-            "\n"
-            "*===========================================================================*",
-                version, TargetPlatformName(), SIZEOF_VOIDP == 8 ? "64-bit" : "32-bit", SDG_DEBUG ? "ON" : "OFF");
-        }
-
-        ~Impl()
-        {
-            Path::PopFileSys();
-        }
+        void Initialize(const AppConfig &config);
 
         WindowMgr   windows;
         Ref<Window> mainWindow;
@@ -56,11 +37,10 @@ namespace SDG
         AppTime     time;
         FileSys     fileSys;
         AppConfig   config;
-        Version     version;
     };
 
 
-    App::App(const String &configPath) : impl(new Impl)
+    Engine::Engine(const String &configPath) : impl(new Impl)
     {
 
         // Get game settings from config file
@@ -69,13 +49,13 @@ namespace SDG
         impl->Initialize(config);
     }
 
-    App::App(const AppConfig &config) : impl(new Impl)
+    Engine::Engine(const AppConfig &config) : impl(new Impl)
     {
         impl->Initialize(config);
     }
 
 
-    App::~App()
+    Engine::~Engine()
     {
         Close_();
         delete impl;
@@ -83,17 +63,15 @@ namespace SDG
 
 
     int
-    App::Initialize_()
+    Engine::Initialize_()
     {
         AppConfig &config = impl->config;
-        SDG_Core_Log("Initializing {}", config.appName);
-        
         Ref<Window> window;
         if (impl->windows.CreateWindow(config.width, config.height, 
             config.title.Cstr(), impl->config.winFlags, &window) >= 0)
         {
             impl->mainWindow = window;
-            SDG_Core_Log("- graphics library and window. ok.");
+            SDG_Core_Log("- graphics library and window. ok!");
         }
         else
         {
@@ -103,7 +81,7 @@ namespace SDG
 
         // TODO: game config can specify input types through an array?
         InputDriver::Initialize(SDG_INPUTTYPE_DEFAULT);
-        SDG_Core_Log("- input driver. ok.");
+        SDG_Core_Log("- input driver. ok!");
 
         impl->isRunning = true;
         return Initialize(); // Child class initialization;
@@ -111,7 +89,7 @@ namespace SDG
 
 
     void
-    App::ProcessInput()
+    Engine::ProcessInput()
     {
         InputDriver::UpdateLastStates();
 
@@ -135,7 +113,7 @@ namespace SDG
 
 
     void
-    App::RunOneFrame()
+    Engine::RunOneFrame()
     {
         try {
             ProcessInput();
@@ -151,25 +129,25 @@ namespace SDG
 
 
     void
-    App::Close_()
+    Engine::Close_()
     {
         Close(); // Child class clean up
         InputDriver::Close();
         Path::PopFileSys();
         impl->windows.Close();
-        SDG_Core_Log("App shutdown complete.");
+        SDG_Core_Log("Engine shutdown complete.");
     }
 
 
     void
-    App::Run()
+    Engine::Run()
     {
         if (int err = Initialize_() != 0)
         {
-            SDG_Core_Err("App failed to initialize: error code: {}", err);
+            SDG_Core_Err("Engine failed to initialize: error code: {}", err);
             return;
         }
-        SDG_Core_Log("Initialization complete! Entering application loop.");
+        SDG_Core_Log("Done! Entering application loop...");
 
     #if (SDG_TARGET_WEBGL)
         emscripten_set_main_loop_arg(EmMainLoop, this, -1, true);
@@ -180,7 +158,7 @@ namespace SDG
     }
 
     void
-    SDG::App::Exit()
+    SDG::Engine::Exit()
     {
         impl->isRunning = false;
     #if (SDG_TARGET_WEBGL) // since emscripten's main loop is infinite, we need to immediately exit.
@@ -190,47 +168,85 @@ namespace SDG
     }
 
     Ref<SDG::Window>
-    App::MainWindow()
+    Engine::MainWindow()
     {
         SDG_Assert(impl->mainWindow);
         return impl->mainWindow;
     }
 
     Ref<SDG::WindowMgr>
-    App::Windows()
+    Engine::Windows()
     {
         return Ref(impl->windows);
     }
 
     void
-    App::Update_()
+    Engine::Update_()
     {
         impl->time.Update();
         Update();
     }
 
     void
-    App::Render_()
+    Engine::Render_()
     {
         Render();
         impl->windows.SwapBuffers();
     }
 
     CRef<AppTime>
-    App::Time()
+    Engine::Time()
     {
         return CRef(impl->time);
     }
 
-    const Version &App::EngineVersion() const
-    {
-        return impl->version;
-    }
-
     const String &
-    SDG::App::Name() const
+    Engine::Name() const
     {
         return impl->config.appName;
+    }
+
+    // static
+    Version Engine::Version()
+    {
+        static SDG::Version v(SDG_VERSION_MAJOR, SDG_VERSION_MINOR, SDG_VERSION_PATCH);
+        return v;
+    }
+    
+    void Engine::Impl::Initialize(const AppConfig &config)
+    {
+        SDG_Core_Log("\n"
+            "*===========================================================================*\n"
+            "  SDG Engine v{}\n"
+            "    Platform:   {}: {}\n"
+            "    Debug mode: {}\n"
+            "\n"
+            "-----------------------------------------------------------------------------\n"
+            "  {} [{}]\n"
+            "     Window\n"
+            "        Title: \"{}\"\n"
+            "        Size : {} x {}\n"
+            "        Flags: {}"
+            "\n"
+            "*===========================================================================*\n",
+            Engine::Version(), TargetPlatformName(), SIZEOF_VOIDP == 8 ? "64-bit" : "32-bit", SDG_DEBUG ? "ON" : "OFF",
+            config.appName, config.orgName, config.title, config.width, config.height, config.winFlags);
+
+        SDG_Core_Log("Initializing engine...");
+
+        SDG_Assert(!config.appName.Empty());
+        SDG_Assert(!config.orgName.Empty());
+        fileSys.Initialize(config.appName, config.orgName);
+        Path::PushFileSys(fileSys);
+
+        SDG_Core_Log("- filesystem. ok!");
+
+        this->config = config;
+    }
+    
+    Engine::Impl::~Impl()
+    {
+        Path::PopFileSys();
     }
 }
 

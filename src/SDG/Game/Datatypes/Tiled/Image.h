@@ -2,6 +2,7 @@
 #include "TmxObject.h"
 #include <SDG/Graphics/Color.h>
 #include <SDG/Lib/String.h>
+#include <SDG/Lib/Ref.h>
 
 namespace SDG::Tiled
 {

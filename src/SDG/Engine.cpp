@@ -15,7 +15,7 @@
 #if (SDG_TARGET_WEBGL)
 static void EmMainLoop(void *arg)
 {
-    ((SDG::App *)arg)->RunOneFrame();
+    ((SDG::Engine *)arg)->RunOneFrame();
 }
 #endif
 

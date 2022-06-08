@@ -42,7 +42,7 @@ namespace SDG
                 while (std::tolower(*it) == 'x') ++it;
         }
 
-        StringView v(&it, end() - it);
+        String v(&it, end() - it);
         std::stringstream ss; T t;
         ss << std::setbase(base);
         ss << v;

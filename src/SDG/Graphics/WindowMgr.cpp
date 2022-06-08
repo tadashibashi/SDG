@@ -71,7 +71,7 @@ namespace SDG
 
         impl->windows.emplace_back(window);
         if (out)
-            *out = Ref(window);
+            *out = window;
         return id;
     }
 

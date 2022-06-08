@@ -11,7 +11,7 @@ if (EMSCRIPTEN)
     # Exceptions https://emscripten.org/docs/porting/exceptions.html
     # Asyncify runs Emscripten in a thread separate from browser input
 
-    set(CMAKE_CXX_FLAGS "-fexceptions -O1 ${CMAKE_CXX_FLAGS}")
+    set(CMAKE_CXX_FLAGS "-fexceptions -O0 ${CMAKE_CXX_FLAGS}")
     set(CMAKE_EXE_LINKER_FLAGS  "${EmscriptenLinkerFlags} ${CMAKE_EXE_LINKER_FLAGS}")
     set(CMAKE_EXECUTABLE_SUFFIX .html)
 endif()

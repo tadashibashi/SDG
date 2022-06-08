@@ -42,9 +42,6 @@ namespace SDG
     template<typename Func, typename R, typename...Args>
     inline constexpr bool is_callable_with_v(const Func &&) { return is_callable_with<Func, R(Args...)>::value; }
 
-    template<typename T, typename Iterator>
-    inline constexpr bool is_valtype_of_iterator_v = std::is_same<T, std::decay<decltype(*std::declval<Iterator>())>::value>::value;
-
    /* template<typename Iterator>
     inline constexpr auto iterator_value_type_v = std::decay_t< decltype( *std::declval<Iterator>() ) >;
 

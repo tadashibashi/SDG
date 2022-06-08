@@ -163,5 +163,5 @@ namespace std
 {
     // Conformance with the standard library swap
     template <>
-    inline void swap(SDG::Buffer &a, SDG::Buffer &b) { a.Swap(b); }
+    inline void swap(SDG::Buffer &a, SDG::Buffer &b) noexcept { a.Swap(b); }
 }

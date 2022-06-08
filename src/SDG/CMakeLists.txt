@@ -178,7 +178,7 @@ elseif (LINUX)                                              # Linux
     set(PLATFORM_Libraries GL)
 
 elseif (EMSCRIPTEN)                                         # HTML5
-    set(CMAKE_CXX_FLAGS "-O1 -sUSE_SDL=2 -sUSE_SDL_TTF=2 -fexceptions")
+    set(CMAKE_CXX_FLAGS "-O0 -sUSE_SDL=2 -sUSE_SDL_TTF=2 -fexceptions")
     set(CMAKE_EXE_LINKER_FLAGS "-sASSERTIONS -sASYNCIFY -sUSE_WEBGL2=1 -sWASM=2 -sMAX_WEBGL_VERSION=2 -LLD_REPORT_UNDEFINED -sNO_DISABLE_EXCEPTION_CATCHING")
 endif()
 

@@ -1,5 +1,6 @@
 #pragma once
 #include <SDG/Lib/String.h>
+#include <SDG/Exceptions/Fwd.h>
 
 #include <cstddef>
 #include <functional>
@@ -174,7 +175,7 @@ namespace SDG
         ss >> t;
 
         if (ss.fail())
-            throw RuntimeException(String::Format("StringView::To<{}>({}): failed to convert: \"{}\"",
+            ThrowRuntimeException(String::Format("StringView::To<{}>({}): failed to convert: \"{}\"",
                 typeid(T).name(), base, *this));
 
         return t;

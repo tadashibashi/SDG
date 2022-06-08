@@ -6,6 +6,7 @@
 #include <SDG/Debug/LogImpl.h>
 #include <SDG/Debug/Trace.h>
 
+#include <SDG/Exceptions/InvalidArgumentException.h>
 #include <SDG/Exceptions/RuntimeException.h>
 #include <SDG/Exceptions/OutOfRangeException.h>
 #include <SDG/Math/Math.h>

@@ -4,6 +4,7 @@
 #include "Texture.h"
 
 #include <SDG/Debug/Log.h>
+#include <SDG/Exceptions/Fwd.h>
 
 #include <SDL_gpu.h>
 #include <SDL_ttf.h>
@@ -370,7 +371,7 @@ namespace SDG
     Window::Icon(CRef<Texture> texture)
     {
         if (!texture)
-            throw NullReferenceException("Texture");
+            ThrowNullReferenceException("Texture");
 
         SDL_Surface *surf = GPU_CopySurfaceFromImage(texture->Image().Get());
         if (!surf)

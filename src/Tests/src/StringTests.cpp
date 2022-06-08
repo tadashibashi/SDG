@@ -3,6 +3,7 @@
 #include <SDG/Lib/String.h>
 
 #include <sstream>
+#include <utility>
 
 TEST_CASE("String tests", "[String]")
 {
@@ -1344,5 +1345,58 @@ TEST_CASE("String tests", "[String]")
         }
     }
 
+    SECTION("Move constructor")
+    {
+        SECTION("Typical case")
+        {
+            String str2("world");
+            const char *origPtr = str2.Cstr();
+            String str1 = std::move(str2);
+
+            REQUIRE(str1 == "world");
+            REQUIRE(str1.Cstr() == origPtr);
+            REQUIRE(str2.Cstr() == nullptr);
+        }
+
+        SECTION("Empty strings, memory still moves")
+        {  
+            String str2;
+
+            const char *origPtr = str2.Cstr();
+            String str1 = std::move(str2);
+
+            REQUIRE(str1.Cstr() == origPtr);
+            REQUIRE(str2.Cstr() == nullptr);
+        }
+    }
+
+    SECTION("Move assignment operator")
+    {
+        SECTION("Typical case")
+        {
+            String str1("hello");
+            String str2("world");
+
+            const char *origPtr = str2.Cstr();
+
+            str1 = std::move(str2);
+
+            REQUIRE(str1 == "world");
+            REQUIRE(str1.Cstr() == origPtr);
+            REQUIRE(str2.Cstr() == nullptr);
+        }
+
+        SECTION("Empty strings, memory still moves")
+        {
+            String str1;
+            String str2;
+
+            const char *origPtr = str2.Cstr();
+
+            str1 = std::move(str2);
+            REQUIRE(str1.Cstr() == origPtr);
+            REQUIRE(str2.Cstr() == nullptr);
+        }
+    }
     
 } 

@@ -406,7 +406,7 @@ namespace SDG
     }
 
     String &
-    String::Swap(String &other)
+    String::Swap(String &other) noexcept
     {
         std::swap(str_, other.str_);
         std::swap(end_, other.end_);
@@ -517,10 +517,38 @@ namespace SDG
         Allocate(str.Cstr(), str.Length());
     }
 
+    String::String(String &&str) noexcept :
+        str_(str.str_), end_(str.end_), full_(str.full_)
+    {
+        // Mover string is now dead
+        str.str_ = nullptr;
+        str.end_ = nullptr;
+        str.full_ = nullptr;
+    }
+
     String &
     String::operator = (const String &str)
     {
         return Assign(str);
+    }
+
+    String &
+    String::operator = (String &&str) noexcept
+    {
+        if (&str == this)
+            return *this;
+
+        // Release previously owned data and take new data from moved string
+        StrFree(str_);
+        str_ = str.str_;
+        end_ = str.end_;
+        full_ = str.full_;
+        
+        // Mover string is now dead
+        str.str_ = nullptr;
+        str.end_ = nullptr;
+        str.full_ = nullptr;
+        return *this;
     }
 
     String &

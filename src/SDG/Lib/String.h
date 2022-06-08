@@ -25,6 +25,7 @@ namespace SDG
         String();
         explicit String(size_t initCap);
         String(const String &str);
+        String(String &&str) noexcept;
         String(const std::string &str);
         String(const char *str);
         String(const char *str, size_t count);
@@ -43,6 +44,7 @@ namespace SDG
 
         /// Assignment from other strings
         String &operator = (const String &str);
+        String &operator = (String &&str) noexcept;
         String &operator = (const std::string &str);
         String &operator = (const char *cstr);
         String &operator = (const class StringView &view);
@@ -84,7 +86,7 @@ namespace SDG
         /// and false to keep it.
         String &EraseIf(const std::function<bool(char)> &func);
         /// Swaps internals of this String with another
-        String &Swap(String &other);
+        String &Swap(String &other) noexcept;
 
         String &Clear();
 

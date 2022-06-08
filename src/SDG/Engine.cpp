@@ -65,19 +65,17 @@ namespace SDG
     int
     Engine::Initialize_()
     {
-        SDG_Core_Log("{}:{}", SDG_FILEPATH, SDG_LINE);
-        SDG_Core_Log("{}:{}", SDG_FILENAME, SDG_LINE);
         AppConfig &config = impl->config;
         Ref<Window> window;
         if (impl->windows.CreateWindow(config.width, config.height, 
             config.title.Cstr(), impl->config.winFlags, &window) >= 0)
         {
             impl->mainWindow = window;
-            SDG_Core_Log("- graphics library and window. ok!");
+            SDG_Core_Log("- graphics library and window: ok!");
         }
         else
         {
-            SDG_Core_Err("- graphics library and window. failed!");
+            SDG_Core_Err("- graphics library and window: failed!");
             return -1;
         }
 

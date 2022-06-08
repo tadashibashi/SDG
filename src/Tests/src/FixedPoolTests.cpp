@@ -155,27 +155,62 @@ TEST_CASE("FixedFixedPool tests", "[FixedPool]")
         REQUIRE(allEqual);
     }
 
-    SECTION("Max size is less than Null")
+    SECTION("FixedPools swap successfully")
     {
-        FixedPool<int> intPool(16);
-        REQUIRE(intPool.MaxSize() < PoolNullIndex);
+        FixedPool<int> p1(16), p2(32);
+        std::vector<PoolID> p1ids, p2ids;
 
-        FixedPool<char> charPool(16);
-        REQUIRE(charPool.MaxSize() < PoolNullIndex);
+        for (int i = 0; i < 16; ++i)
+        {
+            *p1[p1ids.emplace_back(p1.Checkout())] = i;
+        }
+
+        for (int i = 31; i >= 0; --i)
+        {
+            *p2[p2ids.emplace_back(p2.Checkout())] = i;
+        }
+
+        p1.Swap(p2);
+        REQUIRE(p1.Size() == 32);
+        REQUIRE(p2.Size() == 16);
+
+        bool allCorrect = true;
+        for (int i = 0; i < 16; ++i)
+        {
+            if (*p2[p1ids[i]] != i)
+            {
+                allCorrect = false;
+                break;
+            }
+        }
+        REQUIRE(allCorrect);
+
+        allCorrect = true;
+        for (int i = 31; i >= 0; --i)
+        {
+            if (*p1[p2ids[i]] != 31 - i)
+            {
+                allCorrect = false;
+                break;
+            }
+        }
+        REQUIRE(allCorrect);
+        
     }
 
-    SECTION("Throws invalid argument when attempting to initialize too big")
+    SECTION("Pools move assigns successfully")
     {
-        bool didThrow;
-        try {
-            FixedPool<char> charPool(SIZE_MAX);
-            didThrow = false;
-        }
-        catch(const InvalidArgumentException &e)
-        {
-            didThrow = true;
-        }
+        FixedPool<int> p1(16), p2(32);
+        p1 = std::move(p2);
 
-        REQUIRE(didThrow);
+        REQUIRE(p1.Size() == 32);
+    }
+
+    SECTION("Pools move assigns successfully")
+    {
+        FixedPool<int> p2(32);
+        FixedPool<int> p1 = std::move(p2);
+
+        REQUIRE(p1.Size() == 32);
     }
 }

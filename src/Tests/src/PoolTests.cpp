@@ -169,4 +169,62 @@ TEST_CASE("Pool tests", "[Pool]")
 
         REQUIRE(didThrow);
     }
+
+    SECTION("Pools swap successfully")
+    {
+        Pool<int> p1(16), p2(32);
+        std::vector<PoolID> p1ids, p2ids;
+
+        for (int i = 0; i < 16; ++i)
+        {
+            *p1[p1ids.emplace_back(p1.Checkout())] = i;
+        }
+
+        for (int i = 31; i >= 0; --i)
+        {
+            *p2[p2ids.emplace_back(p2.Checkout())] = i;
+        }
+        
+        p1.Swap(p2);
+        REQUIRE(p1.Size() == 32);
+        REQUIRE(p2.Size() == 16);
+        
+        bool allCorrect = true;
+        for (int i = 0; i < 16; ++i)
+        {
+            if (*p2[p1ids[i]] != i)
+            {
+                allCorrect = false;
+                break;
+            }
+        }
+        REQUIRE(allCorrect);
+
+        allCorrect = true;
+        for (int i = 31; i >= 0; --i)
+        {
+            if (*p1[p2ids[i]] != 31-i)
+            {
+                allCorrect = false;
+                break;
+            }
+        }
+        REQUIRE(allCorrect);
+    }
+
+    SECTION("Pools move assigns successfully")
+    {
+        Pool<int> p1(16), p2(32);
+        p1 = std::move(p2);
+
+        REQUIRE(p1.Size() == 32);
+    }
+
+    SECTION("Pools move assigns successfully")
+    {
+        Pool<int> p2(32);
+        Pool<int> p1 = std::move(p2);
+
+        REQUIRE(p1.Size() == 32);
+    }
 }

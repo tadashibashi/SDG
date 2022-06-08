@@ -25,7 +25,6 @@
  *
  */
 #pragma once
-#include <SDG/Exceptions/NullReferenceException.h>
 
 namespace SDG
 {
@@ -41,14 +40,21 @@ namespace SDG
         /// Initialization from a pointer
         Ref(T *ref) : ref(ref) { }
 
+        Ref &operator = (Ref &ref);
+        Ref &operator = (T *ref);
+        Ref &operator = (T &ref);
+
         /// Get the internal ptr. Please do not call delete on it, since it is owned
         /// by the object this reference was retrieved from.
         [[nodiscard]] T *Get() const { return ref; }
 
         /// Access ptr members. Throws a NullReference exception if null.
-        [[nodiscard]] T *operator->() const;
+        [[nodiscard]] T *operator->();
+         /// Access ptr members. Throws a NullReference exception if null.
+        [[nodiscard]] const T *operator->() const;
         /// Access raw reference. Throws a NullReference exception if null.
-        [[nodiscard]] T &operator *() const;
+        [[nodiscard]] T &operator *();
+        [[nodiscard]] const T &operator *() const;
 
         [[nodiscard]] bool operator==(const Ref &other) const;
         [[nodiscard]] bool operator !=(const Ref &other) const;
@@ -72,7 +78,12 @@ namespace SDG
         CRef() : ref() { }
         CRef(const T *ref) : ref(ref) { }
         CRef(const T &ref) : ref(&ref) { }
-        CRef(Ref<T> ref) : ref(ref.Get()) { }
+        CRef(const Ref<T> ref) : ref(ref.Get()) { }
+
+        CRef &operator = (const Ref<T> ref);
+        CRef &operator = (const CRef<T> ref);
+        CRef &operator = (const T *ref);
+        CRef &operator = (const T &ref);
 
         /// Get internal ptr
         [[nodiscard]] const T *Get() const { return ref; }

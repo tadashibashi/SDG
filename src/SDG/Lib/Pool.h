@@ -2,6 +2,7 @@
 #include "PoolID.h"
 #include "Private/PoolNullIndex.h"
 
+#include <SDG/Lib/ClassMacros.h>
 #include <SDG/Lib/Ref.h>
 
 #include <cstddef>
@@ -15,10 +16,22 @@ namespace SDG
     {
         static_assert(std::is_default_constructible_v<T>,
                 "Pooled type must be default constructable");
+        SDG_NOCOPY(Pool);
     public:
         /// Creates a pool with a specified size, default: 256.
         /// Throws InvalidArgumentException if the size exceeds its max size.
         Pool(size_t initSize = 256);
+        Pool(Pool &&moved);
+
+        ///Clearing overwrites any entities currently stored. 
+        /// Please make sure to do any clean up the internal entities
+        /// if there is anything that their destructors wouldn't automatically do.
+        void Clear();
+
+        /// Moving overwrites any entities currently stored. 
+        /// Please make sure to do any clean up the internal entities
+        /// if there is anything that their destructors wouldn't automatically do.
+        Pool &operator = (Pool &&moved);
 
         /// Checks out a fresh Pool object ID.
         /// Pool::operator[] can be used to get a ref to the actual object.
@@ -40,11 +53,16 @@ namespace SDG
         /// Indexes the pool for a reference to the actual object.
         /// Will return the Ref if it's a valid ID, or a null reference if not.
         [[nodiscard]]
-        Ref<T> operator[](const PoolID &id);
+        Ref<T> operator[] (const PoolID &id);
+        [[nodiscard]]
+        CRef<T> operator[] (const PoolID &id) const;
 
         /// The number of pool objects that are currently checked out.
         [[nodiscard]]
         size_t LiveCount()  const { return aliveCount; }
+
+        [[nodiscard]]
+        size_t RemainingCount() const { return pool.size() - aliveCount; }
 
         /// Gets the current size of the pool
         [[nodiscard]]
@@ -54,6 +72,8 @@ namespace SDG
         /// however, as the system may fail to allocate any time before it is reached.
         [[nodiscard]]
         size_t MaxSize() const;
+
+        Pool &Swap(Pool &pool);
 
     private:
         /// Holds freeList and pool object state information

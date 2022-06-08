@@ -2,11 +2,13 @@
 #include "PoolID.h"
 #include "Private/PoolNullIndex.h"
 
+#include <SDG/Lib/Array.h>
+
 #include <cstddef>
 #include <type_traits>
-#include <vector>
 
 #include <SDG/Lib/Ref.h>
+#include <SDG/Lib/ClassMacros.h>
 
 namespace SDG
 {
@@ -17,10 +19,16 @@ namespace SDG
     {
         static_assert(std::is_default_constructible_v<T>,
                       "Pooled type must be default constructable");
+        SDG_NOCOPY(FixedPool);
     public:
         /// Creates a pool with a specified size, default: 256.
         /// Throws InvalidArgumentException if the size exceeds its max size.
         FixedPool(size_t size);
+        FixedPool(FixedPool &&moved);
+
+        FixedPool &operator = (FixedPool &&moved);
+
+        void Clear();
 
         /// Checks out a fresh Pool object ID.
         /// Pool::operator[] can be used to get a ref to the actual object.
@@ -44,21 +52,21 @@ namespace SDG
         [[nodiscard]]
         Ref<T> operator[](const PoolID &id);
 
+        [[nodiscard]]
+        const Ref<T> operator[](const PoolID &id) const;
+
         /// The number of pool objects that are currently checked out.
         [[nodiscard]]
-        size_t LiveCount()  const
-        {
-            return aliveCount;
-        }
+        size_t LiveCount()  const { return aliveCount; }
 
         /// Gets the current size of the pool
         [[nodiscard]]
-        size_t Size() const { return pool.size(); }
-        /// Gets the maximum potential pool size. This is calculated according to the
-        /// C++ standard by certain system and library calculations. This size is not guaranteed,
-        /// however, as the system may fail to allocate any time before it is reached.
+        size_t Size() const { return pool.Size(); }
+
         [[nodiscard]]
-        size_t MaxSize() const;
+        size_t RemainingCount() const { return pool.Size() - aliveCount; }
+
+        FixedPool &Swap(FixedPool &other);
 
     private:
         /// Holds freeList and pool object state information
@@ -78,7 +86,7 @@ namespace SDG
         Capsule &GetCapsule(const PoolID &id);
 
         /// pool storage
-        std::vector<Capsule> pool;
+        Array<Capsule> pool;
 
         /// assigner of unique id #'s to pool objects
         size_t ticket;

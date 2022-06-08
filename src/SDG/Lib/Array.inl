@@ -3,6 +3,14 @@
 #include <SDG/Exceptions/Fwd.h>
 #include <utility>
 
+
+namespace std
+{
+    template<typename T>
+    inline void swap(SDG::Array<T> &a, SDG::Array<T> &b) noexcept { a.Swap(b); }
+}
+
+
 namespace SDG
 {
     template<typename T>
@@ -24,6 +32,15 @@ namespace SDG
                 std::swap(temp, *p++);
             }
         }
+    }
+
+    template<typename T>
+    Array<T>::Array(Array<T> &&other) noexcept :
+        arr(other.arr),
+        size(other.size)
+    {
+        other.arr = nullptr;
+        other.size = 0;
     }
 
     template<typename T>
@@ -58,15 +75,23 @@ namespace SDG
     }
 
     template<typename T>
-    template <typename FwdIt>
-    Array<T>::Array(FwdIt _begin, FwdIt _end) 
+    template <typename It>
+    Array<T>::Array(It pBegin, It pEnd)  : arr(), size()
     {
-        static_assert(std::is_same_v<T, std::decay_t<decltype(*_begin)>>,
+        Assign(pBegin, pEnd);
+    }
+
+    template<typename T>
+    template<typename It>
+    Array<T> &Array<T>::Assign(It pBegin, It pEnd)
+    {
+        static_assert(std::is_same_v<T, std::decay_t<decltype(*pBegin)>>,
             "ForwardIterator must contain Array's type T");
+        Free(arr);
 
         // Get count
         size_t count = 0;
-        for (FwdIt it = _begin; it != _end; ++it)
+        for (It it = pBegin; it != pEnd; ++it)
             ++count;
 
         // Allocate memory
@@ -76,11 +101,66 @@ namespace SDG
 
         // Copy data
         T *ptr = arr;
-        for (FwdIt it = _begin; it != _end; ++it)
+        for (It it = pBegin; it != pEnd; ++it)
         {
             T temp(*it);
             std::swap(temp, *ptr++);
         }
+
+        return *this;
+    }
+
+    template<typename T>
+    void Array<T>::Clear()
+    {
+        Free(arr);
+        arr = nullptr;
+        size = 0;
+    }
+
+    template<typename T>
+    Array<T> &Array<T>::Assign(ConstIterator pBegin, ConstIterator pEnd)
+    {
+        Free(arr); // Free any pre-existing data
+        
+        // Allocate memory
+        size_t count = pEnd - pBegin;
+        arr = (count > 0) ? Calloc<T>(count) : nullptr;
+        memset(arr, 0, count * sizeof(T));
+        size = count;
+
+        // Copy data
+        T *ptr = arr;
+        for (ConstIterator it = pBegin; it != pEnd; ++it)
+        {
+            T temp(*it);
+            std::swap(temp, *ptr++);
+        }
+
+        return *this;
+    }
+
+
+
+    template<typename T>
+    Array<T> &Array<T>::operator = (const Array<T> &arr)
+    {
+        return Assign(arr.begin(), arr.end());
+    }
+
+    template<typename T>
+    Array<T> &Array<T>::operator = (Array<T> &&other) noexcept
+    {
+        if (&other == this)
+            return *this;
+
+        Free(arr);
+        arr = other.arr;
+        size = other.size;
+        other.arr = nullptr;
+        other.size = 0;
+
+        return *this;
     }
 
     template<typename T>
@@ -97,5 +177,14 @@ namespace SDG
         if (index >= size)
             ThrowOutOfRangeException(index, "Array max index exceeded");
         return arr[index];
+    }
+
+    template<typename T>
+    Array<T> &Array<T>::Swap(Array &other)
+    {
+        std::swap(arr, other.arr);
+        std::swap(size, other.size);
+
+        return *this;
     }
 }

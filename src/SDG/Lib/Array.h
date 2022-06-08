@@ -20,6 +20,7 @@ namespace SDG
         typedef ConstRAIterator<T> ConstIterator;
         /// Copy constructor
         Array(const Array<T> &other);
+        Array(Array<T> &&other) noexcept;
 
         /// Default constructs "size" number of objects of type T
         Array(size_t size = 0);
@@ -28,12 +29,27 @@ namespace SDG
         Array(const std::initializer_list<T> &list);
 
         /// Copies elements from a container's forward iterators
-        template <typename FwdIt>
-        Array(FwdIt _begin, FwdIt _end);
+        template <typename It>
+        Array(It pBegin, It pEnd);
+
+        Array(ConstIterator pBegin, ConstIterator pEnd)
+        {
+            Assign(pBegin, pEnd);
+        }
 
         ~Array();
 
+        Array &operator = (const Array &arr);
+        Array &operator = (Array &&arr) noexcept;
+
+        Array &Swap(Array &other);
+        void Clear();
+
     public:
+        template<typename It>
+        Array &Assign(It pBegin, It pEnd);
+        Array &Assign(ConstIterator pBegin, ConstIterator pEnd);
+
         /// Number of elements in this array
         size_t Size() const noexcept { return size; }
         /// Whether the array has no elements

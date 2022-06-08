@@ -135,4 +135,91 @@ TEST_CASE("Array tests", "[Array]")
         REQUIRE(arr.Data() == &arr.begin());
         REQUIRE(arr.Data() == &arr.cbegin());
     }
+
+    SECTION("Swap")
+    {
+        SECTION("Swap with data")
+        {
+            Array<int> a1 {0, 1, 2, 3, 4};
+            Array<int> a2{ 4, 3, 2, 1, 0, -1, -2, -3, -4 };
+            size_t a1Size = a1.Size();
+            size_t a2Size = a2.Size();
+            const int *a1Data = a1.Data();
+            const int *a2Data = a2.Data();
+
+            a1.Swap(a2);
+
+            REQUIRE(a1.Size() == a2Size);
+            REQUIRE(a2.Size() == a1Size);
+            REQUIRE(a1.Data() == a2Data);
+            REQUIRE(a2.Data() == a1Data);
+        }
+
+        SECTION("Swap without data still swaps memory addresses")
+        {
+            Array<int> a1;
+            Array<int> a2;
+            const int *a1Data = a1.Data();
+            const int *a2Data = a2.Data();
+
+            a1.Swap(a2);
+
+            REQUIRE(a1.Data() == a2Data);
+            REQUIRE(a2.Data() == a1Data);
+        }
+    }
+
+    SECTION("Move assignment")
+    {
+        Array<int> a2{ 0, 1, 2, 3, 4 };
+        size_t a2Size = a2.Size();
+        const int *a2Data = a2.Data();
+
+        Array<int> a1;
+
+        a1 = std::move(a2);
+
+        REQUIRE(a1.Size() == a2Size);
+        REQUIRE(a1.Data() == a2Data);
+        REQUIRE(a1[0] == 0);
+        REQUIRE(a1[2] == 2);
+        REQUIRE(a1[4] == 4);
+    }
+
+    SECTION("Move constructor")
+    {
+        Array<int> a2{ 0, 1, 2, 3, 4 };
+        size_t a2Size = a2.Size();
+        const int *a2Data = a2.Data();
+
+        Array<int> a1 = std::move(a2);
+
+        REQUIRE(a1.Size() == a2Size);
+        REQUIRE(a1.Data() == a2Data);
+        REQUIRE(a1[0] == 0);
+        REQUIRE(a1[2] == 2);
+        REQUIRE(a1[4] == 4);
+    }
+
+    SECTION("Move assignment: empty")
+    {
+        Array<int> a2;
+        const int *a2Data = a2.Data();
+
+        Array<int> a1;
+
+        a1 = std::move(a2);
+
+        REQUIRE(a1.Data() == a2Data);
+    }
+
+    SECTION("Move constructor: empty")
+    {
+        Array<int> a2;
+        const int *a2Data = a2.Data();
+
+        Array<int> a1 = std::move(a2);
+
+        REQUIRE(a1.Data() == a2Data);
+    }
 }

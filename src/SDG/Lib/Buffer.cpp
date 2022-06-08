@@ -58,6 +58,14 @@ namespace SDG
         memcpy(buf_, buffer.buf_, buffer.Size());
     }
 
+    Buffer::Buffer(Buffer &&buffer) noexcept :
+        buf_(buffer.buf_), head_(buffer.head_),
+        end_(buffer.end_), endian_(buffer.endian_),
+        cap_(buffer.cap_)
+    {
+        memset(&buffer, 0, sizeof(Buffer));
+    }
+
     Buffer &
     Buffer::operator = (const Buffer &buffer)
     {
@@ -67,6 +75,23 @@ namespace SDG
         end_ = buf_ + buffer.Size();
         memcpy(buf_, buffer.buf_, buffer.Size());
 
+        return *this;
+    }
+
+    Buffer &
+    Buffer::operator = (Buffer &&buffer) noexcept
+    {
+        if (&buffer == this)
+            return *this;
+
+        Free(buf_);
+        buf_ = buffer.buf_;
+        head_ = buffer.head_;
+        end_ = buffer.end_;
+        endian_ = buffer.endian_;
+        cap_ = buffer.cap_;
+
+        memset(&buffer, 0, sizeof(Buffer));
         return *this;
     }
 

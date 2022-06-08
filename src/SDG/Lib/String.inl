@@ -5,6 +5,16 @@
 #include <iomanip>
 #include <sstream>
 #include <type_traits>
+#include <utility>
+
+namespace std
+{
+    template<>
+    inline void swap(SDG::String &a, SDG::String &b) noexcept
+    {
+        a.Swap(b);
+    }
+}
 
 namespace SDG
 {

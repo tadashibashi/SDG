@@ -1,10 +1,34 @@
 // Inline implementation
 #include "Ref.h"
+#include <SDG/Exceptions/Fwd.h>
+
 #include <type_traits>
+
 
 namespace SDG
 {
-    // ===== CRef Implementation ==============================================
+    // ===== Ref Implementation ==============================================
+
+    template<typename T>
+    Ref<T> &Ref<T>::operator = (Ref<T> &ref)
+    {
+        this->ref = ref.ref;
+        return *this;
+    }
+
+    template<typename T>
+    Ref<T> &Ref<T>::operator = (T *ref)
+    {
+        this->ref = ref;
+        return *this;
+    }
+
+    template<typename T>
+    Ref<T> &Ref<T>::operator = (T &ref)
+    {
+        this->ref = &ref;
+        return *this;
+    }
 
     template<typename T>
     bool Ref<T>::operator==(const Ref &other) const
@@ -19,18 +43,34 @@ namespace SDG
     }
 
     template<typename T>
-    T *Ref<T>::operator->() const
+    T *Ref<T>::operator->()
     {
         if (!ref) /// Prevent access to a nullptr
-            throw NullReferenceException();
+            ThrowNullReferenceException();
         return ref;
     }
 
     template<typename T>
-    T &Ref<T>::operator *() const
+    const T *Ref<T>::operator->() const
     {
         if (!ref) /// Prevent access to a nullptr
-            throw NullReferenceException();
+            ThrowNullReferenceException();
+        return ref;
+    }
+
+    template<typename T>
+    T &Ref<T>::operator *()
+    {
+        if (!ref) /// Prevent access to a nullptr
+            ThrowNullReferenceException();
+        return *ref;
+    }
+
+    template<typename T>
+    const T &Ref<T>::operator *() const
+    {
+        if (!ref) /// Prevent access to a nullptr
+            ThrowNullReferenceException();
         return *ref;
     }
 
@@ -47,10 +87,38 @@ namespace SDG
     // ===== CRef Implementation ==============================================
 
     template<typename T>
+    CRef<T> &CRef<T>::operator = (const Ref<T> ref)
+    {
+        this->ref = ref.ref;
+        return *this;
+    }
+
+    template<typename T>
+    CRef<T> &CRef<T>::operator = (const CRef<T> ref)
+    {
+        this->ref = ref.ref;
+        return *this;
+    }
+
+    template<typename T>
+    CRef<T> &CRef<T>::operator = (const T *ref)
+    {
+        this->ref = ref;
+        return *this;
+    }
+
+    template<typename T>
+    CRef<T> &CRef<T>::operator = (const T &ref)
+    {
+        this->ref = &ref;
+        return *this;
+    }
+
+    template<typename T>
     const T *CRef<T>::operator->() const
     {
         if (!ref) /// Prevent access to a nullptr
-            throw NullReferenceException();
+            ThrowNullReferenceException();
         return ref;
     }
 
@@ -58,7 +126,7 @@ namespace SDG
     const T &CRef<T>::operator *() const
     {
         if (!ref) /// Prevent access to a nullptr
-            throw NullReferenceException();
+            ThrowNullReferenceException();
         return *ref;
     }
 

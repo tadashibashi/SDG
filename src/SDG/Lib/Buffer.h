@@ -8,8 +8,6 @@
 #include <SDG/Lib/String.h>
 #include <utility>
 
-using std::swap;
-
 
 namespace SDG
 {
@@ -31,11 +29,14 @@ namespace SDG
         /// @param endian  - target endianness of the data
         Buffer(size_t initCap = DefaultInitCap, Endian endian = Endian::Little);
         Buffer(void *data, size_t size, Endian endian = Endian::Little);
+        Buffer(Buffer &&buffer) noexcept;
 
         // When assigning or copying, the buffer's data gets copied and
         // the head gets reset to 0 in the recipient Buffer.
         Buffer(const Buffer &buffer);
         Buffer &operator = (const Buffer &buffer);
+        Buffer &operator = (Buffer &&buffer) noexcept;
+
         ~Buffer();
 
         /// Reads a primitive type from the buffer. Other types will result
@@ -158,5 +159,9 @@ namespace SDG
     };
 }
 
-// Conformance with the standard library swap
-inline void swap(SDG::Buffer &a, SDG::Buffer &b) { a.Swap(b); }
+namespace std
+{
+    // Conformance with the standard library swap
+    template <>
+    inline void swap(SDG::Buffer &a, SDG::Buffer &b) { a.Swap(b); }
+}

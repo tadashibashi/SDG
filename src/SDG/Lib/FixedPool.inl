@@ -1,26 +1,21 @@
 // Inline implementation
 #include "FixedPool.h"
 #include <SDG/Debug/Assert.h>
-#include <SDG/Exceptions/OutOfRangeException.h>
-#include <SDG/Exceptions/InvalidArgumentException.h>
+#include <SDG/Exceptions/Fwd.h>
+#include <utility>
+
+namespace std
+{
+    template<typename T>
+    inline void swap(SDG::FixedPool<T> &a, SDG::FixedPool<T> &b) noexcept { a.Swap(b); }
+}
 
 namespace SDG
 {
     template<typename T>
     FixedPool<T>::FixedPool(size_t size) :
-        pool(), ticket(0), nextFree(PoolNullIndex), aliveCount(0)
+        pool(size), ticket(0), nextFree(PoolNullIndex), aliveCount(0)
     {
-        // Check for errors
-        if (size > MaxSize())
-        {
-            throw InvalidArgumentException("Pool::Pool(size_t initSize)",
-                "initSize", "initCap must be <= Pool<T>::MaxSize(): " +
-                std::to_string(MaxSize()) + ", but got " + std::to_string(size));
-        }
-
-        // Perform resize, and set pool capsule values
-        pool.resize(size);
-
         for (size_t i = 0; i < size; ++i)
         {
             Capsule &capsule = pool[i];
@@ -32,12 +27,44 @@ namespace SDG
     }
 
     template<typename T>
+    FixedPool<T>::FixedPool(FixedPool &&moved) : pool(std::move(moved.pool)), ticket(moved.ticket),
+        nextFree(moved.nextFree), aliveCount(moved.aliveCount)
+    {
+        moved.Clear();
+    }
+
+    template<typename T>
+    FixedPool<T> &FixedPool<T>::operator = (FixedPool<T> &&moved)
+    {
+        if (&moved == this)
+            return *this;
+
+        Clear();
+        pool = std::move(moved.pool);
+        ticket = moved.ticket;
+        nextFree = moved.nextFree;
+        aliveCount = moved.aliveCount;
+        moved.Clear();
+
+        return *this;
+    }
+
+    template<typename T>
+    void FixedPool<T>::Clear()
+    {
+        pool.Clear();
+        ticket = 0;
+        nextFree = PoolNullIndex;
+        aliveCount = 0;
+    }
+
+    template<typename T>
     PoolID FixedPool<T>::Checkout()
     {
         // Check if Pool must be expanded
         if (nextFree == PoolNullIndex)
         {
-            throw RuntimeException("Cannot call Checkout on an empty FixedPool.");
+            ThrowRuntimeException("Cannot call Checkout on an empty FixedPool.");
         }
 
         size_t index = nextFree;
@@ -88,7 +115,7 @@ namespace SDG
     template<typename T>
     void FixedPool<T>::PutBack(const PoolID &id)
     {
-        SDG_Assert(id.index < pool.size());
+        SDG_Assert(id.index < pool.Size());
 
         Capsule &capsule = pool[id.index];
         if (capsule.id == id.id)
@@ -100,14 +127,6 @@ namespace SDG
 
             --aliveCount;
         }
-    }
-
-
-    template<typename T>
-    size_t FixedPool<T>::MaxSize() const
-    {
-        // -1 in case max_size == PoolNullIndex for some reason
-        return pool.max_size() - 1;
     }
 
 
@@ -126,7 +145,7 @@ namespace SDG
     template<typename T>
     typename FixedPool<T>::Capsule &FixedPool<T>::GetCapsule(const PoolID &id)
     {
-        SDG_Assert(id.index < pool.size());
+        SDG_Assert(id.index < pool.Size());
         return pool[id.index];
     }
 
@@ -136,4 +155,16 @@ namespace SDG
     {
         return (capsule.id == id.id && capsule.isAlive);
     }
+
+    template <typename T>
+    FixedPool<T> &FixedPool<T>::Swap(FixedPool<T> &other)
+    {
+        std::swap(pool, other.pool);
+        std::swap(ticket, other.ticket);
+        std::swap(aliveCount, other.aliveCount);
+        std::swap(nextFree, other.nextFree);
+        return *this;
+    }
 }
+
+

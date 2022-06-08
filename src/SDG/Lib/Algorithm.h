@@ -5,7 +5,6 @@
 
 namespace SDG
 {
-
     /// Perform a callback predicate on RandomAccess Iterators from containers in the SDG library. 
     /// Receives both the value and index.
     /// @param pred - predicate signature: [](const T &value, size_t index)->void

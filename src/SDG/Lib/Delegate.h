@@ -17,7 +17,8 @@ namespace SDG {
     /**
      * @class
      * A Delegate is an event observer that can invoke callbacks of subscribed listeners when an event has occured.
-     * "Listeners" are actually function pointers the user passes into the Delegate, which gets wrapped and stored inside.
+     * Inspired by JavaScript listeners and C# delegates, "Listeners" are actually function pointers the user passes 
+     * into the Delegate, which gets wrapped and stored inside.
      * No subclassing of a Listener class is necessary, which is the main difference from the Observer pattern.
      * Both member and global function callbacks are supported.
      *
@@ -32,7 +33,7 @@ namespace SDG {
      * These arguments are copied for each callback, so it is wise to use small objects like pointers/refs,
      * primitives or small structs.
      *
-     * @tparam Args Argument types that the Delegate requires for each of its callback listeners.
+     * @tparam Args - argument types that the Delegate requires for each of its callback listeners.
      *
      */
     template <typename... Args>

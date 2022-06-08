@@ -166,4 +166,100 @@ TEST_CASE("Buffer tests", "[Buffer]")
             REQUIRE(k == 10);
         }
     }
+
+    SECTION("Swap")
+    {
+        SECTION("Filled buffer")
+        {
+            Buffer buf1, buf2;
+            buf1.Write(10);
+            buf1.Write(20);
+            buf2.Write(30);
+            buf2.Write(40);
+
+            const uint8_t *orig1 = buf1.Data(), *orig2 = buf2.Data();
+
+            buf1.Swap(buf2);
+            buf1.Seek(0);
+            buf2.Seek(0);
+
+            int i;
+            buf1.Read(i);
+            REQUIRE(i == 30);
+            buf1.Read(i);
+            REQUIRE(i == 40);
+            buf2.Read(i);
+            REQUIRE(i == 10);
+            buf2.Read(i);
+            REQUIRE(i == 20);
+
+            REQUIRE(buf1.Data() == orig2);
+            REQUIRE(buf2.Data() == orig1);
+        }
+
+        SECTION("Empty buffers still swap memory positions")
+        {
+            Buffer buf1, buf2;
+            const uint8_t *orig1 = buf1.Data(), *orig2 = buf2.Data();
+
+            buf1.Swap(buf2);
+            REQUIRE(buf1.Data() == orig2);
+            REQUIRE(buf2.Data() == orig1);
+        }
+
+    }
+
+    SECTION("Move assigment operator")
+    {
+        Buffer buf1, buf2;
+        buf2.Write(10);
+        buf2.Write(20);
+        const uint8_t *orig2 = buf2.Data();
+        buf2.Seek(0);
+        buf1 = std::move(buf2);
+        
+        REQUIRE(buf1.Data() == orig2);
+        int i;
+        buf1.Read(i);
+        REQUIRE(i == 10);
+        buf1.Read(i);
+        REQUIRE(i == 20);
+    }
+
+    SECTION("Move assigment constructor")
+    {
+        Buffer buf2;
+        buf2.Write(10);
+        buf2.Write(20);
+        const uint8_t *orig2 = buf2.Data();
+        buf2.Seek(0);
+        Buffer buf1 = std::move(buf2);
+
+        REQUIRE(buf1.Data() == orig2);
+        int i;
+        buf1.Read(i);
+        REQUIRE(i == 10);
+        buf1.Read(i);
+        REQUIRE(i == 20);
+    }
+
+    SECTION("Move assigment operator: empty")
+    {
+        Buffer buf1, buf2;
+        const uint8_t *orig2 = buf2.Data();
+
+        buf1 = std::move(buf2);
+
+        REQUIRE(buf1.Data() == orig2);
+    }
+
+    SECTION("Move assigment constructor: empty")
+    {
+        Buffer buf2;
+        const uint8_t *orig2 = buf2.Data();
+
+        Buffer buf1 = std::move(buf2);
+
+        REQUIRE(buf1.Data() == orig2);
+    }
 }

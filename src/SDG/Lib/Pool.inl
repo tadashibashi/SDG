@@ -1,10 +1,48 @@
 #include "Pool.h"
 #include <SDG/Debug/Assert.h>
-#include <SDG/Exceptions/OutOfRangeException.h>
-#include <SDG/Exceptions/InvalidArgumentException.h>
+#include <SDG/Exceptions/Fwd.h>
+#include <utility>
+
+namespace std
+{
+    template<typename T>
+    inline void swap(SDG::Pool<T> &a, SDG::Pool<T> &b) noexcept { a.Swap(b); }
+}
 
 namespace SDG
 {
+    template<typename T>
+    Pool<T>::Pool(Pool<T> &&moved) : pool(std::move(moved.pool)), ticket(moved.ticket), 
+        aliveCount(moved.aliveCount), nextFree(moved.nextFree)
+    {
+        moved.Clear();
+    }
+
+    template<typename T>
+    void Pool<T>::Clear()
+    {
+        pool.clear();
+        nextFree = PoolNullIndex;
+        ticket = 0;
+        aliveCount = 0;
+    }
+
+    template<typename T>
+    Pool<T> &Pool<T>::operator = (Pool &&moved)
+    {
+        if (&moved == this)
+            return *this;
+
+        Clear();
+        pool = std::move(moved.pool);
+        nextFree = moved.nextFree;
+        ticket = moved.ticket;
+        aliveCount = moved.aliveCount;
+        moved.Clear();
+
+        return *this;
+    }
+
     template<typename T>
     Pool<T>::Pool(size_t initSize) : pool(), ticket(0), nextFree(PoolNullIndex),
         aliveCount(0)
@@ -95,13 +133,23 @@ namespace SDG
 
 
     template<typename T>
-    Ref<T> Pool<T>::operator[](const PoolID &id)
+    Ref<T> Pool<T>::operator[] (const PoolID &id)
     {
         Capsule &capsule = GetCapsule(id);
 
         return IsValid(id, capsule) ?
-            Ref{ capsule.object } :
-            Ref<T>{};
+            &capsule.object :
+            nullptr;
+    }
+
+    template<typename T>
+    CRef<T> Pool<T>::operator[](const PoolID &id) const
+    {
+        Capsule &capsule = GetCapsule(id);
+
+        return IsValid(id, capsule) ?
+            &capsule.object:
+            nullptr;
     }
 
 
@@ -116,12 +164,12 @@ namespace SDG
         // Check for errors
         if (size > MaxSize())
         {
-            throw InvalidArgumentException("Pool::Pool(size_t initSize)",
+            ThrowInvalidArgumentException("Pool::Pool(size_t initSize)",
                 "initSize", "initCap must be <= Pool<T>::MaxSize(): " +
                 std::to_string(MaxSize()) + ", but got " + std::to_string(size));
         }
         if (size <= current)
-            throw OutOfRangeException(size, "Pool most likely has reached maximum size.");
+            ThrowOutOfRangeException(size, "Pool most likely has reached maximum size.");
 
         // Perform resize, and set pool capsule values
         pool.resize(size);
@@ -148,5 +196,15 @@ namespace SDG
     bool Pool<T>::IsValid(const PoolID &id, const Pool::Capsule &capsule)
     {
         return (capsule.id == id.id && capsule.isAlive);
+    }
+
+    template<typename T>
+    Pool<T> &Pool<T>::Swap(Pool &other)
+    {
+        std::swap(pool, other.pool);
+        std::swap(aliveCount, other.aliveCount);
+        std::swap(ticket, other.ticket);
+        std::swap(nextFree, other.nextFree);
+        return *this;
     }
 }

@@ -1,7 +1,6 @@
 #include "Array.h"
-#include <SDG/Exceptions/OutOfRangeException.h>
 #include <SDG/Lib/Memory.h>
-
+#include <SDG/Exceptions/Fwd.h>
 #include <utility>
 
 namespace SDG
@@ -72,6 +71,7 @@ namespace SDG
 
         // Allocate memory
         arr = (count > 0) ? Calloc<T>(count) : nullptr;
+        memset(arr, 0, count * sizeof(T));
         size = count;
 
         // Copy data
@@ -87,7 +87,7 @@ namespace SDG
     const T &Array<T>::At(unsigned index) const
     {
         if (index >= size)
-            throw OutOfRangeException(index, "Array max index exceeded");
+            ThrowOutOfRangeException(index, "Array max index exceeded");
         return arr[index];
     }
 
@@ -95,7 +95,7 @@ namespace SDG
     T &Array<T>::At(unsigned index)
     {
         if (index >= size)
-            throw OutOfRangeException(index, "Array max index exceeded");
+            ThrowOutOfRangeException(index, "Array max index exceeded");
         return arr[index];
     }
 }

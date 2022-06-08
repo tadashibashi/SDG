@@ -3,6 +3,7 @@
 #pragma once
 #include <catch2/catch_test_macros.hpp>
 #include <SDG/Lib/Platform.h>
+#include <SDG/Exceptions.hpp>
 
 namespace SDG::Tests
 {

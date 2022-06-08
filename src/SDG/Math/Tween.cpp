@@ -63,7 +63,7 @@ namespace SDG
     {
         // Cannot calculate a value if there is no TweenFunction to perform.
         if (!func_)
-            throw NullReferenceException(SDG_TRACE() + "Tween is missing "
+            throw NullReferenceException(SDG_TRACE + "Tween is missing "
                    "a TweenFunction");
 
         return func_(seconds, 0, 1.0f, duration_);

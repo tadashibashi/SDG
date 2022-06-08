@@ -1,4 +1,6 @@
 #pragma once
+#include <SDG/Lib/RAIterator.h>
+
 #include <cstddef>
 #include <initializer_list>
 #include <type_traits>
@@ -14,6 +16,8 @@ namespace SDG
         static_assert(std::is_swappable_v<T>,
             "Array<T>: T must be swappable");
     public:
+        typedef RAIterator<T> Iterator;
+        typedef ConstRAIterator<T> ConstIterator;
         /// Copy constructor
         Array(const Array<T> &other);
 
@@ -31,20 +35,20 @@ namespace SDG
 
     public:
         /// Number of elements in this array
-        size_t Size() const { return size; }
+        size_t Size() const noexcept { return size; }
         /// Whether the array has no elements
         bool Empty() const { return !arr; }
         /// Access raw array for copying, but not alteration.
         const T *Data() const { return arr; }
 
         // ===== Iterators ====================================================
-        typedef T *Iterator;
-        typedef const T *ConstIterator;
 
-        Iterator begin() { return arr; }
-        Iterator end() { return arr + size; }
-        ConstIterator cbegin() const { return arr; }
-        ConstIterator cend() const { return arr + size; }
+        Iterator begin() { return { arr, arr, arr + size }; }
+        ConstIterator begin() const { return { arr, arr + size, arr + size }; }
+        Iterator end() { return { arr + size, arr, arr + size }; }
+        ConstIterator end() const { return { arr + size, arr, arr + size }; }
+        ConstIterator cbegin() const { return { arr, arr, arr + size }; }
+        ConstIterator cend() const { return { arr + size, arr, arr + size }; }
 
         // ===== Indexers =====================================================
 

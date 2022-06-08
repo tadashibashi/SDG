@@ -1,5 +1,4 @@
 #include "SDG_Tests.h"
-#include "SDG/Exceptions/OutOfRangeException.h"
 #include <SDG/Debug/Log.h>
 #include <SDG/Lib/String.h>
 
@@ -1099,6 +1098,7 @@ TEST_CASE("String tests", "[String]")
 
     SECTION("Format")
     {
+        // Extensive tests here aren't too necessary since the function is a thin wrapper around the fmt library
         REQUIRE(String::Format("Hello") == "Hello");
         REQUIRE(String::Format("Hello {}", "World") == "Hello World");
         REQUIRE(String::Format("Hello {} {}", 10, "Worlds") == "Hello 10 Worlds");
@@ -1106,4 +1106,243 @@ TEST_CASE("String tests", "[String]")
         REQUIRE(String::Format("Hello {} {}{} {}", 10, "Worlds", '!', String("String")) == 
             "Hello 10 Worlds! String");
     }
+
+    SECTION("Convert To")
+    {
+        SECTION("Throw on invalid number")
+        {
+            String str = "zypqwer";
+            bool didThrow = false;
+            try {
+                int i = str.To<int>();
+            }
+            catch (const RuntimeException &e)
+            {
+                didThrow = true;
+            }
+            
+            REQUIRE(didThrow);
+        }
+
+        SECTION("Convert from hex string")
+        {
+            SECTION("Normal")
+            {
+                REQUIRE(String("FF").To<unsigned>(16) == 255u);
+                REQUIRE(String("ff").To<unsigned>(16) == 255u);
+                REQUIRE(String("fea").To<unsigned>(16) == 0xfea);
+                REQUIRE(String("-fea").To<unsigned>(16) == -0xfea);
+                REQUIRE(String("0123").To<unsigned>(8) == 0123);
+            }
+
+
+            SECTION("Prepending symbols")
+            {
+                REQUIRE(String("0xFF").To<unsigned>(16) == 255u);
+                REQUIRE(String("#ff").To<unsigned>(16) == 255u);
+                REQUIRE(String("0127").To<unsigned>(8) == 0127);
+                REQUIRE(String("x-fea").To<unsigned>(16) == -0xfea);
+            }
+
+            SECTION("Postpending symbols")
+            {
+                REQUIRE(String("0xFFzwer").To<unsigned>(16) == 255u);
+                REQUIRE(String("#ff#").To<unsigned>(16) == 255u);
+                REQUIRE(String("0127&*").To<unsigned>(8) == 0127);
+                REQUIRE(String("x-fea)(").To<unsigned>(16) == -0xfea);
+            }
+        }
+
+        SECTION("Convert decimal")
+        {
+            REQUIRE(String("123.123").To<float>() == 123.123f);
+            REQUIRE(String("-123.123").To<float>() == -123.123f);
+            REQUIRE(String("0.123f").To<float>() == .123f);
+            REQUIRE(String(".123f").To<float>() == .123f);
+            REQUIRE(String("-.123f").To<float>() == -.123f);
+            REQUIRE(String("0.123f").To<float>() == .123f);
+        }
+    }
+
+    SECTION("Split")
+    {
+        SECTION("Typical use case")
+        {
+            String str("hello world lots of space-separated words\n"
+                "with a line-break and also a carriage return\r"
+                "and now this is the end");
+
+            auto vec = str.Split();
+            REQUIRE(vec.Size() == 20);
+            REQUIRE(vec[0] == "hello");
+            REQUIRE(vec[5] == "words");
+            REQUIRE(vec[10] == "also");
+            REQUIRE(vec[19] == "end");
+        }
+
+        SECTION("Space in the beginning")
+        {
+            String str("   \n\n\r there is space in the beginning.");
+            auto vec = str.Split();
+            REQUIRE(vec.Size() == 6);
+            REQUIRE(vec[0] == "there");
+            REQUIRE(vec[5] == "beginning.");
+        }
+
+        SECTION("Space in the beginning and end")
+        {
+            String str("   \n\n\r there is space in the beginning.    \n\n \r");
+            auto vec = str.Split();
+            REQUIRE(vec.Size() == 6);
+            REQUIRE(vec[0] == "there");
+            REQUIRE(vec[5] == "beginning.");
+        }
+    }
+
+    SECTION("Insert")
+    {
+        SECTION("Insert in the middle")
+        {
+            String str = "hello"; String str2 = "world";
+
+            SECTION("String overload")
+            {
+                REQUIRE(str.Insert(str2, 1) == "hworldello");
+            }
+            SECTION("StringView overload")
+            {
+                REQUIRE(str.Insert(StringView(str2), 1) == "hworldello");
+            }
+            SECTION("C-string overload")
+            {
+                REQUIRE(str.Insert(str2.Cstr(), 5, 1) == "hworldello");
+            }
+        }
+
+        SECTION("Append at end")
+        {
+            String str = "hello"; String str2 = "world";
+
+            SECTION("String overload")
+            {
+                REQUIRE(str.Insert(str2, str.Length()) == "helloworld");
+            }
+            SECTION("StringView overload")
+            {
+                REQUIRE(str.Insert(StringView(str2), str.Length()) == "helloworld");
+            }
+            SECTION("C-string overload")
+            {
+                REQUIRE(str.Insert(str2.Cstr(), str2.Length(), str.Length()) == "helloworld");
+            }
+        }
+
+        SECTION("Insert at beginning")
+        {
+            String str1 = "hijklmn"; String str2 = "abcdefg";
+
+            SECTION("String overload")
+            {
+                REQUIRE(str1.Insert(str2, 0) == "abcdefghijklmn");
+            }
+            
+            SECTION("StringView overload")
+            {
+                REQUIRE(str1.Insert(StringView(str2), 0) == "abcdefghijklmn");
+            }
+            
+            SECTION("C-string overload")
+            {
+                REQUIRE(str1.Insert(str2.Cstr(), str2.Length(), 0) == "abcdefghijklmn");
+            }
+        }
+
+        SECTION("Insertion past index throws exception")
+        {
+            String str1 = "a"; String str2 = "b";
+            bool didThrow = false;
+
+            SECTION("String overload")
+            {
+                try {
+                    str1.Insert(str2, 2);
+                }
+                catch (const OutOfRangeException &e)
+                {
+                    didThrow = true;
+                }
+
+                REQUIRE(didThrow);
+            }
+
+            SECTION("StringView overload")
+            {
+                try {
+                    str1.Insert(StringView(str2), 2);
+                }
+                catch (const OutOfRangeException &e)
+                {
+                    didThrow = true;
+                }
+
+                REQUIRE(didThrow);
+            }
+
+            SECTION("C-String overload")
+            {
+                try {
+                    str1.Insert(str2.Cstr(), 1, 2);
+                }
+                catch (const OutOfRangeException &e)
+                {
+                    didThrow = true;
+                }
+
+                REQUIRE(didThrow);
+            }
+
+        }
+
+        SECTION("Insertion of nullptr on empty String does not affect String")
+        {
+            String str;
+
+            str.Insert(nullptr, 0, 0);
+            REQUIRE(str.Empty());
+        }
+
+        SECTION("Insertion of nullptr on String with size does not affect String")
+        {
+            String str("abc");
+
+            str.Insert(nullptr, 0, 0);
+            REQUIRE(str == "abc");
+        }
+
+        SECTION("Insertion of empty String does not affect String")
+        {
+            String str1;
+            String str2;
+
+            SECTION("String overload")
+            {
+                str1.Insert(str2, 0);
+                REQUIRE(str1.Empty());
+            }
+
+            SECTION("StringView overload")
+            {
+                str1.Insert(StringView(str2), 0);
+                REQUIRE(str1.Empty());
+            }
+
+            SECTION("C-string overload")
+            {
+                str1.Insert(str2.Cstr(), 0, 0);
+                REQUIRE(str1.Empty());
+            }
+        }
+    }
+
+    
 } 

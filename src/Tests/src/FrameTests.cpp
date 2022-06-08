@@ -1,13 +1,13 @@
 #include "SDG_Tests.h"
 #include <SDG/Graphics/Frame.h>
-
+#include <SDG/Graphics/Texture.h>
 
 TEST_CASE("Frame tests", "[Frame]")
 {
     Texture *tex = nullptr;
 
     Frame frame(Rectangle(0, 0, 32, 32), Rectangle(0, 0, 64, 64), true,
-        Point(16, 16), "TestFrame", CRef(tex));
+        Point(16, 16), "TestFrame", tex);
 
     REQUIRE(frame.Anchor() == Point(16, 16));
     REQUIRE(frame.Angle() == 90.f);

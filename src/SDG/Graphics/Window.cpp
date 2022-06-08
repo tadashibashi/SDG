@@ -56,9 +56,9 @@ namespace SDG
                      0);
             if (!target)
             {
-                SDG_Core_Err("SDL_gpu GPU_Target initialization failed: {}",
+                SDG_Core_Err("Window::Initialize: GPU_Target initialization failed: {}",
                     GPU_GetErrorString(GPU_PopErrorCode().error));
-                return -1;
+                return false;
             }
         }
         else
@@ -70,20 +70,18 @@ namespace SDG
                       flags | SDL_WINDOW_OPENGL);
             if (!window)
             {
-                SDG_Core_Err("SDL_Window initialization failed: {}", SDL_GetError());
-                return -1;
+                SDG_Core_Err("Window::Initialize: SDL_CreateWindow failed: {}", SDL_GetError());
+                return false;
             }
 
             target = GPU_CreateTargetFromWindow(SDL_GetWindowID(window));
             if (!target)
             {
-                SDG_Core_Err("SDL_gpu GPU_Target init from SDL_Window failed: {}",
+                SDG_Core_Err("Window::Initialize: GPU_CreateTargetFromWindow failed: {}",
                     GPU_GetErrorString(GPU_PopErrorCode().error));
-                return -1;
+                return false;
             }
         }
-
-
 
 
         impl->target.EmplaceTarget(Ref{target});

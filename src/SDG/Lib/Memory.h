@@ -3,8 +3,7 @@
 /// Contains functions for safely handling memory allocation on the heap
 ///
 #pragma once
-#include <SDG/Exceptions/RuntimeException.h>
-
+#include <SDG/Exceptions/Fwd.h>
 #include <cstdlib>
 
 namespace SDG
@@ -19,7 +18,7 @@ namespace SDG
     {
         T *temp = (T *)malloc(sizeof(T) * count);
         if (!temp)
-            throw RuntimeException("SDG::Calloc: Out of memory");
+            ThrowRuntimeException("SDG::Calloc: Out of memory");
         
         return temp;
     }
@@ -28,7 +27,7 @@ namespace SDG
     {
         void *temp = malloc(bytes);
         if (!temp)
-            throw RuntimeException("SDG::Malloc: Out of memory");
+            ThrowRuntimeException("SDG::Malloc: Out of memory");
 
         return temp;
     }
@@ -47,7 +46,7 @@ namespace SDG
     {
         T *temp = (T *)realloc(block, size);
         if (!temp)
-            throw RuntimeException("SDG::Realloc: Out of memory or pointer "
+            ThrowRuntimeException("SDG::Realloc: Out of memory or pointer "
                 "access violation.");
         return temp;
     }

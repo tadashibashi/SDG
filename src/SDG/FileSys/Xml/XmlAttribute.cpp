@@ -1,11 +1,14 @@
 #include "XmlAttribute.h"
+#include <SDG/Debug/Log.h>
 #include <SDG/Exceptions/NullReferenceException.h>
 #include <SDG/Exceptions/XmlFormattingException.h>
 #include <tinyxml2.h>
 
+
 namespace SDG::Xml
 {
-    XmlAttribute::XmlAttribute(const tinyxml2::XMLAttribute *attr) : attr(attr) { }
+    XmlAttribute::XmlAttribute(const tinyxml2::XMLAttribute *attr, bool required) : 
+        attr(attr), required(required) { }
 
     StringView XmlAttribute::Name() const
     {
@@ -22,14 +25,58 @@ namespace SDG::Xml
         return attr ? attr->Next() : throw NullReferenceException();
     }
 
+    bool XmlAttribute::Query(String &str) const
+    {
+        if (required)
+        {
+            if (!attr)
+                throw NullReferenceException();
+        }
+        else
+        {
+            if (!attr) return false;
+        }
+        
+        str = attr->Value();
+        return true;
+    }
+
+    bool XmlAttribute::Query(StringView &str) const
+    {
+        if (required)
+        {
+            if (!attr)
+                throw NullReferenceException();
+        }
+        else
+        {
+            if (!attr) return false;
+        }
+
+        str = attr->Value();
+        return true;
+    }
+
     bool XmlAttribute::Query(bool &b) const
     {
-        if (!attr)
-            throw NullReferenceException();
-        if (attr->QueryBoolValue(&b) != tinyxml2::XML_SUCCESS)
+        if (required)
         {
-            throw XmlFormattingException(String::Format("XmlAttribute: {}=\"{}\": line {}: failed to query a bool value",
-                attr->Name(), attr->Value(), attr->GetLineNum()));
+            if (!attr)
+                throw NullReferenceException();
+            if (attr->QueryBoolValue(&b) != tinyxml2::XML_SUCCESS)
+            {
+                throw XmlFormattingException(String::Format("XmlAttribute: {}=\"{}\": line {}: failed to query as a boolean value",
+                    attr->Name(), attr->Value(), attr->GetLineNum()));
+            }
+        }
+        else
+        {
+            if (!attr) return false;
+            if (attr->QueryBoolValue(&b) != tinyxml2::XML_SUCCESS)
+            {
+                SDG_Core_Warn("XmlAttribute: {}=\"{}\": line {}: failed to query as a boolean value");
+                return false;
+            }
         }
 
         return true;
@@ -37,12 +84,24 @@ namespace SDG::Xml
 
     bool XmlAttribute::Query(int &i) const
     {
-        if (!attr)
-            throw NullReferenceException();
-        if (attr->QueryIntValue(&i) != tinyxml2::XML_SUCCESS)
+        if (required)
         {
-            throw XmlFormattingException(String::Format("XmlAttribute: {}=\"{}\": line {}: failed to query an int value",
-                attr->Name(), attr->Value(), attr->GetLineNum()));
+            if (!attr)
+                throw NullReferenceException();
+            if (attr->QueryIntValue(&i) != tinyxml2::XML_SUCCESS)
+            {
+                throw XmlFormattingException(String::Format("XmlAttribute: {}=\"{}\": line {}: failed to query as an int value",
+                    attr->Name(), attr->Value(), attr->GetLineNum()));
+            }
+        }
+        else
+        {
+            if (!attr) return false;
+            if (attr->QueryIntValue(&i) != tinyxml2::XML_SUCCESS)
+            {
+                SDG_Core_Warn("XmlAttribute: {}=\"{}\": line {}: failed to query as an int value");
+                return false;
+            }
         }
 
         return true;
@@ -50,12 +109,24 @@ namespace SDG::Xml
 
     bool XmlAttribute::Query(int64_t &i) const
     {
-        if (!attr)
-            throw NullReferenceException();
-        if (attr->QueryInt64Value(&i) != tinyxml2::XML_SUCCESS)
+        if (required)
         {
-            throw XmlFormattingException(String::Format("XmlAttribute: {}=\"{}\": line {}: failed to query an int64_t value",
-                attr->Name(), attr->Value(), attr->GetLineNum()));
+            if (!attr)
+                throw NullReferenceException();
+            if (attr->QueryInt64Value(&i) != tinyxml2::XML_SUCCESS)
+            {
+                throw XmlFormattingException(String::Format("XmlAttribute: {}=\"{}\": line {}: failed to query as an int64 value",
+                    attr->Name(), attr->Value(), attr->GetLineNum()));
+            }
+        }
+        else
+        {
+            if (!attr) return false;
+            if (attr->QueryInt64Value(&i) != tinyxml2::XML_SUCCESS)
+            {
+                SDG_Core_Warn("XmlAttribute: {}=\"{}\": line {}: failed to query as an int64 value");
+                return false;
+            }
         }
 
         return true;
@@ -63,12 +134,24 @@ namespace SDG::Xml
 
     bool XmlAttribute::Query(unsigned &u) const
     {
-        if (!attr)
-            throw NullReferenceException();
-        if (attr->QueryUnsignedValue(&u) != tinyxml2::XML_SUCCESS)
+        if (required)
         {
-            throw XmlFormattingException(String::Format("XmlAttribute: {}=\"{}\": line {}: failed to query an unsigned int value",
-                attr->Name(), attr->Value(), attr->GetLineNum()));
+            if (!attr)
+                throw NullReferenceException();
+            if (attr->QueryUnsignedValue(&u) != tinyxml2::XML_SUCCESS)
+            {
+                throw XmlFormattingException(String::Format("XmlAttribute: {}=\"{}\": line {}: failed to query as an unsigned int value",
+                    attr->Name(), attr->Value(), attr->GetLineNum()));
+            }
+        }
+        else
+        {
+            if (!attr) return false;
+            if (attr->QueryUnsignedValue(&u) != tinyxml2::XML_SUCCESS)
+            {
+                SDG_Core_Warn("XmlAttribute: {}=\"{}\": line {}: failed to query as an unsigned int value");
+                return false;
+            }
         }
 
         return true;
@@ -76,12 +159,24 @@ namespace SDG::Xml
 
     bool XmlAttribute::Query(uint64_t &u) const
     {
-        if (!attr)
-            throw NullReferenceException();
-        if (attr->QueryUnsigned64Value(&u) != tinyxml2::XML_SUCCESS)
+        if (required)
         {
-            throw XmlFormattingException(String::Format("XmlAttribute: {}=\"{}\": line {}: failed to query a uint64_t value",
-                attr->Name(), attr->Value(), attr->GetLineNum()));
+            if (!attr)
+                throw NullReferenceException();
+            if (attr->QueryUnsigned64Value(&u) != tinyxml2::XML_SUCCESS)
+            {
+                throw XmlFormattingException(String::Format("XmlAttribute: {}=\"{}\": line {}: failed to query as a uint64 value",
+                    attr->Name(), attr->Value(), attr->GetLineNum()));
+            }
+        }
+        else
+        {
+            if (!attr) return false;
+            if (attr->QueryUnsigned64Value(&u) != tinyxml2::XML_SUCCESS)
+            {
+                SDG_Core_Warn("XmlAttribute: {}=\"{}\": line {}: failed to query as a uint64 value");
+                return false;
+            }
         }
 
         return true;
@@ -89,12 +184,24 @@ namespace SDG::Xml
 
     bool XmlAttribute::Query(float &f) const
     {
-        if (!attr)
-            throw NullReferenceException();
-        if (attr->QueryFloatValue(&f) != tinyxml2::XML_SUCCESS)
+        if (required)
         {
-            throw XmlFormattingException(String::Format("XmlAttribute: {}=\"{}\": line {}: failed to query a float value",
-                attr->Name(), attr->Value(), attr->GetLineNum()));
+            if (!attr)
+                throw NullReferenceException();
+            if (attr->QueryFloatValue(&f) != tinyxml2::XML_SUCCESS)
+            {
+                throw XmlFormattingException(String::Format("XmlAttribute: {}=\"{}\": line {}: failed to query as a float value",
+                    attr->Name(), attr->Value(), attr->GetLineNum()));
+            }
+        }
+        else
+        {
+            if (!attr) return false;
+            if (attr->QueryFloatValue(&f) != tinyxml2::XML_SUCCESS)
+            {
+                SDG_Core_Warn("XmlAttribute: {}=\"{}\": line {}: failed to query as a float value");
+                return false;
+            }
         }
 
         return true;
@@ -102,12 +209,24 @@ namespace SDG::Xml
 
     bool XmlAttribute::Query(double &d) const
     {
-        if (!attr)
-            throw NullReferenceException();
-        if (attr->QueryDoubleValue(&d) != tinyxml2::XML_SUCCESS)
+        if (required)
         {
-            throw XmlFormattingException(String::Format("XmlAttribute: {}=\"{}\": line {}: failed to query a double value int",
-                attr->Name(), attr->Value(), attr->GetLineNum()));
+            if (!attr)
+                throw NullReferenceException();
+            if (attr->QueryDoubleValue(&d) != tinyxml2::XML_SUCCESS)
+            {
+                throw XmlFormattingException(String::Format("XmlAttribute: {}=\"{}\": line {}: failed to query as a double value",
+                    attr->Name(), attr->Value(), attr->GetLineNum()));
+            }
+        }
+        else
+        {
+            if (!attr) return false;
+            if (attr->QueryDoubleValue(&d) != tinyxml2::XML_SUCCESS)
+            {
+                SDG_Core_Warn("XmlAttribute: {}=\"{}\": line {}: failed to query as a double value");
+                return false;
+            }
         }
 
         return true;

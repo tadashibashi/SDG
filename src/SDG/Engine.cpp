@@ -65,6 +65,8 @@ namespace SDG
     int
     Engine::Initialize_()
     {
+        SDG_Core_Log("{}:{}", SDG_FILEPATH, SDG_LINE);
+        SDG_Core_Log("{}:{}", SDG_FILENAME, SDG_LINE);
         AppConfig &config = impl->config;
         Ref<Window> window;
         if (impl->windows.CreateWindow(config.width, config.height, 

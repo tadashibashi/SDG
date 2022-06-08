@@ -2,6 +2,7 @@
 #include <SDG/Lib/String.h>
 
 #include <cstddef>
+#include <functional>
 #include <iosfwd>
 
 namespace SDG
@@ -10,6 +11,8 @@ namespace SDG
     class StringView
     {
     public:
+        typedef String::ConstIterator ConstIterator;
+
         /// Empty string
         StringView();
         StringView(const String &str);
@@ -40,6 +43,8 @@ namespace SDG
         /// @param pattern - the pattern to search for
         /// @param startingAt - the position to start searching from
         [[nodiscard]] size_t Find(const char *pattern, size_t startingAt = 0) const;
+
+        [[nodiscard]] ConstIterator FindIf(const std::function<bool(char)> &func) const;
         
         /// Finds the first occurance of a character.
         /// @param c - the character to find
@@ -61,11 +66,16 @@ namespace SDG
         /// @param startingAt - the position to start search from
         [[nodiscard]] size_t FindLastOf(const char *list, size_t startingAt = NullPos) const;
 
+        [[nodiscard]] ConstIterator begin() const;
+        [[nodiscard]] ConstIterator end() const;
+
         /// Makes a string from within the string. This operation is much
         /// faster than a regular String, which must allocate memory
         /// each time a substring is created. StringView does not allocate.
         [[nodiscard]]
         StringView Substr(size_t index, size_t count = NullPos) const;
+        [[nodiscard]]
+        StringView Substr(ConstIterator it, size_t count = NullPos) const;
 
         /// Gets the internal c-string
         [[nodiscard]]
@@ -91,12 +101,11 @@ namespace SDG
         [[nodiscard]]
         bool operator != (const char *s) const;
 
-        typedef const char *Iterator;
-        [[nodiscard]] Iterator begin() const;
-        [[nodiscard]] Iterator end() const;
-
         [[nodiscard]]
         char operator [] (unsigned i) const;
+
+        template<typename T>
+        [[nodiscard]] T To(int base = 10) const;
 
     private:
         const char *str_;
@@ -134,4 +143,40 @@ namespace SDG
     bool operator != (const std::string &a, const StringView &b);
     [[nodiscard]]
     bool operator != (const char *a, const StringView &b);
+
+
+}
+
+#include <sstream>
+#include <iomanip>
+#include <typeinfo>
+namespace SDG
+{
+    template <typename T>
+    T StringView::To(int base) const
+    {
+        static_assert(std::is_arithmetic_v<T>, "StringView::To<T>: type <T> must be arithmetic.");
+
+        // make sure the first char is numeric
+        auto it = FindIf([](char c) { return isalnum(c) || c == '.' || c == '-'; });
+        if (it < end())
+        {
+            while (*it == '0') ++it;
+
+            if (it < end())
+                while (std::tolower(*it) == 'x') ++it;
+        }
+
+        StringView v(&it, end() - it);
+        std::stringstream ss; T t;
+        ss << std::setbase(base);
+        ss << v;
+        ss >> t;
+
+        if (ss.fail())
+            throw RuntimeException(String::Format("StringView::To<{}>({}): failed to convert: \"{}\"",
+                typeid(T).name(), base, *this));
+
+        return t;
+    }
 }

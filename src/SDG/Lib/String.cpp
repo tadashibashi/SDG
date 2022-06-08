@@ -4,7 +4,9 @@
 #include <SDG/Debug/Assert.h>
 #include <SDG/Debug/Log.h>
 #include <SDG/Debug/LogImpl.h>
+#include <SDG/Debug/Trace.h>
 
+#include <SDG/Exceptions/RuntimeException.h>
 #include <SDG/Exceptions/OutOfRangeException.h>
 #include <SDG/Math/Math.h>
 
@@ -75,38 +77,71 @@ namespace SDG
         return *this;
     }
 
+    size_t String::FindFirstOf(size_t startingAt, const std::function<bool(char)> &func) const
+    {
+        if (Empty()) return NullPos;
+        if (!func) 
+            throw InvalidArgumentException("String::FindFirstOf(const std::function<bool(char)> &func)", 
+                "func", "Callback function does not have a function target.");
+        if (startingAt >= Length())
+            throw OutOfRangeException(startingAt, String::Format(
+                "String::FindFirstOf: startingAt max index {} was exceeded",
+                Length() - 1));
+
+        for (char *p = str_ + startingAt; p < end_; ++p)
+            if (func(*p))
+                return p - str_;
+        return NullPos;
+    }
+
     size_t
     String::FindFirstOf(char c, size_t startingAt) const
     {
-        if (Empty()) return NullPos;
+        return FindFirstOf(startingAt, [c](char currentChar) {
+            return currentChar == c;
+            });
+    }
 
-        if (startingAt >= Length())
-            throw OutOfRangeException(startingAt, "String max index: " +
-                std::to_string(Length() - 1));
+    size_t
+    String::FindNthOf(const char *list, size_t n, size_t startingAt) const
+    {
+        if (n == 0) return NullPos;
+        size_t pos = 0;
+        for (size_t i = 1; i <= n; ++i)
+        {
+            pos = FindFirstOf(list, pos) + 1;
 
-        for (char *p = str_ + startingAt; p < end_; ++p)
-            if (*p == c)
-                return p - str_;
+            if (pos == NullPos) break;
+        }
 
-        return NullPos;
+        return pos;
+    }
+
+    size_t
+    String::FindNthOf(char c, size_t n, size_t startingAt) const
+    {
+        if (n == 0) return NullPos;
+        size_t pos = 0;
+        for (size_t i = 1; i <= n; ++i)
+        {
+            pos = FindFirstOf(c, pos) + 1;
+
+            if (pos == NullPos) break;
+        }
+
+        return pos;
     }
 
     size_t
     String::FindFirstOf(const char *list, size_t startingAt) const
     {
-        if (Empty()) return NullPos;
-
         SDG_Assert(list && *list != '\0'); // list should have substance
-        if (startingAt >= Length())
-            throw OutOfRangeException(startingAt, "String max index: " +
-                std::to_string(Length() - 1));
 
-        for (char *p = str_ + startingAt; p < end_; ++p)
-            for (const char *q = list; *q != '\0'; ++q)
-                if (*p == *q)
-                    return p - str_;
-
-        return NullPos;
+        return FindFirstOf(startingAt, [list](char currentChar) -> bool {
+            for (const char *c = list; *c != '\0'; ++c)
+                if (*c == currentChar) return true;
+            return false;
+            });
     }
 
 
@@ -116,8 +151,8 @@ namespace SDG
         if (Empty()) return NullPos;
 
         if (startingAt >= Length())
-            throw OutOfRangeException(startingAt, "String max index: " +
-                std::to_string(Length() - 1));
+            throw OutOfRangeException(startingAt, 
+                String::Format("String::Find: max index {} was exceeded", Length()-1));
 
         for (const char *p = str_ + startingAt, *find = str, *ret = str_; p < end_; ++p)
         {
@@ -135,36 +170,140 @@ namespace SDG
         return NullPos;
     }
 
-    size_t
-    String::FindLastOf(char c, size_t startingAt) const
+    size_t String::FindLastOf(size_t startingAt, const std::function<bool(char)> &func) const
     {
         if (Empty()) return NullPos;
+        if (!func)
+            throw InvalidArgumentException("String::FindFirstOf(const std::function<bool(char)> &func)",
+                "func", "Callback function does not have a function target.");
 
         // Make sure we start at a valid index
         startingAt = Math::Min(startingAt, Length() - 1);
 
         for (char *p = str_ + startingAt; p >= str_; --p)
-            if (*p == c)
+            if (func(*p))
                 return p - str_;
 
         return NullPos;
     }
 
     size_t
+    String::FindLastOf(char c, size_t startingAt) const
+    {
+        return FindLastOf(startingAt, [c](char currentChar) { return c == currentChar; });
+    }
+
+    size_t
     String::FindLastOf(const char *list, size_t startingAt) const
     {
         SDG_Assert(list && *list != '\0'); // list should have substance
-        if (Empty()) return NullPos;
 
-        // Make sure we start at a valid index
-        startingAt = Math::Min(startingAt, Length() - 1);
-
-        for (char *p = str_ + startingAt; p >= str_; --p)
+        return FindLastOf(startingAt, [&list](char c) {
             for (const char *q = list; *q != '\0'; ++q)
-                if (*p == *q)
-                    return p - str_;
+                if (c == *q) return true;
+            return false;
+            });
+    }
 
-        return NullPos;
+    String &String::Insert(const String &str, size_t index)
+    {
+        return Insert(str.Cstr(), str.Length(), index);
+    }
+
+    String &String::Insert(const StringView &str, size_t index)
+    {
+        return Insert(str.Data(), str.Length(), index);
+    }
+
+    String &String::Insert(const char *str, size_t strLength, size_t index)
+    {
+        if (!str || *str == 0) // empty or null string, quick check
+            return *this;
+        if (index > Length())
+            throw OutOfRangeException(index, String::Format("String::Insert: max index {} was exceeded.", Length()-1));
+
+        size_t newSize = Length() + strLength;
+        if (newSize > Capacity())
+            Expand(newSize * 2u + 1u);
+
+        char *buf = (char *)Malloc(Length() - index);
+        try {
+            // Copy old data to right to make room for inserted data
+            Memcpy(buf, str_ + index, Length() - index);
+
+            // Fill string with inserted characters
+            Memcpy(str_ + index, str, strLength);
+
+            // Fill old data after newly filled data
+            Memcpy(str_ + index + strLength, buf, Length() - index);
+        }
+        catch (...)
+        {
+            Free(buf);
+            throw;
+        }
+
+        end_ = str_ + newSize;
+        *end_ = '\0';
+
+        Free(buf);
+        return *this;
+    }
+
+    // Split based on a callback: anytime it returns true, a split occurs
+    Array<String> String::SplitIf(const std::function<bool(char, size_t)> &func) const
+    {
+        if (!func)
+            throw InvalidArgumentException(SDG_FUNC, "func", "Callback does not have a function target");
+        std::vector<String> result;
+
+        bool onDelimiter = true;
+        size_t index = 0;
+        for (Iterator it = begin(), startWord = begin(); it <= end(); ++it)
+        {
+            if (onDelimiter)
+            {
+                if (!func(*it, index))
+                {
+                    startWord = it;
+                    onDelimiter = false;
+                }
+            }
+            else
+            {
+                if (func(*it, index) || *it == 0)
+                {
+                    if (it - startWord > 0)
+                        result.emplace_back(&startWord, it - startWord);
+                    onDelimiter = true;
+                }
+            }
+            ++index;
+        }
+
+        return Array<String>(result.begin(), result.end());
+    }
+
+    // Split anytime whitespace occurs in the String.
+    Array<String> String::Split() const
+    {
+        return SplitIf([](char c, size_t i)->bool { return static_cast<bool>(std::isspace(c)); });
+    }
+
+    // Split anytime char c occurs in the String.
+    Array<String> String::Split(char c) const
+    {
+        return SplitIf([c](char character, size_t i)->bool { return character == c; });
+    }
+
+    // Split anytime a character from chars occurs in the String.
+    Array<String> String::Split(const char *chars) const
+    {
+        return SplitIf([chars](char character, size_t i)->bool {
+            for (const char *c = chars; *c != '\0'; ++c)
+                if (*c == character) return true;
+            return false;
+        });
     }
 
     void
@@ -199,14 +338,14 @@ namespace SDG
     String::Erase(Iterator begin, Iterator end)
     {
         // Make sure iterators are in bounds.
-        SDG_Assert(begin >= str_ && begin <= end && end <= end_);
+        SDG_Assert(&begin >= str_ && &begin <= &end && &end <= end_);
 
         // Shift everything from end onward onto begin
         Iterator p = begin, o = end;
-        while (o < end_)
+        while (&o < end_)
             *p++ = *o++;
 
-        end_ -= end - begin;
+        end_ -= &end - &begin;
         *end_ = '\0';
 
         return *this;
@@ -215,8 +354,16 @@ namespace SDG
     String &
     String::EraseIf(const std::function<bool(char)> &func)
     {
+        if (!func)
+            throw InvalidArgumentException(SDG_FUNC, "func", "Callback function is missing a target");
         // Remove-if erase idiom
         return Erase(std::remove_if(begin(), end(), func), end());
+    }
+
+    String::Iterator
+    String::FindIf(const std::function<bool(char)> &func) const
+    {
+        return std::find_if(begin(), end(), func);
     }
 
     String
@@ -226,6 +373,16 @@ namespace SDG
         if (index >= length)
             return {};
         return {str_ + index, (count > length - index) ? length - index : count};
+    }
+
+    String String::Substr(Iterator it, size_t count) const
+    {
+        if (it > end() || it < begin())
+            throw OutOfRangeException(it.Index(), String::Format("in String: \"{}\" (called from String::Substr)", *this));
+        if (it == end())
+            return String();
+
+        return { &it, count > &cend() - &it ?  &cend() - &it : count };
     }
 
     char &
@@ -363,25 +520,51 @@ namespace SDG
     String &
     String::operator = (const String &str)
     {
-        StrFree(str_);
-        Allocate(str.Cstr(), str.Length());
-        return *this;
+        return Assign(str);
     }
 
     String &
     String::operator = (const std::string &str)
     {
-        StrFree(str_);
-        Allocate(str.c_str(), str.length());
-        return *this;
+        return Assign(str);
     }
 
     String &
     String::operator = (const char *str)
     {
+        return Assign(str);
+    }
+
+    String &String::operator = (const class StringView &view)
+    {
+        return Assign(view);
+    }
+
+    String &String::Assign(const char *str, size_t length)
+    {
         StrFree(str_);
-        Allocate(str, str ? strlen(str) : 0);
+        Allocate(str, length);
         return *this;
+    }
+
+    String &String::Assign(const char *str)
+    {
+        return Assign(str, str ? std::strlen(str) : 0);
+    }
+
+    String &String::Assign(const String &str)
+    {
+        return Assign(str.Cstr(), str.Length());
+    }
+
+    String &String::Assign(const StringView &str)
+    {
+        return Assign(str.Data(), str.Length());
+    }
+
+    String &String::Assign(const std::string &str)
+    {
+        return Assign(str.c_str(), str.length());
     }
 
     String &
@@ -525,6 +708,12 @@ SDG::operator == (const std::string &str1, const SDG::String &str2)
     return str1 == str2.Cstr();
 }
 
+bool
+SDG::operator != (const std::string &str1, const SDG::String &str2)
+{
+    return str1 != str2.Cstr();
+}
+
 
 // ===== Cstring Helper Impl ==================================================
 char *
@@ -569,4 +758,3 @@ StringsEqual(const SDG::String &str, const char *other, size_t size)
 
     return true;
 }
-

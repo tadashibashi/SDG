@@ -46,15 +46,15 @@ TEST_CASE("Array tests", "[Array]")
     SECTION("begin and end")
     {
         Array<int> arr{ 10, 20, 30, 40, 50, 60 };
-        REQUIRE(arr.begin() == &arr[0]);
-        REQUIRE(arr.end() == &arr[0] + arr.Size());
+        REQUIRE(&arr.begin() == &arr[0]);
+        REQUIRE(&arr.end() == &arr[0] + arr.Size());
     }
 
     SECTION("cbegin and cend")
     {
         Array<int> arr{ 10, 20, 30, 40, 50, 60 };
-        REQUIRE(arr.cbegin() == &arr[0]);
-        REQUIRE(arr.cend() == &arr[0] + arr.Size());
+        REQUIRE(&arr.cbegin() == &arr[0]);
+        REQUIRE(&arr.cend() == &arr[0] + arr.Size());
     }
 
     SECTION("iterator constructor")
@@ -132,7 +132,7 @@ TEST_CASE("Array tests", "[Array]")
     {
         Array<char> arr{ '1', '2', '3' };
         REQUIRE(*arr.Data() == arr[0]);
-        REQUIRE(arr.Data() == arr.begin());
-        REQUIRE(arr.Data() == arr.cbegin());
+        REQUIRE(arr.Data() == &arr.begin());
+        REQUIRE(arr.Data() == &arr.cbegin());
     }
 }

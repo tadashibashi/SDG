@@ -37,19 +37,19 @@ namespace SDG
         auto it = textures.find(hash);
 
         if (it != textures.end())
-            return CRef{it->second};
+            return it->second;
         else
         {
             auto tex = new Texture;
             if (tex->Load(context, path))
             {
                 textures[hash] = tex;
-                return CRef{tex};
+                return tex;
             }
             else
             {
                 delete tex;
-                return CRef<Texture>{}; // nullptr
+                return nullptr;
             }
         }
     }

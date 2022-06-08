@@ -7,6 +7,6 @@ namespace SDG
     class OutOfRangeException : public RuntimeException
     {
     public:
-        OutOfRangeException(int64_t value, const String &info);
+        OutOfRangeException(int64_t value, const class String &info);
     };
 }

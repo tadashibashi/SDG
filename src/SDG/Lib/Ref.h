@@ -70,8 +70,8 @@ namespace SDG
     class CRef {
     public:
         CRef() : ref() { }
-        CRef(T *ref) : ref(ref) { }
-        CRef(T &ref) : ref(&ref) { }
+        CRef(const T *ref) : ref(ref) { }
+        CRef(const T &ref) : ref(&ref) { }
         CRef(Ref<T> ref) : ref(ref.Get()) { }
 
         /// Get internal ptr

@@ -13,6 +13,42 @@ TEST_CASE("Color tests", "[Color]")
             REQUIRE(color.B() == Color::COLOR_MAX);
             REQUIRE(color.A() == Color::COLOR_MAX);
         }
+
+        SECTION("From StringView")
+        {
+            SECTION("Standard Case")
+            {
+                String str = "FFa0b0c0";
+                Color color;
+                bool didThrow = false;
+                try {
+                    color = Color(str, Color::Format::ARGB8888);
+                }
+                catch (const std::exception &e)
+                {
+                    didThrow = true;
+                }
+
+                REQUIRE(!didThrow);
+                REQUIRE(color.A() == 0xFF);
+                REQUIRE(color.R() == 0xA0);
+                REQUIRE(color.G() == 0xB0);
+                REQUIRE(color.B() == 0xC0);
+            }
+
+            SECTION("Prepended symbol")
+            {
+                String str = "#FFa0b0c0";
+                Color color = Color(str, Color::Format::ARGB8888);
+
+                REQUIRE(color.A() == 0xFF);
+                REQUIRE(color.R() == 0xA0);
+                REQUIRE(color.G() == 0xB0);
+                REQUIRE(color.B() == 0xC0);
+            }
+
+        }
+
         SECTION("Parameters")
         {
             SECTION("Full")

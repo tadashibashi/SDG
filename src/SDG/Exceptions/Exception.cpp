@@ -1,5 +1,4 @@
 #include "Exception.h"
-#include <SDG/Debug/Log.h>
 
 SDG::Exception::Exception() : message() { }
 

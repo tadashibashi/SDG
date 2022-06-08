@@ -106,7 +106,8 @@ namespace SDG::Xml
     {
         if (!element) throw NullReferenceException();
 
-        return ValidateAttribute(element->FindAttribute(name.Cstr()), *this, name, check);
+        return ValidateAttribute(XmlAttribute(element->FindAttribute(name.Cstr()), check == Required), 
+            *this, name, check);
     }
 
     XmlAttribute XmlElement::AttributeAt(size_t index, Validation check) const
@@ -136,17 +137,16 @@ namespace SDG::Xml
 
     bool XmlElement::NoAttributes() const
     {
-        return element ? !element->FirstAttribute() : throw NullReferenceException();
+        return element ? !element->FirstAttribute() : 
+            throw NullReferenceException("XmlElement::NoAttributes: XmlElement was null");
     }
 
     XmlAttribute XmlElement::FirstAttribute(Validation check) const
     {
-        if (!element) throw NullReferenceException();
+        if (!element) throw NullReferenceException("Attempted to access an attribute from a null XmlElement");
 
-        return ValidateAttribute(element->FirstAttribute(), *this, 0, check);
-
-            
-        
+        return ValidateAttribute(XmlAttribute(element->FirstAttribute(), check == Required),
+            *this, 0, check);
     }
 
     StringView XmlElement::Name() const

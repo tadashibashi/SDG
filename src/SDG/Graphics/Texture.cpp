@@ -304,7 +304,7 @@ namespace SDG
 
         if (!image)
         {
-            SDG_Core_Err("{}: SDL_gpu failed to copy image from SDL_Surface: {}", SDG_TRACE(),
+            SDG_Core_Err("{}: SDL_gpu failed to copy image from SDL_Surface: {}", SDG_TRACE,
                 GPU_GetErrorString(GPU_PopErrorCode().error));
             return false;
         }

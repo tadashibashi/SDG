@@ -45,3 +45,5 @@ namespace SDG::Debug
 #define SDG_Err(...)
 
 #endif
+
+#include "Trace.h"

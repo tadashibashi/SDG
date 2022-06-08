@@ -58,6 +58,15 @@ namespace SDG
         return StringView(str_ + index, (count > size_ - index) ? size_ - index : count); 
     }
 
+    StringView
+    StringView::Substr(ConstIterator it, size_t count) const
+    {
+        if (it > end() || it < begin())
+            throw OutOfRangeException(it.Index(), "String::Substr passed iterator is out of range!");
+
+        return { &it, count > &end() - &it ? &end() - &it : count };
+    }
+
     size_t
     StringView::FindFirstOf(char c, size_t startingAt) const
     {
@@ -72,6 +81,12 @@ namespace SDG
                 return p - str_;
 
         return NullPos;
+    }
+
+    StringView::ConstIterator 
+    StringView::FindIf(const std::function<bool(char)> &func) const
+    {
+        return std::find_if(begin(), end(), func);
     }
 
     size_t
@@ -166,7 +181,6 @@ namespace SDG
         return StrCmp(s.str_, s.size_);
     }
 
-
     std::ostream &operator << (std::ostream &os, const StringView &view)
     {
         for (char c : view)
@@ -219,16 +233,16 @@ namespace SDG
         return !operator==(s);
     }
 
-    StringView::Iterator
+    StringView::ConstIterator
     StringView::begin() const
     {
-        return str_;
+        return ConstIterator(str_, str_, str_ + size_);
     }
 
-    StringView::Iterator
+    StringView::ConstIterator
     StringView::end() const
     {
-        return str_ + size_;
+        return ConstIterator(str_ + size_, str_, str_ + size_);
     }
 
     char StringView::operator[](unsigned i) const

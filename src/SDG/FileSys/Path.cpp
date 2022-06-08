@@ -79,7 +79,11 @@ namespace SDG
     String
     Path::Filename() const
     {
+#if SDG_TARGET_WINDOWS
+        auto pos = subpath.FindLastOf("/\\");
+#else
         auto pos = subpath.FindLastOf('/');
+#endif
         return (pos == String::NullPos) ? subpath : subpath.Substr(pos + 1);
     }
 

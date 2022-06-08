@@ -13,6 +13,7 @@
  */
 #pragma once
 #include <cstdint>
+#include <SDG/Lib/StringView.h>
 
 namespace SDG
 {
@@ -21,6 +22,10 @@ namespace SDG
     private:
         uint8_t r, g, b, a;
     public:
+        enum class Format {
+            RGBA8888,
+            ARGB8888
+        };
         static const uint8_t COLOR_MAX = UINT8_MAX;
         Color &Set(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = COLOR_MAX);
 
@@ -34,12 +39,15 @@ namespace SDG
         Color &B(uint8_t blue) { b = blue; return *this; }
         Color &A(uint8_t alpha) { a = alpha; return *this; }
 
+        static Color FromHex(uint32_t hexNum, Format format);
+
         bool operator == (const Color &other) const;
 
         // Defaults to White
         constexpr Color() : r(COLOR_MAX), g(COLOR_MAX), b(COLOR_MAX), a(COLOR_MAX) {}
         constexpr Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a = COLOR_MAX)
             : r(r), g(g), b(b), a(a) {}
+        explicit Color(const StringView &str, Format format);
         // Makes a grayscale color
         explicit constexpr Color(uint8_t grayScale, uint8_t alpha = COLOR_MAX)
             : r(grayScale), g(grayScale), b(grayScale), a(alpha) {}

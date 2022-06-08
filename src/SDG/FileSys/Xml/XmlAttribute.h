@@ -11,7 +11,7 @@ namespace SDG::Xml
     class XmlAttribute
     {
     public:
-        XmlAttribute(const tinyxml2::XMLAttribute *attr = nullptr);
+        XmlAttribute(const tinyxml2::XMLAttribute *attr = nullptr, bool required = false);
         [[nodiscard]] StringView Name() const;
         [[nodiscard]] StringView Value() const;
 
@@ -25,6 +25,10 @@ namespace SDG::Xml
         bool Query(uint64_t &u) const;
         bool Query(float &f) const;
         bool Query(double &d) const;
+        bool Query(String &s) const;
+        /// Please be aware, the string view will become invalidated once the 
+        /// XmlDocument object goes out of scope, or  is cleared, altered, etc.
+        bool Query(StringView &s) const;
 
         [[nodiscard]] bool      BoolValue() const;
         [[nodiscard]] int       IntValue() const;
@@ -43,5 +47,6 @@ namespace SDG::Xml
         XmlAttribute operator ++(int);
     private:
         const tinyxml2::XMLAttribute *attr;
+        bool required;
     };
 }

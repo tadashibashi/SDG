@@ -35,4 +35,5 @@ void SDG::Tiled::TmxObject::Load(const Xml::XmlElement &element)
             name, element.Name(), element.LineNumber());
     }
 
+    wasLoaded = true;
 }

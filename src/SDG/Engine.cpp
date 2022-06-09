@@ -71,7 +71,7 @@ namespace SDG
             config.title.Cstr(), impl->config.winFlags, &window) >= 0)
         {
             impl->mainWindow = window;
-            SDG_Core_Log("- graphics library and window: ok!");
+            SDG_Core_Log("- graphics library and window: ok");
         }
         else
         {
@@ -81,7 +81,7 @@ namespace SDG
 
         // TODO: game config can specify input types through an array?
         InputDriver::Initialize(SDG_INPUTTYPE_DEFAULT);
-        SDG_Core_Log("- input driver. ok!");
+        SDG_Core_Log("- input driver: ok");
 
         impl->isRunning = true;
         return Initialize(); // Child class initialization;
@@ -239,7 +239,7 @@ namespace SDG
         fileSys.Initialize(config.appName, config.orgName);
         Path::PushFileSys(fileSys);
 
-        SDG_Core_Log("- filesystem. ok!");
+        SDG_Core_Log("- filesystem: ok");
 
         this->config = config;
     }

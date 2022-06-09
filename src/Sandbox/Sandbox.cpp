@@ -12,7 +12,7 @@ public:
         //"assets/config.sdgc"
     )
     {
-        Texture::DefaultFilterMode(Texture::Filter::Nearest);
+        Texture::DefaultFilterMode(Texture::Filter::Linear);
     }
 private:
     // Test objects / members

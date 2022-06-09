@@ -156,15 +156,16 @@ TEST_CASE("Path", "[path]")
             REQUIRE(pathTitleBase.Base() == Path::BaseDir::Pref);
         }
 
-        SECTION("Path bases result in the same subpath but different strings")
+        SECTION("Path full string is same across paths bases. Fullpath should be equal or larger than subpath")
         {
             Path pathNoBase("myfile.txt", Path::BaseDir::Root);
             Path pathRootBase("myfile.txt", Path::BaseDir::Base);
             Path pathTitleBase("myfile.txt", Path::BaseDir::Pref);
             REQUIRE(pathNoBase.Subpath() == pathRootBase.Subpath());
             REQUIRE(pathTitleBase.Subpath() == pathRootBase.Subpath());
-            REQUIRE(pathNoBase.Str() != pathRootBase.Str());
-            REQUIRE(pathTitleBase.Str() != pathRootBase.Str());
+            REQUIRE(pathNoBase.Str().Length() >= pathNoBase.Subpath().Length());
+            REQUIRE(pathTitleBase.Str().Length() >= pathTitleBase.Subpath().Length());
+            REQUIRE(pathRootBase.Str().Length() >= pathRootBase.Subpath().Length());
         }
     } /* end Constructor Tests */
 
@@ -403,6 +404,7 @@ TEST_CASE("Path", "[path]")
 
     } /* End Path <-> string comparison */
 
+#if SDG_TARGET_DESKTOP // Executable is not at the base path on other platforms
     SECTION("Path FileExists tests")
     {
 #if SDG_TARGET_WINDOWS
@@ -427,6 +429,7 @@ TEST_CASE("Path", "[path]")
             REQUIRE(!path.FileExists());
         }
     }
+#endif
 
     SECTION("BasePath creates a Path with BaseDir::Root")
     {

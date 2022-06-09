@@ -71,7 +71,14 @@ namespace SDG
         /// Reference will be null if none exists within.
         /// @tparam T the type of object ptr to retrieve.
         template <typename T>
-        [[nodiscard]] Ref<T> Get() const
+        [[nodiscard]] Ref<T> Get()
+        {
+            auto it = services.find(typeid(T));
+            return (it == services.end()) ? Ref<T>() : Ref<T>((T *)it->second);
+        }
+
+        template <typename T>
+        [[nodiscard]] CRef<T> Get() const
         {
             auto it = services.find(typeid(T));
             return (it == services.end()) ? Ref<T>() : Ref<T>((T *)it->second);
@@ -83,7 +90,15 @@ namespace SDG
         /// @param service [out] service to get
         /// @returns true, if pointer was found; false, if not.
         template <typename T>
-        bool TryGet(Ref<T> &service) const
+        bool TryGet(Ref<T> &service)
+        {
+            auto ref = Ref<T>(Get<T>());
+            service = ref;
+            return static_cast<bool>(ref);
+        }
+
+        template <typename T>
+        bool TryGet(CRef<T> &service) const
         {
             auto ref = Ref<T>(Get<T>());
             service = ref;

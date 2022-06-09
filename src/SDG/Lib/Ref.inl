@@ -10,7 +10,7 @@ namespace SDG
     // ===== Ref Implementation ==============================================
 
     template<typename T>
-    Ref<T> &Ref<T>::operator = (Ref<T> &ref)
+    Ref<T> &Ref<T>::operator = (Ref<T> ref)
     {
         this->ref = ref.ref;
         return *this;

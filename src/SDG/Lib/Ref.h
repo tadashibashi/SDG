@@ -40,7 +40,7 @@ namespace SDG
         /// Initialization from a pointer
         Ref(T *ref) : ref(ref) { }
 
-        Ref &operator = (Ref &ref);
+        Ref &operator = (Ref ref);
         Ref &operator = (T *ref);
         Ref &operator = (T &ref);
 

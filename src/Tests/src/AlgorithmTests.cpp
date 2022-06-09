@@ -7,7 +7,7 @@ TEST_CASE("Algorithms tests")
     {
         std::vector<int> ints{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
         std::vector<int> result;
-        foreach(ints, [&result](auto i) {
+        foreach(ints, [&result](int i) {
             result.emplace_back(i);
             });
 
@@ -21,7 +21,7 @@ TEST_CASE("Algorithms tests")
     {
         std::vector<int> ints{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
         std::vector<int> result;
-        foreach(ints.begin(), ints.end(), [&result](auto i) {
+        foreach(ints.begin(), ints.end(), [&result](int i) {
             result.emplace_back(i);
             });
 

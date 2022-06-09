@@ -219,14 +219,14 @@ namespace SDG
             if (ev.cdevice.which == impl->index)
             {
                 Initialize();
-                OnConnect.Invoke(impl->index);
+                OnConnect.TryInvoke(impl->index);
             }
             break;
         case SDL_CONTROLLERDEVICEREMOVED:
             if (ev.cdevice.which == impl->id)
             {
                 Close();
-                OnRemove.Invoke(impl->index);
+                OnRemove.TryInvoke(impl->index);
             }
             break;
         }

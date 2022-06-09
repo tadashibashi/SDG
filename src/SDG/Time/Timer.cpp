@@ -16,12 +16,11 @@ namespace SDG
         if (state == State::Countdown)
         {
             timeLeft -= deltaTime;
-
             if (timeLeft <= 0)
             {
                 timeLeft = -1.f;
                 state = State::Standby;
-                OnAlarm.Invoke();
+                OnAlarm.TryInvoke();
             }
         }
     }
@@ -44,5 +43,5 @@ namespace SDG
         paused = false; 
     }
     
-} /* end namespace SDG */
-
+} 
+/* end namespace SDG */

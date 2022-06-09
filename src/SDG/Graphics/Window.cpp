@@ -29,7 +29,7 @@ namespace SDG
     // ===== Window static variables ==========================================
     size_t Window::windowCount;
     bool Window::manageGraphics;
-    Delegate<> Window::OnAllClosed;
+    Delegate<void()> Window::OnAllClosed;
 
     // ===== Window Initialization ============================================
     Window::Window() : impl(new Impl), On{}
@@ -101,6 +101,7 @@ namespace SDG
         ++windowCount;
         return true;
     }
+    /* end Window::Initialize */
 
     void
     Window::Close()
@@ -117,7 +118,7 @@ namespace SDG
             --windowCount;
             if (windowCount == 0)
             {
-                OnAllClosed.Invoke();
+                OnAllClosed.TryInvoke();
 
                 if (manageGraphics)
                 {
@@ -127,6 +128,7 @@ namespace SDG
             }
         }
     }
+    /* end Window::Close */
 
     // ===== Driver-related ===================================================
     void
@@ -138,69 +140,70 @@ namespace SDG
             {
                 case SDL_WINDOWEVENT_SHOWN:
                     // SDG_Core_Log("Window was shown");
-                    On.Show.Invoke();
+                    On.Show.TryInvoke();
                     break;
                 case SDL_WINDOWEVENT_HIDDEN:
                     // SDG_Core_Log("Window was hidden");
-                    On.Hide.Invoke();
+                    On.Hide.TryInvoke();
                     break;
                 case SDL_WINDOWEVENT_EXPOSED:
                     // SDG_Core_Log("Window was exposed");
-                    On.Expose.Invoke();
+                    On.Expose.TryInvoke();
                     impl->target.SwapBuffers();
                     break;
                 case SDL_WINDOWEVENT_MOVED:
                     // SDG_Core_Log("Window moved: {}, {}",
                     //        ev.data1,
                     //        ev.data2);
-                    On.Move.Invoke(ev.data1, ev.data2);
+                    On.Move.TryInvoke(ev.data1, ev.data2);
                     break;
                 case SDL_WINDOWEVENT_RESIZED:
-                    On.Resize.Invoke(ev.data1, ev.data2);
+                    On.Resize.TryInvoke(ev.data1, ev.data2);
                     break;
                 case SDL_WINDOWEVENT_SIZE_CHANGED:
                     //Resolution({event.ev.data1, event.ev.data2});
                     // SDG_Core_Log("Window size changed: {}, {}",
                     //        ev.data1,
                     //        ev.data2);
-                    On.SizeChange.Invoke(ev.data1, ev.data2);
+                    On.SizeChange.TryInvoke(ev.data1, ev.data2);
                     break;
                 case SDL_WINDOWEVENT_MINIMIZED:
                     // SDG_Core_Log("Window was minimized");
-                    On.Minimize.Invoke();
+                    On.Minimize.TryInvoke();
                     break;
                 case SDL_WINDOWEVENT_MAXIMIZED:
                     // SDG_Core_Log("Window was maximized");
-                    On.Fullscreen.Invoke();
+                    On.Fullscreen.TryInvoke();
                     break;
                 case SDL_WINDOWEVENT_RESTORED:
                     // SDG_Core_Log("Window was restored");
-                    On.Restore.Invoke();
+                    On.Restore.TryInvoke();
                     break;
                 case SDL_WINDOWEVENT_ENTER: // Mouse entered the window
                     // SDG_Core_Log("Mouse entered window");
-                    On.MouseEnter.Invoke();
+                    On.MouseEnter.TryInvoke();
                     break;
                 case SDL_WINDOWEVENT_LEAVE: // Mouse left the window
                     // SDG_Core_Log("Mouse left window");
-                    On.MouseLeave.Invoke();
+                    On.MouseLeave.TryInvoke();
                     break;
                 case SDL_WINDOWEVENT_FOCUS_GAINED:
                     // SDG_Core_Log("Window gained keyboard focus");
-                    On.Focus.Invoke();
+                    On.Focus.TryInvoke();
                     break;
                 case SDL_WINDOWEVENT_FOCUS_LOST:
                     // SDG_Core_Log("Window lost keyboard focus");
-                    On.FocusLost.Invoke();
+                    On.FocusLost.TryInvoke();
                     break;
                 case SDL_WINDOWEVENT_CLOSE:
                     // SDG_Core_Log("Window closed");
-                    On.Close.Invoke();
+                    On.Close.TryInvoke();
                     Close();
                     break;
             }
         }
     }
+    /* end Window::ProcessInput */
 
     void
     Window::MakeCurrent()
@@ -237,6 +240,7 @@ namespace SDG
     Window::ClientSize(Point size)
     {
         SDL_SetWindowSize(GetWindow(impl->target), size.W(), size.H());
+        On.SizeChange.TryInvoke(impl->target.Size().W(), impl->target.Size().H());
         return *this;
     }
 
@@ -246,7 +250,7 @@ namespace SDG
         bool lastFullscreen = GPU_GetFullscreen();
         GPU_SetFullscreen(fullscreen, SDG_TARGET_DESKTOP);
         if (lastFullscreen != fullscreen)
-            On.SizeChange(impl->target.Size().W(), impl->target.Size().H());
+            On.SizeChange.TryInvoke(impl->target.Size().W(), impl->target.Size().H());
         return *this;
     }
 
@@ -341,6 +345,7 @@ namespace SDG
         }
         return *this;
     }
+    /* end Window::MaximumSize */
 
     Window &
     Window::MouseGrabbed(bool mouseGrabbed)
@@ -518,3 +523,4 @@ namespace SDG
     }
 
 }
+/* end namespace SDG*/

@@ -36,7 +36,7 @@ namespace SDG {
      * @tparam Args - argument types that the Delegate requires for each of its callback listeners.
      *
      */
-    template <typename... Args>
+    template <typename Ret, typename... Args>
     class Delegate
     {
         SDG_NOCOPY(Delegate);
@@ -45,88 +45,98 @@ namespace SDG {
         /// Helper class that wraps a Delegate's subscribed listener callbacks.
         /// Enables identification of the wrapped callback via both global function pointer
         /// or object pointer + its member function pointer.
-        struct FunctionWrapper {
+        class FunctionWrapper {
             friend class Delegate;
+        public:
+            template <typename T>
+            FunctionWrapper(T *object, Ret (T:: *func)(Args...));
+            explicit FunctionWrapper(Ret (*func)(Args...));
+            explicit FunctionWrapper(std::function<Ret(Args...)> *func);
             FunctionWrapper() = delete;
 
-            /// Used to wrap member function pointer
             template <typename T>
-            FunctionWrapper(T *object, void (T:: *func)(Args...));
+            bool SignatureMatches(T *pObject, Ret (T:: *pFunctionPtr)(Args...)) const;
+            bool SignatureMatches(Ret(*pFunctionPtr)(Args...)) const;
+            bool SignatureMatches(std::function<Ret(Args...)> *func) const;
 
-            /// Used to wrap member function pointer
-            explicit FunctionWrapper(void (*func)(Args...));
-
-            explicit FunctionWrapper(std::function<void(Args...)> *func);
-
-            void operator()(Args ...args);
-
-            // ========== Signature Checks ==========
-            /// Checks signature against an object ptr + member function
-            template <typename T>
-            bool SignatureMatches(T *pObject, void (T:: *pFunctionPtr)(Args...)) const;
-
-            /// Checks equality for a specific global function
-            bool SignatureMatches(void(*pFunctionPtr)(Args...)) const;
-
-            bool SignatureMatches(std::function<void(Args...)> *func) const;
-
+            Ret operator()(Args ...args) const;
         private:
-            void *object; // the object to call the function on, if a member func is stored
-            std::any functionPtr; // any enables wrapper to store and compare different types of func ptrs for id
-            std::function<void(Args...)> function; // the function to call
-
-            /// represents if this FunctionWrapper is flagged to be removed or not.
-            bool toRemove{ false };
+            void *object;         // object to call the function on, if a member func is stored; null when none.
+            std::any functionPtr; // stores the fn pointer id; we need std::any since member fn ptrs have no portable type.
+            std::function<Ret(Args...)> function; // the callable function
+            bool toRemove;        // flag the marks if this wrapper should be removed from Delegate
         };
     public:
-        Delegate() : functions(), isCalling(), removeThisFrame() { }
+        Delegate() : functions(), removeThisFrame() { }
+        Delegate(Delegate &&moved);
+        Delegate &operator = (Delegate &&moved);
 
-        // Gets the number of listeners currently attached to this Delegate.
-        size_t Size() { return functions.size(); }
-
-        // Removes all previously added listeners.
-        // Faster than individually removing each listener.
-        void Clear();
-
-        // Fires the callback to each subscribed listener
-        void Invoke(Args... args);
-
-        // Fires the callback to each subscribed listener
-        void operator()(Args... args);
-
+    public:
         // Adds a member function listener for a particular object
-        template <typename T>
-        void AddListener(T *object, void (T:: *func)(Args...));
+        template<typename T>
+        void AddListener(T *object, Ret (T:: *func)(Args...));
 
         // Adds a global function listener
-        void AddListener(void (*func)(Args...));
+        void AddListener(Ret (*func)(Args...));
 
         // Adds a pointer to an std::function object
-        void AddListener(std::function<void(Args...)> *func);
+        void AddListener(std::function<Ret(Args...)> *func);
 
         // Removes an object + member function listener.
-        template <typename T>
-        void RemoveListener(T *object, void (T:: *func)(Args...));
+        template<typename T>
+        void RemoveListener(T *object, Ret (T:: *func)(Args...));
 
-        // Removes a global function listener.
+        /// Removes a global function listener.
         void RemoveListener(void (*func)(Args...));
 
-        // Removes an std::function listener.
-        void RemoveListener(std::function<void(Args...)> *func);
+        /// Removes an std::function pointer listener.
+        void RemoveListener(std::function<Ret(Args...)> *func);
 
-    private:
-        // Processes removals after delegate has been fired.
+        /// Removes all previously added listeners.
+        /// Faster than individually removing each listener.
+        void Clear();
+
+        // ===== Calling the delegate =================================================================================
+        /// Attempts to fire the callback, ignoring the return value.
+        /// Instead of the return value, a bool will be returned: 
+        /// true: if any callback was called; false: if no callbacks were called, due to being empty.
+        bool TryInvoke(Args... args);
+
+        /// Fires the callback to each subscribed listener; returns the result of the last one.
+        /// If there are no listeners, a RuntimeException will be thrown.
+        /// Please check if (!Empty()), or if (Delegate &) before calling.
+        Ret Invoke(Args... args);
+
+        /// Fires the callback to each subscribed listener; returns the result of the last one
+        /// If there are no listeners, a RuntimeException will be thrown.
+        /// Please check if (!Empty()), or if (Delegate &) before calling.
+        Ret operator()(Args... args);
+
+
+        /// Gets the number of listeners currently attached to this Delegate.
+        size_t Size() const { return functions.size(); }
+
+        /// Checks if no listeners are attached to this Delegate.
+        bool Empty() const { return functions.empty(); }
+
+        /// checks if any listeners are attached to this Delegate.
+        explicit operator bool() { return !functions.empty(); }        
+        
+        /// Processes removals from RemoveListener functions. Automatically called at the beginning
+        /// of Invoke and TryInvoke.
         void ProcessRemovals();
+    private:
+
 
         // List of listeners
         std::vector<FunctionWrapper> functions;
 
-        // Flag indicating if this delegate is currently firing callbacks or not.
-        bool isCalling;
-
         // Flag indicated whether removals need to be processed.
         bool removeThisFrame;
     };
+
+    template <typename Ret, typename...Args>
+    class Delegate<Ret(Args...)> : public Delegate<Ret, Args...> { };
 
 }
 

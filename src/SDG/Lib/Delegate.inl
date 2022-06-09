@@ -1,6 +1,6 @@
 #include "Delegate.h"
 
-#include <SDG/Exceptions/InvalidArgumentException.h>
+#include <SDG/Exceptions/Fwd.h>
 
 #include <algorithm>
 #include <typeinfo>
@@ -9,46 +9,62 @@
 namespace SDG
 {
     // ===== Delegate Implementation ==================================================================================
-    template<typename... Args>
-    void Delegate<Args...>::Clear()
+    template<typename Ret, typename... Args>
+    Delegate<Ret, Args...>::Delegate(Delegate &&moved) :
+        functions(std::move(moved.functions)), removeThisFrame(moved.removeThisFrame)
     {
-        if (isCalling)
-        {
-            for (auto &f : functions)
-                f.toRemove = true;
-
-            removeThisFrame = true;
-        }
-        else
-        {
-            functions.clear();
-        }
+        
     }
 
-    template<typename... Args>
-    void Delegate<Args...>::Invoke(Args... args)
+    template<typename Ret, typename...Args>
+    Delegate<Ret, Args...> &Delegate<Ret, Args...>::operator = (Delegate &&moved)
     {
-        if (functions.empty()) return;
+        functions = std::move(moved.functions);
+        removeThisFrame = moved.removeThisFrame;
 
-        isCalling = true;
-        for (FunctionWrapper &func : functions)
-        {
-            func(args...);
-        }
-        isCalling = false;
+        return *this;
+    }
+    
+    template<typename Ret, typename... Args>
+    void Delegate<Ret, Args...>::Clear()
+    {
+        for (auto &f : functions)
+            f.toRemove = true;
 
+        removeThisFrame = true;
+    }
+
+    template<typename Ret, typename... Args>
+    Ret Delegate<Ret, Args...>::Invoke(Args... args)
+    {
+        if (functions.empty())
+            throw RuntimeException("Called Invoke on an empty Delegate: Delegate must contain at least one callback.");
+        
         ProcessRemovals();
+        for (auto it = functions.begin(), end = functions.end() - 1; it != end; ++it)
+            (*it)(args...);
+
+        return (*(functions.end() - 1))(args...);
     }
 
-    template<typename... Args>
-    void Delegate<Args...>::operator()(Args... args)
+    template<typename Ret, typename... Args>
+    bool Delegate<Ret, Args...>::TryInvoke(Args... args)
     {
-        Invoke(std::forward<Args>(args)...);
+        ProcessRemovals();
+        for (auto &func : functions)
+            func(args...);
+        return !functions.empty();
     }
 
-    template<typename... Args>
+    template<typename Ret, typename... Args>
+    Ret Delegate<Ret, Args...>::operator()(Args... args)
+    {
+        return Invoke(args...);
+    }
+
+    template<typename Ret, typename... Args>
     template<typename T>
-    void Delegate<Args...>::RemoveListener(T *object, void (T:: *func)(Args...))
+    void Delegate<Ret, Args...>::RemoveListener(T *object, Ret (T:: *func)(Args...))
     {
         // Find the listener
         auto it = std::find_if(functions.begin(), functions.end(),
@@ -60,100 +76,92 @@ namespace SDG
         // If it exists, remove it
         if (it != functions.end())
         {
-            if (isCalling) // Delegate busy calling, flag for later removal
-            {
-                it->toRemove = true;
-                removeThisFrame = true;
-            }
-            else           // Delegate is free, remove now
-            {
-                functions.erase(it);
-            }
+            it->toRemove = true;
+            removeThisFrame = true;
         }
         else
         {
-            throw InvalidArgumentException(__FUNCTION__, "object or func",
+            ThrowInvalidArgumentException(__FUNCTION__, "object or func",
                 "There was no matching callback in the Delegate.");
         }
     }
 
-    template<typename... Args>
-    void Delegate<Args...>::RemoveListener(void (*func)(Args...))
+    template<typename Ret, typename... Args>
+    void Delegate<Ret, Args...>::RemoveListener(void (*func)(Args...))
     {
         auto it = std::find_if(functions.begin(), functions.end(),
-            [func](auto &f)
+            [func](const auto &f)
             {
                 return f.SignatureMatches(func);
             });
 
         if (it != functions.end())
         {
-            if (isCalling)
-            {
-                it->toRemove = true;
-                removeThisFrame = true;
-            }
-            else
-            {
-                functions.erase(it);
-            }
+            it->toRemove = true;
+            removeThisFrame = true;
         }
         else
         {
-            throw InvalidArgumentException(__FUNCTION__, "func",
+            ThrowInvalidArgumentException(__FUNCTION__, "func",
                 "There was no matching callback in the Delegate.");
         }
     }
 
-    template<typename... Args>
-    void Delegate<Args...>::RemoveListener(std::function<void(Args...)> *func)
+    template<typename Ret, typename... Args>
+    void Delegate<Ret, Args...>::RemoveListener(std::function<Ret(Args...)> *func)
     {
         auto it = std::find_if(functions.begin(), functions.end(),
-            [func](auto &f)
+            [func](const auto &f)
             {
                 return f.SignatureMatches(func);
             });
 
         if (it != functions.end())
         {
-            if (isCalling)
-            {
-                it->toRemove = true;
-                removeThisFrame = true;
-            }
-            else
-            {
-                functions.erase(it);
-            }
+            it->toRemove = true;
+            removeThisFrame = true;
         }
         else
         {
-            throw InvalidArgumentException(__FUNCTION__, "func",
+            ThrowInvalidArgumentException(__func__, "func",
                 "There was no matching callback in the Delegate.");
         }
     }
 
-    template<typename... Args>
+    template<typename Ret, typename... Args>
     template<typename T>
-    void Delegate<Args...>::AddListener(T *object, void (T:: *func)(Args...))
+    void Delegate<Ret, Args...>::AddListener(T *object, Ret (T:: *func)(Args...))
     {
+        if (!object)
+            ThrowInvalidArgumentException(__func__, "object", "object was null");
+        if (!func)
+            ThrowInvalidArgumentException(__func__, "func", "callback function ptr was null");
+
         functions.emplace_back(std::move(FunctionWrapper(object, func)));
     }
 
-    template<typename... Args>
-    void Delegate<Args...>::AddListener(void (*func)(Args...))
+    template<typename Ret, typename... Args>
+    void Delegate<Ret, Args...>::AddListener(Ret (*func)(Args...))
     {
+        if (!func)
+            ThrowInvalidArgumentException(__func__, "func", "callback function ptr was null");
+
         functions.emplace_back(std::move(FunctionWrapper(func)));
     }
 
-    template<typename... Args>
-    void Delegate<Args...>::AddListener(std::function<void(Args...)> *func)
+    template<typename Ret, typename... Args>
+    void Delegate<Ret, Args...>::AddListener(std::function<Ret(Args...)> *func)
     {
+        if (!func)
+            ThrowInvalidArgumentException(__func__, "func", "callback function ptr was null");
+        if (!(*func))
+            ThrowInvalidArgumentException(__func__, "func", "callback function does not have a target");
+
         functions.emplace_back(std::move(FunctionWrapper(func)));
     }
 
-    template<typename... Args>
-    void Delegate<Args...>::ProcessRemovals()
+    template<typename Ret, typename... Args>
+    void Delegate<Ret, Args...>::ProcessRemovals()
     {
         // Only perform removals if flag was set
         if (removeThisFrame)
@@ -172,55 +180,56 @@ namespace SDG
     }
 
 
-    // ===== Delegate<Args...>::FunctionWrapper Implementation ========================================================
+    // ===== Delegate<Ret, Args...>::FunctionWrapper Implementation ========================================================
 
-    template<typename... Args>
+    template<typename Ret, typename... Args>
     template<typename T>
-    Delegate<Args...>::FunctionWrapper::FunctionWrapper(T *object, void(T:: *func)(Args...)) :
+    Delegate<Ret, Args...>::FunctionWrapper::FunctionWrapper(T *object, Ret(T:: *func)(Args...)) :
         object(object), functionPtr(func),
-        function([func, object](Args... args)->void
+        function([func, object](Args... args)->Ret
             {
                 (object->*func)(args...);
-            })
+            }), toRemove()
     { }
 
-    template<typename... Args>
-    Delegate<Args...>::FunctionWrapper::FunctionWrapper(void (*func)(Args...)) :
-        object(nullptr), functionPtr(func), function(func)
+    template<typename Ret, typename... Args>
+    Delegate<Ret, Args...>::FunctionWrapper::FunctionWrapper(Ret (*func)(Args...)) :
+        object(nullptr), functionPtr(func), function(func), toRemove()
     { }
 
-    template<typename... Args>
-    Delegate<Args...>::FunctionWrapper::FunctionWrapper(std::function<void(Args...)> *func) :
-        object(nullptr), functionPtr(func), function(*func)
+    template<typename Ret, typename... Args>
+    Delegate<Ret, Args...>::FunctionWrapper::FunctionWrapper(std::function<Ret(Args...)> *func) :
+        object(nullptr), functionPtr(func), function(*func), toRemove()
     {}
 
-    template<typename... Args>
-    void Delegate<Args...>::FunctionWrapper::operator()(Args ...args)
+    template<typename Ret, typename... Args>
+    Ret Delegate<Ret, Args...>::FunctionWrapper::operator()(Args ...args) const
     {
-        if (function)
+        if (!function)
+            ThrowRuntimeException(__func__ + std::string(": missing functor target. Functions stored in Delegate must have a target"));
             function(args...);
     }
 
-    template<typename... Args>
+    template<typename Ret, typename... Args>
     template <typename T>
-    bool Delegate<Args...>::FunctionWrapper::SignatureMatches(T *pObject, void (T:: *pFunctionPtr)(Args...)) const
+    bool Delegate<Ret, Args...>::FunctionWrapper::SignatureMatches(T *pObject, Ret (T:: *pFunctionPtr)(Args...)) const
     {
         return ((void *)pObject == object &&
             typeid(pFunctionPtr) == functionPtr.type() &&
-            pFunctionPtr == std::any_cast<void(T:: *)(Args...)>(functionPtr));
+            pFunctionPtr == std::any_cast<Ret(T:: *)(Args...)>(functionPtr));
     }
 
-    template<typename... Args>
-    bool Delegate<Args...>::FunctionWrapper::SignatureMatches(void(*pFunctionPtr)(Args...)) const
+    template<typename Ret, typename... Args>
+    bool Delegate<Ret, Args...>::FunctionWrapper::SignatureMatches(Ret(*pFunctionPtr)(Args...)) const
     {
         return (object == nullptr &&
-            std::any_cast<void(*)(Args...)>(functionPtr) == pFunctionPtr);
+            std::any_cast<Ret(*)(Args...)>(functionPtr) == pFunctionPtr);
     }
 
-    template<typename... Args>
-    bool Delegate<Args...>::FunctionWrapper::SignatureMatches(std::function<void(Args...)> *func) const
+    template<typename Ret, typename... Args>
+    bool Delegate<Ret, Args...>::FunctionWrapper::SignatureMatches(std::function<Ret(Args...)> *func) const
     {
         return object == nullptr &&
-            std::any_cast<std::function<void(Args...)> *>(functionPtr) == func;
+            std::any_cast<std::function<Ret(Args...)> *>(functionPtr) == func;
     }
 }

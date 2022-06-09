@@ -1,7 +1,7 @@
 #include <SDG/Lib/Delegate.h>
 #include "SDG_Tests.h"
 
-static Delegate<int> delegate;
+static Delegate<void(int)> delegate;
 static int delegateTestCounter = 0;
 
 class TestDelegateObj {
@@ -37,7 +37,7 @@ TEST_CASE( "Delegate can add, remove, and invoke global, local function objs, an
     ::delegateTestCounter = 0;
     ::delegateTestCounter2 = 0;
     ::delegate.Clear();
-    REQUIRE(delegate.Size() == 0);
+    delegate.ProcessRemovals();
 
     int localFuncVal = 0;
     std::function<void(int)> localFunc = [&localFuncVal] (int i) {
@@ -49,6 +49,7 @@ TEST_CASE( "Delegate can add, remove, and invoke global, local function objs, an
         REQUIRE(delegate.Size() == 1);
 
         delegate.RemoveListener(::TestDelegateFunc);
+        delegate.ProcessRemovals();
         REQUIRE(delegate.Size() == 0);
     }
     SECTION("Member functions can be added and removed") {
@@ -58,6 +59,7 @@ TEST_CASE( "Delegate can add, remove, and invoke global, local function objs, an
         REQUIRE(delegate.Size() == 1);
 
         delegate.RemoveListener(&obj, &TestDelegateObj::Doit);
+        delegate.ProcessRemovals();
         REQUIRE(delegate.Size() == 0);
     }
     SECTION("Local function objects can be added and removed") {
@@ -65,6 +67,7 @@ TEST_CASE( "Delegate can add, remove, and invoke global, local function objs, an
         REQUIRE(delegate.Size() == 1);
 
         delegate.RemoveListener(&localFunc);
+        delegate.ProcessRemovals();
         REQUIRE(delegate.Size() == 0);
     }
     SECTION("Throw InvalidArgumentException when attempting to remove non-existent global func") {
@@ -96,6 +99,27 @@ TEST_CASE( "Delegate can add, remove, and invoke global, local function objs, an
         }
         REQUIRE(didThrow);
     }
+    SECTION("Invoke causes RuntimeException if there are no callbacks in Delegate")
+    {
+        bool didThrow = false;
+        try {
+            delegate.Invoke(0);
+        }
+        catch (const RuntimeException &e)
+        {
+            didThrow = true;
+        }
+        REQUIRE(didThrow);
+    }
+    SECTION("TryInvoke returns true if there are callbacks in Delegate")
+    {
+        delegate.AddListener(TestDelegateFunc);
+        REQUIRE(delegate.TryInvoke(0));
+    }
+    SECTION("TryInvoke returns false if there are no callbacks in Delegate")
+    {
+        REQUIRE(!delegate.TryInvoke(0));
+    }
     SECTION("Invoke global function") {
         delegate.AddListener(::TestDelegateFunc);
         REQUIRE(delegate.Size() == 1);
@@ -120,7 +144,7 @@ TEST_CASE( "Delegate can add, remove, and invoke global, local function objs, an
         delegate.AddListener(::TestDelegateFunc);
         REQUIRE(delegateTestCounter == 0);
         delegate.RemoveListener(::TestDelegateFunc);
-        delegate.Invoke(2000);
+        delegate.TryInvoke(2000);
         REQUIRE(delegateTestCounter == 0);
     }
     SECTION("Member function does not invoke after removal") {
@@ -129,14 +153,14 @@ TEST_CASE( "Delegate can add, remove, and invoke global, local function objs, an
         REQUIRE(delegate.Size() == 1);
         REQUIRE(obj.val == 0);
         delegate.RemoveListener(&obj, &TestDelegateObj::Doit);
-        delegate.Invoke(4123);
+        delegate.TryInvoke(4123);
         REQUIRE(obj.val == 0);
     }
     SECTION("Local function object does not invoke after removal") {
         delegate.AddListener(&localFunc);
         REQUIRE(localFuncVal == 0);
         delegate.RemoveListener(&localFunc);
-        delegate.Invoke(2000);
+        delegate.TryInvoke(2000);
         REQUIRE(localFuncVal == 0);
     }
     SECTION("Multiple global functions invoke the same value") {
@@ -183,18 +207,28 @@ TEST_CASE( "Delegate can add, remove, and invoke global, local function objs, an
         REQUIRE(obj.val == 145);
         REQUIRE(delegateTestCounter == 145);
     }
-    SECTION("Removals happen after every invocation is finished") {
+    SECTION("Removals during Invoke are removed afterward (via ProcessRemovals or another call to Invoke)") {
         TestDelegateObj obj;
         delegate.AddListener(&obj, &TestDelegateObj::RemoveDelegate);
         REQUIRE(delegate.Size() == 1);
         delegate.Invoke(204); // arbitrary val
 
-        // In TestDelegateObj::RemoveDelegate removes itself from the delegate, and
-        // subsequently sets its val member to the delegate size.
-        // If it's 1, and we later check delegate.Size() to be 0,
-        // it demonstrates that it's handle was not removed until after each callback finished.
-        REQUIRE(obj.val == 1);
-        REQUIRE(delegate.Size() == 0);
+        SECTION("via ProcessRemovals")
+        {        
+            delegate.ProcessRemovals();
+            // In TestDelegateObj::RemoveDelegate removes itself from the delegate, and
+            // subsequently sets its val member to the delegate size.
+            // If it's 1, and we later check delegate.Size() to be 0,
+            // it demonstrates that it's handle was not removed until after each callback finished.
+            REQUIRE(obj.val == 1);
+            REQUIRE(delegate.Empty());
+        }
+        SECTION("via TryInvoke")
+        {
+            delegate.TryInvoke(0);
+            REQUIRE(obj.val == 1);
+            REQUIRE(delegate.Empty());
+        }
     }
 
 }

@@ -3,8 +3,6 @@
 
 namespace SDG
 {
-
-
     template<typename S, typename T>
     class is_streamable
     {

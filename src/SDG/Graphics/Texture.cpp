@@ -5,6 +5,7 @@
 #include <SDG/Debug/Log.h>
 #include <SDG/Debug/Trace.h>
 
+#include <SDG/Exceptions/InvalidArgumentException.h>
 #include <SDG/Exceptions/RuntimeException.h>
 #include <SDG/Exceptions/NullReferenceException.h>
 #include <SDG/Exceptions/UncaughtCaseException.h>

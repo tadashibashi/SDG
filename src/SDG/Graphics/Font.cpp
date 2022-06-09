@@ -1,7 +1,10 @@
 #include "Font.h"
 #include "Private/NFont.h"
 
+#include <SDG/Exceptions/InvalidArgumentException.h>
+
 #include <SDG/FileSys/File.h>
+
 #include <SDG/Graphics/Window.h>
 #include <SDG/Graphics/RenderTarget.h>
 

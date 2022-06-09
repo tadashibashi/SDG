@@ -23,26 +23,26 @@ namespace SDG
         /// Stops the timer (pause set to false)
         void Stop();
 
-        /// Sets the paused state. When paused, the effects of Update are ignored.
+        /// Sets the paused state. When paused is true, the effects of Update are ignored.
         void Paused(bool paused) { this->paused = paused; }
 
-        // ===== Getters ======================================================
-
-        /// Gets number of seconds left since the last call to Update.
-        float TimeLeft() const { return timeLeft; }
+        void PauseToggle() { paused = !paused; }
 
         /// Gets the paused state. When paused, the effects of Update are ignored.
-        bool Paused() const { return paused; }
+        [[nodiscard]] bool Paused() const { return paused; }
+
+        /// Gets number of seconds left since the last call to Update.
+        [[nodiscard]] float TimeLeft() const { return timeLeft; }
 
         /// Gets whether the state is actively counting down.
-        bool IsActive() const { return state == State::Countdown; }
+        [[nodiscard]] bool IsActive() const { return state == State::Countdown; }
 
         // ===== Events ========================================================
 
         /// Invoked when the time left reaches zero
-        Delegate<> OnAlarm;
+        Delegate<void()> OnAlarm;
     private:
-        enum class State
+        enum class State : int8_t
         {
             Standby = 0,
             Countdown

@@ -1,5 +1,5 @@
 #include "SDG_Tests.h"
-#include <SDG/Lib/Shared.h>
+#include <Engine/Lib/Shared.h>
 
 TEST_CASE("Shared ptr tests", "[Shared]")
 {

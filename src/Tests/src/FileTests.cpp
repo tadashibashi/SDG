@@ -1,12 +1,12 @@
 #include "SDG_Tests.h"
-#include <SDG/Exceptions/OutOfRangeException.h>
-#include <SDG/FileSys/File.h>
-#include <SDG/FileSys/FileSys.h>
+#include <Engine/Exceptions/OutOfRangeException.h>
+#include <Engine/Filesys/File.h>
+#include <Engine/Filesys/Filesys.h>
 #include <SDL.h>
 
 TEST_CASE("File tests", "[SDG::File]")
 {
-    FileSys fileSys("SDG Tests", "SDG"); // this object must always remain in scope
+    Filesys fileSys("SDG Tests", "SDG"); // this object must always remain in scope
     SECTION("Setup")
     {
         Path::PushFileSys(fileSys);

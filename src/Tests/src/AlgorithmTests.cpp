@@ -1,5 +1,5 @@
 #include "SDG_Tests.h"
-#include <SDG/Lib/Algorithm.h>
+#include <Engine/Lib/Algorithm.h>
 
 TEST_CASE("Algorithms tests")
 {

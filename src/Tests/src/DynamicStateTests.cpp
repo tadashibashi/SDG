@@ -1,5 +1,5 @@
 #include "SDG_Tests.h"
-#include <SDG/Logic/DynamicState.h>
+#include <Engine/Logic/DynamicState.h>
 
 static void DummyFunc(float time) { }
 

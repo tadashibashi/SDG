@@ -4,7 +4,7 @@
  *
  * ===========================================================================*/
 #include "SDG_Tests.h"
-#include <SDG/Math/Vector3.h>
+#include <Engine/Math/Vector3.h>
 #include <sstream>
 
 static Vector3 ParseString(const std::string &str)

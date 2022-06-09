@@ -1,8 +1,8 @@
 #include "SDG_Tests.h"
-#include <SDG/Graphics/Camera2D.h>
-#include <SDG/Graphics/RenderTarget.h>
-#include <SDG/Graphics/Window.h>
-#include <SDG/Math/Matrix4x4.h>
+#include <Engine/Graphics/Camera2D.h>
+#include <Engine/Graphics/RenderTarget.h>
+#include <Engine/Graphics/Window.h>
+#include <Engine/Math/Matrix4x4.h>
 
 TEST_CASE("Camera2D tests", "[Camera2D]")
 {

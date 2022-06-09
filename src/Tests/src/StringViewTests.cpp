@@ -1,7 +1,7 @@
 #include "SDG_Tests.h"
-#include <SDG/Debug/Performance.h>
-#include <SDG/Exceptions/OutOfRangeException.h>
-#include <SDG/Lib/StringView.h>
+#include <Engine/Debug/Performance.h>
+#include <Engine/Exceptions/OutOfRangeException.h>
+#include <Engine/Lib/StringView.h>
 
 #include <sstream>
 

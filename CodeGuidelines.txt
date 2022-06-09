@@ -20,8 +20,8 @@ Example:
 #include "Private/Hidden.h"
 
 // engine files in other folders
-#include <SDG/Math/Vector2.h>
-#include <SDG/Ref.h>
+#include <Engine/Math/Vector2.h>
+#include <Engine/Ref.h>
 
 // local libraries
 #include <tinyxml2.h>

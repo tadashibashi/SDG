@@ -1,5 +1,5 @@
 #include "SDG_Tests.h"
-#include <SDG/Graphics/Color.h>
+#include <Engine/Graphics/Color.h>
 
 TEST_CASE("Color tests", "[Color]")
 {

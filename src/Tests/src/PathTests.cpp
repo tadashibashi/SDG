@@ -1,7 +1,6 @@
 #include "SDG_Tests.h"
-#include "SDG/FileSys/FileSys.h"
-#include <SDG/FileSys/Path.h>
-#include <SDG/Lib/Platform.h>
+#include <Engine/Filesys.h>
+#include <Engine/Platform.h>
 
 #include <SDL.h>
 
@@ -13,7 +12,7 @@ TEST_CASE("Path", "[path]")
 #else // unix-based systems. What about WEBGL? Nintendo Switch?
     String root = "/";
 #endif
-    FileSys fileSys("SDG Tests", "SDG");
+    Filesys fileSys("SDG Tests", "SDG");
     SECTION("Setup")
     {
         // Set up file system
@@ -460,7 +459,7 @@ TEST_CASE("Path", "[path]")
     {
         String prefPath1 = PrefPath().Str();
 
-        FileSys sys2("SDG Different FileSys Test", "SDG");
+        Filesys sys2("SDG Different FileSys Test", "SDG");
         Path::PushFileSys(Ref(sys2));
         String prefPath2 = PrefPath().Str();
         Path::PopFileSys();

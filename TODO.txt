@@ -1,7 +1,6 @@
 TODO:
 - Tiled Map loading
 - Static (blit to a texture target once) and dynamic tile maps (blits every time a change occurs)
-- Create a minimal repro case of multi-Window close bug, and upstream to Github. (doesn't affect Windows...)
 - Finish Window initialization flags manual set, or see why SDL_gpu sets a weird fullscreen when setting flags directly
 - Game system features (used in subclasses of App)
     - Entity
@@ -10,13 +9,18 @@ TODO:
     - Scene System
     - Make Asteroids Game as you assemble these systems
 
+- Figure out cause of fullscreen/non-fullscreen matrix projection discrepancy. HTML5 zooms in vs Desktop
+    There's an SDL function for controlling the behavior of resolution on new screen
+    I forgot what it is though...
+    This fixed itself after cleaning up matrix functions. It may or may not pop up again since the problem wasn't diagnosed.
+
 Notes:
 Plan is to create basic useful components to be inherited by Component objects
 
 Future:
 - allow user to specify desired input types in the config.
 - Gui app for creating and previewing animations from atlas
-
+- Create a minimal repro case of multi-Window close bug, and upstream to Github. (doesn't affect Windows...)
 
 Done:
 x Create Mouse object to capture mouse clicks and position
@@ -25,7 +29,3 @@ x Test Font in Sandbox
 x File Reading / Writing
 x Test Camera2D in action
 x Texture 
-- Figure out cause of fullscreen/non-fullscreen matrix projection discrepancy.
-    There's an SDL function for controlling the behavior of resolution on new screen
-    I forgot what it is though...
-    This fixed itself after cleaning up matrix functions. It may or may not pop up again since the problem wasn't diagnosed.

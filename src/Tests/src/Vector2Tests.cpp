@@ -4,7 +4,7 @@
  * 
  * ===========================================================================*/
 #include "SDG_Tests.h"
-#include <SDG/Math/Vector2.h>
+#include <Engine/Math/Vector2.h>
 #include <sstream>
 
 static Vector2 ParseString(const String &str)

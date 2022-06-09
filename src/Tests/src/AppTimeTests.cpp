@@ -4,7 +4,7 @@
  * 
  * ===========================================================================*/
 #include "SDG_Tests.h"
-#include "SDG/Time/AppTime.h"
+#include <Engine/Time/AppTime.h>
 #include <SDL.h>
 
 TEST_CASE("AppTime tests", "[AppTime]")

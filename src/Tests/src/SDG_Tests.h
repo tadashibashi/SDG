@@ -2,8 +2,9 @@
 /// for SDG_Engine.
 #pragma once
 #include <catch2/catch_test_macros.hpp>
-#include <SDG/Lib/Platform.h>
-#include <SDG/Exceptions.hpp>
+#include <Engine/Exceptions.h>
+#include <Engine/Debug/Log.h>
+#include <Engine/Platform.h>
 
 namespace SDG::Tests
 {

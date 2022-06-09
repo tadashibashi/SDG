@@ -1,5 +1,5 @@
 #include "SDG_Tests.h"
-#include <SDG/Lib/Array.h>
+#include <Engine/Lib/Array.h>
 #include <string>
 
 struct ArrayTestStruct

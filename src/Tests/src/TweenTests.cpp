@@ -1,6 +1,6 @@
 #include "SDG_Tests.h"
-#include <SDG/Math/Tween.h>
-#include <SDG/Debug/Log.h>
+#include <Engine/Math/Tween.h>
+#include <Engine/Debug/Log.h>
 
 TEST_CASE("Tween tests", "[Tween]")
 {

@@ -1,5 +1,5 @@
 #include "SDG_Tests.h"
-#include <SDG/Logic/DynamicStateMachine.h>
+#include <Engine/Logic/DynamicStateMachine.h>
 
 TEST_CASE("DynamicStateMachine tests", "[DynamicStateMachine]")
 {

@@ -1,4 +1,4 @@
-#include <SDG/Lib/Delegate.h>
+#include <Engine/Lib/Delegate.h>
 #include "SDG_Tests.h"
 
 static Delegate<void(int)> delegate;

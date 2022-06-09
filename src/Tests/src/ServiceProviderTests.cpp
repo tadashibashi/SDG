@@ -1,5 +1,5 @@
 #include "SDG_Tests.h"
-#include <SDG/Game/ServiceProvider.h>
+#include <Engine/Game/ServiceProvider.h>
 
 using namespace SDG;
 

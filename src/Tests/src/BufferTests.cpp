@@ -1,6 +1,6 @@
 #include "SDG_Tests.h"
-#include <SDG/Exceptions/OutOfRangeException.h>
-#include <SDG/Lib/Buffer.h>
+#include <Engine/Exceptions/OutOfRangeException.h>
+#include <Engine/Lib/Buffer.h>
 
 TEST_CASE("Buffer tests", "[Buffer]")
 {

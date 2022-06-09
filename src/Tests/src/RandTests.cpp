@@ -1,6 +1,6 @@
 #include "SDG_Tests.h"
-#include <SDG/Exceptions/AssertionException.h>
-#include <SDG/Math/Rand.h>
+#include <Engine/Exceptions/AssertionException.h>
+#include <Engine/Math/Rand.h>
 
 TEST_CASE("Rand::Next")
 {
@@ -42,20 +42,6 @@ TEST_CASE("Rand::Range")
     n = Rand::Range(-20.f, 20.f);
     REQUIRE(n > -20.f);
     REQUIRE(n < 20.f);
-
-#if (SDG_DEBUG)
-    // throw assertion exception if lower number is higher
-    bool wasThrown = false;
-    try {
-        Rand::Range(20.f, -20.f);
-    }
-    catch (const AssertionException &e)
-    {
-        wasThrown = true;
-    }
-
-    REQUIRE(wasThrown);
-#endif
 }
 
 TEST_CASE("Rand::IRange")
@@ -71,20 +57,6 @@ TEST_CASE("Rand::IRange")
     n = Rand::IRange(-20, 20);
     REQUIRE(n > -20);
     REQUIRE(n < 20);
-
-#if (SDG_DEBUG)
-    // throw assertion exception if lower number is higher
-    bool wasThrown = false;
-    try {
-        Rand::IRange(20, -20);
-    }
-    catch (const AssertionException &e)
-    {
-        wasThrown = true;
-    }
-
-    REQUIRE(wasThrown);
-#endif
 }
 
 TEST_CASE("Math::Chance: int overload tests")

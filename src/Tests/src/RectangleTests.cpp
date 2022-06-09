@@ -1,5 +1,5 @@
 #include "SDG_Tests.h"
-#include <SDG/Math/Rectangle.h>
+#include <Engine/Math/Rectangle.h>
 #include <sstream>
 
 TEST_CASE("FRectangle tests", "[FRectangle]")

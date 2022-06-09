@@ -1,6 +1,6 @@
 #include "SDG_Tests.h"
-#include <SDG/Debug/Log.h>
-#include <SDG/Lib/String.h>
+#include <Engine/Debug/Log.h>
+#include <Engine/Lib/String.h>
 
 #include <sstream>
 #include <utility>

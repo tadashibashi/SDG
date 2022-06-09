@@ -1,6 +1,6 @@
 #include "SDG_Tests.h"
-#include <SDG/Graphics/Frame.h>
-#include <SDG/Graphics/Texture.h>
+#include <Engine/Graphics/Frame.h>
+#include <Engine/Graphics/Texture.h>
 
 TEST_CASE("Frame tests", "[Frame]")
 {

@@ -1,5 +1,5 @@
-#include <SDG/SDG.hpp>
-#include <SDG/Graphics/Font.h>
+#include <Engine/SDG.h>
+#include <Engine/Graphics/Font.h>
 using namespace SDG;
 
 class Sandbox : public Engine 

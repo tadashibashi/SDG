@@ -1,6 +1,6 @@
 #include "SDG_Tests.h"
-#include <SDG/Math/Intersection.h>
-#include <SDG/Math/MathShape.h>
+#include <Engine/Math/Intersection.h>
+#include <Engine/Math/MathShape.h>
 
 TEST_CASE("Shape.h")
 {

@@ -3,8 +3,8 @@
  * Contains tests for class SDG::Window
  */
 #include "SDG_Tests.h"
-#include <SDG/Graphics/Window.h>
-#include <SDG/Graphics/RenderTarget.h>
+#include <Engine/Graphics/Window.h>
+#include <Engine/Graphics/RenderTarget.h>
 #include <SDL_events.h>
 #include <SDL_gpu.h>
 

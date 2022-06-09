@@ -1,6 +1,6 @@
 #include "SDG_Tests.h"
-#include <SDG/Graphics/SpriteRenderer.h>
-#include <SDG/Graphics/Sprite.h>
+#include <Engine/Graphics/SpriteRenderer.h>
+#include <Engine/Graphics/Sprite.h>
 
 TEST_CASE("SpriteRenderer tests", "[SpriteRenderer]")
 {

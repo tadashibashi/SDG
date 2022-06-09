@@ -1,5 +1,5 @@
 #include "SDG_Tests.h"
-#include <SDG/Graphics/Sprite.h>
+#include <Engine/Graphics/Sprite.h>
 
 TEST_CASE("Sprite tests", "[Sprite]")
 {

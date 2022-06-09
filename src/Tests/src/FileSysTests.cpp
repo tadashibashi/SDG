@@ -1,12 +1,12 @@
 #include "SDG_Tests.h"
-#include <SDG/FileSys/FileSys.h>
+#include <Engine/Filesys/Filesys.h>
 
 TEST_CASE("FileSys tests", "[FileSys]")
 {
     SECTION("CreateWindow and Constructor produce same result")
     {
-        FileSys fileSys1("SDG Tests", "SDG");
-        FileSys fileSys2;
+        Filesys fileSys1("SDG Tests", "SDG");
+        Filesys fileSys2;
         fileSys2.Initialize("SDG Tests", "SDG");
 
         SECTION("App and Org names are set")

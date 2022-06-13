@@ -1,7 +1,6 @@
 #include "XmlLoadable.h"
 
 #include <Engine/Debug/Log.h>
-#include <Engine/Exceptions/XmlReaderException.h>
 #include <Engine/Exceptions/XmlValidationException.h>
 #include <Engine/Exceptions/XmlFormattingException.h>
 #include <Engine/Filesys/File.h>

@@ -10,4 +10,5 @@
 #include "Exceptions/RuntimeException.h"
 #include "Exceptions/UncaughtCaseException.h"
 #include "Exceptions/XmlValidationException.h"
+#include "Exceptions/XmlException.h"
 #include "Exceptions/XmlFormattingException.h"

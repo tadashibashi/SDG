@@ -8,23 +8,36 @@
  * ==================================================================================================================*/
 #pragma once
 #include <Engine/Lib/String.h>
-#include <Engine/Filesys/Path.h>
+#include <Engine/Filesys/Json/JsonLoadable.h>
 
+#include <vector>
 #include <cstdint>
 
 namespace SDG
 {
-    class AppConfig
+    class AppConfig : public JsonLoadable
     {
     public:
-        AppConfig() : width(), height(), winFlags(), title(), appName(), orgName() { }
+        AppConfig() : JsonLoadable("AppConfig"), windows(), appName(), orgName() { }
         AppConfig(int width, int height, uint32_t winFlags, const String &title, const String &appName, const String &orgName) :
-            width(width), height(height), winFlags(winFlags), title(title), appName(appName), orgName(orgName) { }
+            JsonLoadable("AppConfig"), windows(), appName(appName), orgName(orgName)
+        {
+            windows.emplace_back(Window{ width, height, winFlags, title });
+        }
 
-        int width, height;
-        uint32_t winFlags;
-        String title, appName, orgName;
+        struct Window
+        {
+            Window() : width(), height(), winFlags(), title() { }
+            Window(int width, int height, uint32_t winFlags, const String &title) :
+                width(width), height(height), winFlags(winFlags), title(title) { }
+            int width, height;
+            uint32_t winFlags;
+            String title;
+        };
 
-        bool LoadJson(const Path &path);
+        String appName, orgName;
+        std::vector<Window> windows;
+    private:
+        void LoadJsonImpl(const json &j) override;
     };
 }

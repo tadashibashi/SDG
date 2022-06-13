@@ -7,9 +7,7 @@ using namespace SDG;
 class Sandbox : public Engine 
 {
 public:
-    Sandbox() : Engine(
-        "assets/configjson.sdgc"
-    )
+    Sandbox() : Engine("assets/configjson.sdgc")
     {
         Texture::DefaultFilterMode(Texture::Filter::Linear);
     }
@@ -30,7 +28,6 @@ private:
 
     int Initialize() override
     {
-        //Windows()->CreateWindow(300, 300, "Window2", 0, &window2);
         spriteBatch.Initialize(MainWindow());
         LoadContent();
         return 0;

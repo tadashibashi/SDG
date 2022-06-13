@@ -1,34 +1,61 @@
 #include "AppConfig.h"
 #include <SDL_video.h>
 #include <Engine/Filesys/Json.h>
+#include <Engine/Exceptions.h>
 
-bool SDG::AppConfig::LoadJson(const Path &path)
+namespace SDG
 {
-    String tName, tOrg, tTitle;
-    uint32_t tWinFlags = 0;
-    int tWidth, tHeight;
+    static void ParseWindow(const json &j, AppConfig::Window &window)
+    {
+        String tTitle; int tWidth, tHeight; uint32_t tWinFlags = 0;
 
-    json j = OpenJson(path);
-    auto &app  = j.at("app");
-    tName     = app.at("name");
-    tOrg      = app.at("org");
+        tTitle = j.value("title", "");
+        tWidth = j["size"].value("x", 640);
+        tHeight = j["size"].value("y", 480);
+        if (j.value("borderless", false))
+            tWinFlags |= SDL_WINDOW_BORDERLESS;
+        if (j.value("fullscreen", false))
+            tWinFlags |= SDL_WINDOW_FULLSCREEN;
+        if (j.value("hidden", false))
+            tWinFlags |= SDL_WINDOW_HIDDEN;
 
-    auto &window = j.at("window");
-    tTitle = window.value("title", "");
-    tWidth = window["size"].value("x", 640);
-    tHeight = window["size"].value("y", 480);
-    if (window.value("borderless", false)) 
-        tWinFlags |= SDL_WINDOW_BORDERLESS;
-    if (window.value("fullscreen", false))
-        tWinFlags |= SDL_WINDOW_FULLSCREEN;
-    if (window.value("hidden", false))
-        tWinFlags |= SDL_WINDOW_HIDDEN;
+        window.title = std::move(tTitle);
+        window.width = tWidth;
+        window.height = tHeight;
+        window.winFlags = tWinFlags;
+    }
 
-    appName = tName;
-    orgName = tOrg;
-    title = tTitle;
-    winFlags = tWinFlags;
-    width = tWidth;
-    height = tHeight;
-    return true;
+    void AppConfig::LoadJsonImpl(const json &j)
+    {
+        String tName, tOrg;
+        std::vector<AppConfig::Window> tWindows;
+
+        auto &app  = j.at("app");
+        tName     = app.at("name").get<String>();
+        tOrg      = app.at("org").get<String>();
+
+        if (auto window = app.find("window") != app.end())
+        {
+            AppConfig::Window w;
+            ParseWindow(window, w);
+            tWindows.emplace_back(w);
+        }
+        else if (auto windows = app.find("windows") != app.end())
+        {
+            for(auto &window : app.at("windows"))
+            {
+                AppConfig::Window w;
+                ParseWindow(window, w);
+                tWindows.emplace_back(w);
+            }
+        }
+        else
+        {
+            throw DomainException("Missing an app \"window\" or \"windows\" field in config file");
+        }
+
+        appName = tName;
+        orgName = tOrg;
+        windows.swap(tWindows);
+    }
 }

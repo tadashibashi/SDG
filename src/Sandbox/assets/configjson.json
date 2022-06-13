@@ -1,24 +1,32 @@
 {
   "app": {
     "name": "SDG Engine Test",
-    "org": "SDG"
-  },
-  "window": {
-    "title": "Sandbox",
-    "borderless": true,
-    "size": {
-      "x": 1280,
-      "y": 960
-    }
-  },
-  "scenes": [
-    {
-      "name": "level-1",
-      "map": "tilemaps/level1.tmj"
-    },
-    {
-      "name": "level-2",
-      "map": "tilemaps/level2.tmj"
-    }
-  ]
+    "org": "SDG",
+    "windows": [
+      {
+        "title": "Sandbox",
+        "position": {
+          "x": null,
+          "y": null
+        },
+        "size": {
+          "x": 1280,
+          "y": 960
+        },
+        "borderless": false,
+        "fullscreen": false
+      }
+    ],
+    "pixelart": false,
+    "scenes": [
+      {
+        "name": "level-1",
+        "map": "tilemaps/level1.tmj"
+      },
+      {
+        "name": "level-2",
+        "map": "tilemaps/level2.tmj"
+      }
+    ]
+  }
 }

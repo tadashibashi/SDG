@@ -123,7 +123,7 @@ add_library(SDG_Engine STATIC
         
   "Graphics/Font.h" "Graphics/Font.cpp" "Lib/Enum.h" "Lib/Private/Fmt.h" "Exceptions/UncaughtCaseException.h" "Lib/Ref.inl" "Lib/Array.inl" "Lib/Delegate.inl" "FileSys/Xml/XmlElement.h" "FileSys/Xml/XmlElement.cpp" "FileSys/Xml/XmlAttribute.h" "FileSys/Xml/XmlAttribute.cpp" "FileSys/Xml/XmlDocument.h" "FileSys/Xml/XmlDocument.cpp" "FileSys/Xml/Private/XmlDocument_Impl.h"  "Exceptions/XmlValidationException.h" "FileSys/Xml/XmlValidation.h" "Exceptions/XmlValidationException.cpp" "Game/Datatypes/AppConfig.cpp" "Exceptions/XmlFormattingException.h" "Graphics/Private/NFont.h" 
  "Lib/Version.h" "Lib/Version.cpp" "Lib/Platform.cpp" "Debug/Private/spdlog.h" "Lib/RAIterator.h" "Lib/ConstRAIterator.h" "Exceptions/Fwd.h" "Exceptions/Fwd.cpp" "Lib/Algorithm.h" "Lib/TypeTraits.h" "Lib/Concepts.h" "Lib/Int.h" 
- "Dynamic/Object.h" "Dynamic/Struct.h" "Dynamic/Struct.cpp" "Dynamic/Object.cpp" "Dynamic/Array.h"  "Dynamic/Array.cpp"   "Filesys/Json.h" "Filesys/Json.cpp" "Exceptions/XmlException.h"   "Exceptions/LogicException.h" "Exceptions/DomainException.h" "Exceptions/FileLoadingException.h")
+ "Dynamic/Object.h" "Dynamic/Struct.h" "Dynamic/Struct.cpp" "Dynamic/Object.cpp" "Dynamic/Array.h"  "Dynamic/Array.cpp"   "Filesys/Json.h" "Filesys/Json.cpp" "Exceptions/XmlException.h"   "Exceptions/LogicException.h" "Exceptions/DomainException.h" "Exceptions/FileLoadingException.h" "Filesys/Json/JsonLoadable.h" "Filesys/Json/JsonLoadable.cpp")
 
 # -----  Includes  ----------------------------------------------------
 set(Engine_Includes

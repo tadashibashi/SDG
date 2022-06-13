@@ -3,7 +3,7 @@
  * @author  Aaron Ishibashi
  *
  * @class   SDG::Engine
- * Main base class that provdes basic Window and input for an application.
+ * Main base class that provides basic input and window for an application.
  *
  * ==================================================================================================================*/
 #pragma once
@@ -13,6 +13,8 @@
 #include <Engine/Lib/String.h>
 #include <Engine/Lib/Version.h>
 #include <Engine/Time/AppTime.h>
+
+#include <Engine/Filesys/Json/Fwd.h>
 
 namespace SDG
 {
@@ -25,9 +27,6 @@ namespace SDG
         /// @param orgName - company / organization name
         /// @param configPath - path to an AppConfig json file.
         explicit Engine(const String &configPath);
-        /// @param appName - name of the app
-        /// @param 
-        explicit Engine(const AppConfig &config);
         virtual ~Engine();
 
         /// Executes one game frame. Intended for use by platforms that require the
@@ -41,6 +40,9 @@ namespace SDG
         void Exit();
 
         const String &Name() const;
+
+        const json &Config() const;
+        json &Config();
 
         CRef<AppTime> Time();
 

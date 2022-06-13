@@ -1,8 +1,8 @@
 /// String implementation file
 #include "String.h"
 #include "StringView.h"
-#include <Engine/Debug.h>
 
+#include <Engine/Debug.h>
 #include <Engine/Exceptions.h>
 #include <Engine/Math/Math.h>
 

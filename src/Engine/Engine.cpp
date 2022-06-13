@@ -12,6 +12,8 @@
 
 #include <SDL.h>
 
+#include <Engine/Filesys/Json.h>
+
 #if (SDG_TARGET_WEBGL)
 static void EmMainLoop(void *arg)
 {
@@ -45,14 +47,8 @@ namespace SDG
         // Get game settings from config file
         AppConfig config;
         config.LoadJson(BasePath(configPath));
-        impl->Initialize(config);
+        impl->Initialize(std::move(config));
     }
-
-    Engine::Engine(const AppConfig &config) : impl(new Impl)
-    {
-        impl->Initialize(config);
-    }
-
 
     Engine::~Engine()
     {
@@ -65,18 +61,23 @@ namespace SDG
     Engine::Initialize_()
     {
         AppConfig &config = impl->config;
+
         Ref<Window> window;
-        if (impl->windows.CreateWindow(config.width, config.height, 
-            config.title.Cstr(), impl->config.winFlags, &window) >= 0)
+        for (size_t i = 0; i < config.windows.size(); ++i)
         {
-            impl->mainWindow = window;
-            SDG_Core_Log("- graphics library and window: ok");
+            auto windata = config.windows[i];
+            if (impl->windows.CreateWindow(windata.width, windata.height, 
+                windata.title.Cstr(), windata.winFlags, i == 0 ? &window : nullptr) >= 0)
+            {
+                SDG_Core_Log("- window [{}] initialized", i);
+            }
+            else
+            {
+                SDG_Core_Err("- window [{}] init failed!", i);
+                return -1;
+            }
         }
-        else
-        {
-            SDG_Core_Err("- graphics library and window: failed!");
-            return -1;
-        }
+        impl->mainWindow = window;
 
         // TODO: game config can specify input types through an array?
         InputDriver::Initialize(SDG_INPUTTYPE_DEFAULT);
@@ -211,25 +212,39 @@ namespace SDG
         static SDG::Version v(SDG_VERSION_MAJOR, SDG_VERSION_MINOR, SDG_VERSION_PATCH);
         return v;
     }
+
+    json &Engine::Config()
+    {
+        return impl->config.Json();
+    }
+
+    const json &Engine::Config() const
+    {
+        return impl->config.Json();
+    }
     
     void Engine::Impl::Initialize(const AppConfig &config)
     {
-        SDG_Core_Log("\n"
+        std::stringstream ss;
+        ss << String::Format("\n"
             "*===========================================================================*\n"
             "  SDG Engine v{}\n"
             "    Platform:   {}: {}\n"
             "    Debug mode: {}\n"
             "\n"
-            "-----------------------------------------------------------------------------\n"
+            "-----------------------------------------------------------------------------\n",
+            Engine::Version(), TargetPlatformName(), SIZEOF_VOIDP == 8 ? "64-bit" : "32-bit", SDG_DEBUG ? "ON" : "OFF");
+        ss << String::Format(
             "  {} [{}]\n"
-            "     Window\n"
-            "        Title: \"{}\"\n"
-            "        Size : {} x {}\n"
-            "        Flags: {}"
-            "\n"
-            "*===========================================================================*\n",
-            Engine::Version(), TargetPlatformName(), SIZEOF_VOIDP == 8 ? "64-bit" : "32-bit", SDG_DEBUG ? "ON" : "OFF",
-            config.appName, config.orgName, config.title, config.width, config.height, config.winFlags);
+            "     Window Count: {}\n", config.appName, config.orgName, config.windows.size());
+        size_t winId = 0;
+        for (auto &windata : config.windows)
+        {
+            ss << String::Format(
+            "        [{}] Title: \"{}\", Size: {} x {}, Flags: {}\n",
+            winId++, windata.title, windata.width, windata.height, windata.winFlags);
+        }
+        SDG_Core_Log("{}\n", ss.str());
 
         SDG_Core_Log("Initializing engine...");
 

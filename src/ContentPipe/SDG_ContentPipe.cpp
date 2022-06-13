@@ -70,9 +70,7 @@ int main(int argc, char *argv[])
     // Create the asset folder if it doesn't exist
     std::filesystem::directory_entry assetFolder(outDir);
     if (!assetFolder.exists())
-    {
         std::filesystem::create_directory(assetFolder.path());
-    }
 
 
     // For each item in the user's asset directory...
@@ -139,7 +137,7 @@ int main(int argc, char *argv[])
                 outFile << c;
             }
 
-            std::cout << "Processing content file (" << relativePath.substr(1) << ")\n";
+            std::cout << "[Content] Encrypting file (" << relativePath.substr(1) << ")\n";
             cache[relativePath] = writeTime;
         }
     }

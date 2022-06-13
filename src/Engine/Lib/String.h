@@ -112,6 +112,8 @@ namespace SDG
         /// @returns the index where a matching char was found or
         ///          String::NullPos if none was found.
         [[nodiscard]] size_t FindFirstOf(const char *list, size_t startingAt = 0) const;
+        [[nodiscard]] size_t FindFirstNotOf(char c, size_t startingAt = 0) const;
+        [[nodiscard]] size_t FindFirstNotOf(const char *list, size_t startingAt = 0) const;
 
         /// Finds the nth occurance of a char in the String. n should be >= 1 (n=0 -> NullPos)
         /// If the nth occurance could not be found, String::NullPos is returned.
@@ -140,6 +142,8 @@ namespace SDG
         /// @returns the index where a matching char was found or
         ///          String::NullPos if none was found.
         [[nodiscard]] size_t FindLastOf(const char *list, size_t startingAt = NullPos) const;
+        [[nodiscard]] size_t FindLastNotOf(char c, size_t startingAt = NullPos) const;
+        [[nodiscard]] size_t FindLastNotOf(const char *list, size_t startingAt = NullPos) const;
 
         [[nodiscard]] Iterator FindIf(const std::function<bool(char)> &func) const;
 
@@ -166,9 +170,9 @@ namespace SDG
         /// starting its count from the index position. A value of
         /// String::NullPos means that the rest of the String starting
         /// from the index will be copied.
-        String Substr(size_t index, size_t count = NullPos) const;
+        [[nodiscard]] String Substr(size_t index, size_t count = NullPos) const;
 
-        String Substr(Iterator it, size_t count = NullPos) const;
+        [[nodiscard]] String Substr(Iterator it, size_t count = NullPos) const;
 
         [[nodiscard]] const char *Cstr() const;
 
@@ -182,6 +186,11 @@ namespace SDG
         /// More efficient than checking Length() == 0
         [[nodiscard]] bool Empty() const;
 
+        /// Removes characters from the beginning of the string
+        /// @param list - a list of chars to trim off the beginning; if null, whitespace will be trimmed.
+        [[nodiscard]] String &Trim(const char *list = nullptr);
+        [[nodiscard]] String &TrimEnd(const char *list = nullptr);
+
 
         // ===== Comparison ===========================================================================================
 
@@ -192,15 +201,20 @@ namespace SDG
         [[nodiscard]] bool operator == (const char *other) const;
         [[nodiscard]] bool operator != (const char *other) const;
 
+        [[nodiscard]] bool operator < (const String &other) const;
+        [[nodiscard]] bool operator > (const String &other) const;
+        [[nodiscard]] bool operator >= (const String &other) const { return !operator < (other); }
+        [[nodiscard]] bool operator <= (const String &other) const { return !operator > (other); }
 
+        
         // ===== Iterators ============================================================================================
 
-        Iterator begin() { return Iterator(str_, str_, end_); }
-        const Iterator begin() const { return Iterator(str_, str_, end_); }
-        Iterator end() { return Iterator(end_, str_, end_); }
-        const Iterator end() const { return Iterator(end_, str_, end_); }
-        ConstIterator cbegin() const { return ConstIterator(str_, str_, end_); }
-        ConstIterator cend() const  { return ConstIterator(end_, str_, end_); }
+        [[nodiscard]] Iterator begin() { return Iterator(str_, str_, end_); }
+        [[nodiscard]] const Iterator begin() const { return Iterator(str_, str_, end_); }
+        [[nodiscard]] Iterator end() { return Iterator(end_, str_, end_); }
+        [[nodiscard]] const Iterator end() const { return Iterator(end_, str_, end_); }
+        [[nodiscard]] ConstIterator cbegin() const { return ConstIterator(str_, str_, end_); }
+        [[nodiscard]] ConstIterator cend() const  { return ConstIterator(end_, str_, end_); }
 
         // ===== Conversion ===========================================================================================
 
@@ -211,12 +225,12 @@ namespace SDG
 
         /// Creates string using the fmt library
         template <typename...Args>
-        [[nodiscard]] static String Format(const char *format, Args &&...args);
+        [[nodiscard]] static String Format(const char *format, Args ...args);
 
         /// Converts a String to a numeric value. 
         /// Prepending and post-pending symbols besides releveant ones are ignored
         template <typename T>
-        [[nodiscard]] T To(int base = 10) const;
+        [[nodiscard]] T ToNumber(uint8_t base = 10u) const;
 
         /// Helper to create an std::string copy
         [[nodiscard]] std::string Str() const;
@@ -224,10 +238,9 @@ namespace SDG
     private:
         /// Safely expands the String's internal capacity.
         void Expand(size_t size);
-        /// Called privately to initialize String. Useful for data
-        /// structures with quick length calculation.
+        /// Initializes String memory and copies a c-string with specified length
         void Allocate(const char *str, size_t size);
-        /// Initializes an empty string with an initial reserved capacity
+        /// Initializes an empty string with a set memory capacity
         void Allocate(size_t cap);
         /// Sets a String that has already initialized.
         void Reallocate(const char *str, size_t size);
@@ -252,6 +265,14 @@ namespace SDG
     /// Converts T to a String equivalent. Must T must have ostream operator overridden with LogImpl.h included.
     template <typename T>
     String ToString(const T &t);
+
+    struct StringHashComparer
+    {
+        bool operator() (const String &lhs, const String &rhs) const
+        {
+            return lhs.Hash() < rhs.Hash();
+        }
+    };
 }
 
 #include <utility>

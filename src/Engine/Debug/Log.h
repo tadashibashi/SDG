@@ -18,6 +18,43 @@ namespace SDG::Debug
     spdlog::logger *ClientLogger();
 }
 
+#include "LogImpl.h"
+#include <Engine/Lib/Concepts.h>
+#include <vector>
+#include <sstream>
+template <typename Ostream, Streamable<Ostream> T>
+Ostream &operator << (Ostream &os, const std::vector<T> &v)
+{
+    static_assert(SDG::is_streamable_v<Ostream, T>, "std::vector<T>: T must be streamable");
+
+    os << "std::vector<" << typeid(T).name() << "> Size:" << v.size() << " [";
+    if (!v.empty())
+    {
+        for (auto it = v.cbegin(), end = v.cend() - 1; it != end; ++it)
+            os << *it << ", ";
+        os << *(v.cend() - 1);
+    }
+    os << ']';
+
+    return os;
+}
+
+template <Streamable<std::stringstream> T>
+struct fmt::formatter< std::vector<T> >
+{
+    constexpr auto parse(fmt::format_parse_context &ctx) -> decltype(ctx.begin()) {
+        return ctx.end();
+    }
+
+    template <typename FormatContext>
+    auto format(const std::vector<T> &v, FormatContext &ctx) -> decltype(ctx.out())
+    {
+        std::stringstream ss;
+        ss << v;
+        return fmt::format_to(ctx.out(), "{}", ss.str());
+    }
+};
+
 // Engine logging
 #define SDG_Core_Log(...) SDG::Debug::CoreLogger()->info(__VA_ARGS__)
 #define SDG_Core_Warn(...) SDG::Debug::CoreLogger()->warn(__VA_ARGS__)

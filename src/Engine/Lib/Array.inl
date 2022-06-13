@@ -1,6 +1,8 @@
 #include "Array.h"
 #include <Engine/Lib/Memory.h>
+#include <Engine/Lib/TypeTraits.h>
 #include <Engine/Exceptions/Fwd.h>
+
 #include <utility>
 
 
@@ -49,10 +51,10 @@ namespace SDG
         if (arr)
         {
             memset(arr, 0, sizeof(T) * size);
-            for (T &obj : *this)
+            for (T &value : *this)
             {
                 T t{};
-                std::swap(t, obj);
+                std::swap(t, value);
             }
         }
     }
@@ -187,4 +189,40 @@ namespace SDG
 
         return *this;
     }
+
 }
+
+#include <Engine/Lib/Private/Fmt.h>
+#include <Engine/Lib/Concepts.h>
+#include <sstream>
+
+template <typename T>
+inline std::ostream &operator << (std::ostream &ss, const SDG::Array<T> &arr)
+{
+    ss << "Array<" << typeid(T).name() << "> Length: " << arr.Size() << "\n[";
+    if (!arr.Empty())
+    {
+        for (auto it = arr.cbegin(), end = arr.cend() - 1; it != end; ++it)
+            ss << *it << ", ";
+        ss << *(arr.cend() - 1);
+    }
+    ss << ']';
+
+    return ss;
+}
+
+template <Streamable<std::stringstream> T>
+struct fmt::formatter< SDG::Array<T> >
+{
+    constexpr auto parse(fmt::format_parse_context &ctx) -> decltype(ctx.begin()) {
+        return ctx.end();
+    }
+
+    template <typename FormatContext>
+    auto format(const SDG::Array<T> &arr, FormatContext &ctx) -> decltype(ctx.out())
+    {
+        std::stringstream ss;
+        ss << arr;
+        return fmt::format_to(ctx.out(), "{}", ss.str());
+    }
+};

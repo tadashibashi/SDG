@@ -1,0 +1,101 @@
+{
+    "automappingRulesFile": "",
+    "commands": [
+    ],
+    "extensionsPath": "extensions",
+    "folders": [
+        "."
+    ],
+    "objectTypesFile": "objecttypes.json",
+    "propertyTypes": [
+        {
+            "id": 1,
+            "members": [
+                {
+                    "name": "sweetness",
+                    "type": "float",
+                    "value": 0
+                },
+                {
+                    "name": "type",
+                    "propertyType": "FruitType",
+                    "type": "int",
+                    "value": 2
+                },
+                {
+                    "name": "wasEaten",
+                    "type": "bool",
+                    "value": false
+                }
+            ],
+            "name": "Fruit",
+            "type": "class"
+        },
+        {
+            "id": 2,
+            "name": "FruitType",
+            "storageType": "int",
+            "type": "enum",
+            "values": [
+                "Unknown",
+                "Orange",
+                "Watermelon",
+                "Grape",
+                "Apple",
+                "Peach",
+                "Pear",
+                "Blueberry",
+                "Raspberry",
+                "Cherry"
+            ],
+            "valuesAsFlags": false
+        },
+        {
+            "id": 3,
+            "members": [
+                {
+                    "name": "magicDefense",
+                    "type": "float",
+                    "value": 0
+                },
+                {
+                    "name": "magicPower",
+                    "type": "float",
+                    "value": 0
+                },
+                {
+                    "name": "physicalDefense",
+                    "type": "float",
+                    "value": 0
+                },
+                {
+                    "name": "physicalPower",
+                    "type": "float",
+                    "value": 0
+                },
+                {
+                    "name": "type",
+                    "propertyType": "WeaponType",
+                    "type": "string",
+                    "value": "Sword"
+                }
+            ],
+            "name": "Weapon",
+            "type": "class"
+        },
+        {
+            "id": 4,
+            "name": "WeaponType",
+            "storageType": "string",
+            "type": "enum",
+            "values": [
+                "Sword",
+                "Axe",
+                "Bow",
+                "Lance",
+                "Mace"
+            ],
+            "valuesAsFlags": false
+        }
+    ]
+}

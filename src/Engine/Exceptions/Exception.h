@@ -17,6 +17,8 @@ namespace SDG
         Exception(const String &message);
         virtual ~Exception() = default;
         const char *what() const noexcept;
+
+        virtual const char *Name() const noexcept { return "Exception"; }
     protected:
         mutable SDG::String message;
     };

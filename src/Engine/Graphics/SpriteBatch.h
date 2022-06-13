@@ -1,11 +1,10 @@
-/*!
+/* ====================================================================================================================
  * @file SpriteBatch.h
- * @namespace SDG
- * @class SpriteBatch
- * Renders images, with ability to specify transformation matrix,
- * depth sorting, render target, etc.
- * 
- */
+ * @class SDG::SpriteBatch
+ * Renders images in batches, with settings for each batch, such as depth sorting, render target, 
+ * matrix transformation, etc.
+ *
+ * ==================================================================================================================*/
 #pragma once
 
 #include "Flip.h"
@@ -68,7 +67,6 @@ namespace SDG
         Texture                  pixel;
 
     };
-
 
 
     struct SpriteBatch::BatchCall 

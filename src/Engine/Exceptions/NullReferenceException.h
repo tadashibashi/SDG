@@ -14,5 +14,7 @@ namespace SDG
 
         NullReferenceException(const String &message) : 
             Exception("NullReferenceException: " + message) { }
+
+        const char *Name() const noexcept override { return "NullReferenceException"; }
     };
 }

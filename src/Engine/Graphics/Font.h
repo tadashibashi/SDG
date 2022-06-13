@@ -13,7 +13,7 @@ text sits on, even though some characters (like g, y, j, etc.) might have parts 
 It is comparable to the lines you write on in a lined notebook.
 */
 #pragma once
-#include <Engine/FileSys/Path.h>
+#include <Engine/Filesys/Path.h>
 #include <Engine/Graphics/Color.h>
 #include <Engine/Lib/Enum.h>
 
@@ -27,15 +27,14 @@ It is comparable to the lines you write on in a lined notebook.
 
 namespace SDG
 {
-    enum class FontStyle : int
-    {
-        Normal         = 0x00,
-        Bold           = 0x01,
-        Italic         = 0x02,
-        Underline      = 0x04,
-        Strikethrough  = 0x08
-    };
-    FlagOps(FontStyle, int)
+
+    EnumFlag (FontStyle, int,
+        Normal = 0x00,
+        Bold = 0x01,
+        Italic = 0x02,
+        Underline = 0x04,
+        Strikethrough = 0x08
+    );
 
     enum class FontAlign
     {
@@ -74,8 +73,9 @@ namespace SDG
         void Draw(Ref<class RenderTarget> target, Vector2 position, Vector2 scale,
             FontAlign alignment, Color color, const char *format, Args &&...args)
         {
-            auto str = fmt::format(format, std::forward<Args>(args)...);
-            DrawImpl(target, position, scale, alignment, color, str.c_str());
+            auto out = std::string();
+            auto str = fmt::vformat_to(std::back_inserter(out), std::string_view(format), fmt::make_format_args(args...));
+            DrawImpl(target, position, scale, alignment, color, out.c_str());
         }
 
         // ========== Settings ================================================

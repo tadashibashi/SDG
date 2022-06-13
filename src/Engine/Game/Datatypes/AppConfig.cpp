@@ -1,34 +1,34 @@
 #include "AppConfig.h"
 #include <SDL_video.h>
+#include <Engine/Filesys/Json.h>
 
-bool SDG::AppConfig::LoadImpl(const Xml::XmlDocument &doc)
+bool SDG::AppConfig::LoadJson(const Path &path)
 {
     String tName, tOrg, tTitle;
     uint32_t tWinFlags = 0;
     int tWidth, tHeight;
 
-    auto config = doc.FirstChild("config", Xml::Required); // add requirements to doc
+    json j = OpenJson(path);
+    auto &app  = j.at("app");
+    tName     = app.at("name");
+    tOrg      = app.at("org");
 
-    auto app = config.FirstChild("app", Xml::Required);
-    tName = app.Attribute("name", Xml::Required).Value();
-    tOrg  = app.Attribute("org", Xml::Required).Value();
-
-    auto window = config.FirstChild("window", Xml::Required);
-    tWidth  = window.Attribute("width", Xml::Required).IntValue();
-    tHeight = window.Attribute("height", Xml::Required).IntValue();
-    if (auto attr = window.Attribute("fullscreen"))
-        tWinFlags = attr.BoolValue() ? tWinFlags |= SDL_WINDOW_FULLSCREEN : tWinFlags;    
-    if (auto attr = window.Attribute("borderless"))
-        tWinFlags = attr.BoolValue() ? tWinFlags |= SDL_WINDOW_BORDERLESS : tWinFlags;
-    if (auto attr = window.Attribute("hidden"))
-        tWinFlags = attr.BoolValue() ? tWinFlags |= SDL_WINDOW_HIDDEN : tWinFlags;
+    auto &window = j.at("window");
+    tTitle = window.value("title", "");
+    tWidth = window["size"].value("x", 640);
+    tHeight = window["size"].value("y", 480);
+    if (window.value("borderless", false)) 
+        tWinFlags |= SDL_WINDOW_BORDERLESS;
+    if (window.value("fullscreen", false))
+        tWinFlags |= SDL_WINDOW_FULLSCREEN;
+    if (window.value("hidden", false))
+        tWinFlags |= SDL_WINDOW_HIDDEN;
 
     appName = tName;
     orgName = tOrg;
-    width   = tWidth;
-    height  = tHeight;
+    title = tTitle;
     winFlags = tWinFlags;
-    title   = tTitle;
-
+    width = tWidth;
+    height = tHeight;
     return true;
 }

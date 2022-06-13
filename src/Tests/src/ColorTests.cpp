@@ -14,7 +14,7 @@ TEST_CASE("Color tests", "[Color]")
             REQUIRE(color.A() == Color::COLOR_MAX);
         }
 
-        SECTION("From StringView")
+        SECTION("From String")
         {
             SECTION("Standard Case")
             {
@@ -22,7 +22,7 @@ TEST_CASE("Color tests", "[Color]")
                 Color color;
                 bool didThrow = false;
                 try {
-                    color = Color(str, Color::Format::ARGB8888);
+                    color = Color::FromString(str, Color::Format::ARGB8888);
                 }
                 catch (const std::exception &e)
                 {
@@ -36,17 +36,49 @@ TEST_CASE("Color tests", "[Color]")
                 REQUIRE(color.B() == 0xC0);
             }
 
-            SECTION("Prepended symbol")
+            SECTION("Prepended symbol: 0x")
             {
-                String str = "#FFa0b0c0";
-                Color color = Color(str, Color::Format::ARGB8888);
+                String str = "0xFFa0b0c0";
+                Color color = Color::FromString(str, Color::Format::ARGB8888);
 
                 REQUIRE(color.A() == 0xFF);
                 REQUIRE(color.R() == 0xA0);
                 REQUIRE(color.G() == 0xB0);
                 REQUIRE(color.B() == 0xC0);
             }
+            SECTION("Prepended symbol: #")
+            {
+                String str = "#FFa0b0c0";
+                Color color = Color::FromString(str, Color::Format::ARGB8888);
 
+                REQUIRE(color.A() == 0xFF);
+                REQUIRE(color.R() == 0xA0);
+                REQUIRE(color.G() == 0xB0);
+                REQUIRE(color.B() == 0xC0);
+            }
+        }
+
+        SECTION("From number")
+        {
+            SECTION("Standard Case")
+            {
+                unsigned num = 0xFFa0b0c0;
+                Color color;
+                bool didThrow = false;
+                try {
+                    color = Color::FromNumber(num, Color::Format::ARGB8888);
+                }
+                catch (const std::exception &e)
+                {
+                    didThrow = true;
+                }
+
+                REQUIRE(!didThrow);
+                REQUIRE(color.A() == 0xFF);
+                REQUIRE(color.R() == 0xA0);
+                REQUIRE(color.G() == 0xB0);
+                REQUIRE(color.B() == 0xC0);
+            }
         }
 
         SECTION("Parameters")

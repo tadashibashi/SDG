@@ -459,6 +459,112 @@ TEST_CASE("StringView tests", "[StringView]")
         }
     }
 
+    SECTION("FindLastNotOf")
+    {
+        SECTION("When all of the same char it returns String::NullPos")
+        {
+            String str("///");
+            StringView view(str);
+            REQUIRE(view.FindLastNotOf('/') == str.NullPos);
+        }
+
+        SECTION("When not found in empty str, it returns String::NullPos")
+        {
+            String str("");
+            StringView view(str);
+            REQUIRE(view.FindLastNotOf('/') == str.NullPos);
+        }
+
+        SECTION("Looking for terminator should return String::NullPos, not length")
+        {
+            String str("");
+            StringView view(str);
+            size_t pos = str.FindLastNotOf('\0');
+            REQUIRE(pos == str.NullPos);
+        }
+
+        SECTION("Finds at end of string")
+        {
+            String str("///a");
+            StringView view(str);
+            size_t pos = str.FindLastNotOf('/');
+            REQUIRE(pos == str.Length() - 1);
+        }
+
+        SECTION("Finds at beginning of string")
+        {
+            String str("a///");
+            StringView view(str);
+            size_t pos = str.FindLastNotOf('/');
+            REQUIRE(pos == 0);
+        }
+
+        SECTION("Finds in middle of string")
+        {
+            String str("////a/////");
+            StringView view(str);
+            size_t pos = str.FindLastNotOf('/');
+            REQUIRE(pos == 4);
+        }
+
+        SECTION("Finds last when there are two occurrences")
+        {
+            String str("////a/////b////");
+            StringView view(str);
+            size_t pos = str.FindLastNotOf('/');
+            REQUIRE(pos == 10);
+        }
+    }
+
+    SECTION("FindLastNotOf: list overload")
+    {
+        SECTION("When all matching it returns String::NullPos")
+        {
+            String str("/@/!/#");
+            StringView view(str);
+            REQUIRE(view.FindLastNotOf("/!@#") == str.NullPos);
+        }
+
+        SECTION("When not found in empty str, it returns String::NullPos")
+        {
+            String str("");
+            StringView view(str);
+            REQUIRE(view.FindLastNotOf("abcdef") == str.NullPos);
+        }
+
+        SECTION("Finds at end of string")
+        {
+            String str("Z$/a");
+            StringView view(str);
+            size_t pos = str.FindLastNotOf("/Z$");
+            REQUIRE(pos == str.Length() - 1);
+        }
+
+        SECTION("Finds at beginning of string")
+        {
+            String str("a**");
+            StringView view(str);
+            size_t pos = str.FindLastNotOf("^&*");
+            REQUIRE(pos == 0);
+        }
+
+        SECTION("Finds in middle of string")
+        {
+            String str("/&*(//a//*()//");
+            StringView view(str);
+            size_t pos = str.FindLastNotOf("/&*()");
+            REQUIRE(pos == 6);
+        }
+
+        SECTION("Finds last when there are two occurrences")
+        {
+            String str("**//a/*/{//b///{/");
+            StringView view(str);
+            size_t pos = str.FindLastNotOf("/*{");
+            REQUIRE(pos == 11);
+        }
+    }
+
     SECTION("== operator")
     {
         SECTION("StringView to StringView")
@@ -839,6 +945,162 @@ TEST_CASE("StringView tests", "[StringView]")
             const char *str1 = "abcd";
             const char *str2 = "efgh";
             REQUIRE(std::string(str1) + StringView(str2) == std::string("abcdefgh"));
+        }
+    }
+
+    SECTION("Trim")
+    {
+        SECTION("Whitespace")
+        {
+            SECTION("Empty")
+            {
+                String str = "";
+                String view = str;
+                REQUIRE(view.Trim() == "");
+            }
+
+            SECTION("One whitespace, blank string")
+            {
+                String str = " ";
+                String view = str;
+                REQUIRE(view.Trim() == "");
+            }
+
+            SECTION("Many whitespaces, blank string")
+            {
+                String str = "                  ";
+                String view = str;
+                REQUIRE(view.Trim() == "");
+            }
+
+            SECTION("One whitespace")
+            {
+                String str = " abcdefg";
+                String view = str;
+                REQUIRE(view.Trim() == "abcdefg");
+            }
+
+            SECTION("Many whitespaces")
+            {
+                String str = "                 abcdefg";
+                String view = str;
+                REQUIRE(view.Trim() == "abcdefg");
+            }
+        }
+        SECTION("Chars")
+        {
+            SECTION("Empty")
+            {
+                String str = "";
+                String view = str;
+                REQUIRE(view.Trim("abc&*(") == "");
+            }
+
+            SECTION("One matching, blank string")
+            {
+                String str = "c";
+                String view = str;
+                REQUIRE(view.Trim("abc&*(") == "");
+            }
+
+            SECTION("Many matching, blank string")
+            {
+                String str = "a&&*(c&abc&*(abc";
+                String view = str;
+                REQUIRE(view.Trim("abc&*(") == "");
+            }
+
+            SECTION("One matching")
+            {
+                String str = "&def";
+                String view = str;
+                REQUIRE(view.Trim("abc&*(") == "def");
+            }
+
+            SECTION("Many matching")
+            {
+                String str = "cabc&*(((((((((((baxbcdefg";
+                String view = str;
+                REQUIRE(view.Trim("abc&*(") == "xbcdefg");
+            }
+        }
+    }
+
+    SECTION("TrimEnd")
+    {
+        SECTION("Whitespace")
+        {
+            SECTION("Empty")
+            {
+                String str = "";
+                String view = str;
+                REQUIRE(view.TrimEnd() == "");
+            }
+
+            SECTION("One whitespace, blank string")
+            {
+                String str = " ";
+                String view = str;
+                REQUIRE(view.TrimEnd() == "");
+            }
+
+            SECTION("Many whitespaces, blank string")
+            {
+                String str = "                  ";
+                String view = str;
+                REQUIRE(view.TrimEnd() == "");
+            }
+
+            SECTION("One whitespace")
+            {
+                String str = "abcdefg ";
+                String view = str;
+                REQUIRE(view.TrimEnd() == "abcdefg");
+            }
+
+            SECTION("Many whitespaces")
+            {
+                String str = "abcdefg                  ";
+                String view = str;
+                REQUIRE(view.TrimEnd() == "abcdefg");
+            }
+        }
+        SECTION("Chars")
+        {
+            SECTION("Empty")
+            {
+                String str = "";
+                String view = str;
+                REQUIRE(view.TrimEnd("abc&*(") == "");
+            }
+
+            SECTION("One matching, blank string")
+            {
+                String str = "c";
+                String view = str;
+                REQUIRE(view.TrimEnd("abc&*(") == "");
+            }
+
+            SECTION("Many matching, blank string")
+            {
+                String str = "a&&*(c&abc&*(abc";
+                String view = str;
+                REQUIRE(view.TrimEnd("abc&*(") == "");
+            }
+
+            SECTION("One matching")
+            {
+                String str = "abcdef*";
+                String view = str;
+                REQUIRE(view.TrimEnd("abc&*(") == "abcdef");
+            }
+
+            SECTION("Many matching")
+            {
+                String str = "abcdefgcabc&*(((((((((((ba";
+                String view = str;
+                REQUIRE(view.TrimEnd("abc&*(") == "abcdefg");
+            }
         }
     }
 }

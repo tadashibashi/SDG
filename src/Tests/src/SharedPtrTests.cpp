@@ -3,13 +3,11 @@
 
 TEST_CASE("Shared ptr tests", "[Shared]")
 {
-    SECTION("Default constructor sets members to null")
+    SECTION("Default constructor constructs default object")
     {
         Shared<int> i;
 
-        REQUIRE(!i); // implicit bool cast if null
-        REQUIRE(i.Get() == nullptr);
-        REQUIRE(i.Count() == 0);
+        REQUIRE(*i == 0);
     }
 
     SECTION("Regular constructor sets members")
@@ -97,32 +95,4 @@ TEST_CASE("Shared ptr tests", "[Shared]")
         REQUIRE(int1.Count() == 1);
         REQUIRE(int2.Count() == 2);
     }
-
-    SECTION("Copying a null Shared ptr does not increase count")
-    {
-        Shared<int> int1;
-        Shared<int> int2 = int1;
-
-        REQUIRE(!int1);
-        REQUIRE(!int2);
-        REQUIRE(int1.Get() == nullptr);
-        REQUIRE(int2.Get() == nullptr);
-        REQUIRE(int1.Count() == 0);
-        REQUIRE(int2.Count() == 0);
-    }
-
-    SECTION("Dereferencing null Shared ptr throws NullReferenceException")
-    {
-        Shared<int> i;
-        bool didThrow = false;
-        try {
-            int i2 = *i;
-        }
-        catch (const NullReferenceException &e)
-        {
-            didThrow = true;
-        }
-        REQUIRE(didThrow);
-    }
-    
 }

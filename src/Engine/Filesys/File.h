@@ -83,9 +83,9 @@ public:
     bool Save() const;
      
     template<typename T>
-    size_t Write(const T &obj)
+    size_t Write(const T &value)
     {
-        return Write(&obj, sizeof(T));
+        return Write(&value, sizeof(T));
     }
 
     size_t Write(const String &str);
@@ -95,18 +95,18 @@ public:
 
 
     template<typename T>
-    size_t Read(T &obj)
+    size_t Read(T &value)
     {
-        return Read(&obj, sizeof(T));
+        return Read(&value, sizeof(T));
     }
 
     template<typename T>
     [[nodiscard]] T Read()
     {
-        T obj;
-        Read(&obj, sizeof(T));
+        T value;
+        Read(&value, sizeof(T));
 
-        return obj;
+        return value;
     }
 
     size_t Read(void *ptr, size_t size);

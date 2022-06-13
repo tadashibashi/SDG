@@ -7,10 +7,10 @@
 #pragma once
 #include "MathConstants.h"
 
+#include <Engine/Lib/Concepts.h>
 #include <Engine/Lib/Swap.h>
 
 #include <initializer_list>
-#include <type_traits>
 
 // Optional more efficient Min/Max/Clamp, perhaps for internal use
 #define SDG_Min(a, b) ((a) < (b) ? (a) : (b))
@@ -33,7 +33,7 @@ namespace SDG::Math
         return (dest - val) * amt + val;
     }
 
-    template<typename T>
+    template<Arithmetic T>
     inline double ToDegrees(T rad)
     {
         return rad * DegsPerRad;
@@ -44,7 +44,7 @@ namespace SDG::Math
         return rad * (float)DegsPerRad;
     }
 
-    template<typename T>
+    template<Arithmetic T>
     inline double ToRadians(T degrees)
     {
         return degrees * RadsPerDeg;
@@ -57,7 +57,7 @@ namespace SDG::Math
 
     /// Returns the largest of two numbers. Please use SDG_Min for a more
     /// efficient macro version.
-    template <typename T>
+    template <Comparable T>
     inline T Min(T a, T b)
     {
         return SDG_Min(a, b);
@@ -65,7 +65,7 @@ namespace SDG::Math
 
     /// Returns the largest of two numbers. Please use SDG_Max for a more
     /// efficient macro version.
-    template <typename T>
+    template <Comparable T>
     inline T Max(T a, T b)
     {
         return SDG_Max(a, b);
@@ -74,7 +74,7 @@ namespace SDG::Math
     /// Constrains a value between two numbers, inclusively on both ends.
     /// Min may be greater than max, and the number will still be clamped
     /// between by both ends.
-    template <typename T>
+    template <Comparable T>
     inline T Clamp(T value, T min, T max)
     {
         // Protect case where min > max
@@ -83,14 +83,14 @@ namespace SDG::Math
     }
 
     /// Returns the absolute value of a number
-    template <typename T>
+    template <Arithmetic T>
     inline T Abs(T n) { return n < 0 ? -n : n; }
 
     /// Returns +1 on positive number or 0, and -1 on negative numbers
-    template <typename T>
+    template <Arithmetic T>
     inline T Sign(T n) { return (T)(n < 0 ? -1 : 1); }
 
-    template <typename T>
+    template <Arithmetic T>
     inline T Round(T n) { return (T)((int)(n + (n < 0 ? -0.5L : 0.5L))); }
 
     /// Round to the 10^n's place.
@@ -123,7 +123,7 @@ namespace SDG::Math
     float Log10(float n);
 
     /// Returns the Y value from a projected position.
-    template<typename T>
+    template<Arithmetic T>
     inline double TrajectoryX(T degrees, T length)
     {
         return Cos(degrees * RadsPerDeg) * length;
@@ -135,7 +135,7 @@ namespace SDG::Math
     }
 
     /// Returns the Y value from a projected position.
-    template<typename T>
+    template<Arithmetic T>
     inline double TrajectoryY(T degrees, T length)
     {
         // Negative value to match downward y coordinate system
@@ -165,7 +165,7 @@ namespace SDG::Math
      * @param lowBounds lower boundary; must be <= n2
      * @param hiBounds upper boundary; must be >= n1
      */
-    template <typename T>
+    template <Arithmetic T>
     inline T WrapF(T x, T lowBounds, T hiBounds)
     {
         static_assert(std::is_floating_point_v<T>, "type T must be floating point");
@@ -183,7 +183,7 @@ namespace SDG::Math
      * @param lowBounds lower boundary; must be <= n2
      * @param hiBounds upper boundary; must be >= n1
      */
-    template <typename T>
+    template <Arithmetic T>
     inline T Wrap(T x, T lowBounds, T hiBounds)
     {
         static_assert(std::is_integral_v<T>, "type T must be floating point");

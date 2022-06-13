@@ -4,21 +4,21 @@
 
 namespace SDG::Xml
 {
-    static XmlElement ValidateElement(const XmlElement &element, const XmlElement &parent,  size_t index, Validation check)
+    static XmlElement ValidateElement(XmlElement element, const XmlElement &parent, size_t index, Validation check)
     {
         if (!element && check == Required)
             throw XmlValidationException(parent, index, Xml::NodeType::Element);
         return element;
     }
 
-    static XmlElement ValidateElement(const XmlElement &element, const XmlElement &parent, const String &name, Validation check)
+    static XmlElement ValidateElement(XmlElement element, const XmlElement &parent, const String &name, Validation check)
     {
         if (!element && check == Required)
             throw XmlValidationException(parent, name, Xml::NodeType::Element);
         return element;
     }
 
-    static XmlAttribute ValidateAttribute(const XmlAttribute &attr, const XmlElement &parent, const String &name, Validation check)
+    static const XmlAttribute &ValidateAttribute(const XmlAttribute &attr, const XmlElement &parent, const String &name, Validation check)
     {
         if (!attr && check == Required)
             throw XmlValidationException(parent, name, Xml::NodeType::Attribute);
@@ -27,7 +27,7 @@ namespace SDG::Xml
 
     XmlElement::XmlElement(tinyxml2::XMLElement *element) : element(element) { }
 
-    XmlElement XmlElement::Parent(Validation check) const
+    const XmlElement XmlElement::Parent(Validation check) const
     {
         if (!element) throw NullReferenceException();
         tinyxml2::XMLNode *pNode = element->Parent();
@@ -52,21 +52,57 @@ namespace SDG::Xml
         return e;
     }
 
-    XmlElement XmlElement::NextSibling(const String &name, Validation check) const
+    String XmlElement::Text() const 
+    {
+        if (!element) throw NullReferenceException();
+
+        return element->GetText();
+    }
+
+    XmlElement &XmlElement::Text(const String &text)
+    {
+        if (!element) throw NullReferenceException();
+
+        element->SetText(text.Cstr());
+        return *this;
+    }
+
+    const XmlElement XmlElement::NextSibling(const String &name, Validation check) const
     {
         if (!element) throw NullReferenceException();
 
         return ValidateElement(element->NextSiblingElement(name.Cstr()), *this, name, check);
     }
 
-    XmlElement XmlElement::FirstChild(Validation check) const
+    XmlElement XmlElement::NextSibling(const String &name, Validation check)
+    {
+        if (!element) throw NullReferenceException();
+
+        return ValidateElement(element->NextSiblingElement(name.Cstr()), *this, name, check);
+    }
+
+    const XmlElement XmlElement::FirstChild(Validation check) const
     {
         if (!element) throw NullReferenceException();
 
         return ValidateElement(element->FirstChildElement(), *this, 0, check);
     }
 
-    XmlElement XmlElement::FirstChild(const String &name, Validation check) const
+    XmlElement XmlElement::FirstChild(Validation check)
+    {
+        if (!element) throw NullReferenceException();
+
+        return ValidateElement(element->FirstChildElement(), *this, 0, check);
+    }
+
+    const XmlElement XmlElement::FirstChild(const String &name, Validation check) const
+    {
+        if (!element) throw NullReferenceException();
+
+        return ValidateElement(element->FirstChildElement(name.Cstr()), *this, name, check);
+    }
+
+    XmlElement XmlElement::FirstChild(const String &name, Validation check)
     {
         if (!element) throw NullReferenceException();
 
@@ -86,10 +122,11 @@ namespace SDG::Xml
         return element ? element->NoChildren() : throw NullReferenceException();
     }
 
-    XmlElement XmlElement::ChildAt(size_t index, Validation check) const
+    const XmlElement XmlElement::ChildAt(size_t index, Validation check) const
     {
         XmlElement e = FirstChild();
         for (size_t i = 0; i < index; ++i)
+        {
             if (!e++)
             {
                 if (check == Required)
@@ -97,11 +134,29 @@ namespace SDG::Xml
                 else
                     return nullptr;
             }
+        }
+
+        return e;
+    }
+     
+    XmlElement XmlElement::ChildAt(size_t index, Validation check)
+    {
+        XmlElement e = FirstChild();
+        for (size_t i = 0; i < index; ++i)
+        {
+            if (!e++)
+            {
+                if (check == Required)
+                    throw XmlValidationException(*this, index, Xml::NodeType::Element);
+                else
+                    return nullptr;
+            }
+        }
 
         return e;
     }
 
-    XmlAttribute XmlElement::Attribute(const String &name, Validation check) const
+    const XmlAttribute XmlElement::Attribute(const String &name, Validation check) const
     {
         if (!element) throw NullReferenceException();
 
@@ -109,7 +164,15 @@ namespace SDG::Xml
             *this, name, check);
     }
 
-    XmlAttribute XmlElement::AttributeAt(size_t index, Validation check) const
+    XmlAttribute XmlElement::Attribute(const String &name, Validation check)
+    {
+        if (!element) throw NullReferenceException();
+
+        return ValidateAttribute(XmlAttribute(element->FindAttribute(name.Cstr()), check == Required),
+            *this, name, check);
+    }
+
+    const XmlAttribute XmlElement::AttributeAt(size_t index, Validation check) const
     {
         XmlAttribute a = FirstAttribute();
         for (size_t i = 0; i < index; ++i)
@@ -119,6 +182,23 @@ namespace SDG::Xml
                 if (check == Required)
                     throw XmlValidationException(*this, index, Xml::NodeType::Attribute);
                 else 
+                    return nullptr;
+            }
+        }
+
+        return a;
+    }
+
+    XmlAttribute XmlElement::AttributeAt(size_t index, Validation check)
+    {
+        XmlAttribute a = FirstAttribute();
+        for (size_t i = 0; i < index; ++i)
+        {
+            if (!a++)
+            {
+                if (check == Required)
+                    throw XmlValidationException(*this, index, Xml::NodeType::Attribute);
+                else
                     return nullptr;
             }
         }
@@ -140,7 +220,7 @@ namespace SDG::Xml
             throw NullReferenceException("XmlElement::NoAttributes: XmlElement was null");
     }
 
-    XmlAttribute XmlElement::FirstAttribute(Validation check) const
+    const XmlAttribute XmlElement::FirstAttribute(Validation check) const
     {
         if (!element) throw NullReferenceException("Attempted to access an attribute from a null XmlElement");
 
@@ -148,9 +228,25 @@ namespace SDG::Xml
             *this, 0, check);
     }
 
-    StringView XmlElement::Name() const
+    XmlAttribute XmlElement::FirstAttribute(Validation check)
+    {
+        if (!element) throw NullReferenceException("Attempted to access an attribute from a null XmlElement");
+
+        return ValidateAttribute(XmlAttribute(element->FirstAttribute(), check == Required),
+            *this, 0, check);
+    }
+
+    String XmlElement::Name() const
     {
         return element ? element->Name() : throw NullReferenceException();
+    }
+
+    XmlElement &XmlElement::Name(const String &name)
+    {
+        if (!element) throw NullReferenceException("XmlElement's inner ptr was null");
+        element->SetName(name.Cstr());
+
+        return *this;
     }
 
     int XmlElement::LineNumber() const
@@ -158,24 +254,55 @@ namespace SDG::Xml
         return element ? element->GetLineNum() : throw NullReferenceException();
     }
 
-    XmlElement XmlElement::operator[](const String &name) const
+    const XmlElement XmlElement::operator[](const String &name) const
+    {
+        return FirstChild(name, Required);
+    }
+
+    XmlElement XmlElement::operator[](const String &name)
     {
         return FirstChild(name, Required);
     }
 
     XmlElement &XmlElement::operator++()
     {
-        return *this = NextSibling();
+        if (!element) throw NullReferenceException();
+
+        element = element->NextSiblingElement();
+        
+        return *this;
+    }
+
+    const XmlElement &XmlElement::operator++() const
+    {
+        if (!element) throw NullReferenceException();
+
+        element = element->NextSiblingElement();
+
+        return *this;
     }
 
     XmlElement XmlElement::operator++(int)
     {
-        XmlElement temp = *this;
-        *this = NextSibling();
+        if (!element) throw NullReferenceException();
+        XmlElement temp(element);
+
+        element = element->NextSiblingElement();
+        
         return temp;
     }
 
-    XmlElement XmlElement::NextSibling(Validation check) const
+    const XmlElement XmlElement::operator++(int) const
+    {
+        if (!element) throw NullReferenceException();
+        XmlElement temp(element);
+
+        element = element->NextSiblingElement();
+
+        return temp;
+    }
+
+    const XmlElement XmlElement::NextSibling(Validation check) const
     {
         if (!element) throw NullReferenceException();
         XmlElement e = element->NextSiblingElement();
@@ -183,6 +310,17 @@ namespace SDG::Xml
         if (!e && check == Required)
             throw XmlValidationException(*this, NodeRelation::Next);
         
+        return e;
+    }
+
+    XmlElement XmlElement::NextSibling(Validation check)
+    {
+        if (!element) throw NullReferenceException();
+        XmlElement e = element->NextSiblingElement();
+
+        if (!e && check == Required)
+            throw XmlValidationException(*this, NodeRelation::Next);
+
         return e;
     }
 }

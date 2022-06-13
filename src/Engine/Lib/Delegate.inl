@@ -10,14 +10,14 @@ namespace SDG
 {
     // ===== Delegate Implementation ==================================================================================
     template<typename Ret, typename... Args>
-    Delegate<Ret, Args...>::Delegate(Delegate &&moved) :
+    Delegate<Ret(Args...)>::Delegate(Delegate &&moved) :
         functions(std::move(moved.functions)), removeThisFrame(moved.removeThisFrame)
     {
         
     }
 
     template<typename Ret, typename...Args>
-    Delegate<Ret, Args...> &Delegate<Ret, Args...>::operator = (Delegate &&moved)
+    Delegate<Ret(Args...)> &Delegate<Ret(Args...)>::operator = (Delegate &&moved)
     {
         functions = std::move(moved.functions);
         removeThisFrame = moved.removeThisFrame;
@@ -26,7 +26,7 @@ namespace SDG
     }
     
     template<typename Ret, typename... Args>
-    void Delegate<Ret, Args...>::Clear()
+    void Delegate<Ret(Args...)>::Clear()
     {
         for (auto &f : functions)
             f.toRemove = true;
@@ -35,10 +35,10 @@ namespace SDG
     }
 
     template<typename Ret, typename... Args>
-    Ret Delegate<Ret, Args...>::Invoke(Args... args)
+    Ret Delegate<Ret(Args...)>::Invoke(Args... args)
     {
         if (functions.empty())
-            throw RuntimeException("Called Invoke on an empty Delegate: Delegate must contain at least one callback.");
+            ThrowRuntimeException("Called Invoke on an empty Delegate: Delegate must contain at least one callback.");
         
         ProcessRemovals();
         for (auto it = functions.begin(), end = functions.end() - 1; it != end; ++it)
@@ -48,7 +48,7 @@ namespace SDG
     }
 
     template<typename Ret, typename... Args>
-    bool Delegate<Ret, Args...>::TryInvoke(Args... args)
+    bool Delegate<Ret(Args...)>::TryInvoke(Args... args)
     {
         ProcessRemovals();
         for (auto &func : functions)
@@ -57,14 +57,14 @@ namespace SDG
     }
 
     template<typename Ret, typename... Args>
-    Ret Delegate<Ret, Args...>::operator()(Args... args)
+    Ret Delegate<Ret(Args...)>::operator()(Args... args)
     {
         return Invoke(args...);
     }
 
     template<typename Ret, typename... Args>
     template<typename T>
-    void Delegate<Ret, Args...>::RemoveListener(T *object, Ret (T:: *func)(Args...))
+    void Delegate<Ret(Args...)>::RemoveListener(T *object, Ret (T:: *func)(Args...))
     {
         // Find the listener
         auto it = std::find_if(functions.begin(), functions.end(),
@@ -81,13 +81,13 @@ namespace SDG
         }
         else
         {
-            ThrowInvalidArgumentException(__FUNCTION__, "object or func",
+            ThrowInvalidArgumentException(__func__, "object or func",
                 "There was no matching callback in the Delegate.");
         }
     }
 
     template<typename Ret, typename... Args>
-    void Delegate<Ret, Args...>::RemoveListener(void (*func)(Args...))
+    void Delegate<Ret(Args...)>::RemoveListener(void (*func)(Args...))
     {
         auto it = std::find_if(functions.begin(), functions.end(),
             [func](const auto &f)
@@ -102,13 +102,13 @@ namespace SDG
         }
         else
         {
-            ThrowInvalidArgumentException(__FUNCTION__, "func",
+            ThrowInvalidArgumentException(__func__, "func",
                 "There was no matching callback in the Delegate.");
         }
     }
 
     template<typename Ret, typename... Args>
-    void Delegate<Ret, Args...>::RemoveListener(std::function<Ret(Args...)> *func)
+    void Delegate<Ret(Args...)>::RemoveListener(std::function<Ret(Args...)> *func)
     {
         auto it = std::find_if(functions.begin(), functions.end(),
             [func](const auto &f)
@@ -130,7 +130,7 @@ namespace SDG
 
     template<typename Ret, typename... Args>
     template<typename T>
-    void Delegate<Ret, Args...>::AddListener(T *object, Ret (T:: *func)(Args...))
+    void Delegate<Ret(Args...)>::AddListener(T *object, Ret (T:: *func)(Args...))
     {
         if (!object)
             ThrowInvalidArgumentException(__func__, "object", "object was null");
@@ -141,7 +141,7 @@ namespace SDG
     }
 
     template<typename Ret, typename... Args>
-    void Delegate<Ret, Args...>::AddListener(Ret (*func)(Args...))
+    void Delegate<Ret(Args...)>::AddListener(Ret (*func)(Args...))
     {
         if (!func)
             ThrowInvalidArgumentException(__func__, "func", "callback function ptr was null");
@@ -150,7 +150,7 @@ namespace SDG
     }
 
     template<typename Ret, typename... Args>
-    void Delegate<Ret, Args...>::AddListener(std::function<Ret(Args...)> *func)
+    void Delegate<Ret(Args...)>::AddListener(std::function<Ret(Args...)> *func)
     {
         if (!func)
             ThrowInvalidArgumentException(__func__, "func", "callback function ptr was null");
@@ -161,7 +161,7 @@ namespace SDG
     }
 
     template<typename Ret, typename... Args>
-    void Delegate<Ret, Args...>::ProcessRemovals()
+    void Delegate<Ret(Args...)>::ProcessRemovals()
     {
         // Only perform removals if flag was set
         if (removeThisFrame)
@@ -184,7 +184,7 @@ namespace SDG
 
     template<typename Ret, typename... Args>
     template<typename T>
-    Delegate<Ret, Args...>::FunctionWrapper::FunctionWrapper(T *object, Ret(T:: *func)(Args...)) :
+    Delegate<Ret(Args...)>::FunctionWrapper::FunctionWrapper(T *object, Ret(T:: *func)(Args...)) :
         object(object), functionPtr(func),
         function([func, object](Args... args)->Ret
             {
@@ -193,17 +193,17 @@ namespace SDG
     { }
 
     template<typename Ret, typename... Args>
-    Delegate<Ret, Args...>::FunctionWrapper::FunctionWrapper(Ret (*func)(Args...)) :
+    Delegate<Ret(Args...)>::FunctionWrapper::FunctionWrapper(Ret (*func)(Args...)) :
         object(nullptr), functionPtr(func), function(func), toRemove()
     { }
 
     template<typename Ret, typename... Args>
-    Delegate<Ret, Args...>::FunctionWrapper::FunctionWrapper(std::function<Ret(Args...)> *func) :
+    Delegate<Ret(Args...)>::FunctionWrapper::FunctionWrapper(std::function<Ret(Args...)> *func) :
         object(nullptr), functionPtr(func), function(*func), toRemove()
     {}
 
     template<typename Ret, typename... Args>
-    Ret Delegate<Ret, Args...>::FunctionWrapper::operator()(Args ...args) const
+    Ret Delegate<Ret(Args...)>::FunctionWrapper::operator()(Args ...args) const
     {
         if (!function)
             ThrowRuntimeException(__func__ + std::string(": missing functor target. Functions stored in Delegate must have a target"));
@@ -212,7 +212,7 @@ namespace SDG
 
     template<typename Ret, typename... Args>
     template <typename T>
-    bool Delegate<Ret, Args...>::FunctionWrapper::SignatureMatches(T *pObject, Ret (T:: *pFunctionPtr)(Args...)) const
+    bool Delegate<Ret(Args...)>::FunctionWrapper::SignatureMatches(T *pObject, Ret (T:: *pFunctionPtr)(Args...)) const
     {
         return ((void *)pObject == object &&
             typeid(pFunctionPtr) == functionPtr.type() &&
@@ -220,14 +220,14 @@ namespace SDG
     }
 
     template<typename Ret, typename... Args>
-    bool Delegate<Ret, Args...>::FunctionWrapper::SignatureMatches(Ret(*pFunctionPtr)(Args...)) const
+    bool Delegate<Ret(Args...)>::FunctionWrapper::SignatureMatches(Ret(*pFunctionPtr)(Args...)) const
     {
         return (object == nullptr &&
             std::any_cast<Ret(*)(Args...)>(functionPtr) == pFunctionPtr);
     }
 
     template<typename Ret, typename... Args>
-    bool Delegate<Ret, Args...>::FunctionWrapper::SignatureMatches(std::function<Ret(Args...)> *func) const
+    bool Delegate<Ret(Args...)>::FunctionWrapper::SignatureMatches(std::function<Ret(Args...)> *func) const
     {
         return object == nullptr &&
             std::any_cast<std::function<Ret(Args...)> *>(functionPtr) == func;

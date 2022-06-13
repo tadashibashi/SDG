@@ -7,6 +7,7 @@ namespace SDG
     {
     public:
         DivisionByZeroException(const String &str = String()) : RuntimeException(
-            String("Division by zero error") + (str.Empty() ? "" : ": " + str)) { }
+            String::Format("DivisionByZeroException{}", str.Empty() ? "" : ": " + str)) { }
+        const char *Name() const noexcept override { return "DivisionByZeroException"; }
     };
 }

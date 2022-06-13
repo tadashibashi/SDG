@@ -25,7 +25,8 @@ namespace SDG
     public:
         enum class Format {
             RGBA8888,
-            ARGB8888
+            ARGB8888,
+            RGB888
         };
         static const uint8_t COLOR_MAX = UINT8_MAX;
         Color &Set(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = COLOR_MAX);
@@ -40,7 +41,9 @@ namespace SDG
         Color &B(uint8_t blue) { b = blue; return *this; }
         Color &A(uint8_t alpha) { a = alpha; return *this; }
 
-        static Color FromHex(uint32_t hexNum, Format format);
+        static Color FromNumber(uint64_t num, Format format, uint8_t base = 16u);
+        static Color FromString(const String &str, Format format, uint8_t base = 16u);
+        static Color FromString(const StringView &str, Format format, uint8_t base = 16u);
 
         bool operator == (const Color &other) const;
 
@@ -48,7 +51,7 @@ namespace SDG
         constexpr Color() : r(COLOR_MAX), g(COLOR_MAX), b(COLOR_MAX), a(COLOR_MAX) {}
         constexpr Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a = COLOR_MAX)
             : r(r), g(g), b(b), a(a) {}
-        explicit Color(const StringView &str, Format format);
+        Color(const StringView &str, Format format);
         // Makes a grayscale color
         explicit constexpr Color(uint8_t grayScale, uint8_t alpha = COLOR_MAX)
             : r(grayScale), g(grayScale), b(grayScale), a(alpha) {}
@@ -339,3 +342,17 @@ namespace SDG
         [[maybe_unused]] static Color Black(uint8_t alpha = COLOR_MAX);
     };
 }
+
+#include <Engine/Lib/Private/Fmt.h>
+
+template<>
+struct fmt::formatter<SDG::Color> {
+    constexpr auto parse(fmt::format_parse_context &ctx) -> decltype(ctx.begin()) {
+        return ctx.end();
+    }
+
+    template <typename FormatContext>
+    auto format(const SDG::String &input, FormatContext &ctx) -> decltype(ctx.out()) {
+        return fmt::format_to(ctx.out(), "{}", input.Cstr());
+    }
+};

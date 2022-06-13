@@ -1,10 +1,11 @@
-/*!
- * @file Engine.h
- * @namespace SDG
- * @class Engine
- * Main application object base class
- * 
- */
+/* ====================================================================================================================
+ * @file    Engine.h – SDG_Engine
+ * @author  Aaron Ishibashi
+ *
+ * @class   SDG::Engine
+ * Main base class that provdes basic Window and input for an application.
+ *
+ * ==================================================================================================================*/
 #pragma once
 #include <Engine/Filesys/Path.h>
 #include <Engine/Game/Datatypes/AppConfig.h>
@@ -22,7 +23,7 @@ namespace SDG
     public:
         /// @param appName - name of the app
         /// @param orgName - company / organization name
-        /// @param configPath - path relative to the base executable directory
+        /// @param configPath - path to an AppConfig json file.
         explicit Engine(const String &configPath);
         /// @param appName - name of the app
         /// @param 

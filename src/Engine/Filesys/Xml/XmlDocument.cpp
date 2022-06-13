@@ -72,7 +72,7 @@ namespace SDG::Xml
         return impl->doc.NoChildren();
     }
 
-    XmlElement XmlDocument::Root(Validation check) const
+    const XmlElement XmlDocument::Root(Validation check) const
     {
         XmlElement e = impl->doc.FirstChildElement();
         if (!e && check == Validation::Required)
@@ -80,7 +80,7 @@ namespace SDG::Xml
         return e;
     }
 
-    XmlElement XmlDocument::FirstChild(Validation check) const
+    XmlElement XmlDocument::Root(Validation check)
     {
         XmlElement e = impl->doc.FirstChildElement();
         if (!e && check == Validation::Required)
@@ -88,7 +88,23 @@ namespace SDG::Xml
         return e;
     }
 
-    XmlElement XmlDocument::FirstChild(const String &name, Validation check) const
+    const XmlElement XmlDocument::FirstChild(Validation check) const
+    {
+        XmlElement e = impl->doc.FirstChildElement();
+        if (!e && check == Validation::Required)
+            throw XmlValidationException(*this, 0, NodeType::Element);
+        return e;
+    }
+
+    XmlElement XmlDocument::FirstChild(Validation check)
+    {
+        XmlElement e = impl->doc.FirstChildElement();
+        if (!e && check == Validation::Required)
+            throw XmlValidationException(*this, 0, NodeType::Element);
+        return e;
+    }
+
+    const XmlElement XmlDocument::FirstChild(const String &name, Validation check) const
     {
         XmlElement e = impl->doc.FirstChildElement(name.Cstr());
 
@@ -97,7 +113,16 @@ namespace SDG::Xml
         return e;
     }
 
-    XmlElement XmlDocument::ChildAt(size_t index, Validation check) const
+    XmlElement XmlDocument::FirstChild(const String &name, Validation check)
+    {
+        XmlElement e = impl->doc.FirstChildElement(name.Cstr());
+
+        if (!e && check == Validation::Required)
+            throw XmlValidationException(*this, name, NodeType::Element);
+        return e;
+    }
+
+    const XmlElement XmlDocument::ChildAt(size_t index, Validation check) const
     {
         XmlElement e = impl->doc.RootElement();
         for (size_t i = 0; i < index; ++i)
@@ -114,9 +139,41 @@ namespace SDG::Xml
         return e;
     }
 
-    XmlElement XmlDocument::operator[](size_t index) const
+    XmlElement XmlDocument::ChildAt(size_t index, Validation check)
+    {
+        XmlElement e = impl->doc.RootElement();
+        for (size_t i = 0; i < index; ++i)
+        {
+            if (!e++)
+            {
+                if (check == Required)
+                    throw XmlValidationException(*this, index, NodeType::Element);
+                else
+                    return nullptr;
+            }
+        }
+
+        return e;
+    }
+
+    const XmlElement XmlDocument::operator[](size_t index) const
     {
         return ChildAt(index, Validation::Required);
+    }
+    
+    XmlElement XmlDocument::operator[](size_t index)
+    {
+        return ChildAt(index, Validation::Required);
+    }
+
+    const XmlElement XmlDocument::operator[](const String &name) const
+    {
+        return FirstChild(name, Validation::Required);
+    }
+
+    XmlElement XmlDocument::operator[](const String &name)
+    {
+        return FirstChild(name, Validation::Required);
     }
 
     const Path &XmlDocument::Filepath() const

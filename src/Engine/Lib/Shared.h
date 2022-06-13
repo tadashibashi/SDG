@@ -6,9 +6,6 @@ namespace SDG
     class Shared
     {
     public:
-        // Creates a null shared pointer
-        Shared() : ptr(), count() { }
-
         // Must be called with a dynamically allocated object
         template <typename... Args>
         explicit Shared(Args &&...args);
@@ -27,9 +24,11 @@ namespace SDG
         void Reset() { Destroy(); ptr = nullptr; count = nullptr; }
 
         /// Member access. Throws a NullReferenceException if null.
-        [[nodiscard]] T *operator->() const;
+        [[nodiscard]] const T *operator->() const;
+        [[nodiscard]] T *operator->();
         /// Gets raw reference. Throws a NullReferenceException if null.
-        [[nodiscard]] T &operator *() const;
+        [[nodiscard]] const T &operator *() const;
+        [[nodiscard]] T &operator *();
 
         /// Compare two shared ptr
         [[nodiscard]] bool operator ==(const Shared &other) const;

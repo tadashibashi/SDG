@@ -8,5 +8,7 @@ namespace SDG
     public:
         RuntimeException(const String &message) : Exception(message)
         { }
+
+        const char *Name() const noexcept override { return "RuntimeException"; }
     };
 }

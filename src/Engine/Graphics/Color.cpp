@@ -3,29 +3,28 @@
 #include <SDL.h>
 #include <Engine/Exceptions/InvalidArgumentException.h>
 
-static const int HEX_BASE = 16;
-
 namespace SDG
 {
-    Color::Color(const StringView &str, Format format) : r(), g(), b(), a()
+    Color Color::FromString(const String &str, Format format, uint8_t base)
     {
-        Color color = FromHex(str.To<uint32_t>(HEX_BASE), format);
-        r = color.r;
-        g = color.g;
-        b = color.b;
-        a = color.a;
+        return FromNumber(str.ToNumber<uint64_t>(base), format, base);
     }
 
-    Color Color::FromHex(uint32_t hexNum, Format format)
+    Color Color::FromString(const StringView &str, Format format, uint8_t base)
+    {
+        return FromNumber(str.ToNumber<uint64_t>(base), format, base);
+    }
+
+    Color Color::FromNumber(uint64_t num, Format format, uint8_t base)
     {
         Color color;
+        unsigned currentVal;
         for (int i = 0; i < 4; ++i)
         {
-            unsigned currentVal = hexNum % 256u;
-
             switch (format)
             {
             case Format::RGBA8888:
+                currentVal = num % (UINT8_MAX + 1);
                 switch (i)
                 {
                 case 0: color.A(currentVal); break;
@@ -33,9 +32,12 @@ namespace SDG
                 case 2: color.G(currentVal); break;
                 case 3: color.R(currentVal); break;
                 }
+
+                num /= UINT8_MAX + 1;
                 break;
 
             case Format::ARGB8888:
+                currentVal = num % (UINT8_MAX + 1);
                 switch (i)
                 {
                 case 0: color.B(currentVal); break;
@@ -43,14 +45,26 @@ namespace SDG
                 case 2: color.R(currentVal); break;
                 case 3: color.A(currentVal); break;
                 }
-                break;
 
+                num /= UINT8_MAX + 1;
+                break;
+                
+            case Format::RGB888:
+                currentVal = num % (UINT8_MAX + 1);
+                switch (i)
+                {
+                case 0: color.B(currentVal); break;
+                case 1: color.G(currentVal); break;
+                case 2: color.R(currentVal); break;
+                case 3: color.A(UINT8_MAX); break;
+                }
+                break;
+                num /= UINT8_MAX + 1;
             default:
-                throw InvalidArgumentException("Color::Color(const StringView &str, Format format)", "format");
+                throw InvalidArgumentException(__func__, "format");
             }
 
-
-            hexNum /= 256u;
+            
         }
 
         return color;

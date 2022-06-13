@@ -112,7 +112,7 @@ namespace SDG
         /// Window Events
         class Events {
             SDG_NOCOPY(Events);
-        private:
+        public:
             Events() = default; // Instantiable by window only
         public:
             /// Occurs when the Window is shown in view.
@@ -182,7 +182,9 @@ namespace SDG
 
             /// Occurs when the Window closes, usually on app shutdown.
             Delegate<void()>         Close;
-        } On;
+        };
+
+        Events On;
 
         uint32_t Id() const;
 

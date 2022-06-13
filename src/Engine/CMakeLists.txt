@@ -9,10 +9,10 @@ set(Nfont_Sources
     ${CMAKE_SOURCE_DIR}/lib/nfont/NFont/NFont.h
     ${CMAKE_SOURCE_DIR}/lib/nfont/SDL_FontCache/SDL_FontCache.c
     ${CMAKE_SOURCE_DIR}/lib/nfont/SDL_FontCache/SDL_FontCache.h)
-set(Engine_Sources
+#set(Engine_Sources
+add_library(SDG_Engine STATIC
         ${TinyXML2_Sources}
         ${Nfont_Sources}
-        SDG.hpp
 
         "Engine.cpp" "Engine.h"
         Game/AssetMgr.cpp Game/AssetMgr.h
@@ -20,7 +20,6 @@ set(Engine_Sources
         Lib/ClassMacros.h
 
         # Debug
-        Debug.hpp
         Debug/Assert.h
         Debug/Assert.cpp
         Debug/Log.h
@@ -31,9 +30,8 @@ set(Engine_Sources
         EntryPoint.cpp
 
         # Exceptions
-        Exceptions.hpp
         Exceptions/AssertionException.h Exceptions/AssertionException.cpp
-        Exceptions/XMLReaderException.h Exceptions/XMLReaderException.cpp
+         
         Exceptions/NullReferenceException.h 
         Exceptions/InvalidArgumentException.cpp Exceptions/InvalidArgumentException.h   
         Exceptions/DivisionByZeroException.h
@@ -43,7 +41,6 @@ set(Engine_Sources
         Exceptions/RuntimeException.h
 
         # FileSys
-        FileSys.hpp
         "Game/Datatypes/AppConfig.h"
         FileSys/FileSys.cpp FileSys/FileSys.h
         FileSys/Private/IO.cpp FileSys/Private/IO.h
@@ -73,7 +70,6 @@ set(Engine_Sources
         Graphics/Frame.h Graphics/Frame.cpp
         Graphics/SpriteRenderer.h Graphics/SpriteRenderer.cpp
 
-        Input.hpp
         Input/Input.cpp Input/Input.h
         Input/Key.h
         Input/Keyboard.h Input/Keyboard.cpp
@@ -83,7 +79,6 @@ set(Engine_Sources
         Input/Button.h Input/Button.cpp 
         Input/GamepadType.h
 
-        Math.hpp 
         Math/Rand.cpp Math/Rand.h
         Math/Math.h Math/Math.cpp
         Math/Vector2.h
@@ -99,7 +94,7 @@ set(Engine_Sources
 
         "Platform.h"
 
-        Lib/Array.h
+        "Dynamic/Array.h"
         Lib/Buffer.cpp Lib/Buffer.h
         Lib/Delegate.h
         Lib/Endian.h Lib/Endian.cpp
@@ -127,7 +122,8 @@ set(Engine_Sources
         Time/Duration.h Time/Duration.cpp
         
   "Graphics/Font.h" "Graphics/Font.cpp" "Lib/Enum.h" "Lib/Private/Fmt.h" "Exceptions/UncaughtCaseException.h" "Lib/Ref.inl" "Lib/Array.inl" "Lib/Delegate.inl" "FileSys/Xml/XmlElement.h" "FileSys/Xml/XmlElement.cpp" "FileSys/Xml/XmlAttribute.h" "FileSys/Xml/XmlAttribute.cpp" "FileSys/Xml/XmlDocument.h" "FileSys/Xml/XmlDocument.cpp" "FileSys/Xml/Private/XmlDocument_Impl.h"  "Exceptions/XmlValidationException.h" "FileSys/Xml/XmlValidation.h" "Exceptions/XmlValidationException.cpp" "Game/Datatypes/AppConfig.cpp" "Exceptions/XmlFormattingException.h" "Graphics/Private/NFont.h" 
-  "Game/Datatypes/Tiled/Template.h" "Game/Datatypes/Tiled/Object.h" "Game/Datatypes/Tiled/Layer.h" "Game/Datatypes/Tiled/Tileset.h" "Game/Datatypes/Tiled/Image.h" "Game/Datatypes/Tiled/Tile.h" "Game/Datatypes/Tiled/Property.h" "Game/Datatypes/Tiled/Class.h" "Game/Datatypes/Tiled/Class.cpp" "Game/Datatypes/Tiled/Property.cpp" "Game/Datatypes/Tiled/Tiled.h" "Lib/Version.h" "Lib/Version.cpp" "Lib/Platform.cpp" "Debug/Private/spdlog.h" "Game/Datatypes/Tiled/Properties.h" "Game/Datatypes/Tiled/Properties.cpp" "Game/Datatypes/Tiled/TmxObject.h" "Game/Datatypes/Tiled/TmxObject.cpp" "Game/Datatypes/Tiled/Tile.cpp" "Game/Datatypes/Tiled/ChunkSize.h" "Game/Datatypes/Tiled/ChunkSize.cpp" "Game/Datatypes/Tiled/Image.cpp"   "Lib/RAIterator.h" "Lib/ConstRAIterator.h" "Exceptions/Fwd.h" "Exceptions/Fwd.cpp" "Lib/Algorithm.h" "Lib/TypeTraits.h")
+ "Lib/Version.h" "Lib/Version.cpp" "Lib/Platform.cpp" "Debug/Private/spdlog.h" "Lib/RAIterator.h" "Lib/ConstRAIterator.h" "Exceptions/Fwd.h" "Exceptions/Fwd.cpp" "Lib/Algorithm.h" "Lib/TypeTraits.h" "Lib/Concepts.h" "Lib/Int.h" 
+ "Dynamic/Object.h" "Dynamic/Struct.h" "Dynamic/Struct.cpp" "Dynamic/Object.cpp" "Dynamic/Array.h"  "Dynamic/Array.cpp"   "Filesys/Json.h" "Filesys/Json.cpp" "Exceptions/XmlException.h"   "Exceptions/LogicException.h" "Exceptions/DomainException.h" "Exceptions/FileLoadingException.h")
 
 # -----  Includes  ----------------------------------------------------
 set(Engine_Includes
@@ -137,12 +133,11 @@ set(Engine_Includes
         ${CMAKE_SOURCE_DIR}/lib/sdl-gpu/include
         ${CMAKE_SOURCE_DIR}/lib/tinyxml2
         ${CMAKE_SOURCE_DIR}/lib/glm
-        ${CMAKE_SOURCE_DIR}/lib/bundled/include
         ${CMAKE_SOURCE_DIR}/lib/nfont/NFont
         ${CMAKE_SOURCE_DIR}/lib/nfont/SDL_FontCache
+        ${CMAKE_SOURCE_DIR}/lib/json/include
+        ${CMAKE_SOURCE_DIR}/lib/SDL_ttf
 )
-
-
 
 # ----- Libraries ---------------------------------------------------
 if (DEBUG)                                                 # Debug
@@ -182,44 +177,18 @@ elseif (EMSCRIPTEN)                                         # HTML5
     set(CMAKE_EXE_LINKER_FLAGS "-O0 -sASSERTIONS -sASYNCIFY -sUSE_WEBGL2=1 -sWASM=2 -sMAX_WEBGL_VERSION=2 -LLD_REPORT_UNDEFINED -sNO_DISABLE_EXCEPTION_CATCHING")
 endif()
 
-
-# ----- Bundled Libraries ----------------------------------------
-if (WINDOWS)   # for Windows
-    if (DEBUG AND NOT "${CMAKE_BUILD_TYPE}" STREQUAL "RelWithDebInfo") # set the prefix path for bundled libraries
-        set(BundledPref "${CMAKE_SOURCE_DIR}/lib/bundled/win/debug")
-    else()
-        set(BundledPref "${CMAKE_SOURCE_DIR}/lib/bundled/win/release")
-    endif()
-    # Set paths to the bundled libs
-    set(Engine_BundledLibs "${BundledPref}/SDL2_ttf.lib")
-
-    # Copy bundeled dlls to the build directory
-    file(GLOB_RECURSE WindowsDlls ${BundledPref}/*.dll)
-    foreach(dll ${WindowsDlls})
-        get_filename_component(DllName ${dll} NAME)
-        configure_file(${dll} ${CMAKE_BINARY_DIR}/${DllName} COPYONLY)
-    endforeach()
-elseif(APPLE)  # for Mac
-    set(BundledPref "${CMAKE_SOURCE_DIR}/lib/bundled/macos")
-    set(Engine_BundledLibs "${BundledPref}/libSDL2_ttf.a")
-elseif(LINUX)  # for Linux
-    set(Engine_BundledLibs "${CMAKE_SOURCE_DIR}/lib/bundled/linux")
-else()
-    set(Engine_BundledLibs)
-endif()
-
 set (Engine_Libraries
-        ${Engine_BundledLibs}
         ${CONFIG_Libraries}
         ${PLATFORM_Libraries}
-        SDL_gpu)
+        SDL_gpu
+        SDL2_ttf)
 
 # ----- Commit the Settings ----------------------------------------
-add_library                (SDG_Engine STATIC ${Engine_Sources})
+#add_library                (SDG_Engine STATIC ${Engine_Sources})
 target_include_directories (SDG_Engine PUBLIC ${Engine_Includes})
 if (NOT EMSCRIPTEN)
     target_precompile_headers  (SDG_Engine PRIVATE 
-        "$<$<COMPILE_LANGUAGE:CXX>:${CMAKE_SOURCE_DIR}/src/SDG/Lib/Private/Pch.h>")
+        "$<$<COMPILE_LANGUAGE:CXX>:${CMAKE_SOURCE_DIR}/src/Engine/Lib/Private/Pch.h>")
 endif()
 target_link_libraries      (SDG_Engine PUBLIC ${Engine_Libraries})
 target_compile_definitions (SDG_Engine PUBLIC ${Engine_CompileDefs} "FC_USE_SDL_GPU")

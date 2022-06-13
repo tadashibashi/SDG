@@ -1,11 +1,11 @@
 /// Assert implementation file
 #include "Assert.h"
 
-#if SDG_DEBUG
+#if (SDG_DEBUG)
 #include "Log.h"
 
 #include <Engine/Exceptions/AssertionException.h>
-#include <Engine/FileSys/Path.h>
+#include <Engine/Filesys/Path.h>
 
 void
 SDG::Debug::_AssertImpl(bool statement, const char *statementStr, const char *file, int line, const char *func,

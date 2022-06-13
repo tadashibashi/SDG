@@ -9,6 +9,7 @@ set(SDL2_INCLUDE_DIR PATH ${CMAKE_SOURCE_DIR}/lib/SDL/include)
 
 add_subdirectory(sdl-gpu)
 add_subdirectory(spdlog)
+add_subdirectory(SDL_ttf)
 
 # SDL_gpu needs defines set for WEBGL
 if (WEBGL)

@@ -11,9 +11,12 @@
 #include <Engine/Math/MathShape.h>
 
 #include <spdlog/spdlog.h>
+#include <spdlog/fmt/fmt.h>
 
 #include <cstdint>
 #include <cstddef>
 #include <sstream>
 #include <map>
 #include <vector>
+
+#include <Engine/Lib/Int.h>

@@ -8,7 +8,7 @@
 #include <Engine/Exceptions/InvalidArgumentException.h>
 #include <Engine/Exceptions/RuntimeException.h>
 
-#include <Engine/FileSys/Private/IO.h>
+#include <Engine/Filesys/Private/IO.h>
 
 #include <Engine/Lib/Buffer.h>
 #include <Engine/Lib/Memory.h>

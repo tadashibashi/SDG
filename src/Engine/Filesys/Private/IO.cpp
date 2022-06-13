@@ -6,6 +6,7 @@
 //
 #include "IO.h"
 #include "SDL_rwops.h"
+#include <Engine/Lib/String.h>
 
 static const SDG::String encryptionKey = "john316";
 static SDG::String errorStr = "No errors.";

@@ -1,3 +1,4 @@
+/// Master header that aims to include every relevant header in SDG Engine
 #pragma once
 
 #include "Engine.h"

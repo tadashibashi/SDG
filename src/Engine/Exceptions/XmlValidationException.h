@@ -1,8 +1,8 @@
 #pragma once
 #include "Exception.h"
-#include <Engine/FileSys/Xml/XmlElement.h>
-#include <Engine/FileSys/Xml/XmlAttribute.h>
-#include <Engine/FileSys/Xml/XmlDocument.h>
+#include <Engine/Filesys/Xml/XmlElement.h>
+#include <Engine/Filesys/Xml/XmlAttribute.h>
+#include <Engine/Filesys/Xml/XmlDocument.h>
 
 #include <cstddef>
 
@@ -33,5 +33,7 @@ namespace SDG
         XmlValidationException(const Xml::XmlAttribute &attr, Xml::NodeRelation targetRelation);
         XmlValidationException(const Xml::XmlElement &parent, const String &targetName, Xml::NodeType targetType);
         XmlValidationException(const Xml::XmlDocument &parent, const String &targetName, Xml::NodeType targetType);
+
+        const char *Name() const noexcept override { return "XmlValidationException"; }
     };
 }

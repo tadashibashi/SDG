@@ -16,7 +16,6 @@ static void StrFree(char *str);
 static char *StrRealloc(char *str, size_t size);
 static bool StringsEqual(const SDG::String &str, const char *cstr, size_t size);
 
-
 namespace SDG
 {
     const size_t String::DefaultCap = 16; // actual container size set + 1 for terminator.
@@ -80,9 +79,8 @@ namespace SDG
             throw InvalidArgumentException("String::FindFirstOf(const std::function<bool(char)> &func)", 
                 "func", "Callback function does not have a function target.");
         if (startingAt >= Length())
-            throw OutOfRangeException(startingAt, String::Format(
-                "String::FindFirstOf: startingAt max index {} was exceeded",
-                Length() - 1));
+            throw OutOfRangeException(startingAt, 
+                String::Format("String::FindFirstOf: startingAt max index {} was exceeded", Length() - 1));
 
         for (char *p = str_ + startingAt; p < end_; ++p)
             if (func(*p))
@@ -90,11 +88,39 @@ namespace SDG
         return NullPos;
     }
 
-    size_t
-    String::FindFirstOf(char c, size_t startingAt) const
+    size_t String::FindFirstOf(char c, size_t startingAt) const
     {
         return FindFirstOf(startingAt, [c](char currentChar) {
             return currentChar == c;
+            });
+    }
+
+    size_t String::FindFirstOf(const char *list, size_t startingAt) const
+    {
+        if (!list || *list == '\0') return NullPos;
+
+        return FindFirstOf(startingAt, [list](char currentChar) -> bool {
+            for (const char *c = list; *c != '\0'; ++c)
+                if (*c == currentChar) return true;
+            return false;
+            });
+    }
+
+    size_t String::FindFirstNotOf(char c, size_t startingAt) const
+    {
+        return FindFirstOf(startingAt, [c](char currentChar) {
+            return currentChar != c;
+            });
+    }
+
+    size_t String::FindFirstNotOf(const char *list, size_t startingAt) const
+    {
+        if (!list || *list == '\0') return NullPos;
+
+        return FindFirstOf(startingAt, [list](char currentChar) -> bool {
+            for (const char *c = list; *c != '\0'; ++c)
+                if (*c == currentChar) return false;
+            return true;
             });
     }
 
@@ -126,18 +152,6 @@ namespace SDG
         }
 
         return pos;
-    }
-
-    size_t
-    String::FindFirstOf(const char *list, size_t startingAt) const
-    {
-        SDG_Assert(list && *list != '\0'); // list should have substance
-
-        return FindFirstOf(startingAt, [list](char currentChar) -> bool {
-            for (const char *c = list; *c != '\0'; ++c)
-                if (*c == currentChar) return true;
-            return false;
-            });
     }
 
 
@@ -189,15 +203,30 @@ namespace SDG
         return FindLastOf(startingAt, [c](char currentChar) { return c == currentChar; });
     }
 
-    size_t
-    String::FindLastOf(const char *list, size_t startingAt) const
+    size_t String::FindLastOf(const char *list, size_t startingAt) const
     {
-        SDG_Assert(list && *list != '\0'); // list should have substance
+        if (!list || *list == '\0') return NullPos;
 
-        return FindLastOf(startingAt, [&list](char c) {
+        return FindLastOf(startingAt, [list](char c) {
             for (const char *q = list; *q != '\0'; ++q)
                 if (c == *q) return true;
             return false;
+            });
+    }
+
+    size_t String::FindLastNotOf(char c, size_t startingAt) const
+    {
+        return FindLastOf(startingAt, [c](char cc) { return cc != c; });
+    }
+
+    size_t String::FindLastNotOf(const char *list, size_t startingAt) const
+    {
+        if (!list || *list == '\0') return NullPos;
+
+        return FindLastOf(startingAt, [list](char c) {
+            for (const char *q = list; *q != '\0'; ++q)
+                if (c == *q) return false;
+            return true;
             });
     }
 
@@ -622,6 +651,65 @@ namespace SDG
         return Append(&c, 1);
     }
 
+    String &String::Trim(const char *list)
+    {
+        size_t index;
+        if (list)
+            index = FindFirstNotOf(list);
+        else
+        {
+            index = FindIf([](char c)->bool {
+                return !isspace(c);
+                }).Index();
+        }
+
+        if (index < Length())
+        {
+            for (char *it = str_ + index, *dest = str_; it < end_; ++it, ++dest)
+                *dest = *it;
+
+            end_ = str_ +  Length() - index;
+            *end_ = '\0';
+        }
+        else
+        {
+            Clear();
+        }
+
+        return *this;
+    }
+
+    String &String::TrimEnd(const char *list)
+    {
+        size_t index = NullPos;
+        if (list)
+            index = FindLastNotOf(list);
+        else
+        {
+            for (auto it = end() - 1, fin = begin(); it >= fin; --it)
+            {
+                if (!isspace(*it))
+                {
+                    index = it.Index();
+                    break;
+                }
+            }
+        }
+
+        if (index < Length() - 1)
+        {
+            end_ = str_ + (index + 1);
+            *end_ = '\0';
+        }
+        else
+        {
+            Clear();
+        }
+            
+
+        return *this;
+    }
+
     std::ostream &operator << (std::ostream &os, const String &str)
     {
         return os << str.Cstr();
@@ -661,6 +749,16 @@ namespace SDG
     String::operator!=(const char *other) const
     {
         return !StringsEqual(*this, other, other ? strlen(other) : 0);
+    }
+
+    bool String::operator<(const String &other) const
+    {
+        return std::strcmp(str_, other.str_) < 0;
+    }
+
+    bool String::operator>(const String &other) const
+    {
+        return std::strcmp(str_, other.str_) > 0;
     }
 
     String &

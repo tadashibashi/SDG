@@ -10,7 +10,7 @@
 #include <Engine/Exceptions/NullReferenceException.h>
 #include <Engine/Exceptions/UncaughtCaseException.h>
 
-#include <Engine/FileSys/File.h>
+#include <Engine/Filesys/File.h>
 #include <Engine/Graphics/Window.h>
 
 #include <SDL_gpu.h>

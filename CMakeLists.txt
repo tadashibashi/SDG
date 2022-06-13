@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 3.16)
 project(SDG)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_MODULE_PATH cmake)
+
+add_compile_definitions(SDG_CXX_VERSION=20)
+
 # Platform-specific detection
 # WINDOWS
 if (WIN32)

@@ -1,11 +1,13 @@
 #pragma once
-#include "Exception.h"
+#include "XmlException.h"
 
 namespace SDG
 {
-    class XmlFormattingException : public Exception
+    class XmlFormattingException : public XmlException
     {
     public:
-        XmlFormattingException(const String &message) : Exception(message) { }
+        XmlFormattingException(const String &message) : XmlException(message) { }
+
+        const char *Name() const noexcept override { return "XmlFormattingException"; }
     };
 }

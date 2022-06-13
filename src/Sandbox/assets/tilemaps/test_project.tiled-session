@@ -1,0 +1,70 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "testmap.tmx",
+    "expandedProjectPaths": [
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "testmap..tmx": {
+            "scale": 0.8201171875,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 602.3529411764707,
+                "y": -45.11550369135506
+            }
+        },
+        "testmap..tmx#tileset": {
+            "scaleInDock": 1
+        },
+        "testmap.tmx": {
+            "expandedObjectLayers": [
+                2
+            ],
+            "scale": 3,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 135,
+                "y": 113
+            }
+        },
+        "testmap.tmx#tileset": {
+            "scaleInDock": 1
+        },
+        "testmap2.tmx": {
+            "scale": 0.3466733870967742,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1589.3922651933701,
+                "y": 819.2148880488513
+            }
+        },
+        "testmapjson.tmj": {
+            "scale": 3,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 134.66666666666669,
+                "y": 137.66666666666663
+            }
+        },
+        "testmapjson.tmj#tileset": {
+            "scaleInDock": 1
+        }
+    },
+    "last.exportedFilePath": "C:/Users/aishi/CLionProjects/SDG/src/Sandbox/assets/tilemaps",
+    "last.objectTypesPath": "C:/Users/aishi/CLionProjects/SDG/src/Sandbox/assets/tilemaps/propertytypes.json",
+    "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
+    "map.lastUsedFormat": "tmx",
+    "openFiles": [
+        "testmap.tmx"
+    ],
+    "project": "test_project.tiled-project",
+    "property.type": "Weapon",
+    "recentFiles": [
+        "testmap2.tmx",
+        "testmap..tmx",
+        "testmap.tmx"
+    ]
+}

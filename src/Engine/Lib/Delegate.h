@@ -36,8 +36,10 @@ namespace SDG {
      * @tparam Args - argument types that the Delegate requires for each of its callback listeners.
      *
      */
+    template <typename T> class Delegate;
+
     template <typename Ret, typename... Args>
-    class Delegate
+    class Delegate<Ret(Args...)>
     {
         SDG_NOCOPY(Delegate);
     private:
@@ -134,9 +136,6 @@ namespace SDG {
         // Flag indicated whether removals need to be processed.
         bool removeThisFrame;
     };
-
-    template <typename Ret, typename...Args>
-    class Delegate<Ret(Args...)> : public Delegate<Ret, Args...> { };
 
 }
 

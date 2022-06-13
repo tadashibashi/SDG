@@ -1,7 +1,7 @@
 #include "StringView.h"
 #include <Engine/Debug/Assert.h>
 #include <Engine/Debug/LogImpl.h>
-#include <Engine/Exceptions/OutOfRangeException.h>
+#include <Engine/Exceptions.h>
 #include <Engine/Math/Math.h>
 
 #include <utility>
@@ -67,20 +67,61 @@ namespace SDG
         return { &it, count > &end() - &it ? &end() - &it : count };
     }
 
-    size_t
-    StringView::FindFirstOf(char c, size_t startingAt) const
+    StringView &StringView::Trim(const char *list)
     {
-        if (Empty()) return NullPos;
+        size_t index;
+        if (list)
+        {
+            index = FindIf([](char c)->bool {
+                return !isspace(c);
+                }).Index();
+        }
+        else
+        {
+            index = FindFirstNotOf(list);
+        }
 
-        if (startingAt >= Length())
-            throw OutOfRangeException(startingAt, "String max index: " +
-                std::to_string(Length() - 1));
+        if (index < Length())
+        {
+            size_ = Length() - index;
+            str_ += index;
+        }
+        else
+        {
+            size_ = 0;
+        }
 
-        for (const char *p = str_ + startingAt, *ends = str_ + size_; p < ends; ++p)
-            if (*p == c)
-                return p - str_;
+        return *this;
+    }
 
-        return NullPos;
+    StringView &StringView::TrimEnd(const char *list)
+    {
+        size_t index = NullPos;
+        if (list)
+            index = FindLastNotOf(list);
+        else
+        {
+            for (auto it = end() - 1, fin = begin(); it >= fin; --it)
+            {
+                if (!isspace(*it))
+                {
+                    index = it.Index();
+                    break;
+                }
+            }
+        }
+
+        if (index < Length() - 1)
+            size_ =  (index + 1);
+
+        return *this;
+    }
+
+    size_t StringView::FindFirstOf(char c, size_t startingAt) const
+    {
+        return FindFirstOf(startingAt, [c](char currentChar) {
+            return currentChar == c;
+            });
     }
 
     StringView::ConstIterator 
@@ -89,22 +130,50 @@ namespace SDG
         return std::find_if(begin(), end(), func);
     }
 
-    size_t
-    StringView::FindFirstOf(const char *list, size_t startingAt) const
+    size_t StringView::FindFirstOf(const char *list, size_t startingAt) const
     {
-        SDG_Assert(list && *list != '\0'); // list should have substance
+        if (!list || *list == '\0') return NullPos;
+
+        return FindFirstOf(startingAt, [list](char currentChar) -> bool {
+            for (const char *c = list; *c != '\0'; ++c)
+                if (*c == currentChar) return true;
+            return false;
+            });
+    }
+
+    size_t StringView::FindFirstOf(size_t startingAt, const std::function<bool(char)> &func) const
+    {
         if (Empty()) return NullPos;
-
+        if (!func)
+            throw InvalidArgumentException("String::FindFirstOf(const std::function<bool(char)> &func)",
+                "func", "Callback function does not have a function target.");
         if (startingAt >= Length())
-            throw OutOfRangeException(startingAt, "String max index: " +
-                std::to_string(Length() - 1));
+            throw OutOfRangeException(startingAt, String::Format(
+                "String::FindFirstOf: startingAt max index {} was exceeded",
+                Length() - 1));
 
-        for (const char *p = str_ + startingAt, *ends = str_ + size_; p < ends; ++p)
-            for (const char *q = list; *q != '\0'; ++q)
-                if (*p == *q)
-                    return p - str_;
-
+        for (const char *p = str_ + startingAt, *fin = str_ + size_; p < fin; ++p)
+            if (func(*p))
+                return p - str_;
         return NullPos;
+    }
+
+    size_t StringView::FindFirstNotOf(char c, size_t startingAt) const
+    {
+        return FindFirstOf(startingAt, [c](char currentChar) {
+            return currentChar != c;
+            });
+    }
+
+    size_t StringView::FindFirstNotOf(const char *list, size_t startingAt) const
+    {
+        if (!list || *list == '\0') return NullPos;
+
+        return FindFirstOf(startingAt, [list](char currentChar) -> bool {
+            for (const char *c = list; *c != '\0'; ++c)
+                if (*c == currentChar) return false;
+            return true;
+            });
     }
 
     size_t
@@ -133,37 +202,58 @@ namespace SDG
         return NullPos;
     }
 
-    size_t
-    StringView::FindLastOf(char c, size_t startingAt) const
+    size_t StringView::FindLastOf(size_t startingAt, const std::function<bool(char)> &func) const
     {
         if (Empty()) return NullPos;
+        if (!func)
+            throw InvalidArgumentException("String::FindFirstOf(const std::function<bool(char)> &func)",
+                "func", "Callback function does not have a function target.");
 
         // Make sure we start at a valid index
         startingAt = Math::Min(startingAt, Length() - 1);
 
         for (const char *p = str_ + startingAt; p >= str_; --p)
-            if (*p == c)
+            if (func(*p))
                 return p - str_;
 
         return NullPos;
     }
 
-    size_t
-    StringView::FindLastOf(const char *list, size_t startingAt) const
+
+    size_t StringView::FindLastOf(char c, size_t startingAt) const
+    {
+        return FindLastOf(startingAt, [c](char currentChar) { return c == currentChar; });
+    }
+
+    size_t StringView::FindLastOf(const char *list, size_t startingAt) const
     {
         SDG_Assert(list && *list != '\0'); // list should have substance
-        if (Empty()) return NullPos;
 
-        // Make sure we start at a valid index
-        startingAt = Math::Min(startingAt, Length() - 1);
-
-        for (const char *p = str_ + startingAt; p >= str_; --p)
+        return FindLastOf(startingAt, [&list](char c) {
             for (const char *q = list; *q != '\0'; ++q)
-                if (*p == *q)
-                    return p - str_;
-
-        return NullPos;
+                if (c == *q) return true;
+            return false;
+            });
     }
+
+    size_t StringView::FindLastNotOf(char c, size_t startingAt) const
+    {
+        return FindLastOf(startingAt, [c](char cc) {
+            return cc != c;
+            });
+    }
+
+    size_t StringView::FindLastNotOf(const char *list, size_t startingAt) const
+    {
+        if (!list || *list == '\0') return NullPos;
+
+        return FindLastOf(startingAt, [&list](char c) {
+            for (const char *q = list; *q != '\0'; ++q)
+                if (c == *q) return false;
+            return true;
+            });
+    }
+
 
     StringView &
     StringView::Swap(StringView &other)
@@ -240,9 +330,21 @@ namespace SDG
     }
 
     StringView::ConstIterator
+        StringView::cbegin() const
+    {
+        return begin();
+    }
+
+    StringView::ConstIterator
     StringView::end() const
     {
         return ConstIterator(str_ + size_, str_, str_ + size_);
+    }
+
+    StringView::ConstIterator
+        StringView::cend() const
+    {
+        return end();
     }
 
     char StringView::operator[](unsigned i) const

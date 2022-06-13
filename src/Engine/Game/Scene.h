@@ -1,13 +1,9 @@
-//
-// Created by Aaron Ishibashi on 4/15/22.
-//
-
-#ifndef ENGINE_SCENE_H
-#define ENGINE_SCENE_H
+#pragma once
 
 namespace SDG
 {
-    class Scene {
+    class Scene 
+    {
     public:
         void Initialize();
         void Update();
@@ -19,5 +15,3 @@ namespace SDG
     };
 }
 
-
-#endif //ENGINE_SCENE_H

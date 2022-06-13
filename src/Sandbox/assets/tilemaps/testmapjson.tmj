@@ -1,0 +1,129 @@
+{ "compressionlevel":-1,
+ "height":16,
+ "infinite":false,
+ "layers":[
+        {
+         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 128, 129, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 157, 158, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 215, 216, 217, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 245, 246, 186, 187, 187, 187, 188, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 245, 275, 216, 216, 216, 216, 217, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 245, 245, 245, 245, 245, 245, 246, 0, 0, 0, 0, 0, 0,
+            245, 245, 245, 245, 245, 245, 245, 245, 245, 246, 0, 0, 0, 0, 0, 0,
+            245, 245, 245, 245, 245, 245, 245, 245, 245, 275, 216, 217, 0, 0, 0, 0,
+            245, 245, 245, 245, 245, 245, 245, 245, 245, 245, 245, 246, 0, 0, 0, 0,
+            245, 245, 245, 245, 245, 245, 245, 245, 245, 245, 245, 275, 216, 216, 216, 216],
+         "height":16,
+         "id":1,
+         "name":"Tile Layer 1",
+         "opacity":1,
+         "tintcolor":"#f0ff5500",
+         "type":"tilelayer",
+         "visible":true,
+         "width":16,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":2,
+         "name":"Object Layer 1",
+         "objects":[
+                {
+                 "height":16,
+                 "id":1,
+                 "name":"Hej",
+                 "properties":[
+                        {
+                         "name":"boolValue",
+                         "type":"bool",
+                         "value":true
+                        }, 
+                        {
+                         "name":"colorValue",
+                         "type":"color",
+                         "value":"#ff2252f5"
+                        }, 
+                        {
+                         "name":"fileValue",
+                         "type":"file",
+                         "value":"testmap.tmx"
+                        }, 
+                        {
+                         "name":"floatValue",
+                         "type":"float",
+                         "value":15.92
+                        }, 
+                        {
+                         "name":"fruit",
+                         "propertytype":"Fruit",
+                         "type":"class",
+                         "value":
+                            {
+                             "type":1
+                            }
+                        }, 
+                        {
+                         "name":"intValue",
+                         "type":"int",
+                         "value":12345
+                        }, 
+                        {
+                         "name":"objectValue",
+                         "type":"object",
+                         "value":1
+                        }, 
+                        {
+                         "name":"playerType",
+                         "type":"string",
+                         "value":""
+                        }, 
+                        {
+                         "name":"stringValue",
+                         "type":"string",
+                         "value":"I'm a string!"
+                        }],
+                 "rotation":0,
+                 "type":"Actor",
+                 "visible":true,
+                 "width":16,
+                 "x":128,
+                 "y":128
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":3,
+ "nextobjectid":4,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tiledversion":"1.8.5",
+ "tileheight":16,
+ "tilesets":[
+        {
+         "columns":29,
+         "firstgid":1,
+         "image":"..\/..\/..\/..\/..\/..\/Pictures\/Game Sprites\/GrafxKid\/Tiles.png",
+         "imageheight":432,
+         "imagewidth":464,
+         "margin":0,
+         "name":"tileset",
+         "spacing":0,
+         "tilecount":0,
+         "tileheight":16,
+         "tilewidth":16
+        }],
+ "tilewidth":16,
+ "type":"map",
+ "version":"1.8",
+ "width":16
+}

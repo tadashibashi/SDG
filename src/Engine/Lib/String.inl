@@ -17,31 +17,41 @@ namespace std
     }
 }
 
+
+template<>
+struct fmt::formatter<SDG::String> 
+{
+    constexpr auto parse(fmt::format_parse_context &ctx) -> decltype(ctx.begin()) {
+        return ctx.end();
+    }
+
+    template <typename FormatContext>
+    auto format(const SDG::String &input, FormatContext &ctx) -> decltype(ctx.out()) {
+        return fmt::format_to(ctx.out(), "{}", input.Cstr());
+    }
+};
+
+
 namespace SDG
 {
     template<typename...Args>
-    String String::Format(const char *format, Args &&...args)
+    String String::Format(const char *format, Args ...args)
     {
         auto out = fmt::memory_buffer();
-        fmt::format_to(std::back_inserter(out), format,
-            std::forward<Args>(args)...);
+        fmt::vformat_to(std::back_inserter(out), std::string_view(format),
+            fmt::make_format_args(args...));
         return { out.data(), out.size() };
     }
 
     template <typename T>
-    T String::To(int base) const
+    T String::ToNumber(uint8_t base) const
     {
-        static_assert(std::is_arithmetic_v<T>, "String::To<T>: type <T> must be arithmetic.");
+        static_assert(std::is_arithmetic_v<T>, "String::ToNumber<T>: type <T> must be arithmetic.");
         
         // make sure the first char is numeric
-        auto it = FindIf([](char c) { return isalnum(c) || c == '.'  || c == '-'; });
-        if (it < end())
-        {
-            while (*it == '0') ++it;
-
-            if (it < end())
-                while (std::tolower(*it) == 'x') ++it;
-        }
+        size_t pos = FindFirstOf("0123456789abcdefABCDEF-.");
+        auto it = begin() + (pos == NullPos ? 0 : pos);
+        if (it < end() - 1 && *it == '0' && *(it + 1) == 'x') it += 2; // chop of any prepending "0x", common to hex notation
 
         String v(&it, end() - it);
         std::stringstream ss; T t;
@@ -50,7 +60,7 @@ namespace SDG
         ss >> t;
 
         if (ss.fail())
-            ThrowRuntimeException(String::Format("String::To<{}>({}): failed to convert: \"{}\"",
+            ThrowRuntimeException(String::Format("String::ToNumber<{}>({}): failed to convert: \"{}\"",
                 typeid(T).name(), base, *this));
 
         return t;

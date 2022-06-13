@@ -1,15 +1,15 @@
-/*!
+/* ====================================================================================================================
  * @file    Path.h – SDG_Engine
  * @author  Aaron Ishibashi
  *
- * @class   Path
- * @description Wrapper around a string, with helper functions to designate filepaths.
+ * @class   SDG::Path
+ * Wrapper around a string, with helper functions to designate filepaths.
  * User can specify path base to stem from. (More info on base paths in enum class Path::Base).
  *
- */
+ * ==================================================================================================================*/
 #pragma once
 #include <Engine/Lib/Ref.h>
-#include <Engine/Lib/String.h>
+#include <Engine/Lib/StringView.h>
 
 #include <iosfwd>
 #include <stack>
@@ -50,6 +50,9 @@ namespace SDG
         /// Get the subpath portion, not including base path
         [[nodiscard]] const String &Subpath() const { return subpath; }
 
+        [[nodiscard]] String ParentDir() const;
+        [[nodiscard]] bool HasParentDir() const { return !ParentDir().Empty(); }
+
         [[nodiscard]] bool Empty() const { return subpath.Empty() && base == BaseDir::None; }
 
         /// Calculates a hash identifier for the path
@@ -60,10 +63,10 @@ namespace SDG
         /// Checks whether a file exists at the path.
         [[nodiscard]] bool FileExists() const;
         /// Gets the file extension of the Path if there is one.
-        [[nodiscard]] String Extension() const;
+        [[nodiscard]] StringView Extension() const;
         /// Gets the file name (or directory name) if there is one, or a blank string
         /// if not.
-        [[nodiscard]] String Filename() const;
+        [[nodiscard]] StringView Filename() const;
 
         /// Retrieves the Path Base type set in the constructor.
         [[nodiscard]] BaseDir Base() const { return base; }

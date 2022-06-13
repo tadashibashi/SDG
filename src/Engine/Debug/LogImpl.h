@@ -11,3 +11,5 @@
 #if (SDG_DEBUG)
 #include <spdlog/fmt/ostr.h>
 #endif
+
+#include <Engine/Lib/Private/Fmt.h>

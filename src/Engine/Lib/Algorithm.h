@@ -20,14 +20,14 @@ namespace SDG
 
 
     template <typename Iterable>
-    inline void foreach(Iterable container, const std::function<void(const std::decay_t<decltype(*std::declval<Iterable>().begin())> &)> &func)
+    inline void foreach(Iterable container, const std::function<void(const iterable_value_t<Iterable> &)> &func)
     {
         for (auto it = container.begin(); it != container.end(); ++it)
             func(*it);
     }
 
     template <typename It>
-    inline void foreach(It begin, It end, const std::function<void(const std::decay_t<decltype(*std::declval<It>())> &)> &func)
+    inline void foreach(It begin, It end, const std::function<void(const iterator_value_t<It> &)> &func)
     {
         for (It &it = begin; it != end; ++it)
             func(*it);

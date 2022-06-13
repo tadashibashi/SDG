@@ -1,0 +1,36 @@
+[
+    {
+        "color": "#ffff0000",
+        "name": "Enemy",
+        "properties": [
+            {
+                "name": "weapon",
+                "propertytype": "Weapon",
+                "type": "class",
+                "value": {
+                    "magicDefense": 10,
+                    "physicalDefense": 25,
+                    "physicalPower": 50
+                }
+            }
+        ]
+    },
+    {
+        "color": "#ff00ff7f",
+        "name": "Player",
+        "properties": [
+            {
+                "name": "weapon",
+                "propertytype": "Weapon",
+                "type": "class",
+                "value": {
+                    "magicDefense": 10,
+                    "magicPower": 20,
+                    "physicalDefense": 5,
+                    "physicalPower": 35,
+                    "type": "Bow"
+                }
+            }
+        ]
+    }
+]

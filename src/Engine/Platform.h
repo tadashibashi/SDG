@@ -22,10 +22,13 @@
  */
 #pragma once
 
-/// SDG Version
+// ===== SDG Version ==========================================================
+
 #define SDG_VERSION_MAJOR 0
 #define SDG_VERSION_MINOR 0
 #define SDG_VERSION_PATCH 1
+
+// ===== SDG Target Platform ==================================================
 
 // HTML5/WebGL
 #if   defined(__EMSCRIPTEN__)
@@ -107,6 +110,7 @@
 #define SDG_TARGET_MOBILE 0
 #endif
 
+// ===== Build Type ===========================================================
 
 /// This define is set by CMake when CMAKE_BUILD_TYPE is set to 
 /// "Debug" or "RelWithDebugInfo"
@@ -116,17 +120,29 @@
     #define SDG_DEBUG 0
 #endif
 
-/// Compatibility
-#if (!SDG_TARGET_WINDOWS)
-    // MSVC complains if strcpy is used, preferring strcpy_s instead.
-    // For non-MSVC compilers, we convert it to strcpy for compatibility.
-    // Note: please do not use the return value of strcpy_s
-    // Also it may just be better to just use memcpy
-    #define strcpy_s(dest, dsize, src) strcpy(dest, src)
-#endif
-
 namespace SDG
 {
+    /// Gets the string representation of the platform name.
     const char *TargetPlatformName();
 }
 
+// ===== Compiler Definitions =================================================
+
+#if defined(WIN32) && defined(_MSC_VER)
+#define __func__ __FUNCTION__
+#define SDG_MSVC 1
+#else
+#define SDG_MSVC 0
+#endif
+
+#ifdef __clang__
+#define SDG_CLANG 1
+#else
+#define SDG_CLANG 0
+#endif
+
+#if defined(__GNUC__) || defined(__GNUG__)
+#define SDG_GCC 1
+#else
+#define SDG_GCC 0
+#endif

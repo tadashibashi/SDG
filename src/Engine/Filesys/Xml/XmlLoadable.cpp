@@ -1,10 +1,10 @@
 #include "XmlLoadable.h"
 
 #include <Engine/Debug/Log.h>
-#include <Engine/Exceptions/XMLReaderException.h>
+#include <Engine/Exceptions/XmlReaderException.h>
 #include <Engine/Exceptions/XmlValidationException.h>
 #include <Engine/Exceptions/XmlFormattingException.h>
-#include <Engine/FileSys/File.h>
+#include <Engine/Filesys/File.h>
 
 using namespace SDG::Xml;
 

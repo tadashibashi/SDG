@@ -1,0 +1,52 @@
+Tests todo:
+
+- Test Gamepad with a real gamepad, in Sandbox.
+- SpriteRenderer
+    - How to load Sprites in a self-contained way?
+        They need Frames, which depend on Texture references; use shared_ptr instead?
+        This would enable resources to finally unload when there are no more references.
+        Prevent broken references.
+
+Sandbox tests:
+- Graphics
+    x RenderTarget
+    x Font
+    x Shader
+    x SpriteBatch
+    x Texture
+
+
+
+
+
+Finished:
+x Exceptions
+
+- Graphics
+    x Window
+- Input (can't really automate tests effectively unless there's a
+         way to use automated input. Use Sandbox to test.)
+    x Keyboard
+    x Mouse
+x Math
+x Vector2/3
+x FRectangle
+x Rand
+x Delegate
+x FileSys
+x Exceptions (more to come)
+x Path
+x Ref
+x ServiceProvider
+x Time
+x Tween
+x MathShape
+x Camera2D
+x Color
+x Pool
+x Buffer
+x String
+x StringView
+x Tweener
+x Frame
+x Sprite

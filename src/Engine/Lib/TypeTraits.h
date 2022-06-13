@@ -40,10 +40,21 @@ namespace SDG
     template<typename Func, typename R, typename...Args>
     inline constexpr bool is_callable_with_v(const Func &&) { return is_callable_with<Func, R(Args...)>::value; }
 
-   /* template<typename Iterator>
-    inline constexpr auto iterator_value_type_v = std::decay_t< decltype( *std::declval<Iterator>() ) >;
+    template <typename It>
+    struct iterator_value
+    {
+        using type = typename std::decay<decltype(*std::declval<It>())>::type;
+    };
 
-    template<typename Container>
-    inline constexpr auto iterable_value_type_v = iterator_value_type_v<decltype(std::declval<Container>().begin())>;*/
-    
+    template <typename It>
+    using iterator_value_t = typename iterator_value<It>::type;
+
+    template <typename Iterable>
+    struct iterable_value
+    {
+        using type = typename iterator_value<decltype(std::declval<Iterable>().begin())>::type;
+    };
+
+    template <typename Iterable>
+    using iterable_value_t = typename iterable_value<Iterable>::type;
 }

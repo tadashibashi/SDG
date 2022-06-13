@@ -1,7 +1,7 @@
 /// Path implementation file
 #include "Path.h"
 #include <Engine/Debug/Assert.h>
-#include <Engine/Filesys/FileSys.h>
+#include <Engine/Filesys/Filesys.h>
 #include <Engine/Platform.h>
 
 #include <SDL_rwops.h>
@@ -74,24 +74,36 @@ namespace SDG
         }
     }
 
-    String
+    StringView
     Path::Filename() const
     {
+        StringView view = subpath;
 #if SDG_TARGET_WINDOWS
-        auto pos = subpath.FindLastOf("/\\");
+        auto pos = view.FindLastOf("/\\");
 #else
         auto pos = subpath.FindLastOf('/');
 #endif
-        return (pos == String::NullPos) ? subpath : subpath.Substr(pos + 1);
+        return (pos == String::NullPos) ? view : view.Substr(pos + 1);
     }
 
-    String
+    String Path::ParentDir() const
+    {
+        String result = Str();
+#if SDG_TARGET_WINDOWS
+        auto pos = result.FindLastOf("/\\");
+#else
+        auto pos = result.FindLastOf('/');
+#endif
+        return pos < 3 ? String() : result.Substr(0, pos);
+    }
+
+    StringView
     Path::Extension() const
     {
-        String filename = Filename();
+        StringView filename = Filename();
         auto pos = filename.FindLastOf('.');
 
-        return (pos == String::NullPos || pos == 0) ? String() : filename.Substr(pos + 1);
+        return (pos == String::NullPos || pos == 0) ? StringView() : filename.Substr(pos + 1);
     }
 
     bool

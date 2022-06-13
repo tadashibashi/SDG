@@ -37,24 +37,24 @@ int main(int argc, char *argv[])
 #if (SDG_DEBUG)
     catch (const SDG::AssertionException &e)
     {
-        delete app;
         SDG_Core_Err("{} encountered assertion error during runtime: {}", app->Name(), e.what());
+        delete app;
     }
 #endif
     catch (const SDG::Exception &e)
     {
-        delete app;
         SDG_Core_Err("{} encountered critical engine error during runtime: {}", app->Name(), e.what());
+        delete app;
     }
     catch (const std::exception &e)
     {
-        delete app;
         SDG_Core_Err("{} encountered standard library error during runtime: {}", app->Name(), e.what());
+        delete app;
     }
     catch (...)
     {
-        delete app;
         SDG_Core_Err("{} encountered an unknown error during runtime", app->Name());
+        delete app;
     }
 
     return 0;

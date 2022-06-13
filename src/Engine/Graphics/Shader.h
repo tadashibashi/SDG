@@ -6,7 +6,7 @@
 #include <vector>
 #include <cstdint>
 #include "Texture.h"
-#include <Engine/FileSys/Path.h>
+#include <Engine/Filesys/Path.h>
 
 namespace SDG
 {

@@ -4,7 +4,7 @@
 #include <Engine/Debug/Assert.h>
 #include <Engine/Debug/Log.h>
 #include <Engine/Input/Input.h>
-#include <Engine/FileSys/FileSys.h>
+#include <Engine/Filesys/Filesys.h>
 #include <Engine/Game/Datatypes/AppConfig.h>
 
 #include <Engine/Graphics/WindowMgr.h>
@@ -42,10 +42,9 @@ namespace SDG
 
     Engine::Engine(const String &configPath) : impl(new Impl)
     {
-
         // Get game settings from config file
         AppConfig config;
-        config.Load(BasePath(configPath));
+        config.LoadJson(BasePath(configPath));
         impl->Initialize(config);
     }
 

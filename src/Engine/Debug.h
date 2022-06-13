@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Engine/Debug/Assert.h>
-#include <Engine/Debug/Log.h>
-#include <Engine/Debug/Performance.h>
-#include <Engine/Debug/Trace.h>
+#include "Debug/Assert.h"
+#include "Debug/Log.h"
+#include "Debug/Performance.h"
+#include "Debug/Trace.h"

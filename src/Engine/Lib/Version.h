@@ -15,6 +15,8 @@ namespace SDG
         Version();
         Version(unsigned major, unsigned minor, unsigned patch = 0);
 
+        static Version FromString(const class String &str);
+
         [[nodiscard]] bool operator == (const Version version) const;
         [[nodiscard]] bool operator != (const Version version) const;
         [[nodiscard]] bool operator > (const Version version) const;

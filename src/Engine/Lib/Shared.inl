@@ -40,7 +40,7 @@ namespace SDG
     }
 
     template<typename T>
-    inline T *Shared<T>::operator->() const
+    inline const T *Shared<T>::operator->() const
     {
         if (!ptr) // prevent undefined behavior by throwing
             throw NullReferenceException();
@@ -48,7 +48,23 @@ namespace SDG
     }
 
     template<typename T>
-    inline T &Shared<T>::operator*() const
+    inline T *Shared<T>::operator->()
+    {
+        if (!ptr) // prevent undefined behavior by throwing
+            throw NullReferenceException();
+        return ptr;
+    }
+
+    template<typename T>
+    inline const T &Shared<T>::operator*() const
+    {
+        if (!ptr) // prevent undefined behavior by throwing
+            throw NullReferenceException();
+        return *ptr;
+    }
+
+    template<typename T>
+    inline T &Shared<T>::operator*()
     {
         if (!ptr) // prevent undefined behavior by throwing
             throw NullReferenceException();

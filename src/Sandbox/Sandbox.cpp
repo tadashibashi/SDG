@@ -1,15 +1,14 @@
 #include <Engine/SDG.h>
 #include <Engine/Graphics/Font.h>
+#include <Engine/Filesys/Xml.h>
+#include <Engine/Filesys/Json.h>
 using namespace SDG;
 
 class Sandbox : public Engine 
 {
 public:
     Sandbox() : Engine(
-        AppConfig { 640, 480, (uint32_t)0,
-        "SDG Engine Test",
-        "SDG Engine Test", "aaronishibashi" }
-        //"assets/config.sdgc"
+        "assets/configjson.sdgc"
     )
     {
         Texture::DefaultFilterMode(Texture::Filter::Linear);
@@ -68,6 +67,21 @@ private:
 
         shader.Compile(BasePath("assets/shaders/v1.sdgc"), BasePath("assets/shaders/f1.sdgc"));
 
+        json map = OpenJson(BasePath("assets/tilemaps/testmapjson.sdgc"));
+        
+        for (auto &layer : map["layers"])
+        {
+            SDG_Log("Tiled Layer: {}", layer["name"]);
+            if (layer["type"] == "objectgroup")
+            {
+                for (auto &obj : layer["objects"])
+                {
+                    SDG_Log("- object: \"{}\": template: {}", obj["name"], obj["template"] == nullptr ? "none" : obj["template"]);
+                }
+                    
+            }
+        }
+        
     }
 
     void Update() override

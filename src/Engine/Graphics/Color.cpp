@@ -89,94 +89,94 @@ namespace SDG
 
     // Pre-made Colors
     // ===== REDS ===========
-    Color Color::Amaranth(uint8_t alpha) noexcept      { return Color(244, 54, 76, alpha); }
-    Color Color::BloodRed(uint8_t alpha) noexcept      { return Color(101, 28, 50, alpha); }
-    Color Color::BrightRed(uint8_t alpha) noexcept     { return Color(101, 28, 50, alpha); }
-    Color Color::BrickRed(uint8_t alpha) noexcept      { return Color(203, 65, 84, alpha); }
-    Color Color::Cerise(uint8_t alpha) noexcept        { return Color(223, 70, 97, alpha); }
-    Color Color::CherryRed(uint8_t alpha) noexcept     { return Color(205, 0, 26, alpha); }
-    Color Color::ChristmasRed(uint8_t alpha) noexcept  { return Color(214, 0, 28, alpha); }
-    Color Color::ComicBookRed(uint8_t alpha) noexcept  { return Color(237, 29, 36, alpha); }
-    Color Color::Cranberry(uint8_t alpha) noexcept     { return Color(166, 10, 61, alpha); }
-    Color Color::EarthyRed(uint8_t alpha) noexcept     { return Color(153, 71, 88, alpha); }
-    Color Color::FireTruckRed(uint8_t alpha) noexcept  { return Color(206, 32, 41, alpha); }
-    Color Color::Heliconia(uint8_t alpha) noexcept     { return Color(219, 62, 121, alpha); }
-    Color Color::LightRed(uint8_t alpha) noexcept      { return Color(255, 114, 118, alpha); }
-    Color Color::LightsaberRed(uint8_t alpha) noexcept { return Color(235, 33, 46, alpha); }
-    Color Color::Mango(uint8_t alpha) noexcept         { return Color(183, 94, 74, alpha); }
-    Color Color::MediumDarkRed(uint8_t alpha) noexcept { return Color(128, 5, 0, alpha); }
-    Color Color::NeonRed(uint8_t alpha) noexcept       { return Color(210, 39, 48, alpha); }
-    Color Color::OxbloodRed(uint8_t alpha) noexcept    { return Color(112, 57, 63, alpha); }
-    Color Color::PastelRed(uint8_t alpha) noexcept     { return Color(255, 109, 106, alpha); }
-    Color Color::RacingRed(uint8_t alpha) noexcept     { return Color(189, 22, 44, alpha); }
-    Color Color::RedOrange(uint8_t alpha) noexcept     { return Color(252, 76, 2, alpha); }
-    Color Color::RhodamineRed(uint8_t alpha) noexcept  { return Color(225, 0, 152, alpha); }
-    Color Color::RichRed(uint8_t alpha) noexcept       { return Color(161, 0, 14, alpha); }
-    Color Color::RoseRed(uint8_t alpha) noexcept       { return Color(255, 3, 62, alpha); }
-    Color Color::Rosso(uint8_t alpha) noexcept         { return Color(225, 6, 0, alpha); }
-    Color Color::RubyRed(uint8_t alpha) noexcept       { return Color(228, 0, 70, alpha); }
-    Color Color::RusticRed(uint8_t alpha) noexcept     { return Color(84, 11, 12, alpha); }
-    Color Color::ScarletRed(uint8_t alpha) noexcept    { return Color(187, 0, 0, alpha); }
-    Color Color::Strawberry(uint8_t alpha) noexcept    { return Color(197, 70, 68, alpha); }
-    Color Color::VarsityRed(uint8_t alpha) noexcept    { return Color(206, 17, 65, alpha); }
-    Color Color::Watermelon(uint8_t alpha) noexcept    { return Color(198, 58, 79, alpha); }
-    Color Color::WineRed(uint8_t alpha) noexcept       { return Color(155, 34, 66, alpha); }
-    Color Color::IndianRed(uint8_t alpha) noexcept     { return Color(205, 92, 92, alpha); }
-    Color Color::LightCoral(uint8_t alpha) noexcept    { return Color(240, 128, 128, alpha); }
-    Color Color::Salmon(uint8_t alpha) noexcept        { return Color(250, 128, 114, alpha); }
-    Color Color::DarkSalmon(uint8_t alpha) noexcept    { return Color(233, 150, 122, alpha); }
-    Color Color::LightSalmon(uint8_t alpha) noexcept   { return Color(255, 160, 122, alpha); }
-    Color Color::Crimson(uint8_t alpha) noexcept       { return Color(220, 20, 60, alpha); }
-    Color Color::Red(uint8_t alpha) noexcept           { return Color(255, 0, 0, alpha); }
-    Color Color::FireBrick(uint8_t alpha) noexcept     { return Color(178, 34, 34, alpha); }
-    Color Color::DarkRed(uint8_t alpha) noexcept       { return Color(139, 0, 0, alpha); }
+    Color Color::Amaranth(uint8_t alpha) noexcept      { return { 244, 54, 76, alpha}; }
+    Color Color::BloodRed(uint8_t alpha) noexcept      { return { 101, 28, 50, alpha}; }
+    Color Color::BrightRed(uint8_t alpha) noexcept     { return { 101, 28, 50, alpha}; }
+    Color Color::BrickRed(uint8_t alpha) noexcept      { return { 203, 65, 84, alpha}; }
+    Color Color::Cerise(uint8_t alpha) noexcept        { return { 223, 70, 97, alpha }; }
+    Color Color::CherryRed(uint8_t alpha) noexcept     { return { 205, 0, 26, alpha }; }
+    Color Color::ChristmasRed(uint8_t alpha) noexcept  { return { 214, 0, 28, alpha }; }
+    Color Color::ComicBookRed(uint8_t alpha) noexcept  { return { 237, 29, 36, alpha }; }
+    Color Color::Cranberry(uint8_t alpha) noexcept     { return { 166, 10, 61, alpha }; }
+    Color Color::EarthyRed(uint8_t alpha) noexcept     { return { 153, 71, 88, alpha }; }
+    Color Color::FireTruckRed(uint8_t alpha) noexcept  { return { 206, 32, 41, alpha }; }
+    Color Color::Heliconia(uint8_t alpha) noexcept     { return { 219, 62, 121, alpha }; }
+    Color Color::LightRed(uint8_t alpha) noexcept      { return { 255, 114, 118, alpha }; }
+    Color Color::LightsaberRed(uint8_t alpha) noexcept { return { 235, 33, 46, alpha }; }
+    Color Color::Mango(uint8_t alpha) noexcept         { return { 183, 94, 74, alpha }; }
+    Color Color::MediumDarkRed(uint8_t alpha) noexcept { return { 128, 5, 0, alpha }; }
+    Color Color::NeonRed(uint8_t alpha) noexcept       { return { 210, 39, 48, alpha }; }
+    Color Color::OxbloodRed(uint8_t alpha) noexcept    { return { 112, 57, 63, alpha }; }
+    Color Color::PastelRed(uint8_t alpha) noexcept     { return { 255, 109, 106, alpha }; }
+    Color Color::RacingRed(uint8_t alpha) noexcept     { return { 189, 22, 44, alpha }; }
+    Color Color::RedOrange(uint8_t alpha) noexcept     { return { 252, 76, 2, alpha }; }
+    Color Color::RhodamineRed(uint8_t alpha) noexcept  { return { 225, 0, 152, alpha }; }
+    Color Color::RichRed(uint8_t alpha) noexcept       { return { 161, 0, 14, alpha }; }
+    Color Color::RoseRed(uint8_t alpha) noexcept       { return { 255, 3, 62, alpha }; }
+    Color Color::Rosso(uint8_t alpha) noexcept         { return { 225, 6, 0, alpha }; }
+    Color Color::RubyRed(uint8_t alpha) noexcept       { return { 228, 0, 70, alpha }; }
+    Color Color::RusticRed(uint8_t alpha) noexcept     { return { 84, 11, 12, alpha }; }
+    Color Color::ScarletRed(uint8_t alpha) noexcept    { return { 187, 0, 0, alpha }; }
+    Color Color::Strawberry(uint8_t alpha) noexcept    { return { 197, 70, 68, alpha }; }
+    Color Color::VarsityRed(uint8_t alpha) noexcept    { return { 206, 17, 65, alpha }; }
+    Color Color::Watermelon(uint8_t alpha) noexcept    { return { 198, 58, 79, alpha }; }
+    Color Color::WineRed(uint8_t alpha) noexcept       { return { 155, 34, 66, alpha }; }
+    Color Color::IndianRed(uint8_t alpha) noexcept     { return { 205, 92, 92, alpha }; }
+    Color Color::LightCoral(uint8_t alpha) noexcept    { return { 240, 128, 128, alpha }; }
+    Color Color::Salmon(uint8_t alpha) noexcept        { return { 250, 128, 114, alpha }; }
+    Color Color::DarkSalmon(uint8_t alpha) noexcept    { return { 233, 150, 122, alpha }; }
+    Color Color::LightSalmon(uint8_t alpha) noexcept   { return { 255, 160, 122, alpha }; }
+    Color Color::Crimson(uint8_t alpha) noexcept       { return { 220, 20, 60, alpha }; }
+    Color Color::Red(uint8_t alpha) noexcept           { return { 255, 0, 0, alpha }; }
+    Color Color::FireBrick(uint8_t alpha) noexcept     { return { 178, 34, 34, alpha }; }
+    Color Color::DarkRed(uint8_t alpha) noexcept       { return { 139, 0, 0, alpha }; }
 
     // ===== PINKS ===========
-    Color Color::Pink(uint8_t alpha) noexcept            { return { 255, 192, 203, alpha }; }
-    Color Color::BabyPink(uint8_t alpha) noexcept        { return { 242, 172, 185, alpha }; }
-    Color Color::BlushPink(uint8_t alpha) noexcept { return { 222, 93, 131, alpha }; }
-    Color Color::BrightPink(uint8_t alpha) noexcept { return { 255, 0, 127, alpha }; }
-    Color Color::BubblegumPink(uint8_t alpha) noexcept { return { 255, 193, 204, alpha }; }
-    Color Color::CarnationPink(uint8_t alpha) noexcept { return { 255, 166, 201, alpha }; }
-    Color Color::ChampagnePink(uint8_t alpha) noexcept { return { 246, 225, 211, alpha }; }
+    Color Color::Pink(uint8_t alpha) noexcept              { return { 255, 192, 203, alpha }; }
+    Color Color::BabyPink(uint8_t alpha) noexcept          { return { 242, 172, 185, alpha }; }
+    Color Color::BlushPink(uint8_t alpha) noexcept         { return { 222, 93, 131, alpha }; }
+    Color Color::BrightPink(uint8_t alpha) noexcept        { return { 255, 0, 127, alpha }; }
+    Color Color::BubblegumPink(uint8_t alpha) noexcept     { return { 255, 193, 204, alpha }; }
+    Color Color::CarnationPink(uint8_t alpha) noexcept     { return { 255, 166, 201, alpha }; }
+    Color Color::ChampagnePink(uint8_t alpha) noexcept     { return { 246, 225, 211, alpha }; }
     Color Color::CherryBlossomPink(uint8_t alpha) noexcept { return { 255, 183, 197, alpha }; }
-    Color Color::CoralPink(uint8_t alpha) noexcept { return { 242, 130, 127, alpha }; }
-    Color Color::CottonCandyPink(uint8_t alpha) noexcept { return { 255, 188, 217, alpha }; }
-    Color Color::DarkPink(uint8_t alpha) noexcept { return { 231, 84, 128, alpha }; }
-    Color Color::DeepPink(uint8_t alpha) noexcept { return { 214, 37, 152, alpha }; }
-    Color Color::DustyRosePink(uint8_t alpha) noexcept { return { 183, 123, 130, alpha }; }
-    Color Color::FlamingoPink(uint8_t alpha) noexcept { return { 252, 142, 172, alpha }; }
-    Color Color::FlowerPink(uint8_t alpha) noexcept { return { 227, 91, 137, alpha }; }
-    Color Color::FourescentPink(uint8_t alpha) noexcept { return { 255, 105, 180, alpha}; }
-    Color Color::Fuchsia(uint8_t alpha) noexcept { return { 217, 2, 125, alpha }; }
-    Color Color::GoldPink(uint8_t alpha) noexcept { return { 230, 199, 194, alpha }; }
-    Color Color::GrapefruitPink(uint8_t alpha) noexcept { return { 224, 112, 124, alpha }; }
-    Color Color::HighlighterPink(uint8_t alpha) noexcept { return { 255, 20, 147, alpha }; }
-    Color Color::KnockoutPink(uint8_t alpha) noexcept { return { 255, 62, 165, alpha }; }
-    Color Color::LightBlush(uint8_t alpha) noexcept { return { 241, 171, 185, alpha }; }
-    Color Color::LipPink(uint8_t alpha) noexcept { return { 219, 172, 152, alpha }; }
-    Color Color::LightPink(uint8_t alpha) noexcept { return { 245, 218, 223, alpha }; }
-    Color Color::Magenta(uint8_t alpha) noexcept { return { 217, 1, 122, alpha }; }
-    Color Color::Melon(uint8_t alpha) noexcept { return { 247, 188, 172, alpha }; }
-    Color Color::Milano(uint8_t alpha) noexcept { return { 217, 93, 103, alpha }; }
-    Color Color::MillenialPink(uint8_t alpha) noexcept { return { 255, 209, 220, alpha }; }
-    Color Color::Mulberry(uint8_t alpha) noexcept { return { 207, 87, 138, alpha }; }
-    Color Color::NeonPink(uint8_t alpha) noexcept { return { 251, 72, 196, alpha }; }
-    Color Color::SkinPink(uint8_t alpha) noexcept { return { 221, 192, 180, alpha }; }
-    Color Color::PalePink(uint8_t alpha) noexcept { return { 242, 212, 215, alpha }; }
-    Color Color::PassionPink(uint8_t alpha) noexcept { return { 206, 116, 167, alpha }; }
-    Color Color::PastelPink(uint8_t alpha) noexcept { return { 233, 205, 208, alpha }; }
-    Color Color::PearlPink(uint8_t alpha) noexcept { return { 231, 172, 207, alpha }; }
-    Color Color::RosyPink(uint8_t alpha) noexcept { return { 255, 102, 204, alpha }; }
-    Color Color::SalmonPink(uint8_t alpha) noexcept { return { 255, 134, 116, alpha }; }
-    Color Color::SilveryPink(uint8_t alpha) noexcept { return { 220, 181, 180, alpha }; }
-    Color Color::SoftPink(uint8_t alpha) noexcept { return { 255, 184, 191, alpha }; }
-    Color Color::SweetPink(uint8_t alpha) noexcept { return { 238, 145, 141, alpha }; }
-    Color Color::ValentinePink(uint8_t alpha) noexcept { return { 230, 166, 190, alpha }; }
-    Color Color::VibrantPink(uint8_t alpha) noexcept { return { 254, 1, 154, alpha }; }
-    Color Color::HotPink(uint8_t alpha) noexcept         { return Color(255, 105, 180, alpha); }
-    Color Color::MediumVioletRed(uint8_t alpha) noexcept { return Color(199, 21, 133, alpha); }
-    Color Color::PaleVioletRed(uint8_t alpha) noexcept   { return Color(219, 112, 147, alpha); }
+    Color Color::CoralPink(uint8_t alpha) noexcept         { return { 242, 130, 127, alpha }; }
+    Color Color::CottonCandyPink(uint8_t alpha) noexcept   { return { 255, 188, 217, alpha }; }
+    Color Color::DarkPink(uint8_t alpha) noexcept          { return { 231, 84, 128, alpha }; }
+    Color Color::DeepPink(uint8_t alpha) noexcept          { return { 214, 37, 152, alpha }; }
+    Color Color::DustyRosePink(uint8_t alpha) noexcept     { return { 183, 123, 130, alpha }; }
+    Color Color::FlamingoPink(uint8_t alpha) noexcept      { return { 252, 142, 172, alpha }; }
+    Color Color::FlowerPink(uint8_t alpha) noexcept        { return { 227, 91, 137, alpha }; }
+    Color Color::FourescentPink(uint8_t alpha) noexcept    { return { 255, 105, 180, alpha}; }
+    Color Color::Fuchsia(uint8_t alpha) noexcept           { return { 217, 2, 125, alpha }; }
+    Color Color::GoldPink(uint8_t alpha) noexcept          { return { 230, 199, 194, alpha }; }
+    Color Color::GrapefruitPink(uint8_t alpha) noexcept    { return { 224, 112, 124, alpha }; }
+    Color Color::HighlighterPink(uint8_t alpha) noexcept   { return { 255, 20, 147, alpha }; }
+    Color Color::KnockoutPink(uint8_t alpha) noexcept      { return { 255, 62, 165, alpha }; }
+    Color Color::LightBlush(uint8_t alpha) noexcept        { return { 241, 171, 185, alpha }; }
+    Color Color::LipPink(uint8_t alpha) noexcept           { return { 219, 172, 152, alpha }; }
+    Color Color::LightPink(uint8_t alpha) noexcept         { return { 245, 218, 223, alpha }; }
+    Color Color::Magenta(uint8_t alpha) noexcept           { return { 217, 1, 122, alpha }; }
+    Color Color::Melon(uint8_t alpha) noexcept             { return { 247, 188, 172, alpha }; }
+    Color Color::Milano(uint8_t alpha) noexcept            { return { 217, 93, 103, alpha }; }
+    Color Color::MillenialPink(uint8_t alpha) noexcept     { return { 255, 209, 220, alpha }; }
+    Color Color::Mulberry(uint8_t alpha) noexcept          { return { 207, 87, 138, alpha }; }
+    Color Color::NeonPink(uint8_t alpha) noexcept          { return { 251, 72, 196, alpha }; }
+    Color Color::SkinPink(uint8_t alpha) noexcept          { return { 221, 192, 180, alpha }; }
+    Color Color::PalePink(uint8_t alpha) noexcept          { return { 242, 212, 215, alpha }; }
+    Color Color::PassionPink(uint8_t alpha) noexcept       { return { 206, 116, 167, alpha }; }
+    Color Color::PastelPink(uint8_t alpha) noexcept        { return { 233, 205, 208, alpha }; }
+    Color Color::PearlPink(uint8_t alpha) noexcept         { return { 231, 172, 207, alpha }; }
+    Color Color::RosyPink(uint8_t alpha) noexcept          { return { 255, 102, 204, alpha }; }
+    Color Color::SalmonPink(uint8_t alpha) noexcept        { return { 255, 134, 116, alpha }; }
+    Color Color::SilveryPink(uint8_t alpha) noexcept       { return { 220, 181, 180, alpha }; }
+    Color Color::SoftPink(uint8_t alpha) noexcept          { return { 255, 184, 191, alpha }; }
+    Color Color::SweetPink(uint8_t alpha) noexcept         { return { 238, 145, 141, alpha }; }
+    Color Color::ValentinePink(uint8_t alpha) noexcept     { return { 230, 166, 190, alpha }; }
+    Color Color::VibrantPink(uint8_t alpha) noexcept       { return { 254, 1, 154, alpha }; }
+    Color Color::HotPink(uint8_t alpha) noexcept           { return { 255, 105, 180, alpha }; }
+    Color Color::MediumVioletRed(uint8_t alpha) noexcept   { return { 199, 21, 133, alpha }; }
+    Color Color::PaleVioletRed(uint8_t alpha) noexcept     { return { 219, 112, 147, alpha }; }
 
     // ===== ORANGES ===========
     Color Color::Amber(uint8_t alpha) noexcept { return Color(255, 198, 0, alpha); }
@@ -223,6 +223,7 @@ namespace SDG
     Color Color::SatinSheenGold(uint8_t alpha) noexcept { return Color(203, 161, 53, alpha); }
 
     // ===== PURPLES ===========
+     
     Color Color::Lavender(uint8_t alpha) noexcept { return Color(230, 230, 250, alpha); }
     Color Color::Thistle(uint8_t alpha) noexcept { return Color(216, 191, 216, alpha); }
     Color Color::Plum(uint8_t alpha) noexcept { return Color(221, 160, 221, alpha); }
@@ -242,9 +243,9 @@ namespace SDG
     Color Color::DarkSlateBlue(uint8_t alpha) noexcept { return Color(72, 61, 139, alpha); }
 
     // ===== Greens ==========
-    [[maybe_unused]] Color Color::GreenYellow(uint8_t alpha) noexcept { return Color(173, 255, 47, alpha); }
 
-    [[maybe_unused]] Color Color::Chartreuse(uint8_t alpha) noexcept { return Color(127, 255, 0, alpha); }
+    Color Color::GreenYellow(uint8_t alpha) noexcept { return Color(173, 255, 47, alpha); }
+    Color Color::Chartreuse(uint8_t alpha) noexcept { return Color(127, 255, 0, alpha); }
     Color Color::LawnGreen(uint8_t alpha) noexcept { return Color(124, 255, 0, alpha); }
     Color Color::Lime(uint8_t alpha) noexcept { return Color(0, 255, 0, alpha); }
     Color Color::LimeGreen(uint8_t alpha) noexcept { return Color(50, 205, 50, alpha); }
@@ -268,6 +269,7 @@ namespace SDG
     Color Color::Teal(uint8_t alpha) noexcept { return Color(0, 128, 128, alpha); }
 
     // ===== Blues / Cyans =======
+
     Color Color::Aqua(uint8_t alpha) noexcept { return Color(5, 195, 221, alpha); }
     Color Color::Azure(uint8_t alpha) noexcept { return Color(0, 138, 216, alpha); }
     Color Color::BabyBlue(uint8_t alpha) noexcept { return Color(155, 211, 221, alpha); }
@@ -344,6 +346,7 @@ namespace SDG
     Color Color::MediumBlue(uint8_t alpha) noexcept { return Color(0, 0, 205, alpha); }
 
     // ===== Browns ===========
+
     Color Color::Cornsilk(uint8_t alpha) noexcept { return Color(255, 248, 220, alpha); }
     Color Color::BlanchedAlmond(uint8_t alpha) noexcept { return Color(255, 234, 205, alpha); }
     Color Color::Bisque(uint8_t alpha) noexcept { return Color(255, 228, 196, alpha); }
@@ -363,6 +366,7 @@ namespace SDG
     Color Color::Maroon(uint8_t alpha) noexcept { return Color(128, 0, 0, alpha); }
 
     // == Beiges ===========================
+
     Color Color::Cream(uint8_t alpha) noexcept { return Color(240, 235, 210, alpha); }
     Color Color::UnbleachedSilk(uint8_t alpha) noexcept { return Color(229, 158, 109, alpha); }
     Color Color::DesertSand(uint8_t alpha) noexcept { return Color(227, 212, 173, alpha); }
@@ -370,6 +374,7 @@ namespace SDG
 
 
     // ===== Whites ===========
+
     Color Color::White(uint8_t alpha) noexcept { return Color(255, 255, 255, alpha); }
     Color Color::Snow(uint8_t alpha) noexcept { return Color(255, 250, 250, alpha); }
     Color Color::Honeydew(uint8_t alpha) noexcept { return Color(240, 255, 240, alpha); }
@@ -390,6 +395,7 @@ namespace SDG
 
     // TODO: Grays from https://colorcodes.io/gray/
     // ===== GRAYS ===========
+
     Color Color::AshGray(uint8_t alpha) noexcept { return Color(178, 190, 181, alpha); }
     Color Color::Chrome(uint8_t alpha) noexcept { return Color(219, 226, 233, alpha); }
     Color Color::AgreeableGray(uint8_t alpha) noexcept { return Color(209, 203, 193, alpha); }
@@ -409,6 +415,4 @@ namespace SDG
     Color Color::SlateGray(uint8_t alpha) noexcept { return Color(112, 128, 144, alpha); }
     Color Color::DarkSlateGray(uint8_t alpha) noexcept { return Color(47, 79, 79, alpha); }
     Color Color::Black(uint8_t alpha) noexcept { return Color(0, 0, 0, alpha); }
-
-
 }

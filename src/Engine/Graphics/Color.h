@@ -28,24 +28,29 @@ namespace SDG
             ARGB8888,
             RGB888
         };
+
         static const uint8_t COLOR_MAX = UINT8_MAX;
         Color &Set(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = COLOR_MAX);
 
-        [[nodiscard]] uint8_t R() const { return r; }
-        [[nodiscard]] uint8_t G() const { return g; }
-        [[nodiscard]] uint8_t B() const { return b; }
-        [[nodiscard]] uint8_t A() const { return a; }
+        [[nodiscard]] const uint8_t &R() const { return r; }
+        [[nodiscard]] const uint8_t &G() const { return g; }
+        [[nodiscard]] const uint8_t &B() const { return b; }
+        [[nodiscard]] const uint8_t &A() const { return a; }        
+        [[nodiscard]] uint8_t &R() { return r; }
+        [[nodiscard]] uint8_t &G() { return g; }
+        [[nodiscard]] uint8_t &B() { return b; }
+        [[nodiscard]] uint8_t &A() { return a; }
 
         Color &R(uint8_t red) { r = red; return *this; }
         Color &G(uint8_t green) { g = green; return *this; }
         Color &B(uint8_t blue) { b = blue; return *this; }
         Color &A(uint8_t alpha) { a = alpha; return *this; }
 
-        static Color FromNumber(uint64_t num, Format format, uint8_t base = 16u);
-        static Color FromString(const String &str, Format format, uint8_t base = 16u);
-        static Color FromString(const StringView &str, Format format, uint8_t base = 16u);
+        [[nodiscard]] static Color FromNumber(uint64_t num, Format format, uint8_t base = 16u);
+        [[nodiscard]] static Color FromString(const String &str, Format format, uint8_t base = 16u);
+        [[nodiscard]] static Color FromString(const StringView &str, Format format, uint8_t base = 16u);
 
-        bool operator == (const Color &other) const;
+        [[nodiscard]] bool operator == (const Color &other) const;
 
         // Defaults to White
         constexpr Color() noexcept : r(COLOR_MAX), g(COLOR_MAX), b(COLOR_MAX), a(COLOR_MAX) {}
@@ -58,6 +63,7 @@ namespace SDG
         
         // Pre-made Colors with modifiable alpha value
         // ===== REDS ===========
+
         [[maybe_unused]] static Color Amaranth(uint8_t alpha = COLOR_MAX) noexcept;
         [[maybe_unused]] static Color BloodRed(uint8_t alpha = COLOR_MAX) noexcept;
         [[maybe_unused]] static Color BrightRed(uint8_t alpha = COLOR_MAX) noexcept;

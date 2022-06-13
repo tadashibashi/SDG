@@ -91,7 +91,7 @@ namespace SDG
             "ForwardIterator must contain Array's type T");
         Free(arr);
 
-        // Get count
+        // Get instances
         size_t count = 0;
         for (It it = pBegin; it != pEnd; ++it)
             ++count;

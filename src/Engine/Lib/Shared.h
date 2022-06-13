@@ -37,7 +37,7 @@ namespace SDG
         /// Resolves to bool, checking if reference is null
         [[nodiscard]] explicit operator bool() const;
     private:
-        /// Removes reference count, calling destructor on ptr when it reaches zero
+        /// Removes reference instances, calling destructor on ptr when it reaches zero
         void Destroy();
         T *ptr;
         size_t *count;

@@ -8,6 +8,7 @@ namespace SDG
     {
     public:
         OutOfRangeException(int64_t value, const class String &info);
+        explicit OutOfRangeException(const class String &info = String());
 
         const char *Name() const noexcept override { return "OutOfRangeException"; }
     };

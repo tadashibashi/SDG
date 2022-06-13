@@ -6,28 +6,28 @@ namespace SDG
 {
     struct Tilemap::Impl
     {
-        Impl() : texture(), width(), tiles(), count(1) { }
+        Impl() : texture(), width(), tiles(), instances(1) { }
         Texture texture;
         size_t width;
         std::vector<Tile> tiles;
-        size_t count;
+        size_t instances;
     };
 
     Tilemap::Tilemap() : impl(new Impl)
     { }
 
-    Tilemap::Tilemap(const Tilemap &tiles) : impl(tiles.impl)
+    Tilemap::Tilemap(const Tilemap &tilemap) : impl(tilemap.impl)
     {
-        ++impl->count;
+        ++impl->instances;
     }
 
-    Tilemap &Tilemap::operator= (const Tilemap &tiles)
+    Tilemap &Tilemap::operator= (const Tilemap &tilemap)
     {
-        if (tiles.impl != impl)
+        if (tilemap.impl != impl)
         {
             Close();
-            impl = tiles.impl;
-            ++impl->count;
+            impl = tilemap.impl;
+            ++impl->instances;
         }
 
         return *this;
@@ -38,13 +38,13 @@ namespace SDG
         tiles.impl = nullptr;
     }
 
-    Tilemap &Tilemap::operator= (Tilemap &&tiles) noexcept
+    Tilemap &Tilemap::operator= (Tilemap &&tilemap) noexcept
     {
-        if (impl != tiles.impl)
+        if (impl != tilemap.impl)
         {
             Close();
-            impl = tiles.impl;
-            tiles.impl = nullptr;
+            impl = tilemap.impl;
+            tilemap.impl = nullptr;
         }
 
         return *this;
@@ -55,9 +55,33 @@ namespace SDG
         Close();
     }
 
+    Tilemap &Tilemap::Set(const std::vector<Tile> &tiles, const Texture &texture, size_t tilesWide)
+    {
+        impl->texture = texture;
+        impl->tiles = tiles;
+        impl->width = tilesWide;
+        return *this;
+    }
+
+    Tilemap &Tilemap::SetTile(size_t tileX, size_t tileY, Tile tile)
+    {
+        if (tileX >= impl->width || tileY * impl->width >= impl->tiles.size())
+            throw OutOfRangeException(String::Format("Tilemap tile position: (x={}, y={}) out of range. "
+                "Max dimensions: (x={}, y={})", tileX, tileY, impl->width-1, impl->tiles.size()/impl->width - 1));
+        impl->tiles[tileX + tileY*impl->width] = tile;
+        return *this;
+    }
+
+    bool Tilemap::operator==(const Tilemap &tilemap)
+    {
+        return tilemap.impl == impl;
+    }
+
+
+
     void Tilemap::Close()
     {
-        if (--impl->count == 0)
+        if (--impl->instances == 0)
             delete impl;
     }
 }

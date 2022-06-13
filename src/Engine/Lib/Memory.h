@@ -9,7 +9,7 @@
 namespace SDG
 {
     /// Allocates memory for a number of objects of type T.
-    /// Please be aware that "count" is the number of objects sizeof T, not bytes.
+    /// Please be aware that "instances" is the number of objects sizeof T, not bytes.
     /// Also, make sure to call Free on the pointer, once the memory is no longer needed.
     /// Throws a RuntimeException if allocation fails.
     /// @param n number of objects of type T to fit in the memory

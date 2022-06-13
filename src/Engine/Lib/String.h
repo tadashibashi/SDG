@@ -166,8 +166,8 @@ namespace SDG
 
         /// Creates a substring from the String
         /// @param index the index that will begin the substring
-        /// @param count the number of characters to copy to the substring,
-        /// starting its count from the index position. A value of
+        /// @param instances the number of characters to copy to the substring,
+        /// starting its instances from the index position. A value of
         /// String::NullPos means that the rest of the String starting
         /// from the index will be copied.
         [[nodiscard]] String Substr(size_t index, size_t count = NullPos) const;

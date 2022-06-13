@@ -93,7 +93,7 @@ namespace SDG
 
             // Don't need since usage is during destruction-like scenarios
             // ptr = nullptr; 
-            // count = nullptr;
+            // instances = nullptr;
         }
     }
 

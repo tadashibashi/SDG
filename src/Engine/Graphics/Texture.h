@@ -16,9 +16,9 @@ struct SDL_Surface;
 
 namespace SDG
 {
-    /// Texture class automatically frees texture when this object goes out
-    /// of scope. Please be aware of this, as the object will become
-    /// invalidated if the destructor is called.
+    /// Texture class automatically frees texture when every copy of this object goes out
+    /// of scope. It's a shared resource, so maintaining a copy should ensure it is alive.
+    /// Does not support multi-threaded safety.
     class Texture
     {
         struct Impl;
@@ -30,9 +30,12 @@ namespace SDG
         
         /// Copies image data into this new Texture
         Texture(const Texture &tex);
+        Texture(Texture &&tex) noexcept;
+
 
         /// Copies data into this new Texture
         Texture &operator = (const Texture &tex);
+        Texture &operator = (Texture &&tex) noexcept;
 
         Texture(Ref<class Window> context, SDL_Surface *surf, const Path &path = Path());
         explicit Texture(GPU_Image *image);
@@ -40,7 +43,7 @@ namespace SDG
         /// Automatically frees the internal texture if one was loaded.
         ~Texture();
 
-    public:    
+    public:   
         enum class FileFormat { Auto, Png, Tga, Bmp };
         enum class Snap { None, Position, Dimensions, PositionAndDimensions };    
         enum class Filter { Nearest, Linear, LinearMipMap };
@@ -60,6 +63,8 @@ namespace SDG
         bool LoadFromSurface(Ref<class Window> context, SDL_Surface *surf, const Path &path = Path());
 
         bool LoadPixels(Ref<class Window> context, uint32_t width, uint32_t height, const uint8_t *rgbaPixels);
+
+        void Unload();
 
         /// Saves the file in a certain format
         bool SaveAs(const Path &filepath, FileFormat format = FileFormat::Png);

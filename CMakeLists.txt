@@ -35,6 +35,10 @@ else()
     set(LINUX 0)
 endif()
 
+if (EMSCRIPTEN)
+    set(WEBGL 1)
+endif()
+
 # Build Type
 if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" OR "${CMAKE_BUILD_TYPE}" STREQUAL "RelWithDebInfo")
     set(DEBUG 1)

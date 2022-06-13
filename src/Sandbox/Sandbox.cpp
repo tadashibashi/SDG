@@ -60,24 +60,31 @@ private:
         font.Load(MainWindow(), BasePath("assets/fonts/CourierPrimeCode.sdgc"), 32, FontStyle::Bold | FontStyle::Italic);
         camera.PivotPoint({320, 240});
         kirby.Load(MainWindow(), BasePath("assets/textures/DawSession.sdgc"));
-        //kirby2.Load(window2, BasePath("assets/textures/DawSession.sdgc"));
-
-        shader.Compile(BasePath("assets/shaders/v1.sdgc"), BasePath("assets/shaders/f1.sdgc"));
-
-        json map = OpenJson(BasePath("assets/tilemaps/testmapjson.sdgc"));
         
-        for (auto &layer : map["layers"])
+        shader.Compile(BasePath("assets/shaders/v1.sdgc"), BasePath("assets/shaders/f1.sdgc"));
+        
+        json map = OpenJson(BasePath("assets/tilemaps/testmapjson.sdgc"));
+        if (!map["infinite"]) SDG_Log("Map is not infinite");
+        for (auto &layer : map.at("layers"))
         {
-            SDG_Log("Tiled Layer: {}", layer["name"]);
-            if (layer["type"] == "objectgroup")
+            SDG_Log("Tiled Layer: {}", layer.value("name", ""));
+            String type = layer.value("type", "");
+            if (type == "objectgroup")
             {
                 for (auto &obj : layer["objects"])
                 {
-                    SDG_Log("- object: \"{}\": template: {}", obj["name"], obj["template"] == nullptr ? "none" : obj["template"]);
-                }
-                    
+                    SDG_Log("- object: \"{}\": template: {}", obj["name"], obj.value("template", "none"));
+                }   
+            }
+            else if (type == "tilelayer")
+            {
+                String str;
+                for (int i : layer["data"])
+                    str += ToString(i) + ", ";
+                SDG_Log("Tile data: {}", str);
             }
         }
+        
         
     }
 

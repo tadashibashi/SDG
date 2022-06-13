@@ -63,11 +63,12 @@ namespace SDG
 
     /// ========= Implementation class for Texture 2D =========================
     struct Texture::Impl {
-        Impl() : image(), path() {}
+        Impl() : image(), path(), count(1) {}
         GPU_Image *image;
 
         // Sub-image data, to translate relative to the image
         Path path;
+        size_t count;
 
         void Free()
         {
@@ -102,53 +103,60 @@ namespace SDG
     }
 
 
-    Texture::Texture(const Texture &tex) : impl(new Impl)
+    Texture::Texture(const Texture &tex) : impl(tex.impl)
     {
-        if (tex.IsLoaded())
-        {
-            GPU_Image *image = GPU_CopyImage(tex.Image().Get());
-            if (!image)
-            {
-                throw RuntimeException("Texture: failed to copy GPU_Image"
-                    "during copy construction");
-            }
+        ++impl->count;
+    }
 
-            impl->image = image;
-            impl->path = tex.impl->path;
-        }
+    Texture::Texture(Texture &&tex) noexcept : impl(tex.impl)
+    {
+        tex.impl = nullptr;
     }
 
 
     Texture &Texture::operator = (const Texture &tex)
     {
-        Close();
-
-        if (tex.IsLoaded())
+        if (tex.impl != impl)
         {
-            GPU_Image *image = GPU_CopyImage(tex.Image().Get());
-            if (!image)
-            {
-                throw RuntimeException("Texture: failed to copy GPU_Image "
-                    "during copy assignment");
-            }
-
-            impl->image = image;
-            impl->path = tex.impl->path;
+            Close();
+            impl = tex.impl;
+            ++impl->count;
         }
 
         return *this;
     }
 
+    Texture &Texture::operator = (Texture &&tex) noexcept
+    {
+        if (impl != tex.impl)
+        {
+            Close();
+            impl = tex.impl;
+            tex.impl = nullptr;
+        }
+
+        return *this;
+    }
+
+    void Texture::Unload()
+    {
+        impl->Free();
+    }
+
     Texture::~Texture()
     {
         Close();
-        delete impl;
     }
 
     void
     Texture::Close()
     {
-        impl->Free();
+        if (--impl->count == 0)
+        {
+            Unload();
+            delete impl;
+        }
+            
     }
 
     void Texture::Swap(Texture &tex)
@@ -294,7 +302,7 @@ namespace SDG
         SDG_Assert(surf != nullptr); // if surface is null, the function that
                                      // created the surface  probably failed.
         // Make sure the texture is clean before loading
-        Close();
+        Unload();
 
         // Textures will load from this context
         context->MakeCurrent();
@@ -326,7 +334,7 @@ namespace SDG
         if (!context)
             throw NullReferenceException();
 
-        Close();
+        Unload();
         
         context->MakeCurrent();
         GPU_Image *img = GPU_CreateImage(width, height, GPU_FORMAT_RGBA);
@@ -354,7 +362,7 @@ namespace SDG
     {
         SDG_Assert(context); // context must not be null
 
-        Close(); // make sure the texture is clean before loading
+        Unload(); // make sure the texture is clean before loading
 
         File file;
         if (!file.Open(path))

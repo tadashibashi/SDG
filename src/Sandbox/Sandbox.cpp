@@ -56,10 +56,10 @@ private:
             0, 255, 255, 255
         };
 
-        pixels.LoadPixels(MainWindow(), 2, 2, pixs);
-        font.Load(MainWindow(), BasePath("assets/fonts/CourierPrimeCode.sdgc"), 32, FontStyle::Bold | FontStyle::Italic);
+        pixels.LoadPixels(MainWindow().Get(), 2, 2, pixs);
+        font.Load(MainWindow().Get(), BasePath("assets/fonts/CourierPrimeCode.sdgc"), 32, FontStyle::Bold | FontStyle::Italic);
         camera.PivotPoint({320, 240});
-        kirby.Load(MainWindow(), BasePath("assets/textures/DawSession.sdgc"));
+        kirby.Load(MainWindow().Get(), BasePath("assets/textures/DawSession.sdgc"));
         
         shader.Compile(BasePath("assets/shaders/v1.sdgc"), BasePath("assets/shaders/f1.sdgc"));
         
@@ -198,27 +198,27 @@ private:
             //GPU_BlitScale(kirby->Image(), nullptr, window->InnerWindow().Get(), (float)window->Size().W() / 2,
             //             window->Size().H()/2, 0.1f, 0.1f);
 
-            spriteBatch.Begin(window->Target(), camera.Matrix());
+            spriteBatch.Begin(window->Target().Get(), camera.Matrix());
             Point imgSize = kirby.Size();
             
            
-            spriteBatch.DrawTexture(kirby, {0, 0, (int)imgSize.X(), (int)imgSize.Y()},
+            spriteBatch.DrawTexture(&kirby, {0, 0, (int)imgSize.X(), (int)imgSize.Y()},
                                     {0.f, 0.f, (float) imgSize.X() / 100.f, (float) imgSize.Y() / 100.f},
                                     0, Vector2(110, 110), Flip::None, Color::White(), 1.f);
 
-            spriteBatch.DrawTexture(pixels, { 100, 100 });
-            spriteBatch.DrawTexture(pixels, { 102, 100 });
-            spriteBatch.DrawTexture(kirby, {0, 0, (int)imgSize.X(), (int)imgSize.Y()},
+            spriteBatch.DrawTexture(&pixels, { 100, 100 });
+            spriteBatch.DrawTexture(&pixels, { 102, 100 });
+            spriteBatch.DrawTexture(&kirby, {0, 0, (int)imgSize.X(), (int)imgSize.Y()},
                                     {100.f, 100.f, (float)imgSize.X() / 100.f, (float)imgSize.Y() / 100.f},
                                     angle, Vector2(imgSize.X() / 2.f, imgSize.Y() / 2.f), Flip::None, Color::White(), 1.f);
-            spriteBatch.DrawTexture(kirby,  Math::Transform(pos, mat), Vector2::One(),
+            spriteBatch.DrawTexture(&kirby,  Math::Transform(pos, mat), Vector2::One(),
                                     {.5f,.5f}, angle*2, angle, Color{(uint8_t)(angle/360.f * 255.f), 255});
             spriteBatch.DrawRectangle(FRectangle{ 0, 0, 100, 100 }, Vector2{ .5f, .5f }, Color(Math::ModF(angle, 255.f), 0, 128, 255), angle, 0);
             spriteBatch.DrawLines({ {0, 0}, {2.f, 4.f}, {100.f, 100.f}, {350.f, 10.f}, {0, 0} }, 10, Color::HalloweenOrange(), 0);
             spriteBatch.DrawLine(Vector2{ 300.f, 300.f }, 100, angle, 3, Color( ((Math::Sin(Math::RadsPerDeg*angle) + 1.0) * .5) * 255, 255, 128, 255 ), 0);
 
             spriteBatch.End();
-            font.Draw(window->Target(), { 10, 20 }, { 1.f, 1.f }, FontAlign::Center, Color::MonarchOrange(128),
+            font.Draw(window->Target().Get(), {10, 20}, {1.f, 1.f}, FontAlign::Center, Color::MonarchOrange(128),
                 "Mouse position: {} {}", Input::MousePosition().Y(), Input::MousePosition().X());
 
         }
@@ -239,9 +239,7 @@ private:
 
     void Close() override
     {
-        kirby.Close();
-        kirby2.Close();
-        shader.Close();
+
     }
 };
 

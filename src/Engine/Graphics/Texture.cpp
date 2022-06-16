@@ -5,10 +5,7 @@
 #include <Engine/Debug/Log.h>
 #include <Engine/Debug/Trace.h>
 
-#include <Engine/Exceptions/InvalidArgumentException.h>
-#include <Engine/Exceptions/RuntimeException.h>
-#include <Engine/Exceptions/NullReferenceException.h>
-#include <Engine/Exceptions/UncaughtCaseException.h>
+#include <Engine/Exceptions.h>
 
 #include <Engine/Filesys/File.h>
 #include <Engine/Graphics/Window.h>
@@ -63,12 +60,11 @@ namespace SDG
 
     /// ========= Implementation class for Texture 2D =========================
     struct Texture::Impl {
-        Impl() : image(), path(), count(1) {}
+        Impl() : image(), path() {}
         GPU_Image *image;
 
         // Sub-image data, to translate relative to the image
         Path path;
-        size_t count;
 
         void Free()
         {
@@ -82,55 +78,51 @@ namespace SDG
     };
 
     // ======== Constructors, Destructors, Initialization, Closure ============
-    Texture::Texture() : impl(new Impl)
+    Texture::Texture() : impl(new Impl, [this]() { this->Unload(); })
     {
 
     }
 
-    Texture::Texture(Ref<Window> context, const Path &path) : impl(new Impl)
+    Texture::Texture(Window *context, const Path &path) : impl(new Impl, [this]() { this->Unload(); })
     {
         Load(context, path);
     }
 
-    Texture::Texture(Ref<Window> context, SDL_Surface *surf, const Path &path) : impl(new Impl)
+    Texture::Texture(Window *context, SDL_Surface *surf, const Path &path) : impl(new Impl, [this]() { this->Unload(); })
     {
         LoadFromSurface(context, surf, path);
     }
 
-    Texture::Texture(GPU_Image *image) : impl(new Impl)
+    Texture::Texture(GPU_Image *image) : impl(new Impl, [this]() { this->Unload(); })
     {
-        impl->image = image;
+        impl->image = std::move(image);
     }
 
 
     Texture::Texture(const Texture &tex) : impl(tex.impl)
     {
-        ++impl->count;
-    }
-
-    Texture::Texture(Texture &&tex) noexcept : impl(tex.impl)
-    {
-        tex.impl = nullptr;
     }
 
 
     Texture &Texture::operator = (const Texture &tex)
     {
-        if (tex.impl != impl)
+        if (!impl) impl = new Impl;
+
+        if (tex.impl.Get() != impl.Get())
         {
-            Close();
             impl = tex.impl;
-            ++impl->count;
         }
+
 
         return *this;
     }
 
     Texture &Texture::operator = (Texture &&tex) noexcept
     {
-        if (impl != tex.impl)
+        if (!impl) impl = new Impl;
+
+        if (impl.Get() != tex.impl.Get())
         {
-            Close();
             impl = tex.impl;
             tex.impl = nullptr;
         }
@@ -145,18 +137,7 @@ namespace SDG
 
     Texture::~Texture()
     {
-        Close();
-    }
 
-    void
-    Texture::Close()
-    {
-        if (--impl->count == 0)
-        {
-            Unload();
-            delete impl;
-        }
-            
     }
 
     void Texture::Swap(Texture &tex)
@@ -278,7 +259,6 @@ namespace SDG
         }
     }
 
-
     Texture::Wrap Texture::WrapModeX() const
     {
         return ToTextureWrap(impl->image->wrap_mode_x);
@@ -296,7 +276,7 @@ namespace SDG
     }
 
     bool
-    Texture::LoadFromSurface(Ref<Window> context, SDL_Surface *surf, const Path &path)
+    Texture::LoadFromSurface(Window *context, SDL_Surface *surf, const Path &path)
     {
         SDG_Assert(context);         // context must not be null
         SDG_Assert(surf != nullptr); // if surface is null, the function that
@@ -308,7 +288,7 @@ namespace SDG
         context->MakeCurrent();
 
         // Surface -> GPU_Image
-        GPU_Image *image = GPU_CopyImageFromSurface(surf);
+        auto image = GPU_CopyImageFromSurface(surf);
         SDL_FreeSurface(surf); // surface data gets copied, so we no longer need it.
 
         if (!image)
@@ -317,7 +297,7 @@ namespace SDG
                 GPU_GetErrorString(GPU_PopErrorCode().error));
             return false;
         }
-        
+
         // Conversion was successful, commit changes
         impl->image = image;
         impl->path = path;
@@ -329,7 +309,7 @@ namespace SDG
     }
 
     bool 
-    Texture::LoadPixels(Ref<class Window> context, uint32_t width, uint32_t height, const uint8_t *rgbaPixels)
+    Texture::LoadPixels(Window *context, uint32_t width, uint32_t height, const uint8_t *rgbaPixels)
     {
         if (!context)
             throw NullReferenceException();
@@ -349,7 +329,7 @@ namespace SDG
         GPU_Rect rect{ 0, 0, static_cast<float>(width), static_cast<float>(height) };
         GPU_UpdateImageBytes(img, &rect, rgbaPixels, 4 * width);
         
-        impl->image = img;
+        impl->image = std::move(img);
         FilterMode(defFilterMode);
         SnapMode(defSnapMode);
         Anchor(defAnchor);
@@ -358,7 +338,7 @@ namespace SDG
 
 
     bool
-    Texture::Load(Ref<Window> context, const Path &path)
+    Texture::Load(Window *context, const Path &path)
     {
         SDG_Assert(context); // context must not be null
 
@@ -388,7 +368,7 @@ namespace SDG
         }
 
         // Finished without errors, set internals
-        impl->image = tempImage;
+        impl->image = std::move(tempImage);
         impl->path = path;
         FilterMode(defFilterMode);
         SnapMode(defSnapMode);
@@ -437,11 +417,11 @@ namespace SDG
         return static_cast<bool>(impl->image);
     }
 
-    Ref<GPU_Image>
+    const GPU_Image *
     Texture::Image() const
     {
         SDG_Assert(IsLoaded());
-        return Ref{impl->image};
+        return impl->image;
     }
 
     const Path &

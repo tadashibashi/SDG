@@ -9,7 +9,7 @@
 #pragma once
 #include <Engine/Filesys/Path.h>
 #include <Engine/Game/Datatypes/AppConfig.h>
-#include <Engine/Lib/Ref.h>
+#include <Engine/Lib/Unique.h>
 #include <Engine/Lib/String.h>
 #include <Engine/Lib/Version.h>
 #include <Engine/Time/AppTime.h>
@@ -44,13 +44,13 @@ namespace SDG
         const json &Config() const;
         json &Config();
 
-        CRef<AppTime> Time();
+        Ref<const AppTime> Time();
 
         static Version Version();
     protected:
         // Access for base classes
-        Ref<class Window> MainWindow();
-        Ref<class WindowMgr> Windows();
+        URef<class Window> MainWindow();
+        URef<class WindowMgr> Windows();
 
     private:
         int Initialize_();
@@ -64,6 +64,6 @@ namespace SDG
         virtual void Update() {}
         virtual void Render() {}
         virtual void Close() {}
-        Impl *impl;
+        Unique<Impl> impl;
     };
 }

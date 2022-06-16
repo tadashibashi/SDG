@@ -25,83 +25,33 @@
  *
  */
 #pragma once
+#include <Engine/Exceptions/NullReferenceException.h>
 
 namespace SDG
 {
     /// Reference to an object. Access via ->
-    template<typename T>
-    class Ref 
+    template <typename T>
+    class Ref
     {
     public:
-        /// Initializes with a nullptr
-        Ref() : ref() { }
-        /// Initialization from a reference
+        Ref() : ref(nullptr) { }
         Ref(T &ref) : ref(&ref) { }
-        /// Initialization from a pointer
         Ref(T *ref) : ref(ref) { }
 
-        Ref &operator = (Ref ref);
-        Ref &operator = (T *ref);
-        Ref &operator = (T &ref);
+        auto operator = (Ref ref) { this->ref = ref.ref; return *this; }
+        auto operator = (T *ref) { this->ref = ref; return *this; }
+        auto operator = (T &ref) { this->ref = &ref; return *this; }
 
-        /// Get the internal ptr. Please do not call delete on it, since it is owned
-        /// by the object this reference was retrieved from.
-        [[nodiscard]] T *Get() const { return ref; }
-
-        /// Access ptr members. Throws a NullReference exception if null.
-        [[nodiscard]] T *operator->();
-         /// Access ptr members. Throws a NullReference exception if null.
-        [[nodiscard]] const T *operator->() const;
-        /// Access raw reference. Throws a NullReference exception if null.
-        [[nodiscard]] T &operator *();
-        [[nodiscard]] const T &operator *() const;
-
-        [[nodiscard]] bool operator==(const Ref &other) const;
-        [[nodiscard]] bool operator !=(const Ref &other) const;
-        [[nodiscard]] operator bool() const { return static_cast<bool>(ref); }
-
-        /// Dynamically casts Ref<T> to Ref<U>. If it was unsuccessful,
-        /// such as the underlying type was not truly of type U, it will
-        /// return a null reference.
-        template <typename U>
-        [[nodiscard]] operator Ref<U>() const;
-
+        [[nodiscard]] auto Get() -> T *{ return ref; }
+        [[nodiscard]] auto Get() const -> const T *{ return const_cast<const T *>(ref); }
+        [[nodiscard]] auto operator->() -> T * { return ref ? ref : throw NullReferenceException(); }
+        [[nodiscard]] auto operator->() const -> T * { return ref ? const_cast<const T *>(ref) : throw NullReferenceException(); }
+        [[nodiscard]] auto operator *() -> T & { return ref ? *ref : throw NullReferenceException(); }
+        [[nodiscard]] auto operator *() const -> T * { return ref ? const_cast<const T &>(*ref) : throw NullReferenceException(); }
+        [[nodiscard]] explicit operator bool() { return ref; }
+        [[nodiscard]] bool operator== (const Ref &other) { return other.ref == ref; }
+        [[nodiscard]] bool operator!= (const Ref &other) { return other.ref != ref; }
     private:
         T *ref;
     };
-
-
-    /// Const reference to an object. Access via ->
-    template <typename T>
-    class CRef {
-    public:
-        CRef() : ref() { }
-        CRef(const T *ref) : ref(ref) { }
-        CRef(const T &ref) : ref(&ref) { }
-        CRef(const Ref<T> ref) : ref(ref.Get()) { }
-
-        CRef &operator = (const Ref<T> ref);
-        CRef &operator = (const CRef<T> ref);
-        CRef &operator = (const T *ref);
-        CRef &operator = (const T &ref);
-
-        /// Get internal ptr
-        [[nodiscard]] const T *Get() const { return ref; }
-        [[nodiscard]] const T *operator->() const;
-        [[nodiscard]] const T &operator *() const;
-
-        [[nodiscard]] bool operator==(const CRef &other) const;
-        [[nodiscard]] bool operator !=(const CRef &other) const;
-        [[nodiscard]] operator bool() const { return static_cast<bool>(ref); }
-
-        /// Dynamically casts Ref<T> to Ref<U>. If it was unsuccessful,
-        /// such as the underlying type was not truly of type U, it will
-        /// return a null reference.
-        template<typename U>
-        [[nodiscard]] operator CRef<U>() const;
-    private:
-        const T *ref;
-    };
 }
-
-#include "Ref.inl"

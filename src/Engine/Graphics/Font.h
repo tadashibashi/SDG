@@ -13,6 +13,7 @@ text sits on, even though some characters (like g, y, j, etc.) might have parts 
 It is comparable to the lines you write on in a lined notebook.
 */
 #pragma once
+#include <Engine/Lib/Unique.h>
 #include <Engine/Filesys/Path.h>
 #include <Engine/Graphics/Color.h>
 #include <Engine/Lib/Enum.h>
@@ -56,21 +57,21 @@ namespace SDG
         struct Impl;
     public:
         Font();
-        Font(Ref<class Window> context, const Path &filepath, uint32_t pointSize, 
+        Font(class Window *context, const Path &filepath, uint32_t pointSize, 
             FontStyle style = FontStyle::Normal);
         ~Font();
 
     public:
         // ========== Loading =================================================
 
-        bool Load(Ref<class Window> context, const Path &filepath, 
+        bool Load(class Window *context, const Path &filepath, 
             uint32_t pointSize, FontStyle style);
         bool IsLoaded() const;
         void Close();
 
         // ========== Drawing =================================================
         template <typename...Args>
-        void Draw(Ref<class RenderTarget> target, Vector2 position, Vector2 scale,
+        void Draw(class RenderTarget *target, Vector2 position, Vector2 scale,
             FontAlign alignment, Color color, const char *format, Args &&...args)
         {
             auto out = std::string();
@@ -124,7 +125,7 @@ namespace SDG
         }
 
     private:
-        void DrawImpl(Ref<class RenderTarget> target, Vector2 position, Vector2 scale,
+        void DrawImpl(RenderTarget *target, Vector2 position, Vector2 scale,
             FontAlign alignment, Color color, const char *text);
         uint16_t CheckColumnHeightImpl(uint16_t width, const char *text) const;
         FRectangle CheckBoundsImpl(Vector2 position, const char *text) const;

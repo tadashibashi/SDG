@@ -6,10 +6,11 @@
  * 
  */
 #pragma once
-#include <Engine/Lib/Ref.h>
+
 #include <Engine/Lib/String.h>
 #include <Engine/Math/Rectangle.h>
 #include <Engine/Math/Vector2.h>
+#include "Texture.h"
 
 namespace SDG
 {
@@ -21,9 +22,7 @@ namespace SDG
         Frame() : frameRect(), origRect(), rotated(), anchor(), name(), 
             texture() { }
         Frame(const Rectangle &frame, const Rectangle &origRect, bool rotated,
-       
-            const Point &anchor, const String &name,
-              CRef<class Texture> texture) :
+            const Point &anchor, const String &name, const Texture *texture) :
                       frameRect(frame), origRect(origRect), rotated(rotated),
                       anchor(anchor), name(name), texture(texture) { }
 
@@ -48,7 +47,7 @@ namespace SDG
         Point Anchor() const noexcept { return anchor; }
 
         /// Gets the texture from which this frame originates
-        CRef<class Texture> Texture() const noexcept { return texture; }
+        const Texture *Texture() const noexcept { return texture; }
 
         /// Gets the frame name
         const String &Name() const noexcept { return name; }
@@ -58,7 +57,7 @@ namespace SDG
         Rectangle frameRect;
         Rectangle origRect;
         bool rotated;
-        CRef<class Texture> texture;
+        const class Texture *texture;
         String name;
     };
 }

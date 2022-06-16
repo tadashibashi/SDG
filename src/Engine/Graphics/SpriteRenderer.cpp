@@ -24,7 +24,7 @@ void SDG::SpriteRenderer::Update(float deltaSeconds)
 {
     if (!paused)
     {
-        index = Math::WrapF(deltaSeconds * fps * speed + index, 0.f, (float)sprite->Length());
+        index = Math::WrapF<float>(deltaSeconds * fps * speed + index, 0.f, (float)sprite->Length());
     }
 }
 
@@ -38,6 +38,6 @@ SDG::SpriteRenderer::Angle(float angle)
 SDG::SpriteRenderer &
 SDG::SpriteRenderer::Index(float index) 
 { 
-    this->index = sprite ? Math::WrapF(index, 0.f, (float)sprite->Length()) : index; 
+    this->index = sprite ? Math::WrapF<float>(index, 0.f, (float)sprite->Length()) : index; 
     return *this; 
 }

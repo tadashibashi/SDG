@@ -33,22 +33,7 @@ namespace SDG
     }
 
     template <typename T>
-    CRef<T> ServiceProvider::Get() const
-    {
-        auto it = services.find(typeid(T));
-        return (it == services.end()) ? Ref<T>() : Ref<T>((T *)it->second);
-    }
-
-    template <typename T>
     bool ServiceProvider::TryGet(Ref<T> &service)
-    {
-        auto ref = Ref<T>(Get<T>());
-        service = ref;
-        return static_cast<bool>(ref);
-    }
-
-    template <typename T>
-    bool ServiceProvider::TryGet(CRef<T> &service) const
     {
         auto ref = Ref<T>(Get<T>());
         service = ref;

@@ -54,11 +54,11 @@ namespace SDG
         SpriteRenderer &Tint(Color tint) { this->tint = tint;  return *this; }
         Color Tint() const { return tint; }
 
-        SpriteRenderer &Sprite(CRef<class Sprite> sprite) { this->sprite = sprite; return *this; }
-        CRef<class Sprite> Sprite() const { return sprite; }
+        SpriteRenderer &Sprite(Ref<const class Sprite> sprite) { this->sprite = sprite; return *this; }
+        Ref<const class Sprite> Sprite() const { return sprite; }
 
     private:
-        CRef<class Sprite> sprite;
+        Ref<const class Sprite> sprite;
         Vector2 position;
         Vector2 scale;
         SDG::Flip flip;

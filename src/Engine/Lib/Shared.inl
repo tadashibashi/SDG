@@ -1,105 +1,70 @@
 #include "Shared.h"
-
-#include <Engine/Exceptions/NullReferenceException.h>
-#include <Engine/Lib/Memory.h>
+#include <Engine/Exceptions/Fwd.h>
 
 #include <utility>
 
 namespace SDG
 {
-    template<typename T>
-    inline Shared<T>::Shared(const Shared<T> &other) :
-        ptr(other.ptr), count(other.count)
+    // ===== Shared<T>::Impl ==========================================================================================
+
+    template <typename T>
+    inline Shared<T>::Impl::Impl(T *newT) : ptr(newT), count(1), deleter([newT]() { delete newT; })
     {
-        if (count) ++(*count);
+
     }
 
     template <typename T>
-    template <typename... Args>
-    inline Shared<T>::Shared(Args &&...args) : ptr(new T(std::forward<Args>(args)...)), count(new size_t(1)) { }
-
-    template<typename T>
-    inline Shared<T>::~Shared()
+    inline Shared<T>::Impl::Impl(T *newT, const std::function<void()> &deleter) : ptr(newT), count(1), deleter(deleter)
     {
-        Destroy();
+
     }
 
-    template<typename T>
+    template <typename T>
+    inline Shared<T>::Impl::~Impl()
+    {
+        deleter();
+    }
+
+    // ===== Shared<T> ================================================================================================
+    template <typename T>
+    inline Shared<T>::Shared() : impl(new Impl(nullptr)) { }
+
+    template <typename T>
+    inline Shared<T>::Shared(const Shared<T> &other) : impl(other.impl)
+    {
+        ++impl->count;
+    }
+
+    template <typename T>
+    inline Shared<T>::Shared(T *newT) : impl(new Impl(newT)) { }
+
+    template <typename T>
+    inline Shared<T>::Shared(T *newT, const std::function<void()> &deleter) : impl(new Impl(newT, deleter)) { }
+
+    template <typename T>
+    inline Shared<T>::~Shared()
+    {
+        DestroyRef();
+    }
+
+    template <typename T>
     inline Shared<T> &Shared<T>::operator=(const Shared<T> &other)
     {
-        if (ptr != other.ptr) // only perform operation if differing ptrs
+        if (impl != other.impl) // only perform operation if differing ptrs
         {
-            Destroy();                      // destroy current
-            ptr = other.ptr;
-            count = other.count;
+            DestroyRef();                      // destroy current
+            impl = other.impl;
 
-            if (count) ++(*count);
+            ++impl->count;
         }
 
         return *this;
     }
 
-    template<typename T>
-    inline const T *Shared<T>::operator->() const
+    template <typename T>
+    inline void Shared<T>::DestroyRef()
     {
-        if (!ptr) // prevent undefined behavior by throwing
-            throw NullReferenceException();
-        return ptr;
-    }
-
-    template<typename T>
-    inline T *Shared<T>::operator->()
-    {
-        if (!ptr) // prevent undefined behavior by throwing
-            throw NullReferenceException();
-        return ptr;
-    }
-
-    template<typename T>
-    inline const T &Shared<T>::operator*() const
-    {
-        if (!ptr) // prevent undefined behavior by throwing
-            throw NullReferenceException();
-        return *ptr;
-    }
-
-    template<typename T>
-    inline T &Shared<T>::operator*()
-    {
-        if (!ptr) // prevent undefined behavior by throwing
-            throw NullReferenceException();
-        return *ptr;
-    }
-
-    template<typename T>
-    inline bool Shared<T>::operator==(const Shared &other) const
-    {
-        return ptr == other.ptr;
-    }
-
-    template<typename T>
-    inline bool Shared<T>::operator!=(const Shared &other) const
-    {
-        return ptr != other.ptr;
-    }
-
-    template<typename T>
-    inline void Shared<T>::Destroy()
-    {
-        if (count && --(*count) <= 0)
-        {
-            delete ptr;
-            delete count;
-
-            // Don't need since usage is during destruction-like scenarios
-            // ptr = nullptr; 
-            // instances = nullptr;
-        }
-    }
-
-    template<typename T>
-    inline Shared<T>::operator bool() const
-    {
-        return static_cast<bool>(ptr);
+        if (--impl->count == 0)
+            delete impl;
     }
 }

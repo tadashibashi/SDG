@@ -5,7 +5,7 @@ SDG::AnimatedTile::AnimatedTile(const std::initializer_list<size_t> &reel, float
     indices(nullptr), length(reel.size()), speed(speed), index(0)
 {
     if (reel.size() > 0)
-        indices = new size_t[]{ reel.size() };
+        indices = new size_t[reel.size()];
     for (size_t i = 0; i < reel.size(); ++i)
         indices[i] = *(reel.begin() + i);
 }
@@ -14,7 +14,7 @@ SDG::AnimatedTile::AnimatedTile(const AnimatedTile &tile) : indices(nullptr), le
 {
     if (tile.length > 0)
     {
-        indices = new size_t[](tile.length);
+        indices = new size_t[tile.length];
     }
 
     const size_t *p = tile.begin();
@@ -25,7 +25,7 @@ SDG::AnimatedTile::AnimatedTile(const AnimatedTile &tile) : indices(nullptr), le
 SDG::AnimatedTile &SDG::AnimatedTile::operator= (const AnimatedTile &tile)
 {
     delete indices;
-    indices = new size_t[](tile.length);
+    indices = new size_t[tile.length];
 
     const size_t *p = tile.begin();
     for (auto it = begin(); p < tile.end(); ++it, ++p)

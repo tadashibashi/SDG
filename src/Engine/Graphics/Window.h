@@ -13,6 +13,7 @@
 #include <Engine/Lib/ClassMacros.h>
 #include <Engine/Lib/Delegate.h>
 #include <Engine/Lib/Ref.h>
+#include <Engine/Lib/Unique.h>
 #include <Engine/Lib/String.h>
 #include <Engine/Math/Rectangle.h>
 #include <Engine/Math/Vector2.h>
@@ -36,76 +37,76 @@ namespace SDG
         /// @param height window height, must be 0 or larger
         /// @param title  window title
         /// @param flags  SDL2 Window flags
-        bool Initialize(int width, int height, const char *title, unsigned flags = 0);
+        auto Initialize(int width, int height, const char *title, unsigned flags = 0) -> bool;
 
         /// Close the window if it is open, and shut down the graphics library.
-        void Close();
+        auto Close() -> void;
 
         /// Clears the window with a blank screen of a specified color
         /// @param color the color to clear with. Default: Cornflower Blue
-        void Clear(Color color = Color::CornflowerBlue());
+        auto Clear(Color color = Color::CornflowerBlue()) -> void;
 
         /// Makes Window's context current to load images with.
-        void MakeCurrent();
+        auto MakeCurrent() -> void;
 
         /// Drives the displays of the graphics that were rendered to the Window.
         /// Called at the end of rendering to display what was drawn.
-        void SwapBuffers();
+        auto SwapBuffers() -> void;
 
         /// Drives event input to the window.
         /// Please pass all window events to this function. It automatically
         /// detects which window events pertain to this Window by id.
-        void ProcessInput(const SDL_WindowEvent &ev);
+        auto ProcessInput(const SDL_WindowEvent &ev) -> void;
 
         // === Setters ===
-        Window &Title(const char *title);
-        Window &ClientSize(Point size);
-        Window &Resolution(Point size);
-        Window &Fullscreen(bool fullscreen);
-        Window &Bordered(bool bordered);
-        Window &Resizable(bool resizable);
-        Window &Position(Point position);
-        Window &Minimized(bool minimized);
-        Window &Icon(CRef<class Texture> texture);
+        auto Title(const char *title) -> Window &;
+        auto ClientSize(Point size) -> Window &;
+        auto Resolution(Point size) -> Window &;
+        auto Fullscreen(bool fullscreen) -> Window &;
+        auto Bordered(bool bordered) -> Window &;
+        auto Resizable(bool resizable) -> Window &;
+        auto Position(Point position) -> Window &;
+        auto Minimized(bool minimized) -> Window &;
+        auto Icon(const class Texture &texture) -> Window &;
 
         /// Hide or show window
         /// @param hidden true: hide window; false: show window
-        Window &Hidden(bool hidden);
+        auto Hidden(bool hidden) -> Window &;
         /// Set the Window's minimum size
-        Window &MinimumSize(Point size);
+        auto MinimumSize(Point size) -> Window &;
         /// Set the Window's maximum size
-        Window &MaximumSize(Point size);
+        auto MaximumSize(Point size) -> Window &;
 
         /// Sets the Window's mouse grab mode. Mouse grab mode confines the
         /// mouse cursor within the window.
-        Window &MouseGrabbed(bool mouseGrab);
-        Window &AlwaysOnTop(bool alwaysOnTop);
+        auto MouseGrabbed(bool mouseGrab) -> Window &;
+        auto AlwaysOnTop(bool alwaysOnTop) -> Window &;
 
 
 
         // === Getters ===
-        bool IsOpen() const;
-        String Title() const;
-        Point Size() const;
+        auto IsOpen() const -> bool;
+        auto Title() const -> String;
+        auto Size() const -> Point;
 
         /// Underlying Window size
-        Point ClientSize() const;
-        bool Fullscreen() const;
-        bool Bordered() const;
-        bool Resizable() const;
-        Point Resolution() const;
-        Point Position() const;
-        bool Minimized() const;
-        bool Hidden() const;
-        Point MinimumSize() const;
-        Point MaximumSize() const;
-        bool MouseGrabbed() const;
-        bool AlwaysOnTop() const;
-        CRef<class Texture> Icon() const;
+        auto ClientSize() const -> Point;
+        auto Fullscreen() const -> bool;
+        auto Bordered() const -> bool;
+        auto Resizable() const -> bool;
+        auto Resolution() const -> Point;
+        auto Position() const -> Point;
+        auto Minimized() const -> bool;
+        auto Hidden() const -> bool;
+        auto MinimumSize() const -> Point;
+        auto MaximumSize() const -> Point;
+        auto MouseGrabbed() const -> bool;
+        auto AlwaysOnTop() const -> bool;
+        auto Icon() const ->Ref<const class Texture>;
 
         uint32_t Flags() const;
         Rectangle Viewport() const;
-        Ref<class RenderTarget> Target() const;
+        URef<class RenderTarget> Target() const;
 
         static size_t Count() { return windowCount; }
 
@@ -202,7 +203,7 @@ namespace SDG
         static Delegate<void()> OnAllClosed;
 
     private:
-        Impl *impl;
+        Unique<Impl> impl;
         static size_t windowCount;
         static bool manageGraphics;
     };

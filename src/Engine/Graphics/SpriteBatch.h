@@ -13,6 +13,7 @@
 
 #include <Engine/Lib/ClassMacros.h>
 #include <Engine/Lib/Ref.h>
+#include <Engine/Lib/Unique.h>
 #include <Engine/Math/Rectangle.h>
 
 #include <vector>
@@ -39,15 +40,15 @@ namespace SDG
         SpriteBatch();
         ~SpriteBatch() = default;
 
-        bool Initialize(Ref<Window> context);
-        void Begin(Ref<class RenderTarget> target, 
-            CRef<class Matrix4x4> transformMatrix = nullptr, 
+        bool Initialize(URef<Window> context);
+        void Begin(Ref<class RenderTarget> target,
+            Ref<const class Matrix4x4> transformMatrix = nullptr, 
             SortMode sortMode = SortMode::FrontToBack);
         void End();
-        void DrawTexture(CRef<Texture> texture, Rectangle src, FRectangle dest, float rotation, Vector2 anchor, Flip flip, Color color, float depth);
+        void DrawTexture(const Texture *texture, Rectangle src, FRectangle dest, float rotation, Vector2 anchor, Flip flip, Color color, float depth);
 
         /// Quick and easy draw
-        void DrawTexture(CRef<Texture> texture, Vector2 position, Vector2 scale = Vector2(1.f, 1.f),
+        void DrawTexture(const Texture *texture, Vector2 position, Vector2 scale = Vector2(1.f, 1.f),
                          Vector2 normAnchor = Vector2(.5f, .5f),
                          float rotation = 0, float depth = 0, Color color = Color::White());
         void DrawRectangle(FRectangle rect, Vector2 anchor, Color color, float rotation = 0, float depth = 0);
@@ -63,7 +64,7 @@ namespace SDG
         std::vector<BatchCall>   batch;
         SortMode                 sortMode;
         Ref <class RenderTarget> target;
-        CRef<class Matrix4x4>    matrix;
+        Ref<const class Matrix4x4>    matrix;
         Texture                  pixel;
 
     };
@@ -71,10 +72,11 @@ namespace SDG
 
     struct SpriteBatch::BatchCall 
     {
-        BatchCall(CRef<Texture> texture, Rectangle src, FRectangle dest, float rotation,
+        BatchCall(const Texture *texture, Rectangle src, FRectangle dest, float rotation,
                     Vector2 anchor, Flip flip, Color color, float depth);
-        CRef<Texture> texture;
-        Rectangle src;
+
+        const Texture *texture;
+        Rectangle  src;
         FRectangle dest;
         float      rotation;
         Vector2    anchor;

@@ -18,7 +18,7 @@ namespace SDG
     struct WindowMgr::Impl 
     {
         Impl() : windows() { }
-        std::vector<SDG::Window *> windows;
+        std::vector<Unique<SDG::Window>> windows;
     };
 
     // Helpers
@@ -50,8 +50,7 @@ namespace SDG
     WindowMgr::~WindowMgr()
     {
         Close();
-        for (Window *win : impl->windows)
-            delete win;
+        impl->windows.clear();
         delete impl;
 
         TTF_Quit();
@@ -59,7 +58,7 @@ namespace SDG
     }
 
     int
-    WindowMgr::CreateWindow(int width, int height, const char *title, unsigned flags, Ref<Window> *out)
+    WindowMgr::CreateWindow(int width, int height, const char *title, unsigned flags, URef<Window> *out)
     {
         size_t id = impl->windows.size();
         Window *window = new Window;
@@ -69,37 +68,39 @@ namespace SDG
             return -1;
         }
 
-        impl->windows.emplace_back(window);
+        Unique<Window> uwin(window);
+        
         if (out)
-            *out = window;
+            *out = URef<Window>(uwin);
+        impl->windows.emplace_back(std::move(uwin));
         return id;
     }
 
     // Safely get Window at an id index
-    Ref<Window>
+    URef<Window>
     WindowMgr::At(int id)
     {
         if (id >= impl->windows.size() || id < 0)
             throw OutOfRangeException(id, "Window index is out of range");
-        return Ref{impl->windows[id]};
+        return impl->windows[id];
     }
 
     void WindowMgr::Close()
     {
-        for (Window *win : impl->windows)
+        for (auto &win : impl->windows)
             win->Close();
     }
 
     void WindowMgr::ProcessInput(SDL_WindowEvent &ev)
     {
-        for (Window *win : impl->windows)
+        for (auto &win : impl->windows)
             if (win->IsOpen())
                 win->ProcessInput(ev);
     }
 
     void WindowMgr::SwapBuffers()
     {
-        for (Window *win : impl->windows)
+        for (auto &win : impl->windows)
         {
             if (win->IsOpen())
                 win->SwapBuffers();

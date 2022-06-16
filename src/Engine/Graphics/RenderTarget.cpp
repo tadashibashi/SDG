@@ -27,18 +27,24 @@ namespace SDG
     }
 
     RenderTarget &
-    RenderTarget::EmplaceTarget(Ref<GPU_Target> pTarget)
+    RenderTarget::EmplaceTarget(GPU_Target *pTarget)
     {
         Close(); // Make sure we're working with a clean slate
 
-        target = pTarget.Get();
+        target = std::move(pTarget);
         return *this;
     }
 
-    Ref<GPU_Target>
-    RenderTarget::Target() const
+    auto
+    RenderTarget::Target() -> GPU_Target *
     {
-        return Ref{target};
+        return target;
+    }
+
+    auto
+    RenderTarget::Target() const -> const GPU_Target *
+    {
+        return target;
     }
 
     Rectangle
@@ -117,31 +123,31 @@ namespace SDG
         GPU_Rect gpuDest = Conv::ToGPURect(dest);
 
         // Blit to the current target
-        GPU_BlitRectX(texture->Image().Get(), &gpuSrc, target,
+        GPU_BlitRectX((GPU_Image *)texture->Image(), &gpuSrc, target,
                       &gpuDest, rotation, anchor.X(), anchor.Y(),
                       TranslateFlip[(int)flip]);
     }
 
-    void RenderTarget::DrawRectangle(FRectangle rect)
+    auto RenderTarget::DrawRectangle(FRectangle rect) -> void
     {
         GPU_Rectangle2(target,
                        Conv::ToGPURect(rect),
                        target->color);
     }
 
-    void RenderTarget::DrawCircle(Circle circle)
+    auto RenderTarget::DrawCircle(Circle circle) -> void
     {
         GPU_CircleFilled(target, circle.X(), circle.Y(), circle.Radius(),
             target->color);
     }
 
-    void RenderTarget::MakeActiveTarget()
+    auto RenderTarget::MakeActiveTarget() -> void
     {
         GPU_SetActiveTarget(target);
     }
 
-    bool RenderTarget::IsOpen()
+    auto RenderTarget::IsOpen() const -> bool
     {
-        return target;
+        return static_cast<bool>(target);
     }
 }

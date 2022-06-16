@@ -6,10 +6,11 @@ namespace SDG
 {
     struct Tilemap::Impl
     {
-        Impl() : texture(), width(), tiles(), instances(1) { }
+        Impl() : texture(), width(), tiles(), tileWidth(), tileHeight(), instances(1) { }
         Texture texture;
         size_t width;
         std::vector<Tile> tiles;
+        size_t tileWidth, tileHeight;
         size_t instances;
     };
 
@@ -55,11 +56,25 @@ namespace SDG
         Close();
     }
 
-    Tilemap &Tilemap::Set(const std::vector<Tile> &tiles, const Texture &texture, size_t tilesWide)
+    void Tilemap::CopyTo(Tilemap &tilemap)
+    {
+        tilemap.Close();
+        tilemap.impl = new Impl;
+        tilemap.impl->texture = impl->texture;
+        tilemap.impl->tiles = impl->tiles;
+        tilemap.impl->width = impl->width;
+        tilemap.impl->tileWidth = impl->tileWidth;
+        tilemap.impl->tileHeight = impl->tileHeight;
+    }
+
+    Tilemap &Tilemap::Set(const std::vector<Tile> &tiles, const Texture &texture, size_t tilesWide, size_t tileWidth, size_t tileHeight)
     {
         impl->texture = texture;
         impl->tiles = tiles;
         impl->width = tilesWide;
+        impl->tileWidth = tileWidth;
+        impl->tileHeight = tileHeight;
+
         return *this;
     }
 

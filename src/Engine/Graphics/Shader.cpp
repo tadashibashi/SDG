@@ -165,7 +165,7 @@ namespace SDG
     Shader &
     Shader::SetImage(const std::string &varId, Texture texture)
     {
-        GPU_SetShaderImage(texture.Image().Get(), GetVarLocation(varId), 1);
+        GPU_SetShaderImage((GPU_Image *)texture.Image(), GetVarLocation(varId), 1);
         return *this;
     }
 

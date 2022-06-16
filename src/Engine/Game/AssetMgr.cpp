@@ -1,6 +1,7 @@
 #include "AssetMgr.h"
 #include <SDL_gpu.h>
 #include <Engine/Debug/Assert.h>
+#include <Engine/Debug/Log.h>
 
 namespace SDG
 {
@@ -9,47 +10,41 @@ namespace SDG
 
     }
 
-    void
-    AssetMgr::UnloadTextures()
+    auto
+    AssetMgr::UnloadTextures() -> void
     {
-        if (!textures.empty())
-        {
-            for (auto &[k, v] : textures)
-            {
-                v->Close();
-            }
-        }
+        textures.clear();
     }
 
-    void
-    AssetMgr::UnloadAll()
+    auto
+    AssetMgr::UnloadAll() -> void
     {
         UnloadTextures();
         // add other unloading stuff here.
     }
 
-    CRef<Texture>
-    AssetMgr::LoadTexture(const Path &path)
+    auto
+    AssetMgr::LoadTexture(const Path &path) -> Texture
     {
         SDG_Assert(context); // Please make sure to set the context via Initialize() before loading textures.
 
-        uint64_t hash = path.Hash();
+        auto hash = path.Hash();
         auto it = textures.find(hash);
 
         if (it != textures.end())
             return it->second;
         else
         {
-            auto tex = new Texture;
-            if (tex->Load(context, path))
+            auto tex = Texture{};
+            if (tex.Load(context.Get(), path))
             {
                 textures[hash] = tex;
                 return tex;
             }
             else
             {
-                delete tex;
-                return nullptr;
+                SDG_Core_Err("AssetMgr::LoadTexture: failed to load Texture from {}", path.Str());
+                return Texture{};
             }
         }
     }
@@ -59,20 +54,17 @@ namespace SDG
     {
         auto it = textures.find(path.Hash());
         if (it != textures.end())
-        {
             textures.erase(it);
-            delete it->second;
-        }
     }
 
     void 
-    AssetMgr::UnloadTexture(Ref<Texture> texture)
+    AssetMgr::UnloadTexture(const Texture &texture)
     {
         SDG_Assert(texture);
-        UnloadTexture(texture->Filepath());
+        UnloadTexture(texture.Filepath());
     }
 
-    void AssetMgr::Initialize(Ref<Window> context)
+    void AssetMgr::Initialize(URef<Window> context)
     {
         this->context = context;
     }

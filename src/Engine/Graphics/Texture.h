@@ -8,7 +8,8 @@
  */
 #pragma once
 #include <Engine/Filesys/Path.h>
-#include <Engine/Lib/Ref.h>
+#include <Engine/Lib/Unique.h>
+#include <Engine/Lib/Shared.h>
 #include <Engine/Math/Vector2.h>
 
 struct GPU_Image;
@@ -26,7 +27,7 @@ namespace SDG
         /// Initializes an unloaded Texture
         Texture();
         /// Loads a texture loaded from the given path.
-        Texture(Ref<class Window> context, const Path &path);
+        Texture(class Window *context, const Path &path);
         
         /// Copies image data into this new Texture
         Texture(const Texture &tex);
@@ -37,7 +38,7 @@ namespace SDG
         Texture &operator = (const Texture &tex);
         Texture &operator = (Texture &&tex) noexcept;
 
-        Texture(Ref<class Window> context, SDL_Surface *surf, const Path &path = Path());
+        Texture(class Window *context, SDL_Surface *surf, const Path &path = Path());
         explicit Texture(GPU_Image *image);
 
         /// Automatically frees the internal texture if one was loaded.
@@ -54,23 +55,21 @@ namespace SDG
         /// Load an image into the Texture.
         /// @param path path to the image file. Must be in png, tga, or bmp format.
         /// @param context context to create texture with - it will only render in this context.
-        bool Load(Ref<class Window> context, const Path &path);
+        bool Load(class Window *context, const Path &path);
 
         /// Load an image from a surface. Ownership of surface is passed to the Texture.
         /// @param surf the surface to load
         /// @param context context to create texture with - it will only render in this context.
         /// @param path path that the surface was loaded from. Made optional since there is not always one.
-        bool LoadFromSurface(Ref<class Window> context, SDL_Surface *surf, const Path &path = Path());
+        bool LoadFromSurface(class Window *context, SDL_Surface *surf, const Path &path = Path());
 
-        bool LoadPixels(Ref<class Window> context, uint32_t width, uint32_t height, const uint8_t *rgbaPixels);
+        bool LoadPixels(class Window *context, uint32_t width, uint32_t height, const uint8_t *rgbaPixels);
 
+        /// Unload the current texture. Affects all other instances of this Texture.
         void Unload();
 
         /// Saves the file in a certain format
         bool SaveAs(const Path &filepath, FileFormat format = FileFormat::Png);
-
-        /// Free the internal texture, and resets container for reuse.
-        void Close();
 
         /// Swap the internals of this Texture with another
         void Swap(Texture &tex);
@@ -129,10 +128,10 @@ namespace SDG
         const Path &Filepath() const;
 
         /// Gets the inner GPU_Image object ptr.
-        Ref<GPU_Image> Image() const;
+        const GPU_Image *Image() const;
         
     private:
         /// Private implementation
-        Impl *impl;
+        Shared<Impl> impl;
     };
 }

@@ -88,7 +88,7 @@ TEST_CASE("SpriteRenderer tests", "[SpriteRenderer]")
         REQUIRE(!spr.Sprite()); // no sprite set
         Sprite s("player-run", { {}, {} }, { 0, 0, 1, 1 });
         spr.Sprite(s);
-        REQUIRE(spr.Sprite());
+        REQUIRE(spr.Sprite().Get() != nullptr);
         REQUIRE(spr.Sprite()->Name() == "player-run");
         spr.Sprite(nullptr);
         REQUIRE(!spr.Sprite());

@@ -19,11 +19,11 @@ namespace SDG
 {
     // ===== BatchCall ============================================================================
     SpriteBatch::BatchCall::BatchCall(
-        CRef<Texture> texture, Rectangle src, FRectangle dest,
+        const Texture *texture, Rectangle src, FRectangle dest,
         float rotation, Vector2 anchor, Flip flip,
         Color color, float depth)
             : texture(texture), src(std::move(src)), dest(std::move(dest)), rotation(rotation),
-              anchor(anchor), flip(flip), color(std::move(color)), depth(depth) {}
+              anchor(anchor), flip(flip), color(std::move(color)), depth(depth) { }
 
     // ===== SpriteBatch ==========================================================================
     SpriteBatch::SpriteBatch() :
@@ -32,10 +32,10 @@ namespace SDG
     }
 
     bool
-    SpriteBatch::Initialize(Ref<Window> context)
+    SpriteBatch::Initialize(URef<Window> context)
     {
         const uint8_t data[4]{ UINT8_MAX, UINT8_MAX, UINT8_MAX, UINT8_MAX };
-        bool didLoad = pixel.LoadPixels(context, 1, 1, data);
+        bool didLoad = pixel.LoadPixels(context.Get(), 1, 1, data);
 
         pixel.FilterMode(Texture::Filter::Nearest);
 
@@ -50,7 +50,7 @@ namespace SDG
         float *lastMatrix = GPU_GetCurrentMatrix();
 
         // Set the graphics state
-        GPU_Target *gpuTarget = target->Target().Get();
+        GPU_Target *gpuTarget = target->Target();
         if (gpuTarget != lastTarget)
             GPU_SetActiveTarget(gpuTarget);
         if (matrix->Data() != lastMatrix)
@@ -65,7 +65,7 @@ namespace SDG
             
             // Blit to the current target
             GPU_SetTargetColor(gpuTarget, {b.color.R(), b.color.G(), b.color.B(), b.color.A()});
-            GPU_BlitRectX(b.texture->Image().Get(), &src, gpuTarget, &dest, b.rotation, b.anchor.X(), b.anchor.Y(),
+            GPU_BlitRectX((GPU_Image *)b.texture->Image(), &src, gpuTarget, &dest, b.rotation, b.anchor.X(), b.anchor.Y(),
                           TranslateFlip[(int)b.flip]);
         }
 
@@ -87,7 +87,7 @@ namespace SDG
             std::stable_sort(batch.begin(), batch.end(),
                                 [](const BatchCall &b1, const BatchCall &b2)
                                 {
-                                    return b1.texture.Get() < b2.texture.Get();
+                                    return b1.texture->Image() < b2.texture->Image();
                                 });
             break;
         case SortMode::FrontToBack:
@@ -108,7 +108,7 @@ namespace SDG
     }
 
     void
-    SpriteBatch::DrawTexture(CRef<Texture> texture, Rectangle src,
+    SpriteBatch::DrawTexture(const Texture *texture, Rectangle src,
         FRectangle dest, float rotation, Vector2 anchor, Flip flip, Color color, float depth)
     {
         SDG_Assert(texture); // please make sure to pass a non-null Texture
@@ -117,7 +117,7 @@ namespace SDG
     }
 
     void
-    SpriteBatch::DrawTexture(CRef<Texture> texture, Vector2 position,
+    SpriteBatch::DrawTexture(const Texture *texture, Vector2 position,
         Vector2 scale, Vector2 normAnchor, float rotation, float depth, Color color)
     {
         SDG_Assert(texture != nullptr); // please make sure to pass a non-null Texture
@@ -132,7 +132,7 @@ namespace SDG
     void 
     SpriteBatch::DrawRectangle(FRectangle rect, Vector2 anchor, Color color, float rotation, float depth)
     {
-        batch.emplace_back(CRef(pixel), Rectangle{ 0, 0, 1, 1 }, rect, rotation, anchor, Flip::None, color, depth);
+        batch.emplace_back(&pixel, Rectangle{ 0, 0, 1, 1 }, rect, rotation, anchor, Flip::None, color, depth);
     }
 
     void SpriteBatch::DrawLine(Vector2 a, Vector2 b, float thickness, Color color, float depth)
@@ -140,13 +140,13 @@ namespace SDG
         float distance = Math::PointDistance(a, b);
         float angle = Math::PointDirection(a, b);
 
-        batch.emplace_back(CRef{ pixel }, Rectangle{ 0, 0, 1, 1 }, FRectangle{ a.X(), a.Y() - thickness * 0.5f, distance, thickness },
+        batch.emplace_back(&pixel, Rectangle{ 0, 0, 1, 1 }, FRectangle{ a.X(), a.Y() - thickness * 0.5f, distance, thickness },
             angle, Vector2{ 0, 0.5f }, Flip::None, color, depth);
     }
 
     void SpriteBatch::DrawLine(Vector2 position, float length, float angle, float thickness, Color color, float depth)
     {
-        batch.emplace_back(CRef{ pixel }, Rectangle{ 0, 0, 1, 1 }, 
+        batch.emplace_back( &pixel, Rectangle{ 0, 0, 1, 1 }, 
             FRectangle{ position.X(), position.Y() - thickness * 0.5f, length, thickness },
             angle, Vector2{ 0, 0.5f }, Flip::None, color, depth);
     }
@@ -158,14 +158,14 @@ namespace SDG
     }
 
     void
-    SpriteBatch::Begin(Ref<RenderTarget> target, CRef<Matrix4x4> transformMatrix, SortMode sortMode)
+    SpriteBatch::Begin(Ref<RenderTarget> target, Ref<const Matrix4x4> transformMatrix, SortMode sortMode)
     {
         this->sortMode = sortMode;
         this->target = target;
         batch.clear();
 
         static Matrix4x4 identityMat = Matrix4x4::Identity();
-        matrix = (transformMatrix) ? transformMatrix : CRef(identityMat);
+        matrix = (transformMatrix) ? transformMatrix : identityMat;
     }
 
     void

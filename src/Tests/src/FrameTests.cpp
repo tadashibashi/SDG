@@ -6,7 +6,7 @@ TEST_CASE("Frame tests", "[Frame]")
 {
     Texture *tex = nullptr;
 
-    Frame frame(Rectangle(0, 0, 32, 32), Rectangle(0, 0, 64, 64), true,
+    Frame frame(Rectangle{ 0, 0, 32, 32 }, Rectangle{ 0, 0, 64, 64 }, true,
         Point(16, 16), "TestFrame", tex);
 
     REQUIRE(frame.Anchor() == Point(16, 16));
@@ -14,6 +14,6 @@ TEST_CASE("Frame tests", "[Frame]")
     REQUIRE(frame.FrameRect() == Rectangle(0, 0, 32, 32));
     REQUIRE(frame.ImageRect() == Rectangle(0, 0, 64, 64));
     REQUIRE(frame.Name() == "TestFrame");
-    REQUIRE(frame.Texture().Get() == nullptr);
+    REQUIRE(frame.Texture() == nullptr);
     REQUIRE(frame.OffsetRect() == Rectangle(0, 0, 32, 32));
 }

@@ -26,7 +26,7 @@ namespace SDG
     {
     }
 
-    Font::Font(Ref<Window> context, const Path &filepath, uint32_t pointSize, FontStyle style)
+    Font::Font(Window *context, const Path &filepath, uint32_t pointSize, FontStyle style)
     {
         Load(context, filepath, pointSize, style);
     }
@@ -37,7 +37,7 @@ namespace SDG
         delete impl;
     }
 
-    bool Font::Load(Ref<class Window> context, const Path &filepath, uint32_t pointSize, FontStyle style)
+    bool Font::Load(Window *context, const Path &filepath, uint32_t pointSize, FontStyle style)
     {
         Close();
 
@@ -88,7 +88,7 @@ namespace SDG
         }
     }
 
-    void Font::DrawImpl(Ref<class RenderTarget> target, Vector2 position,
+    void Font::DrawImpl(RenderTarget *target, Vector2 position,
         Vector2 scale, FontAlign alignment, Color color, const char *str)
     {
         NFont::AlignEnum nAlign;
@@ -103,7 +103,7 @@ namespace SDG
 
         NFont::Effect effect(nAlign, {scale.X(), scale.Y()}, {color.R(), color.G(), color.B(), color.A()});
 
-        impl->font->draw(target->Target().Get(), position.X(), position.Y(), effect, "%s", str);
+        impl->font->draw(target->Target(), position.X(), position.Y(), effect, "%s", str);
     }
 
     int Font::Spacing() const

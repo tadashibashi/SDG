@@ -13,6 +13,7 @@
 #include <Engine/Math/Vector2.h>
 #include <Engine/Lib/Ref.h>
 #include <Engine/Math/Circle.h>
+#include <Engine/Lib/Unique.h>
 
 // forward declaration
 struct GPU_Target;
@@ -36,7 +37,7 @@ namespace SDG
          * @param pTarget the target to set
          * @return this object reference for chaining
          */
-        RenderTarget &EmplaceTarget(Ref<GPU_Target> pTarget);
+        RenderTarget &EmplaceTarget(GPU_Target *pTarget);
 
 
         void MakeActiveTarget();
@@ -78,9 +79,13 @@ namespace SDG
          * order to access the internals and functions.
          * @return the raw SDL_gpu GPU_Target reference
          */
-        [[nodiscard]] Ref<GPU_Target> Target() const;
+        [[nodiscard]] 
+        auto Target() -> GPU_Target *;
+        [[nodiscard]]
+        auto Target() const -> const GPU_Target *;
 
-        bool IsOpen();
+        [[nodiscard]]
+        auto IsOpen() const -> bool;
 
         /*!
          * Frees the internal GPU_Target.

@@ -18,3 +18,6 @@ concept Comparable = std::is_same< bool, decltype(std::declval<T>() < std::declv
 
 template <typename It, typename T>
 concept Iterates = std::is_same<T, SDG::iterator_value_t<It>>::value;
+
+template <typename T, typename... TArgs>
+concept ConstructibleFrom = std::is_same<T, decltype(T(std::declval<TArgs>()...))>::value;

@@ -233,10 +233,10 @@ namespace SDG
         GPU_PopMatrix();
     }
 
-    CRef<Matrix4x4>
+    Ref< const Matrix4x4 >
     Camera2D::Matrix() const
     {
         Update();
-        return CRef(impl->mat);
+        return impl->mat;
     }
 }

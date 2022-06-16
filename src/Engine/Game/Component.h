@@ -21,7 +21,7 @@ namespace SDG
         virtual void Initialize() = 0;
         virtual void Close() = 0;
 
-        const CRef<Component> Parent() const { return parent; }
+        auto Parent() const -> Ref<const Component> { return parent; }
         Component &Parent(Component *p) { parent = p; return *this; }
         const int Priority() const { return priority; }
     private:

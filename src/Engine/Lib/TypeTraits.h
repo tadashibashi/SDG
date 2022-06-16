@@ -3,6 +3,9 @@
 
 namespace SDG
 {
+    template <typename T, typename...TArgs>
+    inline constexpr bool is_constructible_from_v = is_constructible_from<T, TArgs...>::value;
+
     template<typename S, typename T>
     class is_streamable
     {

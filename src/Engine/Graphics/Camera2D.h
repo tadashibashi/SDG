@@ -93,7 +93,7 @@ namespace SDG
         const Point &ViewportSize() const noexcept;
 
         /// Gets the internal matrix for referencing
-        CRef<class Matrix4x4> Matrix() const;
+        Ref<const class Matrix4x4> Matrix() const;
     private:
         /// Call this when updating the latest matrix state is required
         void Update() const;

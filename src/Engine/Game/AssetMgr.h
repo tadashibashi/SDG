@@ -11,6 +11,7 @@
 
 #include <Engine/Filesys/Path.h>
 #include <Engine/Graphics/Texture.h>
+#include <Engine/Lib/Unique.h>
 #include <Engine/Lib/Ref.h>
 
 #include <map>
@@ -24,7 +25,7 @@ namespace SDG
         ~AssetMgr();
 
         /// Sets the context window to load Textures with.
-        void Initialize(Ref<Window> context);
+        void Initialize(URef<Window> context);
 
         /**
          * Retrieves a texture already cached in the AssetMgr or loads a new one at the given path.
@@ -33,7 +34,7 @@ namespace SDG
          * @param path
          * @return
          */
-        CRef<Texture> LoadTexture(const Path &path);
+        Texture LoadTexture(const Path &path);
 
         /**
          * Unloads the Texture from memory. Unloaded texture ptr/references are valid for the
@@ -47,7 +48,7 @@ namespace SDG
          * the lifecycle of the app, but only the inner ptr will be freed and null.
          * @param path
          */
-        void UnloadTexture(Ref<Texture> texture);
+        void UnloadTexture(const Texture &texture);
 
 
         /**
@@ -63,8 +64,8 @@ namespace SDG
          */
         void UnloadAll();
     private:
-        std::map<uint64_t, Texture *> textures;
-        Ref<Window> context;
+        std::map<uint64_t, Texture> textures;
+        URef<Window> context;
     };
 }
 

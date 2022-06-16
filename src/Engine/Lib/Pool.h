@@ -53,9 +53,9 @@ namespace SDG
         /// Indexes the pool for a reference to the actual object.
         /// Will return the Ref if it's a valid ID, or a null reference if not.
         [[nodiscard]]
-        Ref<T> operator[] (const PoolID &id);
+        auto operator[] (const PoolID &id) -> Ref<T>;
         [[nodiscard]]
-        CRef<T> operator[] (const PoolID &id) const;
+        auto operator[] (const PoolID &id) const -> Ref<const T>;
 
         /// The number of pool objects that are currently checked out.
         [[nodiscard]]

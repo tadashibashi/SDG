@@ -14,16 +14,16 @@
 #endif
 
 /// Helper to retrieve underlying SDL_Window * from GPU_Target * for this impl file.
-#define GetWindow(target) SDL_GetWindowFromID(target.Target().Get()->context->windowID)
+#define GetWindow(target) SDL_GetWindowFromID(target->Target()->context->windowID)
 
 namespace SDG
 {
     // ===== Implementation ===================================================
     struct Window::Impl {
-        Impl() : target(), title(), icon() {}
-        RenderTarget    target;
-        String          title;
-        CRef<Texture> icon;
+        Impl() : target(new RenderTarget), title(), icon() {}
+        Unique<RenderTarget> target;
+        String               title;
+        Texture              icon;
     };
 
     // ===== Window static variables ==========================================
@@ -40,7 +40,6 @@ namespace SDG
     Window::~Window()
     {
         Close();
-        delete impl;
     }
 
     bool
@@ -84,8 +83,7 @@ namespace SDG
             }
         }
 
-
-        impl->target.EmplaceTarget(Ref{target});
+        impl->target->EmplaceTarget(target);
         if (title)
             Title(title);
 
@@ -106,14 +104,14 @@ namespace SDG
     void
     Window::Close()
     {
-        if (impl->target.IsOpen())
+        if (impl->target->IsOpen())
         {
             // Sets active target to null if this was currently active
-            if (GPU_GetActiveTarget() == impl->target.Target().Get())
+            if (GPU_GetActiveTarget() == impl->target->Target())
                 GPU_SetActiveTarget(nullptr);
 
             SDL_DestroyWindow(GetWindow(impl->target));
-            impl->target.Close();
+            impl->target->Close();
 
             --windowCount;
             if (windowCount == 0)
@@ -149,7 +147,7 @@ namespace SDG
                 case SDL_WINDOWEVENT_EXPOSED:
                     // SDG_Core_Log("Window was exposed");
                     On.Expose.TryInvoke();
-                    impl->target.SwapBuffers();
+                    impl->target->SwapBuffers();
                     break;
                 case SDL_WINDOWEVENT_MOVED:
                     // SDG_Core_Log("Window moved: {}, {}",
@@ -208,19 +206,19 @@ namespace SDG
     void
     Window::MakeCurrent()
     {
-        GPU_MakeCurrent(Target()->Target().Get(), Id());
+        GPU_MakeCurrent(Target()->Target(), Id());
     }
 
     void
     Window::SwapBuffers()
     {
-        impl->target.SwapBuffers();
+        impl->target->SwapBuffers();
     }
 
     void
     Window::Clear(Color color)
     {
-       impl->target.Clear(color);
+       impl->target->Clear(color);
     }
 
     // ======= Setters ========================================================
@@ -240,7 +238,7 @@ namespace SDG
     Window::ClientSize(Point size)
     {
         SDL_SetWindowSize(GetWindow(impl->target), size.W(), size.H());
-        On.SizeChange.TryInvoke(impl->target.Size().W(), impl->target.Size().H());
+        On.SizeChange.TryInvoke(impl->target->Size().W(), impl->target->Size().H());
         return *this;
     }
 
@@ -250,7 +248,7 @@ namespace SDG
         bool lastFullscreen = GPU_GetFullscreen();
         GPU_SetFullscreen(fullscreen, SDG_TARGET_DESKTOP);
         if (lastFullscreen != fullscreen)
-            On.SizeChange.TryInvoke(impl->target.Size().W(), impl->target.Size().H());
+            On.SizeChange.TryInvoke(impl->target->Size().W(), impl->target->Size().H());
         return *this;
     }
 
@@ -373,12 +371,9 @@ namespace SDG
     }
 
     Window &
-    Window::Icon(CRef<Texture> texture)
+    Window::Icon(const Texture &texture)
     {
-        if (!texture)
-            ThrowNullReferenceException("Texture");
-
-        SDL_Surface *surf = GPU_CopySurfaceFromImage(texture->Image().Get());
+        SDL_Surface *surf = GPU_CopySurfaceFromImage((GPU_Image *)texture.Image());
         if (!surf)
         {
             SDG_Core_Err("Failed to copy SDL_Surface from GPU_Image: {}",
@@ -403,7 +398,7 @@ namespace SDG
     Point
     Window::Size() const
     {
-        return impl->target.Size();
+        return impl->target->Size();
     }
 
     bool
@@ -418,10 +413,10 @@ namespace SDG
         return (Flags() & SDL_WINDOW_BORDERLESS) != SDL_WINDOW_BORDERLESS;
     }
 
-    Ref<RenderTarget>
+    URef<RenderTarget>
     Window::Target() const
     {
-        return Ref{impl->target};
+        return impl->target;
     }
 
     bool
@@ -434,7 +429,7 @@ namespace SDG
     Window::Resolution() const
     {
         Uint16 x, y;
-        GPU_GetVirtualResolution(impl->target.Target().Get(), &x, &y);
+        GPU_GetVirtualResolution((GPU_Target *)impl->target->Target(), &x, &y);
         return {x, y};
     }
 
@@ -468,13 +463,13 @@ namespace SDG
     Rectangle
     Window::Viewport() const
     {
-        return impl->target.Viewport();
+        return impl->target->Viewport();
     }
 
     uint32_t
     Window::Id() const
     {
-        return impl->target.Target()->context->windowID;
+        return impl->target->Target()->context->windowID;
     }
 
     Point Window::ClientSize() const
@@ -510,7 +505,7 @@ namespace SDG
         return (Flags() & SDL_WINDOW_ALWAYS_ON_TOP);
     }
 
-    CRef<Texture>
+    Ref< const Texture >
     Window::Icon() const
     {
         return impl->icon;
@@ -519,7 +514,7 @@ namespace SDG
     bool
     Window::IsOpen() const
     {
-        return impl->target.IsOpen();
+        return impl->target->IsOpen();
     }
 
 }

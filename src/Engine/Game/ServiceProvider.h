@@ -52,9 +52,6 @@ namespace SDG
         template <typename T>
         [[nodiscard]] Ref<T> Get();
 
-        template <typename T>
-        [[nodiscard]] CRef<T> Get() const;
-
         /// Gets a reference to a stored object of type T. Reference will be null if
         /// one does not exist in the container.
         /// Intended to be used if a service is not guaranteed to be in this obj.
@@ -62,9 +59,6 @@ namespace SDG
         /// @returns true, if pointer was found; false, if not.
         template <typename T>
         bool TryGet(Ref<T> &service);
-
-        template <typename T>
-        bool TryGet(CRef<T> &service) const;
 
         /// Gets the number of services stored
         [[nodiscard]] size_t Size() const { return services.size(); }

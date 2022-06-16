@@ -144,7 +144,7 @@ namespace SDG
     }
 
     template<typename T>
-    CRef<T> Pool<T>::operator[](const PoolID &id) const
+    Ref<const T> Pool<T>::operator[](const PoolID &id) const
     {
         Capsule &capsule = GetCapsule(id);
 

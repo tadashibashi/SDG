@@ -27,14 +27,14 @@ namespace SDG
     struct Engine::Impl 
     {
         Impl() 
-            : windows(), mainWindow(), isRunning(), time(), 
+            : windows(new WindowMgr), mainWindow(), isRunning(), time(), 
             fileSys(), config() {}
         ~Impl();
 
         void Initialize(const AppConfig &config);
 
-        WindowMgr   windows;
-        Ref<Window> mainWindow;
+        Unique<WindowMgr> windows;
+        URef<Window> mainWindow;
         bool        isRunning;
         AppTime     time;
         Filesys     fileSys;
@@ -53,20 +53,19 @@ namespace SDG
     Engine::~Engine()
     {
         Close_();
-        delete impl;
     }
 
 
     int
     Engine::Initialize_()
     {
-        AppConfig &config = impl->config;
+        auto &config = impl->config;
 
-        Ref<Window> window;
-        for (size_t i = 0; i < config.windows.size(); ++i)
+        URef<Window> window;
+        for (auto i = size_t{0}; i < config.windows.size(); ++i)
         {
             auto windata = config.windows[i];
-            if (impl->windows.CreateWindow(windata.width, windata.height, 
+            if (impl->windows->CreateWindow(windata.width, windata.height, 
                 windata.title.Cstr(), windata.winFlags, i == 0 ? &window : nullptr) >= 0)
             {
                 SDG_Core_Log("- window [{}] initialized", i);
@@ -103,7 +102,7 @@ namespace SDG
                     Exit();
                     break;
                 case SDL_WINDOWEVENT:
-                        impl->windows.ProcessInput(ev.window);
+                        impl->windows->ProcessInput(ev.window);
                     break;
             }
 
@@ -134,7 +133,7 @@ namespace SDG
         Close(); // Child class clean up
         InputDriver::Close();
         Path::PopFileSys();
-        impl->windows.Close();
+        impl->windows->Close();
         SDG_Core_Log("Engine shutdown complete.");
     }
 
@@ -167,17 +166,17 @@ namespace SDG
     #endif
     }
 
-    Ref<SDG::Window>
+    URef<SDG::Window>
     Engine::MainWindow()
     {
         SDG_Assert(impl->mainWindow);
         return impl->mainWindow;
     }
 
-    Ref<SDG::WindowMgr>
+    URef<SDG::WindowMgr>
     Engine::Windows()
     {
-        return Ref(impl->windows);
+        return impl->windows;
     }
 
     void
@@ -191,13 +190,13 @@ namespace SDG
     Engine::Render_()
     {
         Render();
-        impl->windows.SwapBuffers();
+        impl->windows->SwapBuffers();
     }
 
-    CRef<AppTime>
+    Ref< const AppTime>
     Engine::Time()
     {
-        return CRef(impl->time);
+        return impl->time;
     }
 
     const String &

@@ -53,8 +53,7 @@ namespace SDG
             memset(arr, 0, sizeof(T) * size);
             for (T &value : *this)
             {
-                T t{};
-                std::swap(t, value);
+                value = T{};
             }
         }
     }
@@ -70,8 +69,7 @@ namespace SDG
             T *p = arr;
             for (const T &t : list)
             {
-                T temp(t);
-                std::swap(temp, *p++);
+                *p++ = t;
             }
         }
     }

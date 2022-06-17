@@ -29,34 +29,35 @@ namespace SDG
             RGB888
         };
 
-        static const uint8_t COLOR_MAX = UINT8_MAX;
-        Color &Set(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = COLOR_MAX);
+        static const auto COLOR_MAX = UINT8_MAX;
+        auto Set(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = COLOR_MAX)->Color &;
 
-        [[nodiscard]] const uint8_t &R() const { return r; }
-        [[nodiscard]] const uint8_t &G() const { return g; }
-        [[nodiscard]] const uint8_t &B() const { return b; }
-        [[nodiscard]] const uint8_t &A() const { return a; }        
-        [[nodiscard]] uint8_t &R() { return r; }
-        [[nodiscard]] uint8_t &G() { return g; }
-        [[nodiscard]] uint8_t &B() { return b; }
-        [[nodiscard]] uint8_t &A() { return a; }
+        [[nodiscard]] const auto &R() const { return r; }
+        [[nodiscard]] const auto &G() const { return g; }
+        [[nodiscard]] const auto &B() const { return b; }
+        [[nodiscard]] const auto &A() const { return a; }        
+        [[nodiscard]] auto &R() { return r; }
+        [[nodiscard]] auto &G() { return g; }
+        [[nodiscard]] auto &B() { return b; }
+        [[nodiscard]] auto &A() { return a; }
 
-        Color &R(uint8_t red) { r = red; return *this; }
-        Color &G(uint8_t green) { g = green; return *this; }
-        Color &B(uint8_t blue) { b = blue; return *this; }
-        Color &A(uint8_t alpha) { a = alpha; return *this; }
+        auto R(uint8_t red)->Color & { r = red; return *this; }
+        auto G(uint8_t green)->Color & { g = green; return *this; }
+        auto B(uint8_t blue)->Color & { b = blue; return *this; }
+        auto A(uint8_t alpha)->Color & { a = alpha; return *this; }
 
-        [[nodiscard]] static Color FromNumber(uint64_t num, Format format, uint8_t base = 16u);
-        [[nodiscard]] static Color FromString(const String &str, Format format, uint8_t base = 16u);
-        [[nodiscard]] static Color FromString(const StringView &str, Format format, uint8_t base = 16u);
+        [[nodiscard]] static auto FromNumber(uint64_t num, Format format, uint8_t base = 16u)->Color;
+        [[nodiscard]] static auto FromString(const String &str, Format format, uint8_t base = 16u)->Color;
+        [[nodiscard]] static auto FromString(const StringView &str, Format format, uint8_t base = 16u)->Color;
 
-        [[nodiscard]] bool operator == (const Color &other) const;
+        [[nodiscard]] auto operator == (const Color &other) const -> bool;
+        [[nodiscard]] auto operator != (const Color &other) const -> bool;
 
         // Defaults to White
         constexpr Color() noexcept : r(COLOR_MAX), g(COLOR_MAX), b(COLOR_MAX), a(COLOR_MAX) {}
         constexpr Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a = COLOR_MAX) noexcept
             : r(r), g(g), b(b), a(a) {}
-        Color(const StringView &str, Format format);
+
         // Makes a grayscale color
         explicit constexpr Color(uint8_t grayScale, uint8_t alpha = COLOR_MAX) noexcept
             : r(grayScale), g(grayScale), b(grayScale), a(alpha) {}
@@ -106,7 +107,7 @@ namespace SDG
         [[maybe_unused]] static Color FireBrick(uint8_t alpha = COLOR_MAX) noexcept;
         [[maybe_unused]] static Color DarkRed(uint8_t alpha = COLOR_MAX) noexcept;
 
-        // TODO: Pinks from https://colorcodes.io/pink/
+
         // ===== PINKS =========
 
         [[maybe_unused]] static Color Pink(uint8_t alpha = COLOR_MAX) noexcept;

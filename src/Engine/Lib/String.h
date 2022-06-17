@@ -235,6 +235,7 @@ namespace SDG
         /// Helper to create an std::string copy
         [[nodiscard]] std::string Str() const;
         [[nodiscard]] operator std::string() const { return Str(); }
+
     private:
         /// Safely expands the String's internal capacity.
         void Expand(size_t size);
@@ -273,6 +274,8 @@ namespace SDG
             return lhs.Hash() < rhs.Hash();
         }
     };
+
+    [[nodiscard]] String operator "" S(const char *);
 }
 
 #include <utility>

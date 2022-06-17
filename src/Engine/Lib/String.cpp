@@ -836,6 +836,11 @@ SDG::operator != (const std::string &str1, const SDG::String &str2)
     return str1 != str2.Cstr();
 }
 
+SDG::String SDG::operator "" S(const char *str)
+{
+    return SDG::String(str);
+}
+
 
 // ===== Cstring Helper Impl ==================================================
 char *

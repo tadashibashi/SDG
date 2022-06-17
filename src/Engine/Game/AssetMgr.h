@@ -25,7 +25,7 @@ namespace SDG
         ~AssetMgr();
 
         /// Sets the context window to load Textures with.
-        auto Initialize(URef<Window> context)->void;
+        auto Initialize(const URef<Window> &context)->void;
 
         /**
          * Retrieves a texture already cached in the AssetMgr or loads a new one at the given path.

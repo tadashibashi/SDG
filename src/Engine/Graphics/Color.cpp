@@ -81,10 +81,15 @@ namespace SDG
         return *this;
     }
 
-    bool Color::operator==(const Color &other) const
+    auto Color::operator==(const Color &other) const -> bool
     {
         return r == other.r && g == other.g &&
             b == other.b && a == other.a;
+    }
+
+    auto Color::operator!=(const Color &other) const -> bool
+    {
+        return !operator==(other);
     }
 
     // Pre-made Colors

@@ -19,17 +19,12 @@ namespace SDG
             std::function<void()> deleter;
         };
     public:
-
-        /// Must be called with a dynamically allocated object
         Shared();
         Shared(T *newT);
-
         /// Adds a special deleter for cleaning up the pointer
         Shared(T *newT, const std::function<void()> &deleter);
-
         Shared(const Shared &other);
         Shared &operator=(const Shared &other);
-
         ~Shared();
 
     public:

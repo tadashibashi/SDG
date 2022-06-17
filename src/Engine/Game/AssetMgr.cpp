@@ -11,20 +11,20 @@ namespace SDG
     }
 
     auto
-    AssetMgr::UnloadTextures() -> void
+    AssetMgr::UnloadTextures()->void
     {
         textures.clear();
     }
 
     auto
-    AssetMgr::UnloadAll() -> void
+    AssetMgr::UnloadAll()->void
     {
         UnloadTextures();
         // add other unloading stuff here.
     }
 
     auto
-    AssetMgr::LoadTexture(const Path &path) -> Texture
+    AssetMgr::LoadTexture(const Path &path)->Texture
     {
         SDG_Assert(context); // Please make sure to set the context via Initialize() before loading textures.
 
@@ -49,20 +49,20 @@ namespace SDG
         }
     }
 
-    auto AssetMgr::UnloadTexture(const Path &path) -> void
+    auto AssetMgr::UnloadTexture(const Path &path)->void
     {
         auto it = textures.find(path.Hash());
         if (it != textures.end())
             textures.erase(it);
     }
 
-    auto AssetMgr::UnloadTexture(const Texture &texture) -> void
+    auto AssetMgr::UnloadTexture(const Texture &texture)->void
     {
         SDG_Assert(texture.IsLoaded());
         UnloadTexture(texture.Filepath());
     }
 
-    auto AssetMgr::Initialize(URef<Window> context) -> void
+    auto AssetMgr::Initialize(const URef<Window> &context)->void
     {
         this->context = context;
     }

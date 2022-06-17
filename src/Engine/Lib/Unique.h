@@ -34,6 +34,8 @@ namespace SDG
             [[nodiscard]] T *operator->() { return impl->ptr; }
             [[nodiscard]] const T &operator *() const { return impl->ptr; }
             [[nodiscard]] T &operator *() { return impl->ptr; }
+
+            [[nodiscard]] operator bool() { return static_cast<bool>(impl->ptr); }
         private:
             Shared<Unique::Impl> impl;
         };
@@ -97,6 +99,8 @@ namespace SDG
         [[nodiscard]] T &operator *() {return *impl->ptr; }
 
         [[nodiscard]] size_t RefCount() const { return impl->Count(); }
+
+        [[nodiscard]] operator bool() { return static_cast<bool>(impl->ptr); }
     private:
         void Delete() 
         {

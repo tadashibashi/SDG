@@ -48,9 +48,11 @@ namespace SDG
         [[nodiscard]] auto operator->() const -> T * { return ref ? const_cast<const T *>(ref) : throw NullReferenceException(); }
         [[nodiscard]] auto operator *() -> T & { return ref ? *ref : throw NullReferenceException(); }
         [[nodiscard]] auto operator *() const -> T * { return ref ? const_cast<const T &>(*ref) : throw NullReferenceException(); }
-        [[nodiscard]] explicit operator bool() { return ref; }
+
         [[nodiscard]] bool operator== (const Ref &other) { return other.ref == ref; }
         [[nodiscard]] bool operator!= (const Ref &other) { return other.ref != ref; }
+
+        [[nodiscard]] operator bool() { return static_cast<bool>(ref); }
     private:
         T *ref;
     };

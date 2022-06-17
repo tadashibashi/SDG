@@ -49,22 +49,20 @@ namespace SDG
         }
     }
 
-    void 
-    AssetMgr::UnloadTexture(const Path &path)
+    auto AssetMgr::UnloadTexture(const Path &path) -> void
     {
         auto it = textures.find(path.Hash());
         if (it != textures.end())
             textures.erase(it);
     }
 
-    void 
-    AssetMgr::UnloadTexture(const Texture &texture)
+    auto AssetMgr::UnloadTexture(const Texture &texture) -> void
     {
-        SDG_Assert(texture);
+        SDG_Assert(texture.IsLoaded());
         UnloadTexture(texture.Filepath());
     }
 
-    void AssetMgr::Initialize(URef<Window> context)
+    auto AssetMgr::Initialize(URef<Window> context) -> void
     {
         this->context = context;
     }

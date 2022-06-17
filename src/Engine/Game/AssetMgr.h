@@ -25,7 +25,7 @@ namespace SDG
         ~AssetMgr();
 
         /// Sets the context window to load Textures with.
-        void Initialize(URef<Window> context);
+        auto Initialize(URef<Window> context)->void;
 
         /**
          * Retrieves a texture already cached in the AssetMgr or loads a new one at the given path.
@@ -34,21 +34,21 @@ namespace SDG
          * @param path
          * @return
          */
-        Texture LoadTexture(const Path &path);
+        auto LoadTexture(const Path &path)->Texture;
 
         /**
          * Unloads the Texture from memory. Unloaded texture ptr/references are valid for the
          * the lifecycle of the app, but only the inner ptr will be freed and null.
          * @param path
          */
-        void UnloadTexture(const Path &path);
+        auto UnloadTexture(const Path &path)->void;
 
         /**
          * Unloads the Texture from memory. Unloaded texture ptr/references are valid for the
          * the lifecycle of the app, but only the inner ptr will be freed and null.
          * @param path
          */
-        void UnloadTexture(const Texture &texture);
+        auto UnloadTexture(const Texture &texture)->void;
 
 
         /**
@@ -56,13 +56,12 @@ namespace SDG
          * All pointers are invalidated, so any object attempting to
          * use them will experience undefined behavior.
          */
-        void UnloadTextures();
-
+        auto UnloadTextures()->void;
 
         /**
          * Unloads every piece of content loaded in the AssetMgr.
          */
-        void UnloadAll();
+        auto UnloadAll()->void;
     private:
         std::map<uint64_t, Texture> textures;
         URef<Window> context;

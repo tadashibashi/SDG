@@ -58,9 +58,9 @@ namespace SDG
         bool Load(class Window *context, const Path &path);
 
         /// Load an image from a surface. Ownership of surface is passed to the Texture.
-        /// @param surf the surface to load
-        /// @param context context to create texture with - it will only render in this context.
-        /// @param path path that the surface was loaded from. Made optional since there is not always one.
+        /// @param context - context to create texture with - it will only render in this context.
+        /// @param surf - the surface to load
+        /// @param path - path that the surface was loaded from. Made optional since there is not always one.
         bool LoadFromSurface(class Window *context, SDL_Surface *surf, const Path &path = Path());
 
         bool LoadPixels(class Window *context, uint32_t width, uint32_t height, const uint8_t *rgbaPixels);
@@ -132,6 +132,6 @@ namespace SDG
         
     private:
         /// Private implementation
-        Shared<Impl> impl;
+        Impl *impl;
     };
 }

@@ -31,19 +31,20 @@ namespace SDG
         Shared &operator=(const Shared &other);
 
         ~Shared();
+
     public:
-        [[nodiscard]] T *Get() { return impl->ptr; }
-        [[nodiscard]] const T *Get() const { return impl->ptr; }
-        [[nodiscard]] T *operator->() { return impl->ptr ? impl->ptr : throw NullReferenceException(); }
-        [[nodiscard]] const T *operator->() const { return impl->ptr ? impl->ptr : throw NullReferenceException(); }
-        [[nodiscard]] T &operator *() { return impl->ptr ? *impl->ptr : throw NullReferenceException(); }
-        [[nodiscard]] const T *operator *() const { return impl->ptr ? *impl->ptr : throw NullReferenceException(); }
-        [[nodiscard]] explicit operator bool() { return impl->ptr; }
-
+        [[nodiscard]] auto Get() -> T *                    { return impl->ptr; }
+        [[nodiscard]] auto Get() const -> const T *        { return impl->ptr; }
+        [[nodiscard]] auto operator->() -> T *             { return impl->ptr ? impl->ptr : throw NullReferenceException(); }
+        [[nodiscard]] auto operator->() const -> const T * { return impl->ptr ? impl->ptr : throw NullReferenceException(); }
+        [[nodiscard]] auto operator *() -> T &             { return impl->ptr ? *impl->ptr : throw NullReferenceException(); }
+        [[nodiscard]] auto operator *() const -> const T & { return impl->ptr ? *impl->ptr : throw NullReferenceException(); }
+        [[nodiscard]] operator bool()                      { return static_cast<bool>(impl->ptr); }
+        
         /// Gets the number of live references of Shared ptr
-        [[nodiscard]] size_t Count() const { return impl->count; }
+        [[nodiscard]] auto RefCount()->size_t const { return impl->count; }
 
-        void Reset() { DestroyRef(); impl = new Impl(nullptr); }
+        auto Reset()->void { DestroyRef(); impl = new Impl(nullptr); }
     private:
         /// Removes reference instances, calling destructor on ptr when it reaches zero
         void DestroyRef();

@@ -1,5 +1,5 @@
 TODO:
-- Decouple shared ptr behavior from Texture. Copy construction should copy image to another Texture, etc.
+- Tile layer rendering
 - Tiled Map loading
 - Static (blit to a texture target once) and dynamic tile maps (blits every time a change occurs)
 - Finish Window initialization flags manual set, or see why SDL_gpu sets a weird fullscreen when setting flags directly

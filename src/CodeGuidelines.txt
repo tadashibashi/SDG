@@ -1,5 +1,5 @@
 SDG Engine Code Guidelines
-C++ Standard 17
+C++ Standard 20 (No modules, maybe migrate later when Emscripten supports them)
 
 ===== Includes ================================================================
 Order - alphabetical order in these groupings:

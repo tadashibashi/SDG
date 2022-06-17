@@ -78,51 +78,65 @@ namespace SDG
     };
 
     // ======== Constructors, Destructors, Initialization, Closure ============
-    Texture::Texture() : impl(new Impl, [this]() { this->Unload(); })
+    Texture::Texture() : impl(new Impl)
     {
 
     }
 
-    Texture::Texture(Window *context, const Path &path) : impl(new Impl, [this]() { this->Unload(); })
+    Texture::Texture(Window *context, const Path &path) : impl(new Impl)
     {
         Load(context, path);
     }
 
-    Texture::Texture(Window *context, SDL_Surface *surf, const Path &path) : impl(new Impl, [this]() { this->Unload(); })
+    Texture::Texture(Window *context, SDL_Surface *surf, const Path &path) : impl(new Impl)
     {
         LoadFromSurface(context, surf, path);
     }
 
-    Texture::Texture(GPU_Image *image) : impl(new Impl, [this]() { this->Unload(); })
+    // Takes on ownership of image
+    Texture::Texture(GPU_Image *image) : impl(new Impl)
     {
         impl->image = std::move(image);
     }
 
-
-    Texture::Texture(const Texture &tex) : impl(tex.impl)
+    // Copy constructor
+    Texture::Texture(const Texture &tex) : impl(new Impl)
     {
+        if (tex.impl->image)
+        {
+            auto image = GPU_CopyImage(tex.impl->image);
+            if (!image)
+                SDG_Core_Err("Failed to copy Texture: {}", GPU_PopErrorCode().details);
+            impl->image = image;
+            impl->path = tex.impl->path;
+        }
     }
 
-
-    Texture &Texture::operator = (const Texture &tex)
+    // Copy assignment
+    auto Texture::operator = (const Texture &tex) -> Texture &
     {
-        if (!impl) impl = new Impl;
-
-        if (tex.impl.Get() != impl.Get())
+        if (impl != tex.impl)
         {
-            impl = tex.impl;
+            Unload();
+            if (tex.impl->image)
+            {
+                auto image = GPU_CopyImage(tex.impl->image);
+                if (!image)
+                    SDG_Core_Err("Texture copy failed: {}", GPU_PopErrorCode().details);
+                impl->image = image;
+                impl->path = tex.impl->path;
+            }
         }
-
 
         return *this;
     }
 
-    Texture &Texture::operator = (Texture &&tex) noexcept
+    // Move constructor
+    auto Texture::operator = (Texture &&tex) noexcept -> Texture &
     {
-        if (!impl) impl = new Impl;
-
-        if (impl.Get() != tex.impl.Get())
+        if (impl != tex.impl)
         {
+            Unload();
             impl = tex.impl;
             tex.impl = nullptr;
         }
@@ -130,14 +144,15 @@ namespace SDG
         return *this;
     }
 
-    void Texture::Unload()
+    auto Texture::Unload() -> void
     {
         impl->Free();
     }
 
     Texture::~Texture()
     {
-
+        Unload();
+        delete impl;
     }
 
     void Texture::Swap(Texture &tex)
@@ -147,6 +162,9 @@ namespace SDG
 
     Texture::Snap Texture::SnapMode() const
     {
+        if (!impl->image)
+            throw NullReferenceException("Access violation on unloaded Texture");
+
         GPU_SnapEnum snap = GPU_GetSnapMode(impl->image);
         switch (snap)
         {
@@ -161,6 +179,9 @@ namespace SDG
 
     Texture &Texture::SnapMode(Texture::Snap snapMode)
     {
+        if (!impl->image)
+            throw NullReferenceException("Access violation on unloaded Texture");
+
         GPU_SnapEnum snapEnum;
         switch (snapMode)
         {
@@ -179,6 +200,9 @@ namespace SDG
 
     Texture &Texture::Blending(bool blending)
     {
+        if (!impl->image)
+            throw NullReferenceException("Access violation on unloaded Texture");
+
         GPU_SetBlending(impl->image, blending);
         
         return *this;
@@ -186,11 +210,17 @@ namespace SDG
 
     bool Texture::Blending() const
     {
+        if (!impl->image)
+            throw NullReferenceException("Access violation on unloaded Texture");
+
         return GPU_GetBlending(impl->image);
     }
 
     Texture &Texture::FilterMode(Filter mode)
     {
+        if (!impl->image)
+            throw NullReferenceException("Access violation on unloaded Texture");
+
         GPU_FilterEnum gpuMode;
         switch (mode)
         {
@@ -208,6 +238,9 @@ namespace SDG
 
     Texture::Filter Texture::FilterMode() const
     {
+        if (!impl->image)
+            throw NullReferenceException("Access violation on unloaded Texture");
+
         switch (impl->image->filter_mode)
         {
         case GPU_FILTER_LINEAR: return Filter::Linear;
@@ -220,6 +253,9 @@ namespace SDG
 
     Vector2 Texture::Anchor() const
     {
+        if (!impl->image)
+            throw NullReferenceException("Access violation on unloaded Texture");
+
         float x, y;
         GPU_GetAnchor(impl->image, &x, &y);
 
@@ -228,6 +264,9 @@ namespace SDG
 
     Texture &Texture::Anchor(Vector2 anchor)
     {
+        if (!impl->image)
+            throw NullReferenceException("Access violation on unloaded Texture");
+
         GPU_SetAnchor(impl->image, anchor.X(), anchor.Y());
         return *this;
     }
@@ -261,23 +300,34 @@ namespace SDG
 
     Texture::Wrap Texture::WrapModeX() const
     {
+        if (!impl->image)
+            throw NullReferenceException("Access violation on unloaded Texture");
+
         return ToTextureWrap(impl->image->wrap_mode_x);
     }
 
     Texture::Wrap Texture::WrapModeY() const
     {
+        if (!impl->image)
+            throw NullReferenceException("Access violation on unloaded Texture");
+
         return ToTextureWrap(impl->image->wrap_mode_y);
     }
 
     Texture &Texture::WrapMode(Texture::Wrap x, Texture::Wrap y)
     {
+        if (!impl->image)
+            throw NullReferenceException("Access violation on unloaded Texture");
+
         GPU_SetWrapMode(impl->image, Conv::ToGPUWrap(x), Conv::ToGPUWrap(y));
         return *this;
     }
 
-    bool
-    Texture::LoadFromSurface(Window *context, SDL_Surface *surf, const Path &path)
+    auto Texture::LoadFromSurface(Window *context, SDL_Surface *surf, const Path &path) -> bool
     {
+        if (!impl->image)
+            throw NullReferenceException("Access violation on unloaded Texture");
+
         SDG_Assert(context);         // context must not be null
         SDG_Assert(surf != nullptr); // if surface is null, the function that
                                      // created the surface  probably failed.
@@ -378,6 +428,9 @@ namespace SDG
 
     bool Texture::SaveAs(const Path &filepath, FileFormat format)
     {
+        if (!impl->image)
+            throw NullReferenceException("Access violation on unloaded Texture");
+
         GPU_FileFormatEnum gpuFormat;
         String path = filepath.Str();
 
@@ -420,21 +473,24 @@ namespace SDG
     const GPU_Image *
     Texture::Image() const
     {
-        SDG_Assert(IsLoaded());
+        if (!impl->image)
+            throw NullReferenceException("Access violation on unloaded Texture");
         return impl->image;
     }
 
     const Path &
     Texture::Filepath() const
     {
-        SDG_Assert(IsLoaded());
+        if (!impl->image)
+            throw NullReferenceException("Access violation on unloaded Texture");
         return impl->path;
     }
 
     Point
     Texture::Size() const
     {
-        SDG_Assert(IsLoaded());
+        if (!impl->image)
+            throw NullReferenceException("Access violation on unloaded Texture");
         return {impl->image->base_w, impl->image->base_h};
     }
 }

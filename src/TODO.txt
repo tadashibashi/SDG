@@ -1,4 +1,7 @@
 TODO:
+- Test SpriteRenderer
+- Text Renderer
+- Audio FMOD or Mixer...
 - Tile layer rendering
 - Tiled Map loading
 - Static (blit to a texture target once) and dynamic tile maps (blits every time a change occurs)
@@ -9,6 +12,7 @@ TODO:
     - Sprite renderer, animation
     - Scene System
     - Make Asteroids Game as you assemble these systems
+- imgui integration
 
 - Figure out cause of fullscreen/non-fullscreen matrix projection discrepancy. HTML5 zooms in vs Desktop
     There's an SDL function for controlling the behavior of resolution on new screen

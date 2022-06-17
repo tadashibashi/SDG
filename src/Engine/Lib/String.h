@@ -275,7 +275,7 @@ namespace SDG
         }
     };
 
-    [[nodiscard]] String operator "" S(const char *);
+    [[nodiscard]] String operator "" _s(const char *);
 }
 
 #include <utility>

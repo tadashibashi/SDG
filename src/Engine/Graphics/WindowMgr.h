@@ -27,8 +27,8 @@ namespace SDG
 
         /// Create a window, returning the id of that window.
         /// @returns the id of the window, or -1 on error.
-        int CreateWindow(int width, int height, const char *title, 
-            unsigned flags = 0, URef<Window> *out = nullptr);
+        int CreateWindow(int width, int height, const char *title,
+            unsigned flags = 0, Ref<Window> *out = nullptr);
 
         /// Closes every window
         void Close();
@@ -42,7 +42,7 @@ namespace SDG
         void SwapBuffers();
 
         /// Gets Window ref from id number.
-        URef<Window> At(int id);
+        Ref<Window> At(int id);
     private:
         Impl *impl;
     };

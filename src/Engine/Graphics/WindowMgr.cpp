@@ -18,7 +18,7 @@ namespace SDG
     struct WindowMgr::Impl 
     {
         Impl() : windows() { }
-        std::vector<Unique<SDG::Window>> windows;
+        std::vector< Unique<Window> > windows;
     };
 
     // Helpers
@@ -58,7 +58,7 @@ namespace SDG
     }
 
     int
-    WindowMgr::CreateWindow(int width, int height, const char *title, unsigned flags, URef<Window> *out)
+    WindowMgr::CreateWindow(int width, int height, const char *title, unsigned flags, Ref<Window> *out)
     {
         size_t id = impl->windows.size();
         Window *window = new Window;
@@ -67,22 +67,23 @@ namespace SDG
             delete window;
             return -1;
         }
-
-        Unique<Window> uwin(window);
         
         if (out)
-            *out = URef<Window>(uwin);
-        impl->windows.emplace_back(std::move(uwin));
+            *out = Ref<Window>(window);
+
+        auto &uwin = impl->windows.emplace_back();
+        uwin.Assign(window);
+
         return id;
     }
 
     // Safely get Window at an id index
-    URef<Window>
+    Ref<Window>
     WindowMgr::At(int id)
     {
         if (id >= impl->windows.size() || id < 0)
             throw OutOfRangeException(id, "Window index is out of range");
-        return impl->windows[id];
+        return impl->windows[id].Get();
     }
 
     void WindowMgr::Close()

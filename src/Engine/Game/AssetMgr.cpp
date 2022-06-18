@@ -62,7 +62,7 @@ namespace SDG
         UnloadTexture(texture.Filepath());
     }
 
-    auto AssetMgr::Initialize(const URef<Window> &context)->void
+    auto AssetMgr::Initialize(Ref<Window> context)->void
     {
         this->context = context;
     }

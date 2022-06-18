@@ -13,7 +13,6 @@
 #include <Engine/Math/Vector2.h>
 #include <Engine/Lib/Ref.h>
 #include <Engine/Math/Circle.h>
-#include <Engine/Lib/Unique.h>
 
 // forward declaration
 struct GPU_Target;
@@ -28,7 +27,7 @@ namespace SDG
 
         /// Receive a render target from another source.
         /// RenderTarget becomes the owner of this target.
-        explicit RenderTarget(Ref<GPU_Target> ref);
+        explicit RenderTarget(GPU_Target *ref);
         ~RenderTarget();
 
         /*!
@@ -39,68 +38,53 @@ namespace SDG
          */
         RenderTarget &EmplaceTarget(GPU_Target *pTarget);
 
-
-        void MakeActiveTarget();
+        auto MakeActiveTarget()->void;
 
         /*!
          * Gets the target's viewport rectangle
          * @return the viewport rectangle
          */
-        [[nodiscard]] Rectangle Viewport() const;
+        [[nodiscard]] auto Viewport() const->Rectangle;
 
         /// Sets the target's viewport rectangle
-        /// @param viewport rectangle to set
-        /// @return this object reference for chaining
-        RenderTarget &Viewport(Rectangle viewport);
+        auto Viewport(Rectangle viewport)->RenderTarget &;
 
 
         /*!
          * Gets the virtual dimensions of the target
          * @return Point containing width and height of the target
          */
-        [[nodiscard]] Point Size() const;
+        [[nodiscard]] auto Size() const->Point;
 
         /// Gets the true underlying dimensions of the target
         /// @return Point containing width and height of the target
-        [[nodiscard]] Point BaseSize() const;
+        [[nodiscard]] auto BaseSize() const->Point;
 
         /// Gets the current rendering color
-        Color DrawColor() const;
+        [[nodiscard]] auto DrawColor() const->Color;
 
         /// Sets the rendering color. Cumulative effect with image color.
-        RenderTarget &DrawColor(Color color);
+        auto DrawColor(Color color)->RenderTarget &;
 
-        void DrawTexture(Ref<class Texture> texture, Rectangle src,
-            FRectangle dest, float rotation, Vector2 anchor, Flip flip);
-        void DrawRectangle(FRectangle rect);
-        void DrawCircle(Circle circle);
-        /*!
-         * Gets the internal GPU_Target. Please include SDL_gpu.h in
-         * order to access the internals and functions.
-         * @return the raw SDL_gpu GPU_Target reference
-         */
-        [[nodiscard]] 
-        auto Target() -> GPU_Target *;
-        [[nodiscard]]
-        auto Target() const -> const GPU_Target *;
+        auto DrawTexture(Ref<class Texture> texture, Rectangle src,
+            FRectangle dest, float rotation, Vector2 anchor, Flip flip)->void;
+        auto DrawRectangle(FRectangle rect)->void;
+        auto DrawCircle(Circle circle)->void;
 
-        [[nodiscard]]
-        auto IsOpen() const -> bool;
+        [[nodiscard]] auto Target()->Ref<GPU_Target>;
+        [[nodiscard]] auto Target() const->Ref<const GPU_Target>;
 
-        /*!
-         * Frees the internal GPU_Target.
-         * This function is safe to call even
-         * if the target has already been freed, and is automatically called
-         * during ~RenderTarget()
-         */
-        void Close();
+        [[ nodiscard]] auto IsOpen() const -> bool;
 
-        void Clear(Color color = Color::CornflowerBlue());
-        void SwapBuffers();
+        /// Frees the internal GPU_Target.
+        /// Safe to call even if the target has already been freed, and is automatically called during ~RenderTarget()
+        auto Close()->void;
+
+        auto Clear(Color color = Color::CornflowerBlue())->void;
+        auto SwapBuffers()->void;
 
         /// Will evaluate to true or false if the internal target is null or not.
         operator bool() const;
-
     private:
         GPU_Target *target;
     };

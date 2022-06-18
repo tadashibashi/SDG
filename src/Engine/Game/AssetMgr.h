@@ -11,7 +11,6 @@
 
 #include <Engine/Filesys/Path.h>
 #include <Engine/Graphics/Texture.h>
-#include <Engine/Lib/Unique.h>
 #include <Engine/Lib/Ref.h>
 
 #include <map>
@@ -25,7 +24,7 @@ namespace SDG
         ~AssetMgr();
 
         /// Sets the context window to load Textures with.
-        auto Initialize(const URef<Window> &context)->void;
+        auto Initialize(Ref<Window> context)->void;
 
         /**
          * Retrieves a texture already cached in the AssetMgr or loads a new one at the given path.
@@ -64,7 +63,7 @@ namespace SDG
         auto UnloadAll()->void;
     private:
         std::map<uint64_t, Texture> textures;
-        URef<Window> context;
+        Ref<Window> context;
     };
 }
 

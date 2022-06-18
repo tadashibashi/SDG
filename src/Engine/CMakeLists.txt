@@ -53,22 +53,22 @@ add_library(SDG_Engine STATIC
         Game/Scene.cpp Game/Scene.h
         Game/ServiceProvider.h
 
-        Graphics/Camera2D.cpp Graphics/Camera2D.h
-        Graphics/WindowMgr.cpp Graphics/WindowMgr.h
+        "Game/Graphics/Camera2D.cpp" "Game/Graphics/Camera2D.h"
+        "Graphics/WindowMgr.cpp" "Graphics/WindowMgr.h"
         Graphics/Window.cpp Graphics/Window.h
         Graphics/Private/RendererType.h
         Graphics/Shader.cpp Graphics/Shader.h
         Graphics/Color.h Graphics/Color.cpp
-        Graphics/SpriteBatch.cpp Graphics/SpriteBatch.h
+        "Game/Graphics/SpriteBatch.cpp" "Game/Graphics/SpriteBatch.h"
         Graphics/Texture.h Graphics/Texture.cpp
          
         Graphics/RenderTarget.cpp Graphics/RenderTarget.h
-        Graphics/Flip.h Graphics/Flip.cpp 
+        "Graphics/Flip.h" "Graphics/Flip.cpp" 
         Graphics/Private/TranslateFlip.h Graphics/Private/TranslateFlip.cpp
         Graphics/Private/Conversions.h
-        Graphics/Sprite.h Graphics/Sprite.cpp 
-        Graphics/Frame.h Graphics/Frame.cpp
-        Graphics/SpriteRenderer.h Graphics/SpriteRenderer.cpp
+        "Game/Graphics/Sprite.h" "Game/Graphics/Sprite.cpp" 
+        "Game/Graphics/Frame.h" "Game/Graphics/Frame.cpp"
+        "Game/Graphics/SpriteRenderer.h" "Game/Graphics/SpriteRenderer.cpp"
 
         Input/Input.cpp Input/Input.h
         Input/Key.h
@@ -123,7 +123,7 @@ add_library(SDG_Engine STATIC
         
   "Graphics/Font.h" "Graphics/Font.cpp" "Lib/Enum.h" "Lib/Private/Fmt.h" "Exceptions/UncaughtCaseException.h" "Lib/Array.inl" "Lib/Delegate.inl" "FileSys/Xml/XmlElement.h" "FileSys/Xml/XmlElement.cpp" "FileSys/Xml/XmlAttribute.h" "FileSys/Xml/XmlAttribute.cpp" "FileSys/Xml/XmlDocument.h" "FileSys/Xml/XmlDocument.cpp" "FileSys/Xml/Private/XmlDocument_Impl.h"  "Exceptions/XmlValidationException.h" "FileSys/Xml/XmlValidation.h" "Exceptions/XmlValidationException.cpp" "Game/Datatypes/AppConfig.cpp" "Exceptions/XmlFormattingException.h" "Graphics/Private/NFont.h" 
  "Lib/Version.h" "Lib/Version.cpp" "Lib/Platform.cpp" "Debug/Private/spdlog.h" "Lib/RAIterator.h" "Lib/ConstRAIterator.h" "Exceptions/Fwd.h" "Exceptions/Fwd.cpp" "Lib/Algorithm.h" "Lib/TypeTraits.h" "Lib/Concepts.h" "Lib/Int.h" 
- "Dynamic/Object.h" "Dynamic/Struct.h" "Dynamic/Struct.cpp" "Dynamic/Object.cpp" "Dynamic/Array.h"  "Dynamic/Array.cpp"   "Filesys/Json.h" "Filesys/Json.cpp" "Exceptions/XmlException.h"   "Exceptions/LogicException.h" "Exceptions/DomainException.h" "Exceptions/FileLoadingException.h" "Filesys/Json/JsonLoadable.h" "Filesys/Json/JsonLoadable.cpp" "Graphics/Tilemap.h" "Graphics/Tilemap.cpp" "Graphics/Tile.h" "Graphics/Tile.cpp"  "Graphics/Tileset.h" )
+ "Dynamic/Object.h" "Dynamic/Struct.h" "Dynamic/Struct.cpp" "Dynamic/Object.cpp" "Dynamic/Array.h"  "Dynamic/Array.cpp"   "Filesys/Json.h" "Filesys/Json.cpp" "Exceptions/XmlException.h"   "Exceptions/LogicException.h" "Exceptions/DomainException.h" "Exceptions/FileLoadingException.h" "Filesys/Json/JsonLoadable.h" "Filesys/Json/JsonLoadable.cpp" "Game/Graphics/Tilemap.h" "Game/Graphics/Tilemap.cpp" "Game/Graphics/Tile.h" "Game/Graphics/Tile.cpp"  "Game/Graphics/Tileset.h"  "Game/Graphics/Tileset.cpp")
 
 # -----  Includes  ----------------------------------------------------
 set(Engine_Includes

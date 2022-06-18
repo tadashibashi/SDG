@@ -9,6 +9,7 @@
 #pragma once
 #include <Engine/Filesys/Path.h>
 #include <Engine/Game/Datatypes/AppConfig.h>
+#include <Engine/Lib/Ref.h>
 #include <Engine/Lib/Unique.h>
 #include <Engine/Lib/String.h>
 #include <Engine/Lib/Version.h>
@@ -49,8 +50,8 @@ namespace SDG
         static Version Version();
     protected:
         // Access for base classes
-        URef<class Window> MainWindow();
-        URef<class WindowMgr> Windows();
+        Ref<class Window> MainWindow();
+        Ref<class WindowMgr> Windows();
 
     private:
         int Initialize_();

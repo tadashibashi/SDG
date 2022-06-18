@@ -34,7 +34,7 @@ namespace SDG
         void Initialize(const AppConfig &config);
 
         Unique<WindowMgr> windows;
-        URef<Window> mainWindow;
+        Ref<Window> mainWindow;
         bool        isRunning;
         AppTime     time;
         Filesys     fileSys;
@@ -61,10 +61,10 @@ namespace SDG
     {
         auto &config = impl->config;
 
-        URef<Window> window;
+        Ref<Window> window;
         for (auto i = size_t{0}; i < config.windows.size(); ++i)
         {
-            auto windata = config.windows[i];
+            auto &windata = config.windows[i];
             if (impl->windows->CreateWindow(windata.width, windata.height, 
                 windata.title.Cstr(), windata.winFlags, i == 0 ? &window : nullptr) >= 0)
             {
@@ -166,17 +166,17 @@ namespace SDG
     #endif
     }
 
-    URef<SDG::Window>
+    Ref<Window>
     Engine::MainWindow()
     {
         SDG_Assert(impl->mainWindow);
         return impl->mainWindow;
     }
 
-    URef<SDG::WindowMgr>
+    Ref<WindowMgr>
     Engine::Windows()
     {
-        return impl->windows;
+        return impl->windows.Get();
     }
 
     void

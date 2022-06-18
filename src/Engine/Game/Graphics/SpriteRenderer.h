@@ -1,6 +1,6 @@
 #pragma once
-#include "Color.h"
-#include "Flip.h"
+#include <Engine/Graphics/Color.h>
+#include <Engine/Graphics/Flip.h>
 
 #include <Engine/Math/Vector2.h>
 #include <Engine/Math/Math.h>

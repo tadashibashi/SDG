@@ -7,9 +7,9 @@
  * ==================================================================================================================*/
 #pragma once
 
-#include "Flip.h"
-#include "Texture.h"
-#include "Window.h"
+#include <Engine/Graphics/Flip.h>
+#include <Engine/Graphics/Window.h>
+#include <Engine/Graphics/Texture.h>
 
 #include <Engine/Lib/ClassMacros.h>
 #include <Engine/Lib/Ref.h>
@@ -40,7 +40,7 @@ namespace SDG
         SpriteBatch();
         ~SpriteBatch() = default;
 
-        bool Initialize(URef<Window> context);
+        bool Initialize(Ref<Window> context);
         void Begin(Ref<class RenderTarget> target,
             Ref<const class Matrix4x4> transformMatrix = nullptr, 
             SortMode sortMode = SortMode::FrontToBack);

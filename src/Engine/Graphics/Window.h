@@ -106,7 +106,9 @@ namespace SDG
 
         uint32_t Flags() const;
         Rectangle Viewport() const;
-        URef<class RenderTarget> Target() const;
+
+        Ref<const class RenderTarget> Target() const;
+        Ref<class RenderTarget> Target();
 
         static size_t Count() { return windowCount; }
 

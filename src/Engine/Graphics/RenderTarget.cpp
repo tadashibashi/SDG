@@ -12,17 +12,15 @@
 namespace SDG
 {
     RenderTarget::RenderTarget() : target()
-    {
-
-    }
+    { }
 
     RenderTarget::~RenderTarget()
     {
         Close();
     }
 
-    RenderTarget::RenderTarget(Ref<GPU_Target> target) : target(target.Get())
-    {
+    RenderTarget::RenderTarget(GPU_Target *target) : target(target)
+    { 
 
     }
 
@@ -31,18 +29,16 @@ namespace SDG
     {
         Close(); // Make sure we're working with a clean slate
 
-        target = std::move(pTarget);
+        target = pTarget;
         return *this;
     }
 
-    auto
-    RenderTarget::Target() -> GPU_Target *
+    auto RenderTarget::Target()->Ref<GPU_Target>
     {
         return target;
     }
 
-    auto
-    RenderTarget::Target() const -> const GPU_Target *
+    auto RenderTarget::Target() const->Ref<const GPU_Target>
     {
         return target;
     }

@@ -1,5 +1,5 @@
 #include "SDG_Tests.h"
-#include <Engine/Graphics/Camera2D.h>
+#include <Engine/Game/Graphics/Camera2D.h>
 #include <Engine/Graphics/RenderTarget.h>
 #include <Engine/Graphics/Window.h>
 #include <Engine/Math/Matrix4x4.h>

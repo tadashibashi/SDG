@@ -14,7 +14,7 @@ TEST_CASE("Shared ptr tests", "[Shared]")
     {
         Shared<int> i = new int(145);
         REQUIRE(i.Get() != nullptr);
-        REQUIRE(i.Count() == 1);
+        REQUIRE(i.RefCount() == 1);
         REQUIRE(*i == 145); // same amount
     }
 
@@ -22,7 +22,7 @@ TEST_CASE("Shared ptr tests", "[Shared]")
     {
         Shared i = new int(10);
         REQUIRE(i.Get() != nullptr);
-        REQUIRE(i.Count() == 1);
+        REQUIRE(i.RefCount() == 1);
         REQUIRE(*i == 10);
     }
 
@@ -31,8 +31,8 @@ TEST_CASE("Shared ptr tests", "[Shared]")
         Shared<int> int1 = new int(135);
         Shared<int> int2 = int1;
         REQUIRE(int1.Get() == int2.Get());
-        REQUIRE(int1.Count() == 2);
-        REQUIRE(int2.Count() == 2);
+        REQUIRE(int1.RefCount() == 2);
+        REQUIRE(int2.RefCount() == 2);
         REQUIRE(*int1 == 135);
         REQUIRE(*int2 == 135);
     }
@@ -44,12 +44,12 @@ TEST_CASE("Shared ptr tests", "[Shared]")
         while (i < 1000)
         {
             Shared<int> int2 = int1;
-            if (int2.Count() != 2)
+            if (int2.RefCount() != 2)
                 break;
             ++i;
         }
         REQUIRE(i == 1000);
-        REQUIRE(int1.Count() == 1);
+        REQUIRE(int1.RefCount() == 1);
         REQUIRE(*int1 == 12345);
     }
 
@@ -62,7 +62,7 @@ TEST_CASE("Shared ptr tests", "[Shared]")
         for (i = 0; i < 1000; ++i)
         {
             ints[i] = int1;
-            if (int1.Count() != i + 2)
+            if (int1.RefCount() != i + 2)
                 break;
         }
         REQUIRE(i == 1000); // counts were accurate every iteration
@@ -70,12 +70,12 @@ TEST_CASE("Shared ptr tests", "[Shared]")
         for (i = 0; i < 1000; ++i)
         {
             ints[i].Reset();
-            if (int1.Count() != 1000 - i)
+            if (int1.RefCount() != 1000 - i)
                 break;
         }
         REQUIRE(i == 1000); // counts were accurate every iteration
         
-        REQUIRE(int1.Count() == 1);
+        REQUIRE(int1.RefCount() == 1);
         REQUIRE(*int1 == 12345);
     }
 
@@ -84,10 +84,10 @@ TEST_CASE("Shared ptr tests", "[Shared]")
         Shared<int> int1 = new int(135);
         {
             Shared<int> int2 = int1;
-            REQUIRE(int1.Count() == 2);
-            REQUIRE(int2.Count() == 2);
+            REQUIRE(int1.RefCount() == 2);
+            REQUIRE(int2.RefCount() == 2);
         }
-        REQUIRE(int1.Count() == 1);
+        REQUIRE(int1.RefCount() == 1);
     }
 
     SECTION("Copying to a second Shared ptr decreases first's count")
@@ -95,9 +95,9 @@ TEST_CASE("Shared ptr tests", "[Shared]")
         Shared<int> int1 = new int(128);
         Shared<int> int2 = new int(256);
         Shared<int> copied = int1;
-        REQUIRE(int1.Count() == 2);
+        REQUIRE(int1.RefCount() == 2);
         copied = int2;
-        REQUIRE(int1.Count() == 1);
-        REQUIRE(int2.Count() == 2);
+        REQUIRE(int1.RefCount() == 1);
+        REQUIRE(int2.RefCount() == 2);
     }
 }

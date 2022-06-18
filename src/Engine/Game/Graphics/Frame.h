@@ -10,7 +10,7 @@
 #include <Engine/Lib/String.h>
 #include <Engine/Math/Rectangle.h>
 #include <Engine/Math/Vector2.h>
-#include "Texture.h"
+#include <Engine/Graphics/Texture.h>
 
 namespace SDG
 {

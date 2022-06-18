@@ -27,9 +27,10 @@ namespace SDG
     };
 
     // ===== Window static variables ==========================================
-    size_t Window::windowCount;
-    bool Window::manageGraphics;
-    Delegate<void()> Window::OnAllClosed;
+
+    size_t Window::windowCount = size_t{0};
+    bool Window::manageGraphics = bool{false};
+    Delegate<void()> Window::OnAllClosed = Delegate<void()>{};
 
     // ===== Window Initialization ============================================
     Window::Window() : impl(new Impl), On{}
@@ -42,8 +43,7 @@ namespace SDG
         Close();
     }
 
-    bool
-    Window::Initialize(int width, int height, const char *title, unsigned flags)
+    auto Window::Initialize(int width, int height, const char *title, unsigned flags)->bool
     {
         Close(); // Make sure to initialize cleanly
 
@@ -63,7 +63,7 @@ namespace SDG
         }
         else
         {
-            SDL_Window *window = SDL_CreateWindow(title,
+            auto window = SDL_CreateWindow(title,
                       SDL_WINDOWPOS_UNDEFINED,
                       SDL_WINDOWPOS_UNDEFINED,
                       width, height,
@@ -101,8 +101,8 @@ namespace SDG
     }
     /* end Window::Initialize */
 
-    void
-    Window::Close()
+    
+    auto Window::Close()->void
     {
         if (impl->target->IsOpen())
         {
@@ -129,8 +129,8 @@ namespace SDG
     /* end Window::Close */
 
     // ===== Driver-related ===================================================
-    void
-    Window::ProcessInput(const SDL_WindowEvent &ev)
+    
+    auto Window::ProcessInput(const SDL_WindowEvent &ev)->void
     {
         if (ev.windowID == Id())
         {
@@ -203,28 +203,28 @@ namespace SDG
     }
     /* end Window::ProcessInput */
 
-    void
-    Window::MakeCurrent()
+
+    auto Window::MakeCurrent()->void
     {
-        GPU_MakeCurrent(Target()->Target(), Id());
+        GPU_MakeCurrent(Target()->Target().Get(), Id());
     }
 
-    void
-    Window::SwapBuffers()
+
+    auto Window::SwapBuffers()->void
     {
         impl->target->SwapBuffers();
     }
 
-    void
-    Window::Clear(Color color)
+
+    auto Window::Clear(Color color)->void
     {
        impl->target->Clear(color);
     }
 
     // ======= Setters ========================================================
 
-    Window &
-    Window::Title(const char *title)
+   
+    auto Window::Title(const char *title)->Window &
     {
         if (!title)
             title = "";
@@ -234,16 +234,16 @@ namespace SDG
         return *this;
     }
 
-    Window &
-    Window::ClientSize(Point size)
+   
+    auto Window::ClientSize(Point size)->Window &
     {
         SDL_SetWindowSize(GetWindow(impl->target), size.W(), size.H());
         On.SizeChange.TryInvoke(impl->target->Size().W(), impl->target->Size().H());
         return *this;
     }
 
-    Window &
-    Window::Fullscreen(bool fullscreen)
+   
+    auto Window::Fullscreen(bool fullscreen)->Window &
     {
         bool lastFullscreen = GPU_GetFullscreen();
         GPU_SetFullscreen(fullscreen, SDG_TARGET_DESKTOP);
@@ -252,22 +252,22 @@ namespace SDG
         return *this;
     }
 
-    Window &
-    Window::Bordered(bool bordered)
+   
+    auto Window::Bordered(bool bordered)->Window &
     {
         SDL_SetWindowBordered(GetWindow(impl->target), (SDL_bool)bordered);
         return *this;
     }
 
-    Window &
-    Window::Resizable(bool resizable)
+   
+    auto Window::Resizable(bool resizable)->Window &
     {
         SDL_SetWindowResizable(GetWindow(impl->target), (SDL_bool)resizable);
         return *this;
     }
 
-    Window &
-    Window::Resolution(Point size)
+   
+    auto Window::Resolution(Point size)->Window &
     {
         if (size.X() < 1) size.X(1);
         if (size.Y() < 1) size.Y(1);
@@ -276,15 +276,13 @@ namespace SDG
         return *this;
     }
 
-    Window &
-    Window::Position(Point position)
+    auto Window::Position(Point position)->Window &
     {
         SDL_SetWindowPosition(GetWindow(impl->target), position.X(), position.Y());
         return *this;
     }
 
-    Window &
-    Window::Minimized(bool minimized)
+    auto Window::Minimized(bool minimized)->Window &
     {
         if (minimized)
             SDL_MinimizeWindow(GetWindow(impl->target));
@@ -293,8 +291,7 @@ namespace SDG
         return *this;
     }
 
-    Window &
-    Window::MinimumSize(Point size)
+    auto Window::MinimumSize(Point size)->Window &
     {
         if (size.X() < 1)
         {
@@ -319,8 +316,7 @@ namespace SDG
         return *this;
     }
 
-    Window &
-    Window::MaximumSize(Point size)
+    auto Window::MaximumSize(Point size)->Window &
     {
         if (size.X() < 1)
         {
@@ -345,22 +341,19 @@ namespace SDG
     }
     /* end Window::MaximumSize */
 
-    Window &
-    Window::MouseGrabbed(bool mouseGrabbed)
+    auto Window::MouseGrabbed(bool mouseGrabbed)->Window &
     {
         SDL_SetWindowMouseGrab(GetWindow(impl->target), (SDL_bool)mouseGrabbed);
         return *this;
     }
 
-    Window &
-    Window::AlwaysOnTop(bool alwaysOnTop)
+    auto Window::AlwaysOnTop(bool alwaysOnTop)->Window &
     {
         SDL_SetWindowAlwaysOnTop(GetWindow(impl->target), (SDL_bool)alwaysOnTop);
         return *this;
     }
 
-    Window &
-    Window::Hidden(bool hidden)
+    auto Window::Hidden(bool hidden)->Window &
     {
         if (hidden)
             SDL_HideWindow(GetWindow(impl->target));
@@ -370,8 +363,7 @@ namespace SDG
         return *this;
     }
 
-    Window &
-    Window::Icon(const Texture &texture)
+    auto Window::Icon(const Texture &texture)->Window &
     {
         SDL_Surface *surf = GPU_CopySurfaceFromImage((GPU_Image *)texture.Image());
         if (!surf)
@@ -389,34 +381,34 @@ namespace SDG
 
     // ========= Getters ======================================================
 
-    String
-    Window::Title() const
+    auto Window::Title() const->String
     {
         return impl->title;
     }
 
-    Point
-    Window::Size() const
+    auto Window::Size() const->Point
     {
         return impl->target->Size();
     }
 
-    bool
-    Window::Fullscreen() const
+    auto Window::Fullscreen() const->bool
     {
         return GPU_GetFullscreen();
     }
 
-    bool
-    Window::Bordered() const
+    auto Window::Bordered() const->bool
     {
         return (Flags() & SDL_WINDOW_BORDERLESS) != SDL_WINDOW_BORDERLESS;
     }
 
-    URef<RenderTarget>
-    Window::Target() const
+    auto Window::Target() const->Ref<const RenderTarget>
     {
-        return impl->target;
+        return impl->target.Get();
+    }
+
+    auto Window::Target()->Ref<RenderTarget>
+    {
+        return impl->target.Get();
     }
 
     bool
@@ -425,16 +417,16 @@ namespace SDG
         return (Flags() & SDL_WINDOW_RESIZABLE);
     }
 
-    Point
-    Window::Resolution() const
+    auto
+    Window::Resolution() const->Point
     {
         Uint16 x, y;
-        GPU_GetVirtualResolution((GPU_Target *)impl->target->Target(), &x, &y);
+        GPU_GetVirtualResolution((GPU_Target *)impl->target->Target().Get(), &x, &y);
         return {x, y};
     }
 
-    Point
-    Window::Position() const
+    auto
+    Window::Position() const->Point
     {
         int x, y;
         SDL_GetWindowPosition(GetWindow(impl->target), &x, &y);
@@ -442,77 +434,74 @@ namespace SDG
         return {x, y};
     }
 
-    bool
-    Window::Minimized() const
+    auto
+    Window::Minimized() const->bool
     {
         return (Flags() & SDL_WINDOW_MINIMIZED);
     }
 
-    bool
-    Window::Hidden() const
+    auto
+    Window::Hidden() const->bool
     {
         return (Flags() & SDL_WINDOW_HIDDEN);
     }
 
-    uint32_t
-    Window::Flags() const
+    auto
+    Window::Flags() const->uint32_t
     {
         return (uint32_t)SDL_GetWindowFlags(GetWindow(impl->target));
     }
 
-    Rectangle
-    Window::Viewport() const
+    auto
+    Window::Viewport() const->Rectangle
     {
         return impl->target->Viewport();
     }
 
-    uint32_t
-    Window::Id() const
+    auto
+    Window::Id() const->uint32_t
     {
         return impl->target->Target()->context->windowID;
     }
 
-    Point Window::ClientSize() const
+    auto
+    Window::ClientSize() const->Point
     {
         int w, h;
         SDL_GL_GetDrawableSize(GetWindow(impl->target), &w, &h);
         return {w, h};
     }
 
-    Point Window::MinimumSize() const
+    auto Window::MinimumSize() const->Point
     {
         int x, y;
         SDL_GetWindowMinimumSize(GetWindow(impl->target), &x, &y);
         return {x, y};
     }
 
-    Point Window::MaximumSize() const
+    auto Window::MaximumSize() const->Point
     {
         int x, y;
         SDL_GetWindowMaximumSize(GetWindow(impl->target), &x, &y);
         return {x, y};
     }
 
-    bool
-    Window::MouseGrabbed() const
+    auto Window::MouseGrabbed() const->bool
     {
         return (Flags() & SDL_WINDOW_MOUSE_GRABBED);
     }
 
-    bool
-    Window::AlwaysOnTop() const
+    auto Window::AlwaysOnTop() const->bool
     {
         return (Flags() & SDL_WINDOW_ALWAYS_ON_TOP);
     }
 
-    Ref< const Texture >
-    Window::Icon() const
+    auto Window::Icon() const->Ref<const Texture>
     {
         return impl->icon;
     }
 
-    bool
-    Window::IsOpen() const
+    auto Window::IsOpen() const->bool
     {
         return impl->target->IsOpen();
     }

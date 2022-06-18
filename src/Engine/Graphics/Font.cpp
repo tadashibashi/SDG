@@ -103,7 +103,7 @@ namespace SDG
 
         NFont::Effect effect(nAlign, {scale.X(), scale.Y()}, {color.R(), color.G(), color.B(), color.A()});
 
-        impl->font->draw(target->Target(), position.X(), position.Y(), effect, "%s", str);
+        impl->font->draw(target->Target().Get(), position.X(), position.Y(), effect, "%s", str);
     }
 
     int Font::Spacing() const

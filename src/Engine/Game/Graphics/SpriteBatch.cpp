@@ -1,9 +1,7 @@
-//
-// Created by aishi on 4/24/2022.
-//
 #include "SpriteBatch.h"
-#include "RenderTarget.h"
-#include "Private/TranslateFlip.h"
+#include <Engine/Graphics/RenderTarget.h>
+#include <Engine/Graphics/Private/Conversions.h>
+#include <Engine/Graphics/Private/TranslateFlip.h>
 
 #include <Engine/Debug/Assert.h>
 
@@ -32,7 +30,7 @@ namespace SDG
     }
 
     bool
-    SpriteBatch::Initialize(URef<Window> context)
+    SpriteBatch::Initialize(Ref<Window> context)
     {
         const uint8_t data[4]{ UINT8_MAX, UINT8_MAX, UINT8_MAX, UINT8_MAX };
         bool didLoad = pixel.LoadPixels(context.Get(), 1, 1, data);
@@ -50,7 +48,7 @@ namespace SDG
         float *lastMatrix = GPU_GetCurrentMatrix();
 
         // Set the graphics state
-        GPU_Target *gpuTarget = target->Target();
+        GPU_Target *gpuTarget = target->Target().Get();
         if (gpuTarget != lastTarget)
             GPU_SetActiveTarget(gpuTarget);
         if (matrix->Data() != lastMatrix)

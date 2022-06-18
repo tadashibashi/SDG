@@ -1,5 +1,5 @@
 #include "SDG_Tests.h"
-#include <Engine/Graphics/Frame.h>
+#include <Engine/Game/Graphics/Frame.h>
 #include <Engine/Graphics/Texture.h>
 
 TEST_CASE("Frame tests", "[Frame]")

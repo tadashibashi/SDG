@@ -19,20 +19,20 @@ namespace SDG
     class Frame
     {
     public:
-        Frame() : frameRect(), origRect(), rotated(), anchor(), name(), 
+        Frame() : frameRect(), origRect(), rotated(), anchor(), 
             texture() { }
         Frame(const Rectangle &frame, const Rectangle &origRect, bool rotated,
-            const Point &anchor, const String &name, const Texture *texture) :
+            const Point &anchor, const Texture *texture) :
                       frameRect(frame), origRect(origRect), rotated(rotated),
-                      anchor(anchor), name(name), texture(texture) { }
+                      anchor(anchor), texture(texture) { }
 
         /// Gets the source Rect
-        const Rectangle &FrameRect() const noexcept { return frameRect;  }
+        [[nodiscard]] auto FrameRect() const noexcept -> const Rectangle & { return frameRect;  }
         /// Gets the full original size of the image
-        const Rectangle &ImageRect() const noexcept { return origRect;  }
+        [[nodiscard]] auto ImageRect() const noexcept -> const Rectangle & { return origRect;  }
 
         /// The difference between the original image rect and the frame
-        Rectangle OffsetRect() const noexcept
+        [[nodiscard]] auto OffsetRect() const noexcept -> Rectangle
         { 
             return Rectangle(
                     origRect.X() - frameRect.X(),
@@ -42,22 +42,18 @@ namespace SDG
         }
 
         /// Gets the angle; either 0 or 90 degrees
-        float Angle() const noexcept { return rotated ? 90.f : 0;  }
+        [[nodiscard]] auto Angle() const noexcept -> float { return rotated ? 90.f : 0;  }
 
-        Point Anchor() const noexcept { return anchor; }
+        [[nodiscard]] auto Anchor() const noexcept -> Point { return anchor; }
 
         /// Gets the texture from which this frame originates
-        const Texture *Texture() const noexcept { return texture; }
-
-        /// Gets the frame name
-        const String &Name() const noexcept { return name; }
-
+        [[nodiscard]] auto Texture() const noexcept -> const Texture * { return texture; }
+        
     private:
         Point anchor;
         Rectangle frameRect;
         Rectangle origRect;
         bool rotated;
         const class Texture *texture;
-        String name;
     };
 }

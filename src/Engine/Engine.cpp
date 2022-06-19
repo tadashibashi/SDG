@@ -1,13 +1,12 @@
 /// App implementation file
 #include "Engine.h"
-#include <Engine/Exceptions/AssertionException.h>
 #include <Engine/Debug/Assert.h>
 #include <Engine/Debug/Log.h>
-#include <Engine/Input/Input.h>
+#include <Engine/Exceptions/AssertionException.h>
 #include <Engine/Filesys/Filesys.h>
 #include <Engine/Game/Datatypes/AppConfig.h>
-
 #include <Engine/Graphics/WindowMgr.h>
+#include <Engine/Input/Input.h>
 #include <Engine/Platform.h>
 
 #include <SDL.h>
@@ -47,7 +46,7 @@ namespace SDG
         // Get game settings from config file
         AppConfig config;
         config.LoadJson(BasePath(configPath));
-        impl->Initialize(std::move(config));
+        impl->Initialize(config);
     }
 
     Engine::~Engine()
@@ -111,15 +110,14 @@ namespace SDG
     }
 
 
-    void
-    Engine::RunOneFrame()
+    auto Engine::RunOneFrame() -> void
     {
         try {
             ProcessInput();
             Update_();
             Render_();
         }
-        catch(const Exception &e)
+        catch (const Exception &e)
         {
             SDG_Core_Err("{}", e.what());
             Exit();
@@ -127,8 +125,7 @@ namespace SDG
     }
 
 
-    void
-    Engine::Close_()
+    auto Engine::Close_() -> void
     {
         Close(); // Child class clean up
         InputDriver::Close();
@@ -138,8 +135,8 @@ namespace SDG
     }
 
 
-    void
-    Engine::Run()
+
+    auto Engine::Run() -> void
     {
         if (int err = Initialize_() != 0)
         {
@@ -156,8 +153,8 @@ namespace SDG
     #endif
     }
 
-    void
-    SDG::Engine::Exit()
+
+    auto SDG::Engine::Exit() -> void
     {
         impl->isRunning = false;
     #if (SDG_TARGET_WEBGL) // since emscripten's main loop is infinite, we need to immediately exit.
@@ -166,41 +163,39 @@ namespace SDG
     #endif
     }
 
-    Ref<Window>
-    Engine::MainWindow()
+    auto Engine::MainWindow() -> Ref<Window>
     {
         SDG_Assert(impl->mainWindow);
         return impl->mainWindow;
     }
 
-    Ref<WindowMgr>
-    Engine::Windows()
+
+    auto Engine::Windows() -> Ref<WindowMgr>
     {
         return impl->windows.Get();
     }
 
-    void
-    Engine::Update_()
+
+    auto Engine::Update_() -> void
     {
         impl->time.Update();
         Update();
     }
 
-    void
-    Engine::Render_()
+
+    auto Engine::Render_() -> void
     {
         Render();
         impl->windows->SwapBuffers();
     }
 
-    Ref< const AppTime>
-    Engine::Time()
+
+    auto Engine::Time() -> Ref<const AppTime>
     {
         return impl->time;
     }
 
-    const String &
-    Engine::Name() const
+    auto Engine::Name() const -> const String &
     {
         return impl->config.appName;
     }

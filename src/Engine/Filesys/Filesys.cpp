@@ -3,6 +3,7 @@
 #include <Engine/Debug/Assert.h>
 #include <Engine/Exceptions/RuntimeException.h>
 #include <Engine/Filesys/Path.h>
+#include <Engine/Lib/String.h>
 
 #include <SDL_error.h>
 #include <SDL_filesystem.h>
@@ -36,9 +37,8 @@ SDG::Filesys::BasePath()
         char *temp = SDL_GetBasePath();
         if (!temp)
         {
-            throw RuntimeException(
-                    String("Problem retrieving BasePath: ") +
-                    SDL_GetError());
+            throw RuntimeException(String::Format("Problem retrieving BasePath: {}",
+                    SDL_GetError()));
         }
         basePath = temp;
         SDL_free(temp);

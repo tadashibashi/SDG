@@ -36,24 +36,24 @@ namespace SDG
             x(x), y(y), w(size.X()), h(size.Y()) { }
 
         /// Gets the horizontal position of the rectangle.
-        [[nodiscard]] T X() const noexcept { return x; }
+        [[nodiscard]] inline auto X() const noexcept { return x; }
         /// Sets the horizontal position of the rectangle.
-        Rect_ &X(T pX) noexcept { x = pX; return *this; }
+        inline Rect_ &X(T pX) noexcept { x = pX; return *this; }
 
         /// Gets the vertical position of the rectangle.
-        [[nodiscard]] T Y() const noexcept { return y; }
+        [[nodiscard]] inline auto Y() const noexcept { return y; }
         /// Sets the vertical position of the rectangle.
-        Rect_ &Y(T pY) noexcept { y = pY; return *this; }
+        inline Rect_ &Y(T pY) noexcept { y = pY; return *this; }
 
         /// Gets the width of the rectangle.
-        [[nodiscard]] T Width() const noexcept { return w; }
+        [[nodiscard]] inline auto Width() const noexcept { return w; }
         /// Sets the width of the rectangle.
-        Rect_ &Width(T pW) { w = pW; return *this; }
+        inline Rect_ &Width(T pW) { w = pW; return *this; }
 
         /// Gets the height of the rectangle.
-        [[nodiscard]] T Height() const noexcept { return h; }
+        [[nodiscard]] inline auto Height() const noexcept { return h; }
         /// Sets the height of the rectangle.
-        Rect_ &Height(T pH) noexcept { h = pH; return *this; }
+        inline Rect_ &Height(T pH) noexcept { h = pH; return *this; }
 
         /// Sets the members of the rectangle.
         Rect_ &Set(T pX, T pY, T width, T height) noexcept;

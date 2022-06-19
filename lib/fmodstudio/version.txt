@@ -1,0 +1,1 @@
+Current FMOD Studio version: 2.02.07

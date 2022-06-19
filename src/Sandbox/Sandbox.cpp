@@ -2,6 +2,11 @@
 #include <Engine/Graphics/Font.h>
 #include <Engine/Filesys/Xml.h>
 #include <Engine/Filesys/Json.h>
+#include <Engine/Audio/AudioEngine.h>
+#include <fmod_errors.h>
+
+#include <Engine/Game/Graphics/SpriteRenderer.h>
+
 using namespace SDG;
 
 class Sandbox : public Engine 
@@ -21,14 +26,18 @@ private:
     Font font;
     Camera2D camera;
     SpriteBatch spriteBatch;
-
+    AudioEngine audio;
+    AudioChannel channel;
+    FMOD::DSP *flange;
     float angle = 0;
     Matrix4x4 mat = Matrix4x4::Identity();
     Vector2 pos;
+    SpriteRenderer sprite;
 
     int Initialize() override
     {
         spriteBatch.Initialize(MainWindow());
+        audio.Initialize();
         LoadContent();
         return 0;
     }
@@ -36,19 +45,7 @@ private:
 
     void LoadContent()
     {
-        //if (font.Load(BasePath("assets/fonts/CourierPrimeCode.sdgc"), 32))
-        //{
-        //    text = font.CreateTextSolid(MainWindow(), "Hello", Color::MediumPurple());
-        //    if (text)
-        //    {
-        //        SDG_Core_Log("Loaded texture: dimensions: {}", text->Size());
-        //        text->FilterMode(TexFilter::Linear).Blending(true).SnapMode(TexSnap::PositionAndDimensions);
-        //    }
-        //}
-        //else
-        //{
-        //    SDG_Core_Warn("Failed to load font!\n");
-        //}
+        // Load pixels into a Texture
         uint8_t pixs[] = {
             255, 255, 255, 255,
             0, 255, 0, 255,
@@ -57,6 +54,7 @@ private:
         };
 
         pixels.LoadPixels(MainWindow().Get(), 2, 2, pixs);
+
         font.Load(MainWindow().Get(), BasePath("assets/fonts/CourierPrimeCode.sdgc"), 32, FontStyle::Bold | FontStyle::Italic);
         camera.PivotPoint({320, 240});
         kirby.Load(MainWindow().Get(), BasePath("assets/textures/DawSession.sdgc"));
@@ -84,8 +82,13 @@ private:
                 SDG_Log("Tile data: {}", str);
             }
         }
-        
-        
+
+        audio.CoreSystem()->createDSPByType(FMOD_DSP_TYPE_FLANGE, &flange);
+        flange->setWetDryMix(0, .1f, .9f);
+        channel = audio.PlayStream( BasePath("assets/audio/test.sdgc"), Loop::Normal, true );
+        channel.GetChannel()->addDSP(0, flange);
+        channel.Set3DAttributes({ 0, 0, -1.f }, Vector3::Zero());
+        channel.Reverb(0, 1.f);
     }
 
     void Update() override
@@ -103,6 +106,21 @@ private:
         if (Input::KeyPressed(Key::Space))
         {
             SDG_Core_Log("Seconds since game start: {}", Time()->As(TimeUnit::Seconds));
+
+            channel.Paused(!channel.Paused(), 1.f);
+        }
+
+        if (Input::KeyPressed(Key::Return))
+        {
+            if (channel.IsPlaying())
+            {
+                channel.Stop(1.f);
+            }
+            else
+            {
+                channel = audio.PlayStream(BasePath("assets/audio/test.sdgc"), Loop::Normal, true);
+                channel.Set3DAttributes({ 0, 0, -1.f }, Vector3::Zero());
+            }
         }
 
         if (Input::KeyPressed(Key::S) && Input::KeyPress(Key::V))
@@ -151,11 +169,19 @@ private:
         if (MainWindow()->IsOpen())
         {
             if (Input::KeyPress(Key::Right))
-                camera.Translate(Vector2{ 10, 0 }), 
+            {
+                camera.Translate(Vector2{ 10, 0 });
                 pos.X(pos.X() - 100);
+                channel.Set3DAttributes(channel.Position() - Vector3{ .1f, 0, 0 }, Vector3{-.1f, 0, 0});
+            }
+
             if (Input::KeyPress(Key::Left))
-                camera.Translate(Vector2{ -10, 0 }), 
+            {
+                camera.Translate(Vector2{ -10, 0 });
                 pos.X(pos.X() + 100);
+                channel.Set3DAttributes(channel.Position() + Vector3{ .1f, 0, 0 }, Vector3{ .1f, 0, 0 });
+            }
+
             if (Input::KeyPress(Key::Up))
                 camera.Translate({0, -10});
             if (Input::KeyPress(Key::Down))
@@ -177,6 +203,8 @@ private:
         {
             angle = fmod(angle + Input::MouseWheel().Y(), 360.f);
         }
+
+        audio.Update();
     }
 
 
@@ -239,7 +267,9 @@ private:
 
     void Close() override
     {
-
+        auto result = flange->release();
+        if (result != FMOD_OK)
+            SDG_Err("Failed to release flange: {}", FMOD_ErrorString(result));
     }
 };
 

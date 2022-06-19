@@ -1,10 +1,9 @@
 /*!
- * @file    GameTime.h
- * @project SDG_Engine
+ * @file    GameTime.h - SDG_Engine
  * @author  Aaron Ishibashi
  *
  * @class GameTime
- * @description This class tracks the total time passed since execution and
+ * This class tracks the total time passed since execution and
  * the time that has passed since last frame. It is owned by class Game.
  *
  */
@@ -17,7 +16,7 @@
 namespace SDG
 {
 
-    /// Class for tracking total time passed since execution and delta time.
+    // Class for tracking total time passed since execution and delta time.
     class AppTime
     {
         static const unsigned DefaultMaxDeltaTicks = 64;
@@ -45,7 +44,7 @@ namespace SDG
         /// Returns the number of ticks at the moment this function is called.
         /// Use AppTime() to get the number of ticks passed since the beginning of
         /// this frame.
-        [[nodiscard]] Duration Now() const;
+        [[nodiscard]] static Duration Now() ;
 
     private:
         uint64_t ticks_, deltaTicks_;

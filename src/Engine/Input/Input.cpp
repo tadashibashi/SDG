@@ -7,7 +7,6 @@
 #include <Engine/Platform.h>
 
 #include <SDL_events.h>
-
 #include <vector>
 
 namespace SDG

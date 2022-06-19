@@ -237,8 +237,8 @@ namespace SDG
    
     auto Window::ClientSize(Point size)->Window &
     {
-        SDL_SetWindowSize(GetWindow(impl->target), size.W(), size.H());
-        On.SizeChange.TryInvoke(impl->target->Size().W(), impl->target->Size().H());
+        SDL_SetWindowSize(GetWindow(impl->target), size.X(), size.Y());
+        On.SizeChange.TryInvoke(impl->target->Size().X(), impl->target->Size().Y());
         return *this;
     }
 
@@ -248,7 +248,7 @@ namespace SDG
         bool lastFullscreen = GPU_GetFullscreen();
         GPU_SetFullscreen(fullscreen, SDG_TARGET_DESKTOP);
         if (lastFullscreen != fullscreen)
-            On.SizeChange.TryInvoke(impl->target->Size().W(), impl->target->Size().H());
+            On.SizeChange.TryInvoke(impl->target->Size().X(), impl->target->Size().Y());
         return *this;
     }
 

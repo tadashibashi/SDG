@@ -275,7 +275,12 @@ namespace SDG
         }
     };
 
-    [[nodiscard]] String operator "" _s(const char *);
+    
+}
+
+[[nodiscard]] inline SDG::String operator "" _s(const char *str)
+{
+    return SDG::String(str);
 }
 
 #include <utility>

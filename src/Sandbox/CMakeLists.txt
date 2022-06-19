@@ -5,7 +5,7 @@ if (EMSCRIPTEN) # -sASYNCIFY
             -sINITIAL_MEMORY=268435456 -sALLOW_MEMORY_GROWTH \
             -sUSE_WEBGL2=1 -sWASM=2 -sMAX_WEBGL_VERSION=2 \
             -sLLD_REPORT_UNDEFINED -sNO_DISABLE_EXCEPTION_CATCHING \
-            -sUSE_SDL=2 -sUSE_SDL_TTF=2 -O0")
+            -sUSE_SDL=2 -sUSE_SDL_TTF=2 -O0 -s EXPORTED_RUNTIME_METHODS=['cwrap','setValue','getValue']")
 
     # Emscripten flag feature research:
     # Exceptions https://emscripten.org/docs/porting/exceptions.html

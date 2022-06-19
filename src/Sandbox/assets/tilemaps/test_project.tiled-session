@@ -3,11 +3,22 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "testmap.tmx",
+    "activeFile": "C:/Users/aishi/Desktop/sdg-engine/Asteroids/assets/levels/level1.tmx",
     "expandedProjectPaths": [
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
+        "C:/Users/aishi/Desktop/sdg-engine/Asteroids/assets/levels/level1.tmx": {
+            "scale": 0.64384765625,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 256.27180342787807,
+                "y": 257.04838465038677
+            }
+        },
+        "C:/Users/aishi/Desktop/sdg-engine/Asteroids/assets/levels/level1.tmx#floortileset": {
+            "scaleInDock": 1
+        },
         "testmap..tmx": {
             "scale": 0.8201171875,
             "selectedLayer": 0,
@@ -58,11 +69,12 @@
     "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
     "map.lastUsedFormat": "tmx",
     "openFiles": [
-        "testmap.tmx"
+        "C:/Users/aishi/Desktop/sdg-engine/Asteroids/assets/levels/level1.tmx"
     ],
     "project": "test_project.tiled-project",
     "property.type": "Weapon",
     "recentFiles": [
+        "C:/Users/aishi/Desktop/sdg-engine/Asteroids/assets/levels/level1.tmx",
         "testmap2.tmx",
         "testmap..tmx",
         "testmap.tmx"

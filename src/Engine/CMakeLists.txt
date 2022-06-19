@@ -123,7 +123,9 @@ add_library(SDG_Engine STATIC
         
   "Graphics/Font.h" "Graphics/Font.cpp" "Lib/Enum.h" "Lib/Private/Fmt.h" "Exceptions/UncaughtCaseException.h" "Lib/Array.inl" "Lib/Delegate.inl" "FileSys/Xml/XmlElement.h" "FileSys/Xml/XmlElement.cpp" "FileSys/Xml/XmlAttribute.h" "FileSys/Xml/XmlAttribute.cpp" "FileSys/Xml/XmlDocument.h" "FileSys/Xml/XmlDocument.cpp" "FileSys/Xml/Private/XmlDocument_Impl.h"  "Exceptions/XmlValidationException.h" "FileSys/Xml/XmlValidation.h" "Exceptions/XmlValidationException.cpp" "Game/Datatypes/AppConfig.cpp" "Exceptions/XmlFormattingException.h" "Graphics/Private/NFont.h" 
  "Lib/Version.h" "Lib/Version.cpp" "Lib/Platform.cpp" "Debug/Private/spdlog.h" "Lib/RAIterator.h" "Lib/ConstRAIterator.h" "Exceptions/Fwd.h" "Exceptions/Fwd.cpp" "Lib/Algorithm.h" "Lib/TypeTraits.h" "Lib/Concepts.h" "Lib/Int.h" 
- "Dynamic/Object.h" "Dynamic/Struct.h" "Dynamic/Struct.cpp" "Dynamic/Object.cpp" "Dynamic/Array.h"  "Dynamic/Array.cpp"   "Filesys/Json.h" "Filesys/Json.cpp" "Exceptions/XmlException.h"   "Exceptions/LogicException.h" "Exceptions/DomainException.h" "Exceptions/FileLoadingException.h" "Filesys/Json/JsonLoadable.h" "Filesys/Json/JsonLoadable.cpp" "Game/Graphics/Tilemap.h" "Game/Graphics/Tilemap.cpp" "Game/Graphics/Tile.h" "Game/Graphics/Tile.cpp"  "Game/Graphics/Tileset.h"  "Game/Graphics/Tileset.cpp")
+ "Dynamic/Object.h" "Dynamic/Struct.h" "Dynamic/Struct.cpp" "Dynamic/Object.cpp" "Dynamic/Array.h"  "Dynamic/Array.cpp"   "Filesys/Json.h" "Filesys/Json.cpp" "Exceptions/XmlException.h"   "Exceptions/LogicException.h" "Exceptions/DomainException.h" "Exceptions/FileLoadingException.h" "Filesys/Json/JsonLoadable.h" "Filesys/Json/JsonLoadable.cpp" "Game/Graphics/Tilemap.h" "Game/Graphics/Tilemap.cpp" "Game/Graphics/Tile.h" "Game/Graphics/Tile.cpp"  "Game/Graphics/Tileset.h"  "Game/Graphics/Tileset.cpp" "Graphics/Private/GPU_Target_Fwd.h"  "Audio/AudioEngine.h" "Audio/AudioEngine.cpp" "Game/Graphics/TextRenderer.h" "Game/Graphics/TextRenderer.cpp" "Audio/AudioChannel.h" "Audio/AudioChannel.cpp" "Audio/Private/FMOD.h" "Game/Graphics/Strip.h" "Game/Graphics/Strip.cpp")
+ 
+ find_package(FMOD REQUIRED)
 
 # -----  Includes  ----------------------------------------------------
 set(Engine_Includes
@@ -137,18 +139,17 @@ set(Engine_Includes
         ${CMAKE_SOURCE_DIR}/lib/nfont/SDL_FontCache
         ${CMAKE_SOURCE_DIR}/lib/json/include
         ${CMAKE_SOURCE_DIR}/lib/SDL_ttf
+        ${FMOD_Includes}
 )
+
+
 
 # ----- Libraries ---------------------------------------------------
 if (DEBUG)                                                 # Debug
     set(Engine_CompileDefs DEBUG=1)
     set(CONFIG_Libraries spdlog)
     if (WIN32)
-        if ("${CMAKE_BUILD_TYPE}" STREQUAL "RelWithDebInfo")
-            set(CONFIG_Libraries ${CONFIG_Libraries} SDL2 SDL2main)
-        else()
-            set(CONFIG_Libraries ${CONFIG_Libraries} SDL2 SDL2main)
-        endif()
+        set(CONFIG_Libraries ${CONFIG_Libraries} SDL2 SDL2main)
     else()
         set(CONFIG_Libraries ${CONFIG_Libraries} SDL2)
     endif()
@@ -174,7 +175,7 @@ elseif (LINUX)                                              # Linux
 
 elseif (EMSCRIPTEN)                                         # HTML5
     set(CMAKE_CXX_FLAGS "-O0 -sUSE_SDL=2 -sUSE_SDL_TTF=2 -fexceptions")
-    set(CMAKE_EXE_LINKER_FLAGS "-O0 -sASSERTIONS -sASYNCIFY -sUSE_WEBGL2=1 -sWASM=2 -sMAX_WEBGL_VERSION=2 -LLD_REPORT_UNDEFINED -sNO_DISABLE_EXCEPTION_CATCHING")
+    #set(CMAKE_STATIC_LINKER_FLAGS "-O0 -sASSERTIONS -sASYNCIFY -sUSE_WEBGL2=1 -sWASM=2 -sMAX_WEBGL_VERSION=2 -sNO_DISABLE_EXCEPTION_CATCHING ${FMOD_Emscripten_Flags}")
 endif()
 
 set (Engine_Libraries
@@ -190,5 +191,5 @@ if (NOT EMSCRIPTEN)
     target_precompile_headers  (SDG_Engine PRIVATE 
         "$<$<COMPILE_LANGUAGE:CXX>:${CMAKE_SOURCE_DIR}/src/Engine/Lib/Private/Pch.h>")
 endif()
-target_link_libraries      (SDG_Engine PUBLIC ${Engine_Libraries})
+target_link_libraries      (SDG_Engine PUBLIC ${Engine_Libraries} ${FMOD_Libraries})
 target_compile_definitions (SDG_Engine PUBLIC ${Engine_CompileDefs} "FC_USE_SDL_GPU")

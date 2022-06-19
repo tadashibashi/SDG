@@ -15,7 +15,7 @@ namespace SDG
         ticks_ = currentTicks;
     }
 
-    Duration AppTime::Now() const
+    Duration AppTime::Now()
     {
         return Duration(SDL_GetTicks64());
     }

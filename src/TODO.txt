@@ -1,7 +1,9 @@
 TODO:
 - Test SpriteRenderer
 - Text Renderer
-- Audio FMOD or Mixer...
+x Audio FMOD
+    - works in HTML5
+
 - Tile layer rendering
 - Tiled Map loading
 - Static (blit to a texture target once) and dynamic tile maps (blits every time a change occurs)

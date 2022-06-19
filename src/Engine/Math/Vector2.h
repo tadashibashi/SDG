@@ -20,7 +20,6 @@ namespace SDG
             // Width and Height. Not to be confused with the xyzw paradigm.
             struct { T w, h; };
         };
-
     public:
         constexpr Vec2_() : x(0), y(0) { }
         constexpr Vec2_(T x, T y) : x(x), y(y) { }
@@ -38,15 +37,11 @@ namespace SDG
             }
         }
 
-        [[nodiscard]] T X() const { return x; }
-        [[nodiscard]] T Y() const { return y; }
-        [[nodiscard]] T W() const { return w; }
-        [[nodiscard]] T H() const { return h; }
+        [[nodiscard]] inline auto X() const { return x; }
+        [[nodiscard]] inline auto Y() const { return y; }
 
-        Vec2_ &X(T pX) { x = pX; return *this; }
-        Vec2_ &Y(T pY) { y = pY; return *this; }
-        Vec2_ &W(T pW) { w = pW; return *this; }
-        Vec2_ &H(T pH) { h = pH; return *this; }
+        inline Vec2_ &X(T pX) { x = pX; return *this; }
+        inline Vec2_ &Y(T pY) { y = pY; return *this; }
 
         Vec2_ &Set(T pX, T pY)
         {

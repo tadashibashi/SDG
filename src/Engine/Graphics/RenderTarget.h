@@ -14,9 +14,7 @@
 #include <Engine/Lib/Ref.h>
 #include <Engine/Math/Circle.h>
 
-// forward declaration
-struct GPU_Target;
-typedef struct GPU_Target GPU_Target;
+#include "Private/GPU_Target_Fwd.h"
 
 namespace SDG
 {

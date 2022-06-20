@@ -36,8 +36,6 @@ TEST_CASE("Vector2 tests", "[Vector2]")
             REQUIRE(vec.X() == 0);
             REQUIRE(vec.Y() == 0);
 
-            REQUIRE(vec.W() == 0);
-            REQUIRE(vec.H() == 0);
 
             // Test indexer
             REQUIRE(vec[0] == 0);
@@ -50,8 +48,6 @@ TEST_CASE("Vector2 tests", "[Vector2]")
             REQUIRE(vec.X() == -1);
             REQUIRE(vec.Y() == 25);
 
-            REQUIRE(vec.W() == -1);
-            REQUIRE(vec.H() == 25);
 
             // Test indexer
             REQUIRE(vec[0] == -1);
@@ -78,15 +74,6 @@ TEST_CASE("Vector2 tests", "[Vector2]")
             v.X(10).Y(10);
             REQUIRE(v.X() == 10);
             REQUIRE(v.Y() == 10);
-        }
-        SECTION("W and H") // {x, y} unioned with {w, h}
-        {
-            Vector2 v;
-            v.W(10).H(10);
-            REQUIRE(v.X() == 10);
-            REQUIRE(v.Y() == 10);
-            REQUIRE(v.W() == 10); // union produces same result
-            REQUIRE(v.H() == 10);
         }
         SECTION("Set")
         {

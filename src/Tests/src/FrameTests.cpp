@@ -6,14 +6,13 @@ TEST_CASE("Frame tests", "[Frame]")
 {
     Texture *tex = nullptr;
 
-    Frame frame(Rectangle{ 0, 0, 32, 32 }, Rectangle{ 0, 0, 64, 64 }, true,
-        Point(16, 16), "TestFrame", tex);
+    Frame frame(Rect_<uint16_t>{ 0, 0, 32, 32 }, Rect_<uint16_t>{ 0, 0, 64, 64 }, true,
+        Vec2_<uint16_t>(16, 16), tex);
 
-    REQUIRE(frame.Anchor() == Point(16, 16));
-    REQUIRE(frame.Angle() == 90.f);
-    REQUIRE(frame.FrameRect() == Rectangle(0, 0, 32, 32));
-    REQUIRE(frame.ImageRect() == Rectangle(0, 0, 64, 64));
-    REQUIRE(frame.Name() == "TestFrame");
+    REQUIRE(frame.Anchor() == Vec2_<uint16_t>(16, 16));
+    REQUIRE(frame.Angle() == -90.f);
+    REQUIRE(frame.FrameRect() == Rect_<uint16_t>(0, 0, 32, 32));
+    REQUIRE(frame.ImageRect() == Rect_<uint16_t>(0, 0, 64, 64));
     REQUIRE(frame.Texture() == nullptr);
-    REQUIRE(frame.OffsetRect() == Rectangle(0, 0, 32, 32));
+    REQUIRE(frame.OffsetPos(false) == Point::Zero());
 }

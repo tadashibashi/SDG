@@ -5,7 +5,6 @@
 #include <string>
 #include <crunch.hpp>
 #include <nlohmann/json.hpp>
-
 #include "ContentCache.h"
 
 namespace fs = std::filesystem;
@@ -15,7 +14,12 @@ const std::string CacheFilename = "SDG_ContentCache.txt";
 
 void PrintManual()
 {
-    std::cout << "SDG_ContentPipe <assetDir> <outDir> <encryptionKey> <configPath>\n";
+    std::cout << "SDG_ContentPipe <assetDir> <outDir> <encryptionKey> <configPath>\n\n"
+        << "  parameters:\n"
+        << "    assetDir      - project's asset directory\n"
+        << "    outDir        - output asset directory\n"
+        << "    encryptionKey - key to encrypt files with\n"
+        << "    configPath    - path to config json file. An array of objects with \"type\" and \"path\" fields, indicating target assets to process and copy.\n";
 }
 
 void CreateAtlas(const std::string &sourceFolder, const std::string &dest)
@@ -40,10 +44,6 @@ void CreateAtlas(const std::string &sourceFolder, const std::string &dest)
     crunch(sizeof(args) / sizeof(void *), args);
 }
 
-void EncryptEntry(const std::string &sourcePath, const std::string &destPath)
-{
-
-}
 
 const char *OpenJson(std::string &path, nlohmann::json *json)
 {
@@ -57,7 +57,6 @@ const char *OpenJson(std::string &path, nlohmann::json *json)
     nlohmann::json j;
     try {
         j = nlohmann::json::parse(configFile);
-
     }
     catch (const nlohmann::detail::exception &e)
     {
@@ -92,7 +91,7 @@ void EncryptFile(std::ifstream &inFile, std::ofstream &outFile, const std::strin
 
 int main(int argc, char *argv[])
 {
-    std::cout << "Running ContentPipe. . .\n";
+    std::cout << "[ContentPipe] Processing assets. . .\n";
     if (argc < 5)
     {
         std::cout << "Not enough arguments provided to ContentPipe: \n";
@@ -144,7 +143,7 @@ int main(int argc, char *argv[])
                     if (!type.empty())
                         std::cout << " -> contains type \"" << type << "\"\n";
                 }
-                if (!pathExists)
+                if (!path.empty() && !pathExists)
                 {
                     std::cout << " (!) file at path \"" << path << "\" does not exist.\n";
                 }
@@ -208,7 +207,7 @@ int main(int argc, char *argv[])
 
                 EncryptFile(inFile, outFile, encryptionKey);
 
-                std::cout << "[Content] Encrypting file (" << relativePath.substr(1) << ")\n";
+                std::cout << "[ContentPipe] Encrypting file (" << relativePath.substr(1) << ")\n";
                 cache[relativePath] = writeTime;
             }
         }
@@ -216,6 +215,6 @@ int main(int argc, char *argv[])
 
     // Output changes to cache file
     cache.Write(CacheFilename);
-
+    std::cout << "[ContentPipe] Done!\n";
     return 0;
 }

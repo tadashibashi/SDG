@@ -1,18 +1,18 @@
 # [ SDG_Engine ] ====================================================
 # ----- Sources -----------------------------------------------------
 set(Engine_PrecompiledHeaders Lib/Private/Pch.h)
-set(TinyXML2_Sources
-        ${CMAKE_SOURCE_DIR}/lib/tinyxml2/tinyxml2.h
-        ${CMAKE_SOURCE_DIR}/lib/tinyxml2/tinyxml2.cpp)
-set(Nfont_Sources
-    ${CMAKE_SOURCE_DIR}/lib/nfont/NFont/NFont.cpp
-    ${CMAKE_SOURCE_DIR}/lib/nfont/NFont/NFont.h
-    ${CMAKE_SOURCE_DIR}/lib/nfont/SDL_FontCache/SDL_FontCache.c
-    ${CMAKE_SOURCE_DIR}/lib/nfont/SDL_FontCache/SDL_FontCache.h)
+
 #set(Engine_Sources
 add_library(SDG_Engine STATIC
-        ${TinyXML2_Sources}
-        ${Nfont_Sources}
+        # tinyxml2
+        ${CMAKE_SOURCE_DIR}/lib/tinyxml2/tinyxml2.h
+        ${CMAKE_SOURCE_DIR}/lib/tinyxml2/tinyxml2.cpp
+
+        # Nfont
+        ${CMAKE_SOURCE_DIR}/lib/nfont/NFont/NFont.cpp
+        ${CMAKE_SOURCE_DIR}/lib/nfont/NFont/NFont.h
+        ${CMAKE_SOURCE_DIR}/lib/nfont/SDL_FontCache/SDL_FontCache.c
+        ${CMAKE_SOURCE_DIR}/lib/nfont/SDL_FontCache/SDL_FontCache.h
 
         "Engine.cpp" "Engine.h"
         Game/AssetMgr.cpp Game/AssetMgr.h

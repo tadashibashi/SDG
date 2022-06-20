@@ -18,7 +18,7 @@ function(AddContentPipeline AssetDir Key)
 
     add_custom_target("${PROJECT_NAME}_Content"
             COMMAND "${ContentPipe_BinaryDir}/SDG_ContentPipe"
-            ${CMAKE_CURRENT_SOURCE_DIR}/${AssetDir} ${ContentPipe_AssetDir} ${Key})
+            ${CMAKE_CURRENT_SOURCE_DIR}/${AssetDir} ${ContentPipe_AssetDir} ${Key} ${CMAKE_CURRENT_SOURCE_DIR}/${AssetDir}/assets.json)
     add_dependencies(${PROJECT_NAME} "${PROJECT_NAME}_Content")
 
     if (NOT EMSCRIPTEN)

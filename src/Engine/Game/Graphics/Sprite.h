@@ -1,10 +1,10 @@
-/*!
- * @file Sprite.h
- * @namespace SDG
- * @class Sprite
- * Contains data and functions for sprite rendering
+/* ====================================================================================================================
+ * @file Sprite.h - SDG_Engine
+ * @author Aaron Ishibashi
  * 
- */
+ * @class Sprite
+ * Contains data for rendering an animation
+ * ==================================================================================================================*/
 #pragma once
 #include "Frame.h"
 #include <Engine/Lib/Array.h>
@@ -20,6 +20,8 @@ namespace SDG
         Sprite();
         Sprite(const String &name, const Array<Frame> &frames, 
             const Array<unsigned> &reel);
+
+        auto LoadFromStrip(const String &name, Ref<class Texture> texture, size_t frameCount, Vector2 anchor = { 0.5f, 0.5f }) -> bool;
 
         /// Only const indexers are available, fixed
         const Frame &operator [] (unsigned index) const;

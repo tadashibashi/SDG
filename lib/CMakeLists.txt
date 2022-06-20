@@ -29,3 +29,5 @@ if (MSVC)
     # occur. HAVE_M_PI set informs SDL2 to not provide an extra M_PI for us.
     set_property(TARGET SDL2 APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS HAVE_M_PI)
 endif()
+
+add_subdirectory(crunch)

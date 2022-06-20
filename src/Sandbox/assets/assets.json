@@ -1,0 +1,34 @@
+[
+	{
+		"type": "texture-atlas",
+		"path": "textures"
+	},
+	{
+		"type": "audio",
+		"path": "audio/test.mp3"
+	},
+	{
+		"type": "font",
+		"path": "fonts/CourierPrimeCode.ttf"
+	},
+	{
+		"type": "shader",
+		"subtype": "fragment",
+		"path": "shaders/f1.frag"
+	},
+	{
+		"type": "shader",
+		"subtype": "vertex",
+		"path": "shaders/v1.vert"
+	},
+	{
+		"type": "tilemap-project",
+		"subtype": "tiled-json",
+		"path": "tilemaps/test_project.tiled-project"
+	},
+	{
+		"type": "tiled",
+		"subtype": "tiled-json",
+		"path": "tilemaps/test_project.tmj"
+	}
+]

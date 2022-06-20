@@ -57,7 +57,8 @@ private:
 
         font.Load(MainWindow().Get(), BasePath("assets/fonts/CourierPrimeCode.sdgc"), 32, FontStyle::Bold | FontStyle::Italic);
         camera.PivotPoint({320, 240});
-        kirby.Load(MainWindow().Get(), BasePath("assets/textures/DawSession.sdgc"));
+        kirby.Load(MainWindow().Get(), BasePath("assets/atlases/textures0.png"));
+        kirby.FilterMode(Texture::Filter::Nearest);
         
         shader.Compile(BasePath("assets/shaders/v1.sdgc"), BasePath("assets/shaders/f1.sdgc"));
         

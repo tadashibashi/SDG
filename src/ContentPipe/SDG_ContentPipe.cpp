@@ -3,159 +3,219 @@
 #include <iostream>
 #include <map>
 #include <string>
+#include <crunch.hpp>
+#include <nlohmann/json.hpp>
 
-void ManPrint()
+#include "ContentCache.h"
+
+namespace fs = std::filesystem;
+using namespace std::string_literals;
+
+const std::string CacheFilename = "SDG_ContentCache.txt";
+
+void PrintManual()
 {
-    std::cout << "SDG_ContentPipe <assetDir> <outDir>\n";
+    std::cout << "SDG_ContentPipe <assetDir> <outDir> <encryptionKey> <configPath>\n";
 }
+
+void CreateAtlas(const std::string &sourceFolder, const std::string &dest)
+{
+    // Make sure the source textures exist
+    if (!fs::exists(sourceFolder))
+    {
+        std::cerr << "Error: failed to create texture atlas: source folder does not exist (" << sourceFolder << ")\n";
+        return;
+    }
+
+    // Create atlas parent folder if it doesn't exist
+    fs::path atlasFolder = fs::path(dest).parent_path();
+    if (!fs::exists(atlasFolder))
+    {
+        fs::create_directories(atlasFolder);
+    }
+
+    // Run crunch packer
+    const char *args[] = { "crunch", dest.c_str(), sourceFolder.c_str(),
+        "-j", "-v", "-u", "-t", "-r" };
+    crunch(sizeof(args) / sizeof(void *), args);
+}
+
+void EncryptEntry(const std::string &sourcePath, const std::string &destPath)
+{
+
+}
+
+const char *OpenJson(std::string &path, nlohmann::json *json)
+{
+    std::ifstream configFile;
+    configFile.open(path, std::ios::binary);
+    if (!configFile.is_open())
+    {
+        return "failed to open file";
+    }
+
+    nlohmann::json j;
+    try {
+        j = nlohmann::json::parse(configFile);
+
+    }
+    catch (const nlohmann::detail::exception &e)
+    {
+        return e.what();
+    }
+    catch (...)
+    {
+        return "unknown error";
+    }
+
+    if (json)
+        *json = std::move(j);
+
+    return nullptr;
+}
+
+void EncryptFile(std::ifstream &inFile, std::ofstream &outFile, const std::string &key)
+{
+    // Encrypt file
+    for (int i = 0; true; ++i)
+    {
+        unsigned char c = inFile.get();
+        if (inFile.eof() || inFile.bad())
+            break;
+        unsigned char add = key[i % key.length()];
+        c ^= ~add;
+        c = (unsigned char)(c + add - i);
+        outFile << c;
+    }
+}
+
 
 int main(int argc, char *argv[])
 {
-    // Get the arguments
-    if (argc < 4)
+    std::cout << "Running ContentPipe. . .\n";
+    if (argc < 5)
     {
-        ManPrint();
+        std::cout << "Not enough arguments provided to ContentPipe: \n";
+        PrintManual();
         return 1;
     }
     
-    std::string assetDir = argv[1], outDir = argv[2], encryptionKey = argv[3];
-    std::map<std::string, long long> cache;
-    std::ifstream cacheFile;
+    // Get the args
+    std::string assetDir = argv[1], outDir = argv[2], encryptionKey = argv[3], configPath = argv[4];
+    fs::directory_entry assetFolder(outDir);
 
-    // Open cache file and read into cache
-    cacheFile.open("SDG_ContentCache.txt");
-    if (cacheFile.is_open())
+    SDG::ContentPipe::ContentCache cache;
+    cache.Load(CacheFilename);
+
+    // Open asset config
+    nlohmann::json j;
     {
-        while (cacheFile)
-        {        
-            std::string line;
-            std::getline(cacheFile, line);
-            
-            if (cacheFile.bad())
-                break;
-            if (line.empty())
-                continue;
-
-            size_t commaPos = line.find_first_of(',');
-            std::string filename;
-            if (commaPos == std::string::npos)
-            {
-                std::cout << "Error: Missing a comma on line with text \"" << line << "\"\n";
-                continue;
-            }
-
-            filename = line.substr(0, commaPos);
-                
-            
-            long long lastEdited;
-            try {
-                lastEdited = std::stoll(line.substr(commaPos + 1));
-            }
-            catch (const std::invalid_argument &e)
-            {
-                std::cout << "Invalid timestamp on line with text \"" << line << "\"\n";
-                continue;
-            }
-            
-            cache[filename] = lastEdited;
-
-            // getline sets eof bit on reading the last line.
-            // That's why the check for eof occurs after reading.
-            if (cacheFile.eof())
-                break;
+        const char *result = OpenJson(configPath, &j);
+        if (result != 0)
+        {
+            std::cerr << "Failed to open or parse asset config json (" << configPath << "): " << result << '\n';
+            return 1; 
         }
     }
-    cacheFile.close();
 
-    // Create the asset folder if it doesn't exist
-    std::filesystem::directory_entry assetFolder(outDir);
-    if (!assetFolder.exists())
-        std::filesystem::create_directory(assetFolder.path());
-
-
-    // For each item in the user's asset directory...
-    std::filesystem::recursive_directory_iterator dir(assetDir);
-    for (auto &item : dir)
+    // For each asset in config
+    for (auto &assetInfo : j)
     {
-        long long writeTime      = item.last_write_time().time_since_epoch().count();
-        std::string relativePath = item.path().string().substr(assetDir.length());
-        std::string outFilePath = assetFolder.path().string() + relativePath;
+        // Get info from json
+        auto type = std::string{ assetInfo.value("type", "") };
+        auto path = assetInfo.value("path", "");
+        auto entry = fs::directory_entry(assetDir + "/" + path);
 
-        // Mirror folder structure in target path
-        if (item.is_directory())
+        // Validate info
         {
-            if (!std::filesystem::directory_entry(outFilePath).exists())
-                std::filesystem::create_directory(outFilePath);
-            continue;
+            bool pathExists = fs::exists(entry.path());
+            if (type.empty() || path.empty() || !pathExists)
+            {
+                std::cout << "Warning: skipping asset entry: \n";
+                if (type.empty())
+                {
+                    std::cout << " (!) missing \"type\" field\n";
+                    if (!path.empty())
+                        std::cout << " -> contains path \"" << path << "\"\n";
+                }
+                if (path.empty())
+                {
+                    std::cout << " (!) missing \"path\" field.\n";
+                    if (!type.empty())
+                        std::cout << " -> contains type \"" << type << "\"\n";
+                }
+                if (!pathExists)
+                {
+                    std::cout << " (!) file at path \"" << path << "\" does not exist.\n";
+                }
+                continue;
+            }
         }
 
-
-        auto it = cache.find(relativePath);
-        if (it == cache.end() || writeTime > it->second) // item is new or a newer version exists
+        // Perform task based on type   
+        if (type == "texture-atlas") // run crunch
         {
-            std::ifstream inFile;
-            std::ofstream outFile;
-            inFile.open(item.path().string(), std::ios::in | std::ios::binary);
+            auto relPath = assetInfo.at("path").get<std::string>();
+            CreateAtlas(assetDir + "/" + relPath, outDir + "/atlases/" + relPath);
 
-            // append .sdgc to files
+        }
+        else                         // copy as encrypted sdgc file
+        {
+            long long writeTime      = entry.last_write_time().time_since_epoch().count();
+            std::string relativePath = entry.path().string().substr(assetDir.length());
+            std::string outFilePath  = assetFolder.path().string() + relativePath;
+
+            // Make sure folder structure exists in target destination
             {
-                if (item.path().has_extension())
+                fs::path parent = fs::path(outFilePath).parent_path();
+                if (!fs::exists(parent))
+                    fs::create_directories(parent);
+            }
+        
+            if (cache.EntryIsNewer(relativePath, writeTime)) // item is new or a newer version exists
+            {
+                // Copy and encrypt file to new location
+                std::ifstream inFile;
+                std::ofstream outFile;
+                inFile.open(entry.path().string(), std::ios::binary);
+
+                // append .sdgc to files (marks encrypted status)
                 {
-                    size_t dotPos = outFilePath.find(item.path().extension().string());
-                    outFilePath = outFilePath.substr(0, dotPos) + ".sdgc";
+                    if (entry.path().has_extension())
+                    {
+                        size_t dotPos = outFilePath.find(entry.path().extension().string());
+                        outFilePath = outFilePath.substr(0, dotPos) + ".sdgc";
+                    }
+                    else
+                    {
+                        outFilePath += ".sdgc";
+                    }
                 }
-                else
+
+                // Write the new or updated file
+                outFile.open(outFilePath, std::ios::trunc | std::ios::binary);
+                if (!inFile.is_open())
                 {
-                    outFilePath += ".sdgc";
+                    std::cerr << "There was a problem opening file at path: " << entry.path() << '\n';
+                    continue;
                 }
-            }
+                if (!outFile.is_open())
+                {
+                    std::cerr << "There was a problem writing a file at path: " <<
+                        assetFolder.path().string() + entry.path().relative_path().string() << '\n';
+                    continue;
+                }
 
-            // Write the new or updated file
-            outFile.open(outFilePath,
-                    std::ios::out | std::ios::trunc | std::ios::binary);
-            if (!inFile.is_open())
-            {
-                std::cout << "There was a problem opening file at path: " << item.path() << '\n';
-                continue;
-            }
-            if (!outFile.is_open())
-            {
-                std::cerr << "There was a problem writing a file at path: " <<
-                    assetFolder.path().string() + item.path().relative_path().string() << '\n';
-                continue;
-            }
+                EncryptFile(inFile, outFile, encryptionKey);
 
-            // Encrypt file
-            for(int i = 0; true ; ++i)
-            {
-                unsigned char c = inFile.get();
-                if (inFile.eof() || inFile.bad())
-                    break;
-                unsigned char add = encryptionKey[i % encryptionKey.length()];
-                c ^= ~add;
-                c = (unsigned char)(c + add - i);
-                outFile << c;
+                std::cout << "[Content] Encrypting file (" << relativePath.substr(1) << ")\n";
+                cache[relativePath] = writeTime;
             }
-
-            std::cout << "[Content] Encrypting file (" << relativePath.substr(1) << ")\n";
-            cache[relativePath] = writeTime;
         }
     }
 
     // Output changes to cache file
-    std::ofstream outFile;
-    outFile.open("SDG_ContentCache.txt", std::ios::out | std::ios::trunc);
-    if (!outFile.is_open())
-    {
-        std::cerr << "There was a problem opening the SDG_ContentCache.txt file while caching data.\n";
-        return 1;
-    }
-
-    for (auto & [k, v] : cache)
-    {
-        outFile << k << "," << v << '\n';
-    }
-    outFile.close();
+    cache.Write(CacheFilename);
 
     return 0;
 }

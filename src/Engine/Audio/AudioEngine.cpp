@@ -5,6 +5,7 @@
 #include <map>
 #include <Engine/Debug/Assert.h>
 #include <Engine/Exceptions/InvalidArgumentException.h>
+#include <Engine/Platform.h>
 
 struct SDG::AudioEngine::Impl
 {
@@ -48,7 +49,10 @@ SDG::AudioEngine::Initialize() -> bool
     int systemRate;
     Check(impl->core->getDriverInfo(0, nullptr, 0, nullptr, &systemRate, nullptr, nullptr));
     Check(impl->core->setSoftwareFormat(systemRate, FMOD_SPEAKERMODE_DEFAULT, 0));
+    
+#if (SDG_TARGET_WEBGL) || (SDG_TARGET_MOBILE)
     Check(impl->core->setDSPBufferSize(2048, 2));
+#endif
     Check(impl->system->initialize(512, 
         FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, nullptr),
         "initializing FMOD Studio System");
@@ -56,8 +60,7 @@ SDG::AudioEngine::Initialize() -> bool
     return impl->system->isValid();
 }
 
-auto
-SDG::AudioEngine::Update() -> void
+auto SDG::AudioEngine::Update() -> void
 {
     SDG_Assert(impl->system->isValid());
     impl->system->update();
@@ -73,16 +76,14 @@ auto SDG::AudioEngine::UnloadSound(const Path &filepath) -> void
     }
 }
 
-auto
-SDG::AudioEngine::UnloadAllSounds() -> void
+auto SDG::AudioEngine::UnloadAllSounds() -> void
 {
     for (auto &[path, pair] : impl->files)
         pair.second->release();
     impl->files.clear();
 }
 
-auto
-SDG::AudioEngine::PreloadFiles(const std::initializer_list<Path> &paths) -> void
+auto SDG::AudioEngine::PreloadFiles(const std::initializer_list<Path> &paths) -> void
 {
     for (const auto &path : paths)
     {
@@ -93,8 +94,7 @@ SDG::AudioEngine::PreloadFiles(const std::initializer_list<Path> &paths) -> void
     }
 }
 
-auto
-SDG::AudioEngine::Impl::LoadSound(const Path &filepath, FMOD_MODE mode) -> FMOD::Sound *
+auto SDG::AudioEngine::Impl::LoadSound(const Path &filepath, FMOD_MODE mode) -> FMOD::Sound *
 {
     auto &pair = files[filepath.Str()];
     File &file = pair.first;

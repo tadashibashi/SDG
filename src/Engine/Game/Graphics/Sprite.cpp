@@ -47,4 +47,24 @@ namespace SDG
     {
         return reel.Empty();
     }
+
+    auto Sprite::LoadFromStrip(const String &name, Ref<class Texture> texture, size_t frameCount, Vector2 anchor) -> bool
+    {
+        if (frameCount == 0 || texture.Get() == nullptr) return false;
+
+        Point size = texture->Size() / Vector2{ (float)frameCount, 1 };
+        Array<Frame> frames(frameCount);
+        Array<unsigned int> reel(frameCount);
+        for (size_t i = 0; i < frameCount; ++i)
+        {
+            Rectangle frame{ (int)i * size.X(), 0, size.X(), size.Y() };
+            //frames[i] = { frame, frame, false, (Point)(size * anchor), texture.Get() };
+            reel[i] = i;
+        }
+
+        this->frames = std::move(frames);
+        this->reel = std::move(reel);
+        this->name = name;
+        return true;
+    }
 }

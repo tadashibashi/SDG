@@ -12,11 +12,11 @@ index(), depth(), tint(Color::White()) { }
 void SDG::SpriteRenderer::Render(Ref<class SpriteBatch> spriteBatch) const
 {
     const Frame &frame = sprite->At((unsigned)index);
-    Vector2 position = this->position - frame.OffsetRect().Position();
+    Vector2 position = this->position + (Vector2)frame.OffsetPos(true);
 
     FRectangle dest(position, (Vector2)frame.FrameRect().Size());
 
-    spriteBatch->DrawTexture(frame.Texture(), frame.FrameRect(), dest, frame.Angle() + angle,
+    spriteBatch->DrawTexture(frame.Texture(), (Rectangle)frame.FrameRect(), dest, frame.Angle() + angle,
         (Vector2)frame.Anchor(), flip, tint, depth);
 }
 
